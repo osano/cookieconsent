@@ -219,9 +219,9 @@
       if (options) this.setOptions(options);
 
       this.setContainer();
-      this.loadTheme();
 
-      this.render();
+      // Calls render when theme is loaded.
+      this.loadTheme(this.render);
     },
 
     setOptions: function (options) {
@@ -242,7 +242,7 @@
       }
     },
 
-    loadTheme: function () {
+    loadTheme: function (callback) {
       var theme = this.options.theme;
 
       // If theme is specified by name
@@ -254,6 +254,15 @@
       link.rel = 'stylesheet';
       link.type = 'text/css';
       link.href = theme;
+
+      var loaded = false;
+      link.onload = Util.bind(function () {
+        if (!loaded && callback) {
+          callback.call(this);
+          loaded = true;
+        }
+      }, this);
+
       document.getElementsByTagName("head")[0].appendChild(link);
     },
 
@@ -282,10 +291,17 @@
     setDismissedCookie: function () {
       Util.setCookie(DISMISSED_COOKIE, 'yes');
     }
-
   };
 
-  Util.addEventListener(document, 'readystatechange', function () {
-    if (document.readyState == 'complete') cookieconsent.init();
-  });
+  var init;
+  var initialized = false;
+  (init = function () {
+    if (!initialized && document.readyState == 'complete') {
+      cookieconsent.init();
+      initalized = true;
+    }
+  })();
+
+  Util.addEventListener(document, 'readystatechange', init);
+
 })();
