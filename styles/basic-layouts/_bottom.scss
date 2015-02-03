@@ -1,0 +1,82 @@
+@import '../_variables';
+@import 'base';
+
+.cc_container {
+    position: fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    overflow:hidden;
+    padding:10px;
+
+
+    .cc_btn {
+        padding:8px 10px;
+        background-color:#f1d600;
+        cursor: pointer;
+        transition:font-size 200ms;
+        text-align: center;
+        font-size:0.6em;
+        display: block;
+        width:33%;
+        margin-left:10px;
+        float:right;
+        max-width: 120px;
+    }
+
+    .cc_message {
+        transition:font-size 200ms;
+        font-size:0.6em;
+        display: block;
+    }
+}
+
+@media screen and (min-width: $screen-xs-min) {
+    .cc_container {
+
+        .cc_btn {
+            font-size:0.8em;
+        }
+
+        .cc_message {
+
+            margin-top:0.5em;
+            font-size:0.8em;
+        }
+    }
+}
+
+
+
+@media screen and (min-width: $screen-sm-min) {
+
+    .cc_container {
+        padding:15px 30px 15px;
+
+        .cc_btn-wrapper {
+
+        }
+
+        .cc_btn {
+            font-size:1em;
+            padding:8px 15px;
+        }
+
+        .cc_message {
+
+            font-size:1em;
+        }
+    }
+
+}
+
+@media screen and (min-width: $screen-md-min) {
+
+    .cc_container {
+
+        .cc_message {
+            font-size:1em;
+        }
+    }
+
+}

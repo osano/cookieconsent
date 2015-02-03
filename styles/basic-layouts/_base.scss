@@ -1,0 +1,83 @@
+@import '../_variables';
+
+//-- mostly for font sizes
+
+.cc_container {
+
+
+    .cc_btn {
+        cursor: pointer;
+        text-align: center;
+        font-size:0.6em;
+        transition:font-size 200ms;
+    }
+
+    .cc_message {
+        font-size:0.6em;
+        transition:font-size 200ms;
+        margin:0;
+        padding:0;
+    }
+
+    .cc_logo {
+        display:none;
+        text-indent: -1000px;
+        overflow:hidden;
+        width:100px;
+        height:22px;
+        background-size: cover;
+        background-image: url(https://s3-eu-west-1.amazonaws.com/assets.cookieconsent.silktide.com/cookie-consent-logo.png);
+        opacity:0.9;
+        transition: opacity 200ms;
+    }
+
+    .cc_logo:hover,
+    .cc_logo:active {
+        opacity:1;
+    }
+}
+
+@media screen and (min-width: $screen-xs-min) {
+    .cc_container {
+
+        .cc_btn {
+            font-size:0.8em;
+        }
+
+        .cc_message {
+            font-size:0.8em;
+        }
+    }
+}
+
+
+
+@media screen and (min-width: $screen-sm-min) {
+
+    .cc_container {
+
+        .cc_btn-wrapper {
+
+        }
+
+        .cc_btn {
+            font-size:1em;
+        }
+
+        .cc_message {
+            font-size:1em;
+        }
+    }
+
+}
+
+@media screen and (min-width: $screen-md-min) {
+
+    .cc_container {
+
+        .cc_message {
+            font-size:1em;
+        }
+    }
+
+}

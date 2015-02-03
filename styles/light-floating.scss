@@ -1,0 +1,10 @@
+@import 'basic-layouts/_floating';
+@import 'themes/_light';
+@import 'animations/_fadeinright';
+
+@media screen and (min-width: $screen-xs-min) {
+    .cc_container {
+        border-radius:5px;
+        box-shadow: 0px 5px 10px rgba(0,0,0,0.2)
+    }
+}
