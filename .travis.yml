@@ -1,0 +1,29 @@
+language: node_js
+node_js:
+- '0.10'
+install:
+- npm install
+- npm install -g gulp
+before_deploy:
+- gulp build
+notifications:
+  slack: silktide:wqDRKkOUWfZGqwG4Bt2zxRuO
+  webhooks:
+      urls:
+        - http://rargh.co.uk/api/silktide/travis
+        - http://api.deployr.silktide.com/api/v1/notification
+      on_success: always
+      on_failure: always
+      on_start: always
+deploy:
+  provider: s3
+  access_key_id: AKIAIWVO5G74PMU46FGQ
+  secret_access_key:
+    secure: LdrIUjzPNDunBd847TyFF9sEgd1By172c3x2Sp89cg+HjA8Lg2h7633AIV+VQ5SSi//iHFTxDV9FsrFW0NWV3fxwPlmQlpXKbW60gdhEEyF+Tqq8+mK6tC/PA3qBYdC/KZHEKFmgFB2qOwb2o2WgwX3taGOuBTkOgJ3tVUFvfsY=
+  bucket: cc.silktide.com
+  local-dir: build
+  skip_cleanup: true
+  on:
+    repo: silktide/newcookieconsent
+    all_branches: true
+t
