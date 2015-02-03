@@ -13,7 +13,7 @@ deploy:
   local-dir: build
   skip_cleanup: true
   on:
-    repo: silktide/newcookieconsent
+    repo: silktide/cookieconsent2
     all_branches: true
   secret_access_key:
     secure: CPm+hc3WNR5ebywuqtAeyO4gHNllWqpIyiMRWzqJfcHWluF2nuI3wib9nvIHkxvhWqezOyyfF5rFb9NerDKzWqARL+a7+rMSchdT94l5x4lZ0oyf1DFh16qwKE706jdj5A4jBUMdE/tqW59wcNxKD+eAmVo/e/pySZKz/yaxSgM=
