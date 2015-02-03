@@ -6,7 +6,7 @@ var rename = require("gulp-rename");
 
 gulp.task('sass', function () {
   gulp.src('./styles/*.scss')
-    .pipe(sass())
+    .pipe(sass({outputStyle: 'compressed'}))
     .pipe(gulp.dest('./build'));
 });
 
