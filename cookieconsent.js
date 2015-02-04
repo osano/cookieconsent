@@ -280,7 +280,11 @@
 
     render: function () {
       this.element = DomBuilder.build(this.markup, this);
-      this.container.appendChild(this.element);
+      if (!this.container.firstChild) {
+        this.container.appendChild(this.element);
+      } else {
+        this.container.insertBefore(this.element, this.container.firstChild);
+      }
     },
 
     dismiss: function () {
