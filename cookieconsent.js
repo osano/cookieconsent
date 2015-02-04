@@ -206,7 +206,7 @@
    */
   var cookieconsent = {
     options: {
-      message: 'This website uses cookies to ensure you get the best experience on our website - ',
+      message: 'This website uses cookies to ensure you get the best experience on our website ',
       dismiss: 'Got it!',
       learnMore: 'More info',
       link: null,
@@ -246,7 +246,7 @@
       var theme = this.options.theme;
 
       // If theme is specified by name
-      if (theme.indexOf('/') === -1) {
+      if (theme.indexOf('.css') === -1) {
         theme = THEME_BUCKET_PATH + theme + '.css';
       }
 
