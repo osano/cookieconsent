@@ -66,11 +66,9 @@ These are the options you can pass to Cookie Consent.
 
 ## Contributing
 
-Feel free to improve the plugin and send us a pull request.
+Feel free to improve the plugin and send us a pull request.  
 
-We use gulp to compile scss and minify the javascript. 
-
-Assuming [nodejs](http://nodejs.org/) is installed, you can run a build with:
+We use gulp to compile scss and minify the javascript. Assuming [nodejs](http://nodejs.org/) is installed, you can run a build with:
 
 ```sh
     cd path/to/cookieconsent
@@ -81,4 +79,8 @@ Assuming [nodejs](http://nodejs.org/) is installed, you can run a build with:
 
 ## License
 Code released under the [GPLv3 License](http://www.gnu.org/copyleft/gpl.html).
+
+## Credits
+@drball - Themes  
+@adjohu - JavaScript
 
