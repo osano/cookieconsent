@@ -1,6 +1,6 @@
-#Cookie Consent [![Build Status](https://magnum.travis-ci.com/silktide/cookieconsent2.svg?token=btYRVH7DuRxTxFVwH8Cs&branch=master)](https://magnum.travis-ci.com/silktide/cookieconsent2)
+#Cookie Consent 2 [![Build Status](https://magnum.travis-ci.com/silktide/cookieconsent2.svg?token=btYRVH7DuRxTxFVwH8Cs&branch=master)](https://magnum.travis-ci.com/silktide/cookieconsent2)
 
-Cookie consent is a lightweight JavaScript plugin to alert users about the use of cookies on your site.
+Cookie Consent 2 is a lightweight JavaScript plugin to alert users about the use of cookies on your site.
 
 * **Lightweight:** (~3.5kb minified)
 * **Customisable:** Easily change the wording to fit your site.
@@ -13,14 +13,14 @@ The easiest way to get up and running is to use our [configurator](http://silkti
 For more advanced configuration, keep reading.
 
 ## Installation
-Include cookieconsent.js on your page.
+Include cookieconsent.js on your page.:
 ```html
-<!-- Minified cookie consent served from CDN -->
+<!-- Minified Cookie Consent served from our CDN -->
 <script src="http://cc.silktide.com/cookieconsent.min.js"></script>
 ```
 
 ## Customisation
-To customise the cookie consent plugin, you can provide an options object before including it.
+To customise the Cookie Consent plugin, you can provide an options object before including it.
 
 ```html
 <script>
@@ -33,11 +33,12 @@ To customise the cookie consent plugin, you can provide an options object before
 ```
 
 ### Options
-These are the options you can pass to cookie consent.
+These are the options you can pass to Cookie Consent.
 
 * **message:** *(string)* - default: 'This website uses cookies to ensure you get the best experience on our website'
     
     The message shown by the plugin
+    
 * **dismiss:** *(string)* - default: 'Got it!'
     
     The text used on the dismiss button 
@@ -52,7 +53,7 @@ These are the options you can pass to cookie consent.
     
 * **container:** *(string: CSS selector)* - default: null     
 
-    The element you want the cookie consent notification to be appended to. If null, the cookie consent plugin is appended to the body. 
+    The element you want the Cookie Consent notification to be appended to. If null, the Cookie Consent plugin is appended to the body. 
     
     *Note: the majority of our built in themes are designed around the plugin being a child of the body.*
 
