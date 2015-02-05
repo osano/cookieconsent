@@ -1,0 +1,48 @@
+$plugin-height: 66px + 20px; //--plugin height plus the body margin offset
+
+@-webkit-keyframes pushDown {
+
+    0% {
+        margin-top:-$plugin-height;
+    }
+
+    100% {
+        margin-top:-15px;
+    }
+}
+
+
+@keyframes pushDown {
+    0% {
+        margin-top:-$plugin-height;
+    }
+
+    100% {
+        margin-top:0px;
+    }
+}
+
+.cc_banner-wrapper {
+
+    -webkit-animation-duration: 0.6s;
+    animation-duration: 0.6s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+
+    -webkit-animation-duration: 0.8s;
+    -moz-animation-duration: 0.8s;
+    -o-animation-duration: 0.8s;
+    animation-duration: 0.8s;
+    -webkit-animation-fill-mode: both;
+    -moz-animation-fill-mode: both;
+    -o-animation-fill-mode: both;
+    animation-fill-mode: both;
+
+    -webkit-animation-delay: 500ms;
+    animation-delay: 500ms;
+
+    -webkit-animation-name: pushDown;
+    animation-name: pushDown;
+
+}
+

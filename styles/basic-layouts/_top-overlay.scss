@@ -1,15 +1,13 @@
 @import '../_variables';
 @import 'base';
 
-
-//-offset to counter the default body margin in some browsers
-$body-top-offset: -15px;
-$body-side-offset: -10px;
-
 .cc_container {
-    margin:-$body-top-offset $body-side-offset 0;
-    padding:15px 15px 15px;
+    position: fixed;
+    left:0;
+    right:0;
+    top:0;
     overflow:hidden;
+    padding:10px;
 
     .cc_btn {
         padding:8px 10px;

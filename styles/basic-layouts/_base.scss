@@ -2,6 +2,11 @@
 
 //-- mostly for font sizes
 
+.cc_banner-wrapper {
+    z-index: 9001; // It's over 9000!
+    position:relative;
+}
+
 .cc_container {
 
 
