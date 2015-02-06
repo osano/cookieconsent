@@ -8,7 +8,7 @@ Cookie Consent 2 is a lightweight JavaScript plugin to alert users about the use
 
 ##Getting started
 
-The easiest way to get up and running is to use our [configurator](http://silktide.com/tools/cookieconsent). This will guide you through customising the plugin.
+The easiest way to get up and running is to use our [configurator](http://silktide.com/tools/cookieconsent) (coming soon). This will guide you through customising the plugin.
 
 For more advanced configuration, keep reading.
 
