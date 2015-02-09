@@ -86,3 +86,10 @@
     }
 
 }
+
+@media print {
+    .cc_banner-wrapper,
+    .cc_container {
+        display:none;
+    }
+}
