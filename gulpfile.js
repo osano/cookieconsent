@@ -18,7 +18,7 @@ gulp.task('minify', function () {
 });
 
 gulp.task('copy-images', function () {
-  gulp.src('theme-previews/*.jpg')
+  gulp.src('theme-previews/*.png')
     .pipe(gulp.dest('./build'));
 });
 
