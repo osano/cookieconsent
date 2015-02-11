@@ -82,4 +82,3 @@ Code released under the [GPLv3 License](http://www.gnu.org/copyleft/gpl.html).
 ## Credits
 @drball - Themes  
 @adjohu - JavaScript
-
