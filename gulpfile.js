@@ -17,4 +17,9 @@ gulp.task('minify', function () {
     .pipe(gulp.dest('./build'));
 });
 
-gulp.task('build', ['sass', 'minify']);
+gulp.task('copy-images', function () {
+  gulp.src('theme-previews/*.jpg')
+    .pipe(gulp.dest('./build'));
+});
+
+gulp.task('build', ['sass', 'minify', 'copy-images']);
