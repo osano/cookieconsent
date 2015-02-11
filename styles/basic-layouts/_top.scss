@@ -1,15 +1,24 @@
 @import '../_variables';
 @import 'base';
 
+// Pushes the content down, then stays at the top when scrolled
 
 //-offset to counter the default body margin in some browsers
 $body-top-offset: -15px;
 $body-side-offset: -10px;
 
+.cc_banner-wrapper {
+    height:66px;
+}
+
 .cc_container {
-    margin:-$body-top-offset $body-side-offset 0;
+    //margin:-$body-top-offset $body-side-offset 0;
     padding:15px 15px 15px;
     overflow:hidden;
+    position: fixed;
+    top:0;
+    left:0;
+    right:0;
 
     .cc_btn {
         padding:8px 10px;
