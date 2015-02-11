@@ -1,5 +1,4 @@
-#Cookie Consent 2 (Beta) [![Build Status](https://magnum.travis-ci.com/silktide/cookieconsent2.svg?token=btYRVH7DuRxTxFVwH8Cs&branch=master)](https://magnum.travis-ci.com/silktide/cookieconsent2)
-
+#Cookie Consent 2 (Beta) [![Build Status](https://travis-ci.org/silktide/cookieconsent2.svg)](https://travis-ci.org/silktide/cookieconsent2)
 Cookie Consent 2 is a lightweight JavaScript plugin to alert users about the use of cookies on your site.
 
 * **Lightweight:** (~3.5kb minified)
