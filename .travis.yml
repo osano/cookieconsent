@@ -16,4 +16,4 @@ deploy:
     repo: silktide/cookieconsent2
     all_branches: true
   secret_access_key:
-    secure: CPm+hc3WNR5ebywuqtAeyO4gHNllWqpIyiMRWzqJfcHWluF2nuI3wib9nvIHkxvhWqezOyyfF5rFb9NerDKzWqARL+a7+rMSchdT94l5x4lZ0oyf1DFh16qwKE706jdj5A4jBUMdE/tqW59wcNxKD+eAmVo/e/pySZKz/yaxSgM=
+    secure: IDrZeF+MWoTQsPI+PoSpVK6FACIW4o6lUOwsQ2D84ardTMYyvVHnsiFcHugj1Ey07Tw99yR0rY+TKXs6FbnCRZr0ZqKNru2NsXsOHj8fwWGGMzdbtpSkct9Is88LHNNoIZBgi5C+zRbHYgk+F7ZqM8AQUGARgdIWkO3kbM/0aiw=
