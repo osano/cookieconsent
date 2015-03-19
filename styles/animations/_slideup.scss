@@ -32,22 +32,18 @@ $plugin-height: 66px;
     }
 }
 
-.cc_container {
-    -webkit-animation-duration: 0.6s;
-    animation-duration: 0.6s;
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
 
+
+.cc_container,
+.cc_message,
+.cc_btn {
+
+    animation-duration: 0.8s;
     -webkit-animation-duration: 0.8s;
     -moz-animation-duration: 0.8s;
     -o-animation-duration: 0.8s;
-    animation-duration: 0.8s;
-    -webkit-animation-fill-mode: both;
-    -moz-animation-fill-mode: both;
-    -o-animation-fill-mode: both;
-    animation-fill-mode: both;
-
 
     -webkit-animation-name: slideUp;
     animation-name: slideUp;
 }
+

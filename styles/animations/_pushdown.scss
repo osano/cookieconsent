@@ -1,6 +1,6 @@
 
 
-@-webkit-keyframes pushDown {
+@-webkit-keyframes slideDown {
 
     0% {
         margin-top:-$plugin-height;
@@ -12,13 +12,35 @@
 }
 
 
-@keyframes pushDown {
+@keyframes slideDown {
     0% {
         margin-top:-$plugin-height;
     }
 
     100% {
         margin-top:0px;
+    }
+}
+
+@-webkit-keyframes growDown {
+
+    0% {
+        height:0
+    }
+
+    100% {
+        height:$plugin-height;
+    }
+}
+
+@keyframes growDown {
+
+    0% {
+        height:0
+    }
+
+    100% {
+        height:$plugin-height;
     }
 }
 
@@ -29,17 +51,17 @@
     -o-animation-duration: 0.8s;
     animation-duration: 0.8s;
 
-    -webkit-animation-fill-mode: both;
-    -moz-animation-fill-mode: both;
-    -o-animation-fill-mode: both;
-    animation-fill-mode: both;
-
-
-//    -webkit-animation-delay: 500ms;
-//    animation-delay: 500ms;
-
-    -webkit-animation-name: pushDown;
-    animation-name: pushDown;
+    -webkit-animation-name: slideDown;
+    animation-name: slideDown;
 
 }
 
+.cc_banner-wrapper  {
+    -webkit-animation-duration: 0.8s;
+    -moz-animation-duration: 0.8s;
+    -o-animation-duration: 0.8s;
+    animation-duration: 0.8s;
+
+    -webkit-animation-name: growDown;
+    animation-name: growDown;
+}
