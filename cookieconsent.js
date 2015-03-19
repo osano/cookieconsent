@@ -221,7 +221,11 @@
       this.setContainer();
 
       // Calls render when theme is loaded.
-      this.loadTheme(this.render);
+      if (this.options.theme) {
+        this.loadTheme(this.render);
+      } else {
+        this.render();
+      }
     },
 
     setOptions: function (options) {
