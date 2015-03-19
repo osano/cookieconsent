@@ -18,6 +18,8 @@ Include cookieconsent.js on your page.:
 <script src="http://cc.silktide.com/cookieconsent.min.js"></script>
 ```
 
+The package is also available from bower and can be installed using `bower install --save cookieconsent2`
+
 ## Customisation
 To customise the Cookie Consent plugin, you can provide an options object before including it.
 
