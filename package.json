@@ -3,9 +3,6 @@
   "version": "0.9.9",
   "description": "Silktide's cookie consent tool.",
   "main": "cookieconsent.js",
-  "dependencies": {
-    "gulp": "^3.8.10"
-  },
   "devDependencies": {
     "gulp": "^3.8.10",
     "gulp-rename": "^1.2.0",

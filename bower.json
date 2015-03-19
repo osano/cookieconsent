@@ -1,0 +1,23 @@
+{
+  "name": "cookieconsent2",
+  "version": "1.0.0",
+  "homepage": "https://github.com/silktide/cookieconsent2",
+  "authors": [
+    "silktide"
+  ],
+  "description": "Silktide's cookie consent plugin v2",
+  "main": "cookieconsent.js",
+  "keywords": [
+    "cookieconsent",
+    "cookie",
+    "law"
+  ],
+  "license": "GPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
