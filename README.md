@@ -64,7 +64,7 @@ These are the options you can pass to Cookie Consent.
     
     If you wish to use your own css instead, pass a path here. i.e. `'styles/my_custom_theme.css'` and it will be dynamically loaded.
     
-    To stop cookieconsent from loading css at all, pass `false`.
+    To stop Cookie Consent from loading css at all, pass `false`.
 
 
 ## Contributing
