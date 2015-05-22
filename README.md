@@ -15,7 +15,13 @@ For more advanced configuration, keep reading.
 Include cookieconsent.js on your page.:
 ```html
 <!-- Minified Cookie Consent served from our CDN -->
-<script src="http://cc.silktide.com/cookieconsent.min.js"></script>
+<script src="//s3.amazonaws.com/cc.silktide.com/cookieconsent.latest.min.js"></script>
+```
+
+Versioned releases are also available off the CDN under a similar URL structure. e.g.:
+```html
+<!-- Minified Cookie Consent served from our CDN -->
+<script src="//s3.amazonaws.com/cc.silktide.com/cookieconsent.1.0.2.min.js"></script>
 ```
 
 The package is also available from bower and can be installed using `bower install --save cookieconsent2`
@@ -30,7 +36,7 @@ To customise the Cookie Consent plugin, you can provide an options object before
         link: 'http://example.com/cookiepolicy'
     };
 </script>
-<script src="http://cc.silktide.com/cookieconsent.min.js"></script>
+<script src="//s3.amazonaws.com/cc.silktide.com/cookieconsent.latest.min.js"></script>
 ```
 
 ### Options

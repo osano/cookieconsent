@@ -5,7 +5,7 @@ install:
 - npm install
 - npm install -g gulp
 before_deploy:
-- gulp build
+- gulp build --tag=${TRAVIS_BRANCH}
 deploy:
   provider: s3
   access_key_id: AKIAII7TI4JOMGRAWTNA
@@ -13,7 +13,6 @@ deploy:
   local-dir: build
   skip_cleanup: true
   on:
-    repo: silktide/cookieconsent2
-    all_branches: true
+    tags: true
   secret_access_key:
     secure: IDrZeF+MWoTQsPI+PoSpVK6FACIW4o6lUOwsQ2D84ardTMYyvVHnsiFcHugj1Ey07Tw99yR0rY+TKXs6FbnCRZr0ZqKNru2NsXsOHj8fwWGGMzdbtpSkct9Is88LHNNoIZBgi5C+zRbHYgk+F7ZqM8AQUGARgdIWkO3kbM/0aiw=
