@@ -14,7 +14,7 @@
   var DISMISSED_COOKIE = 'cookieconsent_dismissed';
 
   // The path to built in themes (s3 bucket)
-  var THEME_BUCKET_PATH = 'https://s3.amazonaws.com/cc.silktide.com/';
+  var THEME_BUCKET_PATH = '//s3.amazonaws.com/cc.silktide.com/';
 
   // No point going further if they've already dismissed.
   if (document.cookie.indexOf(DISMISSED_COOKIE) > -1) {
