@@ -308,7 +308,8 @@
       }
     },
 
-    dismiss: function () {
+    dismiss: function (evt) {
+      evt.preventDefault();
       this.setDismissedCookie();
       this.container.removeChild(this.element);
     },
