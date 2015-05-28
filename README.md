@@ -39,6 +39,14 @@ To customise the Cookie Consent plugin, you can provide an options object before
 <script src="//s3.amazonaws.com/cc.silktide.com/cookieconsent.latest.min.js"></script>
 ```
 
+### On the fly
+You can customize Cookie Consent options on the fly (once it is loaded) by calling 
+```js
+window.update_cookieconsent_options({
+    learnMore: 'Learn more'
+});
+```
+
 ### Options
 These are the options you can pass to Cookie Consent.
 
