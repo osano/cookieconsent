@@ -10,6 +10,9 @@
   // Client variable which may be present containing options to override with
   var OPTIONS_VARIABLE = 'cookieconsent_options';
 
+  // Change cookie consent options on the fly.
+  var OPTIONS_SETTER = 'set_cookieconsent_options';
+
   // Name of cookie to be set when dismissed
   var DISMISSED_COOKIE = 'cookieconsent_dismissed';
 
@@ -243,6 +246,11 @@
       }
     },
 
+    setOptionsOnTheFly (options) {
+      this.setOptions(options);
+      this.render();
+    },
+
     setOptions: function (options) {
       Util.merge(this.options, options);
     },
@@ -286,6 +294,12 @@
     },
 
     render: function () {
+      // remove current element (if we've already rendered)
+      if (this.element && this.element.parentNode) {
+        this.element.parentNode.removeChild(this.element);
+        delete this.element;
+      }
+
       this.element = DomBuilder.build(this.options.markup, this);
       if (!this.container.firstChild) {
         this.container.appendChild(this.element);
@@ -310,6 +324,7 @@
     if (!initialized && document.readyState == 'complete') {
       cookieconsent.init();
       initalized = true;
+      window[OPTIONS_SETTER] = cookieconsent.setOptionsOnTheFly.bind(cookieconsent);
     }
   })();
 
