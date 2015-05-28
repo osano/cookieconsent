@@ -215,7 +215,18 @@
       learnMore: 'More info',
       link: null,
       container: null, // selector
-      theme: 'light-floating'
+      theme: 'light-floating',
+      markup: [
+        '<div class="cc_banner-wrapper {{containerClasses}}">',
+        '<div class="cc_banner cc_container cc_container--open">',
+        '<a href="#null" data-cc-event="click:dismiss" class="cc_btn cc_btn_accept_all">{{options.dismiss}}</a>',
+
+        '<p class="cc_message">{{options.message}} <a data-cc-if="options.link" class="cc_more_info" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
+
+        '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
+        '</div>',
+        '</div>'
+      ]
     },
 
     init: function () {
@@ -274,20 +285,8 @@
       document.getElementsByTagName("head")[0].appendChild(link);
     },
 
-    markup: [
-      '<div class="cc_banner-wrapper {{containerClasses}}">',
-      '<div class="cc_banner cc_container cc_container--open">',
-      '<a href="#null" data-cc-event="click:dismiss" class="cc_btn cc_btn_accept_all">{{options.dismiss}}</a>',
-
-      '<p class="cc_message">{{options.message}} <a data-cc-if="options.link" class="cc_more_info" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
-
-      '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
-      '</div>',
-      '</div>'
-    ],
-
     render: function () {
-      this.element = DomBuilder.build(this.markup, this);
+      this.element = DomBuilder.build(this.options.markup, this);
       if (!this.container.firstChild) {
         this.container.appendChild(this.element);
       } else {
