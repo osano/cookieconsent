@@ -11,7 +11,7 @@
   var OPTIONS_VARIABLE = 'cookieconsent_options';
 
   // Change cookie consent options on the fly.
-  var OPTIONS_SETTER = 'set_cookieconsent_options';
+  var OPTIONS_UPDATER = 'update_cookieconsent_options';
 
   // Name of cookie to be set when dismissed
   var DISMISSED_COOKIE = 'cookieconsent_dismissed';
@@ -324,7 +324,7 @@
     if (!initialized && document.readyState == 'complete') {
       cookieconsent.init();
       initalized = true;
-      window[OPTIONS_SETTER] = cookieconsent.setOptionsOnTheFly.bind(cookieconsent);
+      window[OPTIONS_UPDATER] = cookieconsent.setOptionsOnTheFly.bind(cookieconsent);
     }
   })();
 
