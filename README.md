@@ -10,7 +10,7 @@ Cookie Consent is a lightweight JavaScript plugin for alerting users about the u
 
 ## Getting started
 
-The easiest way to get up and running is to use our [configurator](http://silktide.com/tools/cookieconsent/download). This will guide you through customising the plugin.
+The easiest way to get up and running is to use our [configurator](http://silktide.com/tools/cookie-consent/download/). This will guide you through customising the plugin.
 
 For more advanced configuration, keep reading.
 
