@@ -1,10 +1,12 @@
 [![Build Status](https://travis-ci.org/silktide/cookieconsent2.svg)](https://travis-ci.org/silktide/cookieconsent2)
 
-Cookie Consent is a lightweight JavaScript plugin to alert users about the use of cookies on your site. 
+## What is Cookie Consent? 
 
-* **Lightweight:** (~3.5kb minified)
+Cookie Consent is a lightweight JavaScript plugin for alerting users about the use of cookies on your website. Cookie Consent is:
+
+* **Lightweight:** ~3.5kb minified, and no JQuery or other dependencies.
 * **Customisable:** Easily change the wording to fit your site.
-* **Built in themes:** We've created a variety of different themes so you don't have to. 
+* **Themeable:** We've created a variety of built-in themes and you can create your own.
 
 ## Getting started
 
@@ -13,6 +15,7 @@ The easiest way to get up and running is to use our [configurator](http://silkti
 For more advanced configuration, keep reading.
 
 ## Installation
+
 Include cookieconsent.js on your page.:
 ```html
 <!-- Minified Cookie Consent served from our CDN -->
@@ -28,6 +31,7 @@ Versioned releases are also available off the CDN under a similar URL structure.
 The package is also available from bower and can be installed using `bower install --save cookieconsent2`
 
 ## Customisation
+
 To customise the Cookie Consent plugin, you can provide an options object before including it.
 
 ```html
@@ -41,7 +45,8 @@ To customise the Cookie Consent plugin, you can provide an options object before
 ```
 
 ### On the fly
-You can customize Cookie Consent options on the fly (once it is loaded) by calling 
+
+You can customize Cookie Consent options on the fly (once it is loaded) by calling: 
 ```js
 window.update_cookieconsent_options({
     learnMore: 'Learn more'
@@ -89,15 +94,16 @@ Feel free to improve the plugin and send us a pull request.
 We use gulp to compile scss and minify the javascript. Assuming [nodejs](http://nodejs.org/) is installed, you can run a build with:
 
 ```sh
-    cd path/to/cookieconsent
-    npm install
-    npm install -g gulp
-    gulp build
+cd path/to/cookieconsent
+npm install
+npm install -g gulp
+gulp build
 ```
 
 ## License
 Code released under the [GPLv3 License](http://www.gnu.org/copyleft/gpl.html).
 
 ## Credits
-@drball - Themes  
-@adjohu - JavaScript
+
++ David Ball (@drball) - CSS / themes  
++ Adam Hutchinson (@adjohu) - JavaScript
