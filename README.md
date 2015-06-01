@@ -1,13 +1,14 @@
-#Cookie Consent 2 (Beta) [![Build Status](https://travis-ci.org/silktide/cookieconsent2.svg)](https://travis-ci.org/silktide/cookieconsent2)
-Cookie Consent 2 is a lightweight JavaScript plugin to alert users about the use of cookies on your site.
+[![Build Status](https://travis-ci.org/silktide/cookieconsent2.svg)](https://travis-ci.org/silktide/cookieconsent2)
+
+Cookie Consent is a lightweight JavaScript plugin to alert users about the use of cookies on your site. 
 
 * **Lightweight:** (~3.5kb minified)
 * **Customisable:** Easily change the wording to fit your site.
 * **Built in themes:** We've created a variety of different themes so you don't have to. 
 
-##Getting started
+## Getting started
 
-The easiest way to get up and running is to use our [configurator](http://silktide.com/tools/cookieconsent) (coming soon). This will guide you through customising the plugin.
+The easiest way to get up and running is to use our [configurator](http://silktide.com/tools/cookieconsent/download). This will guide you through customising the plugin.
 
 For more advanced configuration, keep reading.
 
