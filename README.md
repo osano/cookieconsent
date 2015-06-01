@@ -6,9 +6,13 @@ Cookie Consent is a lightweight JavaScript plugin for alerting users about the u
 
 It is designed to help you comply with the hideous EU Cookie Law and not make you want to kill yourself in the process. So we made it fast, free, and relatively painless.
 
-## Getting started
+## Installation
 
-The easiest way to get up and running is to use our [wizard](http://silktide.com/tools/cookie-consent/download/). Advanced documentation can be found [here](http://silktide.com/tools/cookie-consent/docs/).
+The easiest way to get up and running is to use our [wizard](http://silktide.com/tools/cookie-consent/download/). 
+
+## Documentation 
+
+See our [full documentation](http://silktide.com/tools/cookie-consent/docs/).
 
 ## Contributing
 
