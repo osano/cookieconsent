@@ -2,90 +2,13 @@
 
 ## What is Cookie Consent? 
 
-Cookie Consent is a lightweight JavaScript plugin for alerting users about the use of cookies on your website. Cookie Consent is:
+Cookie Consent is a lightweight JavaScript plugin for alerting users about the use of cookies on your website.
 
-* **Lightweight:** ~3.5kb minified, and no JQuery or other dependencies.
-* **Customisable:** Easily change the wording to fit your site.
-* **Themeable:** We've created a variety of built-in themes and you can create your own.
+It is designed to help you comply with the hideous EU Cookie Law and not make you want to kill yourself in the process. So we made it fast, free, and relatively painless.
 
 ## Getting started
 
-The easiest way to get up and running is to use our [configurator](http://silktide.com/tools/cookie-consent/download/). This will guide you through customising the plugin.
-
-For more advanced configuration, keep reading.
-
-## Installation
-
-Include cookieconsent.js on your page.:
-```html
-<!-- Minified Cookie Consent served from our CDN -->
-<script src="//s3.amazonaws.com/cc.silktide.com/cookieconsent.latest.min.js"></script>
-```
-
-Versioned releases are also available off the CDN under a similar URL structure. e.g.:
-```html
-<!-- Minified Cookie Consent served from our CDN -->
-<script src="//s3.amazonaws.com/cc.silktide.com/cookieconsent.1.0.2.min.js"></script>
-```
-
-The package is also available from bower and can be installed using `bower install --save cookieconsent2`
-
-## Customisation
-
-To customise the Cookie Consent plugin, you can provide an options object before including it.
-
-```html
-<script>
-    window.cookieconsent_options = {
-        learnMore: 'More info',
-        link: 'http://example.com/cookiepolicy'
-    };
-</script>
-<script src="//s3.amazonaws.com/cc.silktide.com/cookieconsent.latest.min.js"></script>
-```
-
-### On the fly
-
-You can customize Cookie Consent options on the fly (once it is loaded) by calling: 
-```js
-window.update_cookieconsent_options({
-    learnMore: 'Learn more'
-});
-```
-
-### Options
-These are the options you can pass to Cookie Consent.
-
-* **message:** *(string)* - default: 'This website uses cookies to ensure you get the best experience on our website'
-    
-    The message shown by the plugin
-    
-* **dismiss:** *(string)* - default: 'Got it!'
-    
-    The text used on the dismiss button 
-
-* **learnMore:** *(string)* - default: 'More info'
-
-    The text shown on the link to the cookie policy (requires the link option to also be set)
-
-* **link:** *(string)* - default: null
-    
-    The url of your cookie policy. If it's set to null, the link is hidden.
-    
-* **container:** *(string: CSS selector)* - default: null     
-
-    The element you want the Cookie Consent notification to be appended to. If null, the Cookie Consent plugin is appended to the body. 
-    
-    *Note: the majority of our built in themes are designed around the plugin being a child of the body.*
-
-* **theme:** *(string)* - default: 'light-floating'
-
-    The theme you wish to use. Can be any of the themes from the style directory, i.e. 'dark-top'.
-    
-    If you wish to use your own css instead, pass a path here. i.e. `'styles/my_custom_theme.css'` and it will be dynamically loaded.
-    
-    To stop Cookie Consent from loading css at all, pass `false`.
-
+The easiest way to get up and running is to use our [wizard](http://silktide.com/tools/cookie-consent/download/). Advanced documentation can be found [here](http://silktide.com/tools/cookie-consent/docs/).
 
 ## Contributing
 
