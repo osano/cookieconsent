@@ -246,7 +246,7 @@
       }
     },
 
-    setOptionsOnTheFly (options) {
+    setOptionsOnTheFly: function (options) {
       this.setOptions(options);
       this.render();
     },
