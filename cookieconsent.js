@@ -324,7 +324,7 @@
   (init = function () {
     if (!initialized && document.readyState == 'complete') {
       cookieconsent.init();
-      initalized = true;
+      initialized = true;
       window[OPTIONS_UPDATER] = cookieconsent.setOptionsOnTheFly.bind(cookieconsent);
     }
   })();
