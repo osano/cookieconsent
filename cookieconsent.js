@@ -10,11 +10,14 @@
   // Client variable which may be present containing options to override with
   var OPTIONS_VARIABLE = 'cookieconsent_options';
 
+  // Change cookie consent options on the fly.
+  var OPTIONS_UPDATER = 'update_cookieconsent_options';
+
   // Name of cookie to be set when dismissed
   var DISMISSED_COOKIE = 'cookieconsent_dismissed';
 
   // The path to built in themes (s3 bucket)
-  var THEME_BUCKET_PATH = 'http://cc.silktide.com/';
+  var THEME_BUCKET_PATH = '//s3.amazonaws.com/cc.silktide.com/';
 
   // No point going further if they've already dismissed.
   if (document.cookie.indexOf(DISMISSED_COOKIE) > -1) {
@@ -215,7 +218,18 @@
       learnMore: 'More info',
       link: null,
       container: null, // selector
-      theme: 'light-floating'
+      theme: 'light-floating',
+      markup: [
+        '<div class="cc_banner-wrapper {{containerClasses}}">',
+        '<div class="cc_banner cc_container cc_container--open">',
+        '<a href="#null" data-cc-event="click:dismiss" class="cc_btn cc_btn_accept_all">{{options.dismiss}}</a>',
+
+        '<p class="cc_message">{{options.message}} <a data-cc-if="options.link" class="cc_more_info" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
+
+        '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
+        '</div>',
+        '</div>'
+      ]
     },
 
     init: function () {
@@ -230,6 +244,11 @@
       } else {
         this.render();
       }
+    },
+
+    setOptionsOnTheFly: function (options) {
+      this.setOptions(options);
+      this.render();
     },
 
     setOptions: function (options) {
@@ -274,20 +293,14 @@
       document.getElementsByTagName("head")[0].appendChild(link);
     },
 
-    markup: [
-      '<div class="cc_banner-wrapper {{containerClasses}}">',
-      '<div class="cc_banner cc_container cc_container--open">',
-      '<a href="#null" data-cc-event="click:dismiss" class="cc_btn cc_btn_accept_all">{{options.dismiss}}</a>',
-
-      '<p class="cc_message">{{options.message}} <a data-cc-if="options.link" class="cc_more_info" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
-
-      '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
-      '</div>',
-      '</div>'
-    ],
-
     render: function () {
-      this.element = DomBuilder.build(this.markup, this);
+      // remove current element (if we've already rendered)
+      if (this.element && this.element.parentNode) {
+        this.element.parentNode.removeChild(this.element);
+        delete this.element;
+      }
+
+      this.element = DomBuilder.build(this.options.markup, this);
       if (!this.container.firstChild) {
         this.container.appendChild(this.element);
       } else {
@@ -295,7 +308,8 @@
       }
     },
 
-    dismiss: function () {
+    dismiss: function (evt) {
+      evt.preventDefault();
       this.setDismissedCookie();
       this.container.removeChild(this.element);
     },
@@ -310,7 +324,8 @@
   (init = function () {
     if (!initialized && document.readyState == 'complete') {
       cookieconsent.init();
-      initalized = true;
+      initialized = true;
+      window[OPTIONS_UPDATER] = cookieconsent.setOptionsOnTheFly.bind(cookieconsent);
     }
   })();
 
