@@ -309,7 +309,8 @@
     },
 
     dismiss: function (evt) {
-      evt.preventDefault();
+      evt.preventDefault && evt.preventDefault();
+      evt.returnValue = false;
       this.setDismissedCookie();
       this.container.removeChild(this.element);
     },
@@ -325,7 +326,7 @@
     if (!initialized && document.readyState == 'complete') {
       cookieconsent.init();
       initialized = true;
-      window[OPTIONS_UPDATER] = cookieconsent.setOptionsOnTheFly.bind(cookieconsent);
+      window[OPTIONS_UPDATER] = Util.bind(cookieconsent.setOptionsOnTheFly, cookieconsent);
     }
   })();
 
