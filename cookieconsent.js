@@ -309,7 +309,7 @@
     },
 
     dismiss: function (evt) {
-      evt.preventDefault && event.preventDefault();
+      evt.preventDefault && evt.preventDefault();
       evt.returnValue = false;
       this.setDismissedCookie();
       this.container.removeChild(this.element);
