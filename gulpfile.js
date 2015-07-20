@@ -4,12 +4,6 @@ var uglify = require('gulp-uglify');
 var rename = require("gulp-rename");
 var yargs = require("yargs");
 
-gulp.task('validate', function() {
-  if (yargs.argv.tag===undefined) {
-    throw "Required argument --tag not found";
-  }
-});
-
 gulp.task('sass', function () {
   gulp.src('./styles/*.scss')
     .pipe(sass({outputStyle: 'compressed'}))
@@ -17,12 +11,17 @@ gulp.task('sass', function () {
 });
 
 gulp.task('minify', function () {
-  gulp.src('./cookieconsent.js')
+  var minifyPipe =
+    gulp.src('./cookieconsent.js')
     .pipe(uglify())
     .pipe(rename('cookieconsent.latest.min.js'))
-    .pipe(gulp.dest('./build'))
-    .pipe(rename('cookieconsent.'+yargs.argv.tag+'.min.js'))
     .pipe(gulp.dest('./build'));
+
+  if (yargs.argv.tag!==undefined) {
+    minifyPipe
+      .pipe(rename('cookieconsent.'+yargs.argv.tag+'.min.js'))
+      .pipe(gulp.dest('./build'));
+  }
 });
 
 gulp.task('copy-images', function () {
@@ -30,4 +29,4 @@ gulp.task('copy-images', function () {
     .pipe(gulp.dest('./build'));
 });
 
-gulp.task('build', ['validate', 'sass', 'minify', 'copy-images']);
+gulp.task('build', ['sass', 'minify', 'copy-images']);
