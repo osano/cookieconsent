@@ -94,7 +94,7 @@
     setCookie: function (name, value, expirydays, path) {
       var exdate = new Date();
       expirydays = (typeof expirydays === 'undefined') ? 365 : expirydays;
-      path = (typeof path === 'undefined') ? 'default' : path;
+      path = (typeof path === 'undefined') ? '/' : path;
       exdate.setDate(exdate.getDate() + expirydays);
       document.cookie = name + '=' + value + '; expires=' + exdate.toUTCString() + '; path=' + path;
     },
