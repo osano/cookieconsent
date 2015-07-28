@@ -91,14 +91,25 @@
       return null;
     },
 
-    setCookie: function (name, value, expiryDays, path) {
+    setCookie: function (name, value, expiryDays, domain, path) {
       expiryDays = expiryDays || 365;
-      path = path || '/';
 
       var exdate = new Date();
       exdate.setDate(exdate.getDate() + expiryDays);
 
-      document.cookie = name + '=' + value + '; expires=' + exdate.toUTCString() + '; path=' + path;
+      var cookie = [
+        name + '=' + value,
+        'expires=' + exdate.toUTCString(),
+        'path=' + path || '/'
+      ];
+
+      if (domain) {
+        cookie.push(
+          'domain=' + domain
+        );
+      }
+
+      document.cookie = cookie.join(';');
     },
 
     addEventListener: function (el, event, eventListener) {
@@ -222,6 +233,7 @@
       link: null,
       container: null, // selector
       theme: 'light-floating',
+      domain: null, // default to current domain.
       path: '/', 
       expiryDays: 365,
       markup: [
@@ -321,7 +333,7 @@
     },
 
     setDismissedCookie: function () {
-      Util.setCookie(DISMISSED_COOKIE, 'yes', this.options.expiryDays, this.options.path);
+      Util.setCookie(DISMISSED_COOKIE, 'yes', this.options.expiryDays, this.options.domain, this.options.path);
     }
   };
 
