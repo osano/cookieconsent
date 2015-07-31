@@ -21,6 +21,9 @@
 
   // No point going further if they've already dismissed.
   if (document.cookie.indexOf(DISMISSED_COOKIE) > -1) {
+    if (window[OPTIONS_VARIABLE] && window[OPTIONS_VARIABLE]['consent_hook']) {
+      window[OPTIONS_VARIABLE]['consent_hook']();
+    }
     return;
   }
 
@@ -246,7 +249,8 @@
         '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
         '</div>',
         '</div>'
-      ]
+      ],
+      consent_hook: null, // hook function called on dismiss or if already dismissed
     },
 
     init: function () {
@@ -330,6 +334,9 @@
       evt.returnValue = false;
       this.setDismissedCookie();
       this.container.removeChild(this.element);
+      if(this.options.consent_hook) {
+        this.options.consent_hook();
+      }
     },
 
     setDismissedCookie: function () {
