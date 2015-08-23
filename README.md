@@ -24,6 +24,7 @@ We use gulp to compile scss and minify the javascript. Assuming [nodejs](http://
 cd path/to/cookieconsent
 npm install
 npm install -g gulp
+npm install lodash map-stream node-sass gulp-util clone vinyl-sourcemaps-appl
 gulp build
 ```
 
