@@ -2,7 +2,7 @@
 
 .cc_container {
 
-    background: #222;
+    background: #ff6600;
     color: #fff;
     font-size:17px;
     font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
@@ -17,8 +17,8 @@
 
     .cc_btn,
     .cc_btn:visited {
-        color: #000;
-        background-color: #f1d600;
+        color: #ff6600;
+        background-color: #000000;
         transition: background 200ms ease-in-out, color 200ms ease-in-out, box-shadow 200ms ease-in-out;
         -webkit-transition: background 200ms ease-in-out, color 200ms ease-in-out, box-shadow 200ms ease-in-out;
         border-radius: 5px;
@@ -28,7 +28,7 @@
     .cc_btn:hover,
     .cc_btn:active {
         background-color: #fff;
-        color:#000;
+        color:#ff6600;
     }
 
 
