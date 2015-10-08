@@ -28,7 +28,7 @@ gulp build
 ```
 
 ## License
-Code released under the [GPLv3 License](http://www.gnu.org/copyleft/gpl.html).
+Code released under the [MIT licence](http://opensource.org/licenses/MIT).
 
 ## Credits
 
