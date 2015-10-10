@@ -227,6 +227,7 @@
    */
   var cookieconsent = {
     options: {
+      enabled: true,
       message: 'This website uses cookies to ensure you get the best experience on our website. ',
       dismiss: 'Got it!',
       learnMore: 'More info',
@@ -252,6 +253,7 @@
     init: function () {
       var options = window[OPTIONS_VARIABLE];
       if (options) this.setOptions(options);
+      if (this.options.enabled === false) return;
 
       this.setContainer();
 
