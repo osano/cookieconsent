@@ -153,7 +153,7 @@
     var insertReplacements = function (htmlStr, scope) {
       return htmlStr.replace(/\{\{(.*?)\}\}/g, function (_match, sub) {
         var tokens = sub.split('||');
-        var value;
+        var value, token;
         while (token = tokens.shift()) {
           token = token.trim();
 
