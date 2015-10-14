@@ -20,12 +20,10 @@
   var THEME_BUCKET_PATH = '//s3.amazonaws.com/cc.silktide.com/';
 
   // No point going further if they've already dismissed.
-  if (document.cookie.indexOf(DISMISSED_COOKIE) > -1) {
-    return;
-  }
+  if (document.cookie.indexOf(DISMISSED_COOKIE) > -1) return;
 
   // IE8...
-  if(typeof String.prototype.trim !== 'function') {
+  if (typeof String.prototype.trim !== 'function') {
     String.prototype.trim = function() {
       return this.replace(/^\s+|\s+$/g, '');
     };
@@ -85,7 +83,7 @@
       var i = 0;
       var head = object;
       query = query.split('.');
-      while ( (queryPart = query[i++]) && head.hasOwnProperty(queryPart) && (head = head[queryPart]) )  {
+      while ( (queryPart = query[i++]) && head.hasOwnProperty(queryPart) && (head = head[queryPart]) ) {
         if (i === query.length) return head;
       }
       return null;
@@ -227,23 +225,21 @@
    */
   var cookieconsent = {
     options: {
-      message: 'This website uses cookies to ensure you get the best experience on our website. ',
+      message: 'This website uses cookies to ensure you get the best experience on our website.',
       dismiss: 'Got it!',
       learnMore: 'More info',
+	  cookieName: null,
       link: null,
       container: null, // selector
       theme: 'light-floating',
       domain: null, // default to current domain.
-      path: '/', 
+      path: '/',
       expiryDays: 365,
       markup: [
         '<div class="cc_banner-wrapper {{containerClasses}}">',
         '<div class="cc_banner cc_container cc_container--open">',
         '<a href="#null" data-cc-event="click:dismiss" target="_blank" class="cc_btn cc_btn_accept_all">{{options.dismiss}}</a>',
-
-        '<p class="cc_message">{{options.message}} <a data-cc-if="options.link" class="cc_more_info" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
-
-        '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
+        '<p class="cc_message">{{options.message}} <a data-cc-if="options.link" target="_blank" class="cc_more_info" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
         '</div>',
         '</div>'
       ]
@@ -253,7 +249,9 @@
       var options = window[OPTIONS_VARIABLE];
       if (options) this.setOptions(options);
 
-      this.setContainer();
+      if (options.cookieName) DISMISSED_COOKIE = options.cookieName;
+      if (document.cookie.indexOf(DISMISSED_COOKIE) > -1) return;
+	  this.setContainer();
 
       // Calls render when theme is loaded.
       if (this.options.theme) {
