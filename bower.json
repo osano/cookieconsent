@@ -12,7 +12,7 @@
     "cookie",
     "law"
   ],
-  "license": "GPLv3",
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
