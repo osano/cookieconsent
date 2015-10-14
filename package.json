@@ -18,7 +18,7 @@
     "url": "https://github.com/silktide/cookieconsent2.git"
   },
   "author": "Silktide Ltd.",
-  "license": "GPLv3",
+  "license": "MIT",
   "dependencies": {
     "yargs": "^3.9.1"
   }
