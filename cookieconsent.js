@@ -231,7 +231,7 @@
       dismiss: 'Got it!',
       learnMore: 'More info',
       link: null,
-      target: "_self",
+      target: '_self',
       container: null, // selector
       theme: 'light-floating',
       domain: null, // default to current domain.
