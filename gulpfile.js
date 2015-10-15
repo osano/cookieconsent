@@ -15,7 +15,7 @@ gulp.task('minify', function () {
   var pipeline = gulp.src('./cookieconsent.js');
 
   if (yargs.argv.tag!==undefined) {
-    pipeline.pipe(replace(/(var THEME_BUCKET_PATH(?: )*=(?: )*')(.*)(';)/, '$1\\\\cdnjs.cloudflare.com/ajax/libs/cookieconsent2/'+yargs.argv.tag+'/$3'));
+    pipeline.pipe(replace(/(var THEME_BUCKET_PATH(?: )*=(?: )*')(.*)(';)/, '$1//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/'+yargs.argv.tag+'/$3'));
   }
 
   pipeline
