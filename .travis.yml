@@ -6,13 +6,3 @@ install:
 - npm install -g gulp
 before_deploy:
 - gulp build --tag=${TRAVIS_BRANCH}
-deploy:
-  provider: s3
-  access_key_id: AKIAIVEJIZ77VYTAJC6Q
-  bucket: cc.silktide.com
-  local-dir: build
-  skip_cleanup: true
-  on:
-    tags: true
-  secret_access_key:
-    secure: NDqQgHIuq4n0kDmCGD5H3Ij3J/nGf9NezmyN74+3ydVhRTMoe75ljMfH2iTMq6xEmb+s3pyVCWG+19VUE37DT5WtLpQJ5tOee2V0iRzKfNcGiKMZiphdLiTX7+UVJCXGLNL2ycC62Y+2inNfAuGsKZTtgqucADXHyh9CsQ5LzzA=

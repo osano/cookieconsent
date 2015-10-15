@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var uglify = require('gulp-uglify');
 var rename = require("gulp-rename");
+var replace = require("gulp-replace");
 var yargs = require("yargs");
 
 gulp.task('sass', function () {
@@ -11,22 +12,16 @@ gulp.task('sass', function () {
 });
 
 gulp.task('minify', function () {
-  var minifyPipe =
-    gulp.src('./cookieconsent.js')
-    .pipe(uglify())
-    .pipe(rename('cookieconsent.latest.min.js'))
-    .pipe(gulp.dest('./build'));
+  var pipeline = gulp.src('./cookieconsent.js');
 
   if (yargs.argv.tag!==undefined) {
-    minifyPipe
-      .pipe(rename('cookieconsent.'+yargs.argv.tag+'.min.js'))
-      .pipe(gulp.dest('./build'));
+    pipeline.pipe(replace(/(var THEME_BUCKET_PATH(?: )*=(?: )*')(.*)(';)/, '$1\\\\cdnjs.cloudflare.com/ajax/libs/cookieconsent2/'+yargs.argv.tag+'/$3'));
   }
+
+  pipeline
+  .pipe(uglify())
+  .pipe(rename('cookieconsent.min.js'))
+  .pipe(gulp.dest('./build'));
 });
 
-gulp.task('copy-images', function () {
-  gulp.src('theme-previews/*.png')
-    .pipe(gulp.dest('./build'));
-});
-
-gulp.task('build', ['sass', 'minify', 'copy-images']);
+gulp.task('build', ['sass', 'minify']);
