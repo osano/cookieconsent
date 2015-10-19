@@ -33,7 +33,7 @@
         width:100px;
         height:22px;
         background-size: cover;
-        background-image: url(https://s3-eu-west-1.amazonaws.com/assets.cookieconsent.silktide.com/cookie-consent-logo.png);
+        background-image: $logo;
         opacity:0.9;
         transition: opacity 200ms;
     }
