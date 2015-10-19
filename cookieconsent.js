@@ -21,6 +21,9 @@
 
   // No point going further if they've already dismissed.
   if (document.cookie.indexOf(DISMISSED_COOKIE) > -1) {
+    if (window[OPTIONS_VARIABLE] && window[OPTIONS_VARIABLE]['consentHook']) {
+      window[OPTIONS_VARIABLE]['consentHook']();
+    }
     return;
   }
 
@@ -247,8 +250,12 @@
         '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
         '</div>',
         '</div>'
-      ]
+      ],
+      consentHook: null, // hook function called on dismiss or if already dismissed
+      dismissOnScroll: false, // dismiss when the user scroll down
+      dismissOnScrollRange: 20 // dismiss when the user scroll down after 20 pixels
     },
+    onScrollY: 0,
 
     init: function () {
       var options = window[OPTIONS_VARIABLE];
@@ -261,6 +268,15 @@
         this.loadTheme(this.render);
       } else {
         this.render();
+      }
+
+      // enable dismiss on scroll listener
+      if(this.options.dismissOnScroll) {
+        window.addEventListener('load', function(){
+
+          cookieconsent.onScrollY = window.pageYOffset;
+          window.addEventListener('scroll', cookieconsent.onScroll);
+        });
       }
     },
 
@@ -327,10 +343,22 @@
     },
 
     dismiss: function (evt) {
-      evt.preventDefault && evt.preventDefault();
-      evt.returnValue = false;
+      if(evt) {
+        evt.preventDefault && evt.preventDefault();
+        evt.returnValue = false;
+      }
       this.setDismissedCookie();
       this.container.removeChild(this.element);
+      if(this.options.consentHook) {
+        this.options.consentHook();
+      }
+    },
+
+    onScroll: function (evt) {
+      if (Math.abs(window.pageYOffset - cookieconsent.onScrollY) > cookieconsent.options.dismissOnScrollRange) {
+        cookieconsent.dismiss(null);
+        window.removeEventListener('scroll', cookieconsent.onScroll);
+      }
     },
 
     setDismissedCookie: function () {
