@@ -16,8 +16,10 @@
   // Name of cookie to be set when dismissed
   var DISMISSED_COOKIE = 'cookieconsent_dismissed';
 
-  // The path to built in themes (s3 bucket)
-  var THEME_BUCKET_PATH = '//s3.amazonaws.com/cc.silktide.com/';
+  // The path to built in themes
+  // Note: Directly linking to a version on the CDN like this is horrible, but it's less horrible than people downloading the code
+  // then discovering that their CSS bucket disappeared
+  var THEME_BUCKET_PATH = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/';
 
   // No point going further if they've already dismissed.
   if (document.cookie.indexOf(DISMISSED_COOKIE) > -1 || (window.navigator && window.navigator.CookiesOK)) {
