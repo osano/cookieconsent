@@ -22,7 +22,7 @@
   var THEME_BUCKET_PATH = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/';
 
   // No point going further if they've already dismissed.
-  if (document.cookie.indexOf(DISMISSED_COOKIE) > -1 || (window.navigator && window.navigator.CookiesOK)) {
+  if (localStorage.getItem(DISMISSED_COOKIE) == 'yes' || (window.navigator && window.navigator.CookiesOK)) {
     return;
   }
 
@@ -91,27 +91,6 @@
         if (i === query.length) return head;
       }
       return null;
-    },
-
-    setCookie: function (name, value, expiryDays, domain, path) {
-      expiryDays = expiryDays || 365;
-
-      var exdate = new Date();
-      exdate.setDate(exdate.getDate() + expiryDays);
-
-      var cookie = [
-        name + '=' + value,
-        'expires=' + exdate.toUTCString(),
-        'path=' + path || '/'
-      ];
-
-      if (domain) {
-        cookie.push(
-          'domain=' + domain
-        );
-      }
-
-      document.cookie = cookie.join(';');
     },
 
     addEventListener: function (el, event, eventListener) {
@@ -236,9 +215,6 @@
       target: '_self',
       container: null, // selector
       theme: 'light-floating',
-      domain: null, // default to current domain.
-      path: '/', 
-      expiryDays: 365,
       markup: [
         '<div class="cc_banner-wrapper {{containerClasses}}">',
         '<div class="cc_banner cc_container cc_container--open">',
@@ -336,7 +312,7 @@
     },
 
     setDismissedCookie: function () {
-      Util.setCookie(DISMISSED_COOKIE, 'yes', this.options.expiryDays, this.options.domain, this.options.path);
+      localStorage.setItem(DISMISSED_COOKIE, 'yes');
     }
   };
 
