@@ -251,7 +251,7 @@
         '</div>'
       ],
       dismissOnScroll: false, // dismiss when the user scroll down
-      dismissOnScrollRange: 20
+      dismissOnScrollRange: 50
     },
     
     onScrollY: 0,
@@ -340,10 +340,27 @@
     },
 
     dismiss: function (evt) {
-      evt.preventDefault && evt.preventDefault();
-      evt.returnValue = false;
+      
+      if(evt) {
+        evt.preventDefault && evt.preventDefault();
+        evt.returnValue = false;
+      }
       this.setDismissedCookie();
-      this.container.removeChild(this.element);
+      
+      var op = 1;  // initial opacity
+      var el = this.element;
+      var container = this.container;
+      var timer = setInterval(function () {
+        if (op <= 0.1){
+            clearInterval(timer);
+            el.style.display = 'none';
+            container.removeChild(el);
+        }
+        el.style.opacity = op;
+        el.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+      }, 50);
+
     },
     
     onScroll: function (evt) {
