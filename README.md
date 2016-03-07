@@ -18,6 +18,11 @@ See our [full documentation](http://silktide.com/tools/cookie-consent/docs/).
 
 Feel free to improve the plugin and send us a pull request.  
 
+The easiest way to develop is to host the files with a local webserver. I.e. 
+```
+python -m SimpleHTTPServer
+```
+
 We use gulp to compile scss and minify the javascript. Assuming [nodejs](http://nodejs.org/) is installed, you can run a build with:
 
 ```sh
