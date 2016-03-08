@@ -44,6 +44,12 @@
     }
 }
 
+.cc_fade_out {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 2s, opacity 2s linear;
+}
+
 @media screen and (min-width: $screen-xs-min) {
     .cc_container {
 

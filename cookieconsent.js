@@ -1,3 +1,4 @@
+
 (function () {
   // Stop from running again, if accidently included more than once.
   if (window.hasCookieConsent) return;
@@ -20,6 +21,8 @@
   // Note: Directly linking to a version on the CDN like this is horrible, but it's less horrible than people downloading the code
   // then discovering that their CSS bucket disappeared
   var THEME_BUCKET_PATH = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/';
+
+  var TRANSITION_END = 'webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd';
 
   // No point going further if they've already dismissed.
   if (document.cookie.indexOf(DISMISSED_COOKIE) > -1 || (window.navigator && window.navigator.CookiesOK)) {
@@ -141,11 +144,7 @@
         });
       }
 
-      if (el.addEventListener) {
-        el.addEventListener(event, eventListener);
-      } else {
-        el.attachEvent('on' + event, eventListener);
-      }
+      Util.addEventListener(el, event, eventListener);
     };
 
     /*
@@ -223,7 +222,6 @@
     };
   })();
 
-
   /*
    Plugin
    */
@@ -249,7 +247,9 @@
         '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
         '</div>',
         '</div>'
-      ]
+      ],
+      dismissOnScroll: true, // dismiss when the user scroll down
+      dismissOnScrollRange: 500
     },
 
     init: function () {
@@ -263,6 +263,18 @@
         this.loadTheme(this.render);
       } else {
         this.render();
+      }
+
+      if(this.options.dismissOnScroll) {
+        var onWindowScroll = Util.bind(function (evt) {
+          if (window.pageYOffset > this.options.dismissOnScrollRange) {
+            this.dismiss();
+
+            window.removeEventListener('scroll', onWindowScroll);
+          }
+        }, this);
+
+        window.addEventListener('scroll', onWindowScroll);
       }
     },
 
@@ -329,10 +341,22 @@
     },
 
     dismiss: function (evt) {
-      evt.preventDefault && evt.preventDefault();
-      evt.returnValue = false;
+      var onTransitionEnd = Util.bind(function(e){
+        this.container.removeChild(this.element);
+        this.element.removeEventListener(TRANSITION_END, onTransitionEnd);
+      }, this);
+
+      if (evt) {
+        evt.preventDefault && evt.preventDefault();
+        evt.returnValue = false;
+      }
+
       this.setDismissedCookie();
-      this.container.removeChild(this.element);
+
+      this.element.className += ' cc_fade_out'; // add transition class
+
+      // add event that removes the container on "transitionend"
+      this.element.addEventListener(TRANSITION_END, onTransitionEnd);
     },
 
     setDismissedCookie: function () {
