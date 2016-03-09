@@ -4,6 +4,13 @@
   if (window.hasCookieConsent) return;
   window.hasCookieConsent = true;
 
+  if(!navigator.cookieEnabled) {
+    // TODO let user know cookies are useful?
+
+    // there is no point in warning the user that cookies are used, because cookies are not enabled
+    return;
+  }
+
   /*
    Constants
    */
