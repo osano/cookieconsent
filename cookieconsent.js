@@ -317,6 +317,8 @@
       whitelistCountry: [],
 
       enabled: true,
+
+      dismissOnTimeout: false,
     },
 
     init: function () {
@@ -354,6 +356,13 @@
         }, this);
 
         window.addEventListener('scroll', onWindowScroll);
+      }
+
+      var delay = this.options.dismissOnTimeout;
+      if (typeof delay == 'number') {
+        window.setTimeout(Util.bind(function(){
+          this.dismiss();
+        }, this), Math.floor(delay));
       }
     },
 
@@ -432,10 +441,10 @@
 
       this.setDismissedCookie();
 
-      this.element.className += ' cc_fade_out'; // add transition class
-
       // add event that removes the container on "transitionend"
       this.element.addEventListener(TRANSITION_END, onTransitionEnd);
+
+      this.element.className += ' cc_fade_out'; // add transition class
     },
 
     setDismissedCookie: function () {
