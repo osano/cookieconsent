@@ -29,13 +29,6 @@
     return;
   }
 
-  // IE8...
-  if(typeof String.prototype.trim !== 'function') {
-    String.prototype.trim = function() {
-      return this.replace(/^\s+|\s+$/g, '');
-    };
-  }
-
   /*
    Helper methods
    */
@@ -47,6 +40,10 @@
 
     isObject: function (obj) {
       return Object.prototype.toString.call(obj) == '[object Object]';
+    },
+
+    trim: function (str) {
+      return str.replace(/^\s+|\s+$/g, '');
     },
 
     each: function (arr, callback, /* optional: */context, force) {
@@ -190,7 +187,7 @@
         var tokens = sub.split('||');
         var value, token;
         while (token = tokens.shift()) {
-          token = token.trim();
+          token = Util.trim(token);
 
           // If string
           if (token[0] === '"') return token.slice(1, token.length - 1);
