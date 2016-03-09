@@ -4,7 +4,7 @@
   if (window.hasCookieConsent) return;
   window.hasCookieConsent = true;
 
-  if(!navigator.cookieEnabled) {
+  if (!navigator.cookieEnabled) {
     // TODO let user know cookies are useful?
 
     // there is no point in warning the user that cookies are used, because cookies are not enabled
@@ -53,7 +53,7 @@
       return str.replace(/^\s+|\s+$/g, '');
     },
 
-    each: function (arr, callback, /* optional: */context, force) {
+    each: function (arr, callback, /* optional: */ context, force) {
       if (Util.isObject(arr) && !force) {
         for (var key in arr) {
           if (arr.hasOwnProperty(key)) {
@@ -94,7 +94,7 @@
       var i = 0;
       var head = object;
       query = query.split('.');
-      while ( (queryPart = query[i++]) && head.hasOwnProperty(queryPart) && (head = head[queryPart]) )  {
+      while ((queryPart = query[i++]) && head.hasOwnProperty(queryPart) && (head = head[queryPart])) {
         if (i === query.length) return head;
       }
       return null;
@@ -152,12 +152,12 @@
       s.async = false;
 
       s.onreadystatechange = s.onload = function () {
-          var state = s.readyState;
+        var state = s.readyState;
 
-          if (!callback.done && (!state || /loaded|complete/.test(state))) {
-              callback.done = true;
-              callback();
-          }
+        if (!callback.done && (!state || /loaded|complete/.test(state))) {
+          callback.done = true;
+          callback();
+        }
       };
 
       document.body.appendChild(s);
@@ -200,7 +200,7 @@
           if (token[0] === '"') return token.slice(1, token.length - 1);
 
           // If query matches
-          value =  Util.queryObject(scope, token);
+          value = Util.queryObject(scope, token);
 
           if (value) return value;
         }
@@ -273,7 +273,7 @@
       container: null, // selector
       theme: 'light-floating',
       domain: null, // default to current domain.
-      path: '/', 
+      path: '/',
       expiryDays: 365,
       markup: [
         '<div class="cc_banner-wrapper {{containerClasses}}">',
@@ -294,17 +294,17 @@
       locationServices: [
         {
           script: 'http://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
-          callback: function(done) {
+          callback: function (done) {
             // if everything went okay then `geoip2` WILL be defined
             if (!window.geoip2) {
               done(false, new Error('Unexpected response format'));
               return;
             }
 
-            geoip2.country(function(location) {
+            geoip2.country(function (location) {
               cookieconsent.setLocation(location.country.iso_code, location.continent.code);
               done(true);
-            }, function(error) {
+            }, function (error) {
               console.error(error);
               done(false);
             });
@@ -332,7 +332,7 @@
       }
     },
 
-    initialiseContainer: function() {
+    initialiseContainer: function () {
       if (!this.options.enabled) {
         return;
       }
@@ -346,7 +346,7 @@
         this.render();
       }
 
-      if(this.options.dismissOnScroll) {
+      if (this.options.dismissOnScroll) {
         var onWindowScroll = Util.bind(function (evt) {
           if (window.pageYOffset > this.options.dismissOnScrollRange) {
             this.dismiss();
@@ -360,7 +360,7 @@
 
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number') {
-        window.setTimeout(Util.bind(function(){
+        window.setTimeout(Util.bind(function () {
           this.dismiss();
         }, this), Math.floor(delay));
       }
@@ -429,7 +429,7 @@
     },
 
     dismiss: function (evt) {
-      var onTransitionEnd = Util.bind(function(e){
+      var onTransitionEnd = Util.bind(function (e) {
         this.container.removeChild(this.element);
         this.element.removeEventListener(TRANSITION_END, onTransitionEnd);
       }, this);
@@ -451,19 +451,19 @@
       Util.setCookie(DISMISSED_COOKIE, 'yes', this.options.expiryDays, this.options.domain, this.options.path);
     },
 
-    requestLocation: function(complete) {
+    requestLocation: function (complete) {
       var self = this;
       var service = this.options.locationServices[this.options.currentServiceIndex];
 
       if (service) {
         if (service.script) {
-          Util.getScript(service.script, function() {
+          Util.getScript(service.script, function () {
             self.requestLocationComplete(complete);
           });
         }
 
         if (service.url) {
-          Util.makeAsyncRequest(service.url, function(response, xhr) {
+          Util.makeAsyncRequest(service.url, function (response, xhr) {
             self.requestLocationComplete(complete, response);
           }, service.data);
         }
@@ -472,10 +472,10 @@
       }
     },
 
-    requestLocationComplete: function(complete, response){
+    requestLocationComplete: function (complete, response) {
       var service = this.options.locationServices[this.options.currentServiceIndex];
 
-      service.callback(Util.bind(function(success) {
+      service.callback(Util.bind(function (success) {
         if (success) {
           complete(true);
         } else {
@@ -486,21 +486,21 @@
       }, this), response);
     },
 
-    setLocation: function(countryCode, continentCode) {
+    setLocation: function (countryCode, continentCode) {
       // if only show in europe and the client is not in europe, disable
-      if(this.options.onlyInEurope && continentCode != 'EU') {
+      if (this.options.onlyInEurope && continentCode != 'EU') {
         this.options.enabled = false;
       }
 
       // if our country is blacklisted, disable
       var blacklist = this.options.blacklistCountry;
-      if(blacklist.length && blacklist.indexOf(countryCode) >= 0) {
+      if (blacklist.length && blacklist.indexOf(countryCode) >= 0) {
         this.options.enabled = false;
       }
 
       // if our country is whitelisted, force enable
       var whitelist = this.options.whitelistCountry;
-      if(whitelist.length && whitelist.indexOf(countryCode) >= 0) {
+      if (whitelist.length && whitelist.indexOf(countryCode) >= 0) {
         this.options.enabled = true;
       }
     },
