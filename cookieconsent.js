@@ -319,11 +319,16 @@
       enabled: true,
 
       dismissOnTimeout: false,
+
+      blacklistPage: [],
+      whitelistPage: [],
     },
 
     init: function () {
       var options = window[OPTIONS_VARIABLE];
       if (options) this.setOptions(options);
+
+      this.applyPageFilter();
 
       if (this.options.useLocationServices) {
         this.requestLocation(Util.bind(this.initialiseContainer, this));
@@ -367,8 +372,8 @@
     },
 
     setOptionsOnTheFly: function (options) {
-      this.setOptions(options);
-      this.render();
+      window[OPTIONS_VARIABLE] = options;
+      this.init();
     },
 
     setOptions: function (options) {
@@ -503,6 +508,41 @@
       if (whitelist.length && whitelist.indexOf(countryCode) >= 0) {
         this.options.enabled = true;
       }
+    },
+
+    applyPageFilter: function () {
+      var page = location.pathname;
+
+      var invalidPages = this.options.blacklistPage;
+      if (invalidPages && invalidPages.length) {
+        // if this url matches an entry in `invalidPages`, disable
+        if (this.matchStringArray(page, invalidPages)) {
+          this.options.enabled = false;
+        }
+      }
+
+      var validPages = this.options.whitelistPage;
+      if (validPages && validPages.length) {
+        // if this url matches an entry in `validPages`, enable
+        if (this.matchStringArray(page, validPages)) {
+          this.options.enabled = true;
+        }
+      }
+    },
+
+    // `search` is a string
+    // returns true if any of the items in `array` match `search`
+    // values in `array` can be a string or an instance of RegExp
+    matchStringArray: function (search, array) {
+      for (var i = 0, l = array.length; i < l; ++i) {
+        var str = array[i];
+        // if regex matches or string is equal, return true
+        if ( (str instanceof RegExp && str.test(search)) ||
+            (typeof str == 'string' && str.length && str === search) ) {
+          return true;
+        }
+      }
+      return false;
     },
   };
 
