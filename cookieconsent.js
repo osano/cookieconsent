@@ -121,6 +121,13 @@
       document.cookie = cookie.join(';');
     },
 
+    readCookie: function (name) {
+      var value = '; ' + document.cookie;
+      var parts = value.split('; ' + name + '=');
+      return parts.length != 2 ?
+        undefined : parts.pop().split(";").shift();
+    },
+
     addEventListener: function (el, event, eventListener) {
       if (el.addEventListener) {
         el.addEventListener(event, eventListener);
@@ -444,7 +451,7 @@
         evt.returnValue = false;
       }
 
-      this.setDismissedCookie();
+      this.setDismissedCookie(true);
 
       // add event that removes the container on "transitionend"
       this.element.addEventListener(TRANSITION_END, onTransitionEnd);
@@ -452,8 +459,8 @@
       this.element.className += ' cc_fade_out'; // add transition class
     },
 
-    setDismissedCookie: function () {
-      Util.setCookie(DISMISSED_COOKIE, 'yes', this.options.expiryDays, this.options.domain, this.options.path);
+    setDismissedCookie: function (hasConsented) {
+      Util.setCookie(DISMISSED_COOKIE, hasConsented ? 'yes' : 'no', this.options.expiryDays, this.options.domain, this.options.path);
     },
 
     requestLocation: function (complete) {
@@ -549,7 +556,7 @@
       return false;
     },
 
-    cookieLawApplies: function(){
+    cookieLawApplies: function () {
       if (typeof this.continentCode != 'string' || !this.continentCode.length) {
         // if we don't know the answer, assume true
         return true;
@@ -558,6 +565,11 @@
       // cookie law only applies in europe
       return this.continentCode == 'EU';
     },
+
+    hasConsented: function () {
+      return Util.readCookie(DISMISSED_COOKIE) === 'yes';
+    },
+
   };
 
   var init;
