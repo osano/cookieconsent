@@ -492,6 +492,10 @@
     },
 
     setLocation: function (countryCode, continentCode) {
+      // remember these values for subsequent calls (prevent requiring a second ajax request)
+      this.countryCode = countryCode;
+      this.continentCode = continentCode;
+
       // if only show in europe and the client is not in europe, disable
       if (this.options.onlyInEurope && continentCode != 'EU') {
         this.options.enabled = false;
@@ -543,6 +547,16 @@
         }
       }
       return false;
+    },
+
+    cookieLawApplies: function(){
+      if (typeof this.continentCode != 'string' || !this.continentCode.length) {
+        // if we don't know the answer, assume true
+        return true;
+      }
+
+      // cookie law only applies in europe
+      return this.continentCode == 'EU';
     },
   };
 
