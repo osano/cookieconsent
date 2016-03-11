@@ -4,13 +4,6 @@
   if (window.hasCookieConsent) return;
   window.hasCookieConsent = true;
 
-  if (!navigator.cookieEnabled) {
-    // TODO let user know cookies are useful?
-
-    // there is no point in warning the user that cookies are used, because cookies are not enabled
-    return;
-  }
-
   /*
    Constants
    */
@@ -30,11 +23,6 @@
   var THEME_BUCKET_PATH = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/';
 
   var TRANSITION_END = 'webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd';
-
-  // No point going further if they've already dismissed.
-  if (document.cookie.indexOf(DISMISSED_COOKIE) > -1 || (window.navigator && window.navigator.CookiesOK)) {
-    return;
-  }
 
   /*
    Helper methods
@@ -329,15 +317,45 @@
 
       blacklistPage: [],
       whitelistPage: [],
+
+      onAllowCookies: function () {}, // cookies were accepted for the first time
+      onDenyCookies: function () {}, // cookies were denied for the first time
+
+      onComplete: function (hasConsented) {}, // called on complete with the users preference to using cookies (bool)
     },
 
     init: function () {
       var options = window[OPTIONS_VARIABLE];
       if (options) this.setOptions(options);
 
+      var opts = this.options;
+
+      if (window.navigator && !navigator.cookieEnabled) {
+        opts.onComplete(false); // cannot use cookies
+        return;
+      }
+
+      if ( (window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
+        opts.onComplete(true); // can use cookies
+        return;
+      }
+
+      var currentDismissed = Util.readCookie(DISMISSED_COOKIE);
+      if (currentDismissed == 'yes'){
+        opts.onComplete(true); // can use cookies
+        return;
+      } else if (currentDismissed == 'no'){
+        opts.onComplete(false); // cannot use cookies
+        return;
+      } else if (typeof currentDismissed != 'undefined') {
+        // the dismissed cookie is invalid. delete it
+        this.unsetDismissedCookie();
+      }
+
+      // enable or disable this plugin depending on the page URI and white/black list configuration
       this.applyPageFilter();
 
-      if (this.options.useLocationServices) {
+      if (opts.useLocationServices) {
         this.requestLocation(Util.bind(this.initialiseContainer, this));
       } else {
         this.initialiseContainer();
@@ -457,10 +475,28 @@
       this.element.addEventListener(TRANSITION_END, onTransitionEnd);
 
       this.element.className += ' cc_fade_out'; // add transition class
+
+      // NOTE if for any reason `cc_fade_out` is not set or it doesn't declare a css `transform`,
+      //      then the element WILL NOT be removed (as the `transitionend` event will not be run)
+      // 
+      // TODO detect scenarios where adding this class does not trigger a `transformstart` event
+
     },
 
     setDismissedCookie: function (hasConsented) {
+      var cookieValue = Util.readCookie(DISMISSED_COOKIE);
+      var chosenBefore = cookieValue == 'yes' || cookieValue == 'no';
+
       Util.setCookie(DISMISSED_COOKIE, hasConsented ? 'yes' : 'no', this.options.expiryDays, this.options.domain, this.options.path);
+
+      if (!chosenBefore) {
+        hasConsented ? this.options.onAllowCookies() : this.options.onDenyCookies();
+        this.options.onComplete(hasConsented);
+      }
+    },
+
+    unsetDismissedCookie: function () {
+      Util.setCookie(DISMISSED_COOKIE, '', -1, this.options.domain, this.options.path);
     },
 
     requestLocation: function (complete) {
