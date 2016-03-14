@@ -1,33 +1,32 @@
+(function (cc) {
 
-(function () {
   // Stop from running again, if accidently included more than once.
-  if (window.hasCookieConsent) return;
-  window.hasCookieConsent = true;
+  if (cc.hasInitialised) {
+    return;
+  }
+
+  cc.hasInitialised = true;
 
   /*
    Constants
    */
 
-  // Client variable which may be present containing options to override with
-  var OPTIONS_VARIABLE = 'cookieconsent_options';
-
-  // Change cookie consent options on the fly.
-  var OPTIONS_UPDATER = 'update_cookieconsent_options';
-
   // Name of cookie to be set when dismissed
-  var DISMISSED_COOKIE = 'cookieconsent_dismissed';
+  cc.DISMISSED_COOKIE = 'cookieconsent_dismissed';
 
   // The path to built in themes
-  // Note: Directly linking to a version on the CDN like this is horrible, but it's less horrible than people downloading the code
-  // then discovering that their CSS bucket disappeared
-  var THEME_BUCKET_PATH = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/';
+  // Note: Directly linking to a version on the CDN like this is horrible, but it's less horrible
+  //       than people downloading the code then discovering that their CSS bucket disappeared
+  cc.THEME_BUCKET_PATH = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/';
 
-  var TRANSITION_END = 'webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd';
+  cc.TRANSITION_END = 'webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd';
 
   /*
    Helper methods
    */
-  var Util = {
+
+  cc.util = {
+
     isArray: function (obj) {
       var proto = Object.prototype.toString.call(obj);
       return proto == '[object Array]';
@@ -42,7 +41,7 @@
     },
 
     each: function (arr, callback, /* optional: */ context, force) {
-      if (Util.isObject(arr) && !force) {
+      if (this.isObject(arr) && !force) {
         for (var key in arr) {
           if (arr.hasOwnProperty(key)) {
             callback.call(context, arr[key], key, arr);
@@ -57,13 +56,13 @@
 
     merge: function (obj1, obj2) {
       if (!obj1) return;
-      Util.each(obj2, function (val, key) {
-        if (Util.isObject(val) && Util.isObject(obj1[key])) {
-          Util.merge(obj1[key], val);
+      this.each(obj2, function (val, key) {
+        if (this.isObject(val) && this.isObject(obj1[key])) {
+          this.merge(obj1[key], val);
         } else {
           obj1[key] = val;
         }
-      })
+      }, this);
     },
 
     bind: function (func, context) {
@@ -125,7 +124,7 @@
     },
   };
 
-  var DomBuilder = (function () {
+  cc.dombuilder = (function () {
     /*
      The attribute we store events in.
      */
@@ -137,13 +136,13 @@
      */
     var addEventListener = function (el, event, eventListener) {
       // Add multiple event listeners at once if array is passed.
-      if (Util.isArray(event)) {
-        return Util.each(event, function (ev) {
+      if (cc.util.isArray(event)) {
+        return cc.util.each(event, function (ev) {
           addEventListener(el, ev, eventListener);
         });
       }
 
-      Util.addEventListener(el, event, eventListener);
+      cc.util.addEventListener(el, event, eventListener);
     };
 
     /*
@@ -155,13 +154,13 @@
         var tokens = sub.split('||');
         var value, token;
         while (token = tokens.shift()) {
-          token = Util.trim(token);
+          token = cc.util.trim(token);
 
           // If string
           if (token[0] === '"') return token.slice(1, token.length - 1);
 
           // If query matches
-          value = Util.queryObject(scope, token);
+          value = cc.util.queryObject(scope, token);
 
           if (value) return value;
         }
@@ -181,7 +180,7 @@
 
     var applyToElementsWithAttribute = function (dom, attribute, func) {
       var els = dom.parentNode.querySelectorAll('[' + attribute + ']');
-      Util.each(els, function (element) {
+      cc.util.each(els, function (element) {
         var attributeVal = element.getAttribute(attribute);
         func(element, attributeVal);
       }, window, true);
@@ -193,14 +192,14 @@
     var applyEvents = function (dom, scope) {
       applyToElementsWithAttribute(dom, eventAttribute, function (element, attributeVal) {
         var parts = attributeVal.split(':');
-        var listener = Util.queryObject(scope, parts[1]);
-        addEventListener(element, parts[0], Util.bind(listener, scope));
+        var listener = cc.util.queryObject(scope, parts[1]);
+        addEventListener(element, parts[0], cc.util.bind(listener, scope));
       });
     };
 
     var applyConditionals = function (dom, scope) {
       applyToElementsWithAttribute(dom, conditionAttribute, function (element, attributeVal) {
-        var value = Util.queryObject(scope, attributeVal);
+        var value = cc.util.queryObject(scope, attributeVal);
         if (!value) {
           element.parentNode.removeChild(element);
         }
@@ -209,7 +208,7 @@
 
     return {
       build: function (htmlStr, scope) {
-        if (Util.isArray(htmlStr)) htmlStr = htmlStr.join('');
+        if (cc.util.isArray(htmlStr)) htmlStr = htmlStr.join('');
 
         htmlStr = insertReplacements(htmlStr, scope);
         var dom = buildDom(htmlStr);
@@ -224,8 +223,8 @@
   /*
    Plugin
    */
-  var cookieconsent = {
-    options: {
+
+    cc.options = {
       message: 'This website uses cookies to ensure you get the best experience on our website. ',
       dismiss: 'Got it!',
       learnMore: 'More info',
@@ -265,10 +264,9 @@
       onDenyCookies: function () {}, // cookies were denied for the first time
 
       onComplete: function (hasConsented) {}, // called on complete with the users preference to using cookies (bool)
-    },
+    };
 
-    init: function () {
-      var options = window[OPTIONS_VARIABLE];
+    cc.init = function (options) {
       if (options) this.setOptions(options);
 
       if (window.navigator && !navigator.cookieEnabled) {
@@ -276,16 +274,16 @@
         return;
       }
 
-      if ( (window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
+      if ((window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
         this.options.onComplete(true); // can use cookies
         return;
       }
 
-      var currentDismissed = Util.readCookie(DISMISSED_COOKIE);
-      if (currentDismissed == 'yes'){
+      var currentDismissed = cc.util.readCookie(cc.DISMISSED_COOKIE);
+      if (currentDismissed == 'yes') {
         this.options.onComplete(true); // can use cookies
         return;
-      } else if (currentDismissed == 'no'){
+      } else if (currentDismissed == 'no') {
         this.options.onComplete(false); // cannot use cookies
         return;
       } else if (typeof currentDismissed != 'undefined') {
@@ -297,9 +295,9 @@
       this.applyPageFilter();
 
       this.initialiseContainer();
-    },
+    };
 
-    initialiseContainer: function () {
+    cc.initialiseContainer = function () {
       if (!this.options.enabled) {
         return;
       }
@@ -314,7 +312,7 @@
       }
 
       if (typeof this.options.dismissOnScroll == 'number') {
-        var onWindowScroll = Util.bind(function (evt) {
+        var onWindowScroll = cc.util.bind(function (evt) {
           if (window.pageYOffset > Math.floor(this.options.dismissOnScroll)) {
             this.dismiss();
 
@@ -327,22 +325,22 @@
 
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number') {
-        window.setTimeout(Util.bind(function () {
+        window.setTimeout(cc.util.bind(function () {
           this.dismiss();
         }, this), Math.floor(delay));
       }
-    },
+    }
 
-    setOptionsOnTheFly: function (options) {
+    cc.setOptionsOnTheFly = function (options) {
       window[OPTIONS_VARIABLE] = options;
       this.init();
-    },
+    };
 
-    setOptions: function (options) {
-      Util.merge(this.options, options);
-    },
+    cc.setOptions = function (options) {
+      cc.util.merge(this.options, options);
+    };
 
-    setContainer: function () {
+    cc.setContainer = function () {
       if (this.options.container) {
         this.container = document.querySelector(this.options.container);
       } else {
@@ -354,14 +352,14 @@
       if (navigator.appVersion.indexOf('MSIE 8') > -1) {
         this.containerClasses += ' cc_ie8'
       }
-    },
+    };
 
-    loadTheme: function (callback) {
+    cc.loadTheme = function (callback) {
       var theme = this.options.theme;
 
       // If theme is specified by name
       if (theme.indexOf('.css') === -1) {
-        theme = THEME_BUCKET_PATH + theme + '.css';
+        theme = cc.THEME_BUCKET_PATH + theme + '.css';
       }
 
       var link = document.createElement('link');
@@ -370,7 +368,7 @@
       link.href = theme;
 
       var loaded = false;
-      link.onload = Util.bind(function () {
+      link.onload = cc.util.bind(function () {
         if (!loaded && callback) {
           callback.call(this);
           loaded = true;
@@ -378,27 +376,27 @@
       }, this);
 
       document.getElementsByTagName("head")[0].appendChild(link);
-    },
+    };
 
-    render: function () {
+    cc.render = function () {
       // remove current element (if we've already rendered)
       if (this.element && this.element.parentNode) {
         this.element.parentNode.removeChild(this.element);
         delete this.element;
       }
 
-      this.element = DomBuilder.build(this.options.markup, this);
+      this.element = cc.dombuilder.build(this.options.markup, this);
       if (!this.container.firstChild) {
         this.container.appendChild(this.element);
       } else {
         this.container.insertBefore(this.element, this.container.firstChild);
       }
-    },
+    };
 
-    dismiss: function (evt) {
-      var onTransitionEnd = Util.bind(function (e) {
+    cc.dismiss = function (evt) {
+      var onTransitionEnd = cc.util.bind(function (e) {
         this.container.removeChild(this.element);
-        this.element.removeEventListener(TRANSITION_END, onTransitionEnd);
+        this.element.removeEventListener(cc.TRANSITION_END, onTransitionEnd);
       }, this);
 
       if (evt) {
@@ -409,7 +407,7 @@
       this.setDismissedCookie(true);
 
       // add event that removes the container on "transitionend"
-      this.element.addEventListener(TRANSITION_END, onTransitionEnd);
+      this.element.addEventListener(cc.TRANSITION_END, onTransitionEnd);
 
       this.element.className += ' cc_fade_out'; // add transition class
 
@@ -417,26 +415,25 @@
       //      then the element WILL NOT be removed (as the `transitionend` event will not be run)
       // 
       // TODO detect scenarios where adding this class does not trigger a `transformstart` event
+    };
 
-    },
-
-    setDismissedCookie: function (hasConsented) {
-      var cookieValue = Util.readCookie(DISMISSED_COOKIE);
+    cc.setDismissedCookie = function (hasConsented) {
+      var cookieValue = cc.util.readCookie(cc.DISMISSED_COOKIE);
       var chosenBefore = cookieValue == 'yes' || cookieValue == 'no';
 
-      Util.setCookie(DISMISSED_COOKIE, hasConsented ? 'yes' : 'no', this.options.expiryDays, this.options.domain, this.options.path);
+      cc.util.setCookie(cc.DISMISSED_COOKIE, hasConsented ? 'yes' : 'no', this.options.expiryDays, this.options.domain, this.options.path);
 
       if (!chosenBefore) {
         hasConsented ? this.options.onAllowCookies() : this.options.onDenyCookies();
         this.options.onComplete(hasConsented);
       }
-    },
+    };
 
-    unsetDismissedCookie: function () {
-      Util.setCookie(DISMISSED_COOKIE, '', -1, this.options.domain, this.options.path);
-    },
+    cc.unsetDismissedCookie = function () {
+      cc.util.setCookie(cc.DISMISSED_COOKIE, '', -1, this.options.domain, this.options.path);
+    };
 
-    setLocation: function (countryCode, continentCode) {
+    cc.setLocation = function (countryCode, continentCode) {
       // remember these values for subsequent calls (prevent requiring a second ajax request)
       this.countryCode = countryCode;
       this.continentCode = continentCode;
@@ -457,9 +454,9 @@
       if (whitelist.length && whitelist.indexOf(countryCode) >= 0) {
         this.options.enabled = true;
       }
-    },
+    };
 
-    applyPageFilter: function () {
+    cc.applyPageFilter = function () {
       var page = location.pathname;
 
       var invalidPages = this.options.blacklistPage;
@@ -477,24 +474,24 @@
           this.options.enabled = true;
         }
       }
-    },
+    };
 
     // `search` is a string
     // returns true if any of the items in `array` match `search`
     // values in `array` can be a string or an instance of RegExp
-    matchStringArray: function (search, array) {
+    cc.matchStringArray = function (search, array) {
       for (var i = 0, l = array.length; i < l; ++i) {
         var str = array[i];
         // if regex matches or string is equal, return true
-        if ( (str instanceof RegExp && str.test(search)) ||
-            (typeof str == 'string' && str.length && str === search) ) {
+        if ((str instanceof RegExp && str.test(search)) ||
+          (typeof str == 'string' && str.length && str === search)) {
           return true;
         }
       }
       return false;
-    },
+    };
 
-    cookieLawApplies: function () {
+    cc.cookieLawApplies = function () {
       if (typeof this.continentCode != 'string' || !this.continentCode.length) {
         // if we don't know the answer, assume true
         return true;
@@ -502,24 +499,12 @@
 
       // cookie law only applies in europe
       return this.continentCode == 'EU';
-    },
+    };
 
-    hasConsented: function () {
-      return Util.readCookie(DISMISSED_COOKIE) === 'yes';
-    },
+    cc.hasConsented = function () {
+      return cc.util.readCookie(cc.DISMISSED_COOKIE) === 'yes';
+    };
 
-  };
+  window.cookieconsent = cc;
 
-  var init;
-  var initialized = false;
-  (init = function () {
-    if (!initialized && document.readyState == 'complete') {
-      cookieconsent.init();
-      initialized = true;
-      window[OPTIONS_UPDATER] = Util.bind(cookieconsent.setOptionsOnTheFly, cookieconsent);
-    }
-  })();
-
-  Util.addEventListener(document, 'readystatechange', init);
-
-})();
+}(window.cookieconsent || {}));
