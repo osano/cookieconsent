@@ -218,6 +218,94 @@
 
   /* Plugin */
 
+  function setContainer () {
+    if (this.options.container) {
+      this.container = document.querySelector(this.options.container);
+    } else {
+      this.container = document.body;
+    }
+
+    // Add class to container classes so we can specify css for IE8 only.
+    this.containerClasses = '';
+    if (navigator.appVersion.indexOf('MSIE 8') > -1) {
+      this.containerClasses += ' cc_ie8'
+    }
+  }
+
+  function loadTheme (callback) {
+    var theme = this.options.theme;
+
+    // If theme is specified by name
+    if (theme.indexOf('.css') === -1) {
+      theme = cc.THEME_BUCKET_PATH + theme + '.css';
+    }
+
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = theme;
+
+    var loaded = false;
+    link.onload = cc.util.bind(function () {
+      if (!loaded && callback) {
+        callback.call(this);
+        loaded = true;
+      }
+    }, this);
+
+    document.getElementsByTagName("head")[0].appendChild(link);
+  }
+
+  function render() {
+    // remove current element (if we've already rendered)
+    if (this.element && this.element.parentNode) {
+      this.element.parentNode.removeChild(this.element);
+      delete this.element;
+    }
+
+    this.element = cc.dombuilder.build(this.options.markup, this);
+    if (!this.container.firstChild) {
+      this.container.appendChild(this.element);
+    } else {
+      this.container.insertBefore(this.element, this.container.firstChild);
+    }
+  }
+
+  function applyPageFilter () {
+    var page = location.pathname;
+
+    var invalidPages = this.options.blacklistPage;
+    if (invalidPages && invalidPages.length) {
+      // if this url matches an entry in `invalidPages`, disable
+      if (matchStringArray.call(this, page, invalidPages)) {
+        this.options.enabled = false;
+      }
+    }
+
+    var validPages = this.options.whitelistPage;
+    if (validPages && validPages.length) {
+      // if this url matches an entry in `validPages`, enable
+      if (matchStringArray.call(this, page, validPages)) {
+        this.options.enabled = true;
+      }
+    }
+  }
+
+  // `search` is a string
+  // returns true if any of the items in `array` match `search`
+  // values in `array` can be a string or an instance of RegExp
+  function matchStringArray (search, array) {
+    for (var i = 0, l = array.length; i < l; ++i) {
+      var str = array[i];
+      // if regex matches or string is equal, return true
+      if ((str instanceof RegExp && str.test(search)) ||
+        (typeof str == 'string' && str.length && str === search)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   cc.options = {
     message: 'This website uses cookies to ensure you get the best experience on our website. ',
     dismiss: 'Got it!',
@@ -286,19 +374,19 @@
     }
 
     // enable or disable this plugin depending on the page URI and white/black list configuration
-    this.applyPageFilter();
+    applyPageFilter.call(this);
 
     if (!this.options.enabled) {
       return;
     }
 
-    this.setContainer();
+    setContainer.call(this);
 
     // Calls render when theme is loaded.
     if (this.options.theme) {
-      this.loadTheme(this.render);
+      loadTheme.call(this, render);
     } else {
-      this.render();
+      render.call(this);
     }
 
     if (typeof this.options.dismissOnScroll == 'number') {
@@ -323,59 +411,6 @@
 
   cc.setOptions = function (options) {
     cc.util.merge(this.options, options);
-  };
-
-  cc.setContainer = function () {
-    if (this.options.container) {
-      this.container = document.querySelector(this.options.container);
-    } else {
-      this.container = document.body;
-    }
-
-    // Add class to container classes so we can specify css for IE8 only.
-    this.containerClasses = '';
-    if (navigator.appVersion.indexOf('MSIE 8') > -1) {
-      this.containerClasses += ' cc_ie8'
-    }
-  };
-
-  cc.loadTheme = function (callback) {
-    var theme = this.options.theme;
-
-    // If theme is specified by name
-    if (theme.indexOf('.css') === -1) {
-      theme = cc.THEME_BUCKET_PATH + theme + '.css';
-    }
-
-    var link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.type = 'text/css';
-    link.href = theme;
-
-    var loaded = false;
-    link.onload = cc.util.bind(function () {
-      if (!loaded && callback) {
-        callback.call(this);
-        loaded = true;
-      }
-    }, this);
-
-    document.getElementsByTagName("head")[0].appendChild(link);
-  };
-
-  cc.render = function () {
-    // remove current element (if we've already rendered)
-    if (this.element && this.element.parentNode) {
-      this.element.parentNode.removeChild(this.element);
-      delete this.element;
-    }
-
-    this.element = cc.dombuilder.build(this.options.markup, this);
-    if (!this.container.firstChild) {
-      this.container.appendChild(this.element);
-    } else {
-      this.container.insertBefore(this.element, this.container.firstChild);
-    }
   };
 
   cc.dismiss = function (evt) {
@@ -439,41 +474,6 @@
     if (whitelist.length && whitelist.indexOf(countryCode) >= 0) {
       this.options.enabled = true;
     }
-  };
-
-  cc.applyPageFilter = function () {
-    var page = location.pathname;
-
-    var invalidPages = this.options.blacklistPage;
-    if (invalidPages && invalidPages.length) {
-      // if this url matches an entry in `invalidPages`, disable
-      if (this.matchStringArray(page, invalidPages)) {
-        this.options.enabled = false;
-      }
-    }
-
-    var validPages = this.options.whitelistPage;
-    if (validPages && validPages.length) {
-      // if this url matches an entry in `validPages`, enable
-      if (this.matchStringArray(page, validPages)) {
-        this.options.enabled = true;
-      }
-    }
-  };
-
-  // `search` is a string
-  // returns true if any of the items in `array` match `search`
-  // values in `array` can be a string or an instance of RegExp
-  cc.matchStringArray = function (search, array) {
-    for (var i = 0, l = array.length; i < l; ++i) {
-      var str = array[i];
-      // if regex matches or string is equal, return true
-      if ((str instanceof RegExp && str.test(search)) ||
-        (typeof str == 'string' && str.length && str === search)) {
-        return true;
-      }
-    }
-    return false;
   };
 
   cc.cookieLawApplies = function () {
