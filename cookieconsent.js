@@ -283,7 +283,6 @@
       ],
 
       dismissOnScroll: false, // dismiss when the user scroll down
-      dismissOnScrollRange: 500,
 
       useLocationServices: false,
       locationServices: [
@@ -307,6 +306,7 @@
         },
       ],
       currentServiceIndex: 0,
+
       onlyInEurope: false,
       blacklistCountry: [],
       whitelistCountry: [],
@@ -328,24 +328,22 @@
       var options = window[OPTIONS_VARIABLE];
       if (options) this.setOptions(options);
 
-      var opts = this.options;
-
       if (window.navigator && !navigator.cookieEnabled) {
-        opts.onComplete(false); // cannot use cookies
+        this.options.onComplete(false); // cannot use cookies
         return;
       }
 
       if ( (window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
-        opts.onComplete(true); // can use cookies
+        this.options.onComplete(true); // can use cookies
         return;
       }
 
       var currentDismissed = Util.readCookie(DISMISSED_COOKIE);
       if (currentDismissed == 'yes'){
-        opts.onComplete(true); // can use cookies
+        this.options.onComplete(true); // can use cookies
         return;
       } else if (currentDismissed == 'no'){
-        opts.onComplete(false); // cannot use cookies
+        this.options.onComplete(false); // cannot use cookies
         return;
       } else if (typeof currentDismissed != 'undefined') {
         // the dismissed cookie is invalid. delete it
@@ -355,7 +353,7 @@
       // enable or disable this plugin depending on the page URI and white/black list configuration
       this.applyPageFilter();
 
-      if (opts.useLocationServices) {
+      if (this.options.useLocationServices) {
         this.requestLocation(Util.bind(this.initialiseContainer, this));
       } else {
         this.initialiseContainer();
@@ -376,9 +374,9 @@
         this.render();
       }
 
-      if (this.options.dismissOnScroll) {
+      if (typeof this.options.dismissOnScroll == 'number') {
         var onWindowScroll = Util.bind(function (evt) {
-          if (window.pageYOffset > this.options.dismissOnScrollRange) {
+          if (window.pageYOffset > Math.floor(this.options.dismissOnScroll)) {
             this.dismiss();
 
             window.removeEventListener('scroll', onWindowScroll);
