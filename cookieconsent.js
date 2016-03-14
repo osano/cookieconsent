@@ -7,9 +7,7 @@
 
   cc.hasInitialised = true;
 
-  /*
-   Constants
-   */
+  /* Constants */
 
   // Name of cookie to be set when dismissed
   cc.DISMISSED_COOKIE = 'cookieconsent_dismissed';
@@ -21,9 +19,7 @@
 
   cc.TRANSITION_END = 'webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd';
 
-  /*
-   Helper methods
-   */
+  /* Helper methods */
 
   cc.util = {
 
@@ -220,290 +216,288 @@
     };
   })();
 
-  /*
-   Plugin
-   */
+  /* Plugin */
 
-    cc.options = {
-      message: 'This website uses cookies to ensure you get the best experience on our website. ',
-      dismiss: 'Got it!',
-      learnMore: 'More info',
-      link: null,
-      target: '_self',
-      container: null, // selector
-      theme: 'light-floating',
-      domain: null, // default to current domain.
-      path: '/',
-      expiryDays: 365,
-      markup: [
-        '<div class="cc_banner-wrapper {{containerClasses}}">',
-        '<div class="cc_banner cc_container cc_container--open">',
-        '<a href="#null" data-cc-event="click:dismiss" target="_blank" class="cc_btn cc_btn_accept_all">{{options.dismiss}}</a>',
+  cc.options = {
+    message: 'This website uses cookies to ensure you get the best experience on our website. ',
+    dismiss: 'Got it!',
+    learnMore: 'More info',
+    link: null,
+    target: '_self',
+    container: null, // selector
+    theme: 'light-floating',
+    domain: null, // default to current domain.
+    path: '/',
+    expiryDays: 365,
+    markup: [
+      '<div class="cc_banner-wrapper {{containerClasses}}">',
+      '<div class="cc_banner cc_container cc_container--open">',
+      '<a href="#null" data-cc-event="click:dismiss" target="_blank" class="cc_btn cc_btn_accept_all">{{options.dismiss}}</a>',
 
-        '<p class="cc_message">{{options.message}} <a data-cc-if="options.link" target="{{ options.target }}" class="cc_more_info" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
+      '<p class="cc_message">{{options.message}} <a data-cc-if="options.link" target="{{ options.target }}" class="cc_more_info" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
 
-        '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
-        '</div>',
-        '</div>'
-      ],
+      '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
+      '</div>',
+      '</div>'
+    ],
 
-      dismissOnScroll: false, // dismiss when the user scroll down
+    dismissOnScroll: false, // dismiss when the user scroll down
 
-      onlyInEurope: false,
-      blacklistCountry: [],
-      whitelistCountry: [],
+    onlyInEurope: false,
+    blacklistCountry: [],
+    whitelistCountry: [],
 
-      enabled: true,
+    enabled: true,
 
-      dismissOnTimeout: false,
+    dismissOnTimeout: false,
 
-      blacklistPage: [],
-      whitelistPage: [],
+    blacklistPage: [],
+    whitelistPage: [],
 
-      onAllowCookies: function () {}, // cookies were accepted for the first time
-      onDenyCookies: function () {}, // cookies were denied for the first time
+    onAllowCookies: function () {}, // cookies were accepted for the first time
+    onDenyCookies: function () {}, // cookies were denied for the first time
 
-      onComplete: function (hasConsented) {}, // called on complete with the users preference to using cookies (bool)
-    };
+    onComplete: function (hasConsented) {}, // called on complete with the users preference to using cookies (bool)
+  };
 
-    cc.init = function (options) {
-      if (options) this.setOptions(options);
+  cc.init = function (options) {
+    if (options) this.setOptions(options);
 
-      if (window.navigator && !navigator.cookieEnabled) {
-        this.options.onComplete(false); // cannot use cookies
-        return;
-      }
+    if (window.navigator && !navigator.cookieEnabled) {
+      this.options.onComplete(false); // cannot use cookies
+      return;
+    }
 
-      if ((window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
-        this.options.onComplete(true); // can use cookies
-        return;
-      }
+    if ((window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
+      this.options.onComplete(true); // can use cookies
+      return;
+    }
 
-      var currentDismissed = cc.util.readCookie(cc.DISMISSED_COOKIE);
-      if (currentDismissed == 'yes') {
-        this.options.onComplete(true); // can use cookies
-        return;
-      } else if (currentDismissed == 'no') {
-        this.options.onComplete(false); // cannot use cookies
-        return;
-      } else if (typeof currentDismissed != 'undefined') {
-        // the dismissed cookie is invalid. delete it
-        this.unsetDismissedCookie();
-      }
+    var currentDismissed = cc.util.readCookie(cc.DISMISSED_COOKIE);
+    if (currentDismissed == 'yes') {
+      this.options.onComplete(true); // can use cookies
+      return;
+    } else if (currentDismissed == 'no') {
+      this.options.onComplete(false); // cannot use cookies
+      return;
+    } else if (typeof currentDismissed != 'undefined') {
+      // the dismissed cookie is invalid. delete it
+      this.unsetDismissedCookie();
+    }
 
-      // enable or disable this plugin depending on the page URI and white/black list configuration
-      this.applyPageFilter();
+    // enable or disable this plugin depending on the page URI and white/black list configuration
+    this.applyPageFilter();
 
-      this.initialiseContainer();
-    };
+    this.initialiseContainer();
+  };
 
-    cc.initialiseContainer = function () {
-      if (!this.options.enabled) {
-        return;
-      }
+  cc.initialiseContainer = function () {
+    if (!this.options.enabled) {
+      return;
+    }
 
-      this.setContainer();
+    this.setContainer();
 
-      // Calls render when theme is loaded.
-      if (this.options.theme) {
-        this.loadTheme(this.render);
-      } else {
-        this.render();
-      }
+    // Calls render when theme is loaded.
+    if (this.options.theme) {
+      this.loadTheme(this.render);
+    } else {
+      this.render();
+    }
 
-      if (typeof this.options.dismissOnScroll == 'number') {
-        var onWindowScroll = cc.util.bind(function (evt) {
-          if (window.pageYOffset > Math.floor(this.options.dismissOnScroll)) {
-            this.dismiss();
-
-            window.removeEventListener('scroll', onWindowScroll);
-          }
-        }, this);
-
-        window.addEventListener('scroll', onWindowScroll);
-      }
-
-      var delay = this.options.dismissOnTimeout;
-      if (typeof delay == 'number') {
-        window.setTimeout(cc.util.bind(function () {
+    if (typeof this.options.dismissOnScroll == 'number') {
+      var onWindowScroll = cc.util.bind(function (evt) {
+        if (window.pageYOffset > Math.floor(this.options.dismissOnScroll)) {
           this.dismiss();
-        }, this), Math.floor(delay));
+
+          window.removeEventListener('scroll', onWindowScroll);
+        }
+      }, this);
+
+      window.addEventListener('scroll', onWindowScroll);
+    }
+
+    var delay = this.options.dismissOnTimeout;
+    if (typeof delay == 'number') {
+      window.setTimeout(cc.util.bind(function () {
+        this.dismiss();
+      }, this), Math.floor(delay));
+    }
+  }
+
+  cc.setOptionsOnTheFly = function (options) {
+    window[OPTIONS_VARIABLE] = options;
+    this.init();
+  };
+
+  cc.setOptions = function (options) {
+    cc.util.merge(this.options, options);
+  };
+
+  cc.setContainer = function () {
+    if (this.options.container) {
+      this.container = document.querySelector(this.options.container);
+    } else {
+      this.container = document.body;
+    }
+
+    // Add class to container classes so we can specify css for IE8 only.
+    this.containerClasses = '';
+    if (navigator.appVersion.indexOf('MSIE 8') > -1) {
+      this.containerClasses += ' cc_ie8'
+    }
+  };
+
+  cc.loadTheme = function (callback) {
+    var theme = this.options.theme;
+
+    // If theme is specified by name
+    if (theme.indexOf('.css') === -1) {
+      theme = cc.THEME_BUCKET_PATH + theme + '.css';
+    }
+
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = theme;
+
+    var loaded = false;
+    link.onload = cc.util.bind(function () {
+      if (!loaded && callback) {
+        callback.call(this);
+        loaded = true;
+      }
+    }, this);
+
+    document.getElementsByTagName("head")[0].appendChild(link);
+  };
+
+  cc.render = function () {
+    // remove current element (if we've already rendered)
+    if (this.element && this.element.parentNode) {
+      this.element.parentNode.removeChild(this.element);
+      delete this.element;
+    }
+
+    this.element = cc.dombuilder.build(this.options.markup, this);
+    if (!this.container.firstChild) {
+      this.container.appendChild(this.element);
+    } else {
+      this.container.insertBefore(this.element, this.container.firstChild);
+    }
+  };
+
+  cc.dismiss = function (evt) {
+    var onTransitionEnd = cc.util.bind(function (e) {
+      this.container.removeChild(this.element);
+      this.element.removeEventListener(cc.TRANSITION_END, onTransitionEnd);
+    }, this);
+
+    if (evt) {
+      evt.preventDefault && evt.preventDefault();
+      evt.returnValue = false;
+    }
+
+    this.setDismissedCookie(true);
+
+    // add event that removes the container on "transitionend"
+    this.element.addEventListener(cc.TRANSITION_END, onTransitionEnd);
+
+    this.element.className += ' cc_fade_out'; // add transition class
+
+    // NOTE if for any reason `cc_fade_out` is not set or it doesn't declare a css `transform`,
+    //      then the element WILL NOT be removed (as the `transitionend` event will not be run)
+    // 
+    // TODO detect scenarios where adding this class does not trigger a `transformstart` event
+  };
+
+  cc.setDismissedCookie = function (hasConsented) {
+    var cookieValue = cc.util.readCookie(cc.DISMISSED_COOKIE);
+    var chosenBefore = cookieValue == 'yes' || cookieValue == 'no';
+
+    cc.util.setCookie(cc.DISMISSED_COOKIE, hasConsented ? 'yes' : 'no', this.options.expiryDays, this.options.domain, this.options.path);
+
+    if (!chosenBefore) {
+      hasConsented ? this.options.onAllowCookies() : this.options.onDenyCookies();
+      this.options.onComplete(hasConsented);
+    }
+  };
+
+  cc.unsetDismissedCookie = function () {
+    cc.util.setCookie(cc.DISMISSED_COOKIE, '', -1, this.options.domain, this.options.path);
+  };
+
+  cc.setLocation = function (countryCode, continentCode) {
+    // remember these values for subsequent calls (prevent requiring a second ajax request)
+    this.countryCode = countryCode;
+    this.continentCode = continentCode;
+
+    // if only show in europe and the client is not in europe, disable
+    if (this.options.onlyInEurope && continentCode != 'EU') {
+      this.options.enabled = false;
+    }
+
+    // if our country is blacklisted, disable
+    var blacklist = this.options.blacklistCountry;
+    if (blacklist.length && blacklist.indexOf(countryCode) >= 0) {
+      this.options.enabled = false;
+    }
+
+    // if our country is whitelisted, force enable
+    var whitelist = this.options.whitelistCountry;
+    if (whitelist.length && whitelist.indexOf(countryCode) >= 0) {
+      this.options.enabled = true;
+    }
+  };
+
+  cc.applyPageFilter = function () {
+    var page = location.pathname;
+
+    var invalidPages = this.options.blacklistPage;
+    if (invalidPages && invalidPages.length) {
+      // if this url matches an entry in `invalidPages`, disable
+      if (this.matchStringArray(page, invalidPages)) {
+        this.options.enabled = false;
       }
     }
 
-    cc.setOptionsOnTheFly = function (options) {
-      window[OPTIONS_VARIABLE] = options;
-      this.init();
-    };
-
-    cc.setOptions = function (options) {
-      cc.util.merge(this.options, options);
-    };
-
-    cc.setContainer = function () {
-      if (this.options.container) {
-        this.container = document.querySelector(this.options.container);
-      } else {
-        this.container = document.body;
-      }
-
-      // Add class to container classes so we can specify css for IE8 only.
-      this.containerClasses = '';
-      if (navigator.appVersion.indexOf('MSIE 8') > -1) {
-        this.containerClasses += ' cc_ie8'
-      }
-    };
-
-    cc.loadTheme = function (callback) {
-      var theme = this.options.theme;
-
-      // If theme is specified by name
-      if (theme.indexOf('.css') === -1) {
-        theme = cc.THEME_BUCKET_PATH + theme + '.css';
-      }
-
-      var link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.type = 'text/css';
-      link.href = theme;
-
-      var loaded = false;
-      link.onload = cc.util.bind(function () {
-        if (!loaded && callback) {
-          callback.call(this);
-          loaded = true;
-        }
-      }, this);
-
-      document.getElementsByTagName("head")[0].appendChild(link);
-    };
-
-    cc.render = function () {
-      // remove current element (if we've already rendered)
-      if (this.element && this.element.parentNode) {
-        this.element.parentNode.removeChild(this.element);
-        delete this.element;
-      }
-
-      this.element = cc.dombuilder.build(this.options.markup, this);
-      if (!this.container.firstChild) {
-        this.container.appendChild(this.element);
-      } else {
-        this.container.insertBefore(this.element, this.container.firstChild);
-      }
-    };
-
-    cc.dismiss = function (evt) {
-      var onTransitionEnd = cc.util.bind(function (e) {
-        this.container.removeChild(this.element);
-        this.element.removeEventListener(cc.TRANSITION_END, onTransitionEnd);
-      }, this);
-
-      if (evt) {
-        evt.preventDefault && evt.preventDefault();
-        evt.returnValue = false;
-      }
-
-      this.setDismissedCookie(true);
-
-      // add event that removes the container on "transitionend"
-      this.element.addEventListener(cc.TRANSITION_END, onTransitionEnd);
-
-      this.element.className += ' cc_fade_out'; // add transition class
-
-      // NOTE if for any reason `cc_fade_out` is not set or it doesn't declare a css `transform`,
-      //      then the element WILL NOT be removed (as the `transitionend` event will not be run)
-      // 
-      // TODO detect scenarios where adding this class does not trigger a `transformstart` event
-    };
-
-    cc.setDismissedCookie = function (hasConsented) {
-      var cookieValue = cc.util.readCookie(cc.DISMISSED_COOKIE);
-      var chosenBefore = cookieValue == 'yes' || cookieValue == 'no';
-
-      cc.util.setCookie(cc.DISMISSED_COOKIE, hasConsented ? 'yes' : 'no', this.options.expiryDays, this.options.domain, this.options.path);
-
-      if (!chosenBefore) {
-        hasConsented ? this.options.onAllowCookies() : this.options.onDenyCookies();
-        this.options.onComplete(hasConsented);
-      }
-    };
-
-    cc.unsetDismissedCookie = function () {
-      cc.util.setCookie(cc.DISMISSED_COOKIE, '', -1, this.options.domain, this.options.path);
-    };
-
-    cc.setLocation = function (countryCode, continentCode) {
-      // remember these values for subsequent calls (prevent requiring a second ajax request)
-      this.countryCode = countryCode;
-      this.continentCode = continentCode;
-
-      // if only show in europe and the client is not in europe, disable
-      if (this.options.onlyInEurope && continentCode != 'EU') {
-        this.options.enabled = false;
-      }
-
-      // if our country is blacklisted, disable
-      var blacklist = this.options.blacklistCountry;
-      if (blacklist.length && blacklist.indexOf(countryCode) >= 0) {
-        this.options.enabled = false;
-      }
-
-      // if our country is whitelisted, force enable
-      var whitelist = this.options.whitelistCountry;
-      if (whitelist.length && whitelist.indexOf(countryCode) >= 0) {
+    var validPages = this.options.whitelistPage;
+    if (validPages && validPages.length) {
+      // if this url matches an entry in `validPages`, enable
+      if (this.matchStringArray(page, validPages)) {
         this.options.enabled = true;
       }
-    };
+    }
+  };
 
-    cc.applyPageFilter = function () {
-      var page = location.pathname;
-
-      var invalidPages = this.options.blacklistPage;
-      if (invalidPages && invalidPages.length) {
-        // if this url matches an entry in `invalidPages`, disable
-        if (this.matchStringArray(page, invalidPages)) {
-          this.options.enabled = false;
-        }
-      }
-
-      var validPages = this.options.whitelistPage;
-      if (validPages && validPages.length) {
-        // if this url matches an entry in `validPages`, enable
-        if (this.matchStringArray(page, validPages)) {
-          this.options.enabled = true;
-        }
-      }
-    };
-
-    // `search` is a string
-    // returns true if any of the items in `array` match `search`
-    // values in `array` can be a string or an instance of RegExp
-    cc.matchStringArray = function (search, array) {
-      for (var i = 0, l = array.length; i < l; ++i) {
-        var str = array[i];
-        // if regex matches or string is equal, return true
-        if ((str instanceof RegExp && str.test(search)) ||
-          (typeof str == 'string' && str.length && str === search)) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    cc.cookieLawApplies = function () {
-      if (typeof this.continentCode != 'string' || !this.continentCode.length) {
-        // if we don't know the answer, assume true
+  // `search` is a string
+  // returns true if any of the items in `array` match `search`
+  // values in `array` can be a string or an instance of RegExp
+  cc.matchStringArray = function (search, array) {
+    for (var i = 0, l = array.length; i < l; ++i) {
+      var str = array[i];
+      // if regex matches or string is equal, return true
+      if ((str instanceof RegExp && str.test(search)) ||
+        (typeof str == 'string' && str.length && str === search)) {
         return true;
       }
+    }
+    return false;
+  };
 
-      // cookie law only applies in europe
-      return this.continentCode == 'EU';
-    };
+  cc.cookieLawApplies = function () {
+    if (typeof this.continentCode != 'string' || !this.continentCode.length) {
+      // if we don't know the answer, assume true
+      return true;
+    }
 
-    cc.hasConsented = function () {
-      return cc.util.readCookie(cc.DISMISSED_COOKIE) === 'yes';
-    };
+    // cookie law only applies in europe
+    return this.continentCode == 'EU';
+  };
+
+  cc.hasConsented = function () {
+    return cc.util.readCookie(cc.DISMISSED_COOKIE) === 'yes';
+  };
 
   window.cookieconsent = cc;
 
