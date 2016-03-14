@@ -288,10 +288,6 @@
     // enable or disable this plugin depending on the page URI and white/black list configuration
     this.applyPageFilter();
 
-    this.initialiseContainer();
-  };
-
-  cc.initialiseContainer = function () {
     if (!this.options.enabled) {
       return;
     }
@@ -323,11 +319,6 @@
         this.dismiss();
       }, this), Math.floor(delay));
     }
-  }
-
-  cc.setOptionsOnTheFly = function (options) {
-    window[OPTIONS_VARIABLE] = options;
-    this.init();
   };
 
   cc.setOptions = function (options) {
