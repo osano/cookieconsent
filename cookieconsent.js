@@ -123,40 +123,6 @@
         el.attachEvent('on' + event, eventListener);
       }
     },
-
-    makeAsyncRequest: function (url, callback, data) {
-      var xhr = new(window.XMLHttpRequest || window.ActiveXObject)('MSXML2.XMLHTTP.3.0');
-
-      xhr.open(data ? 'POST' : 'GET', url, 1);
-
-      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-
-      xhr.onreadystatechange = function () {
-        xhr.readyState > 3 && callback && callback(xhr.responseText, xhr);
-      };
-
-      xhr.send(data);
-    },
-
-    getScript: function (src, callback) {
-      var s = document.createElement('script');
-
-      s.type = 'text/' + (src.type || 'javascript');
-      s.src = src.src || src;
-      s.async = false;
-
-      s.onreadystatechange = s.onload = function () {
-        var state = s.readyState;
-
-        if (!callback.done && (!state || /loaded|complete/.test(state))) {
-          callback.done = true;
-          callback();
-        }
-      };
-
-      document.body.appendChild(s);
-    },
   };
 
   var DomBuilder = (function () {
@@ -284,29 +250,6 @@
 
       dismissOnScroll: false, // dismiss when the user scroll down
 
-      useLocationServices: false,
-      locationServices: [
-        {
-          script: 'http://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
-          callback: function (done) {
-            // if everything went okay then `geoip2` WILL be defined
-            if (!window.geoip2) {
-              done(false, new Error('Unexpected response format'));
-              return;
-            }
-
-            geoip2.country(function (location) {
-              cookieconsent.setLocation(location.country.iso_code, location.continent.code);
-              done(true);
-            }, function (error) {
-              console.error(error);
-              done(false);
-            });
-          },
-        },
-      ],
-      currentServiceIndex: 0,
-
       onlyInEurope: false,
       blacklistCountry: [],
       whitelistCountry: [],
@@ -353,11 +296,7 @@
       // enable or disable this plugin depending on the page URI and white/black list configuration
       this.applyPageFilter();
 
-      if (this.options.useLocationServices) {
-        this.requestLocation(Util.bind(this.initialiseContainer, this));
-      } else {
-        this.initialiseContainer();
-      }
+      this.initialiseContainer();
     },
 
     initialiseContainer: function () {
@@ -495,41 +434,6 @@
 
     unsetDismissedCookie: function () {
       Util.setCookie(DISMISSED_COOKIE, '', -1, this.options.domain, this.options.path);
-    },
-
-    requestLocation: function (complete) {
-      var self = this;
-      var service = this.options.locationServices[this.options.currentServiceIndex];
-
-      if (service) {
-        if (service.script) {
-          Util.getScript(service.script, function () {
-            self.requestLocationComplete(complete);
-          });
-        }
-
-        if (service.url) {
-          Util.makeAsyncRequest(service.url, function (response, xhr) {
-            self.requestLocationComplete(complete, response);
-          }, service.data);
-        }
-      } else {
-        complete(false);
-      }
-    },
-
-    requestLocationComplete: function (complete, response) {
-      var service = this.options.locationServices[this.options.currentServiceIndex];
-
-      service.callback(Util.bind(function (success) {
-        if (success) {
-          complete(true);
-        } else {
-          // attempt next location service
-          self.options.currentServiceIndex++;
-          self.requestLocation(complete);
-        }
-      }, this), response);
     },
 
     setLocation: function (countryCode, continentCode) {
