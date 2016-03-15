@@ -413,7 +413,11 @@
     cc.util.merge(this.options, options);
   };
 
-  cc.dismiss = function (evt) {
+  cc.open = function () {
+
+  };
+
+  cc.close = function (evt) {
     var onTransitionEnd = cc.util.bind(function (e) {
       this.container.removeChild(this.element);
       this.element.removeEventListener(cc.TRANSITION_END, onTransitionEnd);
@@ -486,10 +490,166 @@
     return this.continentCode == 'EU';
   };
 
-  cc.hasConsented = function () {
+  cc.hasDismissed = function () {
     return cc.util.readCookie(cc.DISMISSED_COOKIE) === 'yes';
   };
 
   window.cookieconsent = cc;
+
+  // http://ec.europa.eu/ipg/basics/legal/cookies/index_en.htm
+  // http://www.fieldfisher.com/pdf/cookie-consent-tracking-table.pdf
+  // https://cookiepedia.co.uk/cookie-laws-across-europe
+  // https://www.binarymoon.co.uk/2012/05/eu-country-codes/
+  // https://www.cookiereports.com/articles/eu-eprivacy-directive/
+  // https://termsfeed.com/blog/austria-to-slovakia-eu-cookies-directive/
+  // https://www.cookiereports.com/articles/The-General-Data-Protection-Regulation-GDPR/
+  // https://www.dlapiper.com/~/media/Files/Insights/Publications/2014/09/EU_Cookies_Update_September_2014.pdf
+
+  // All assume informed consent with cookie audits
+  // All assume that personal identifying cookies are used
+  // No informed consent is required for non-personal-identifying cookies
+  // All assume that all collected data is destroyed after the expiration of a specified period of time
+
+  // Cookie policies must be site-specific and not generic
+  // Current browser settings are not sufficient to obtain consent (Data Protection Office)
+  // Any targetted ads, or other personally identifiable data NEEDS EXPLICIT PERMISSION
+
+  // Italy wants "per cookie control"
+  // Germany requires that a record of consent is kept, along with methods to view current consent and revoke consent
+
+  // Most require a mechanism to revoke consent
+  // Most require explicit consent for personal data
+
+  // A cookie law exists
+  //   BE  Belgium       : Implied
+  //   DK  Denmark       : Implied / Refusable
+  //   CZ  Czech Republic: Implied / Refusable
+  //   FR  France        : Implied / Refusable
+  //   BG  Bulgaria      : Implied / Refusable
+  //   SE  Sweden        : Implied - Browser/App settings
+  //   HU  Hungary       : Implied - Browser/App settings
+  //   RO  Romania       : Implied - Browser/App settings
+  //   SK  Slovakia      : Implied - Browser/App settings
+  //   SI  Slovenia      : Implied - Browser/App settings
+  //   LU  Luxembourg    : Implied - Browser/App settings - Refusable
+  //   FI  Finland       : Browser/App settings
+  //   ED  Spain         : Browser/App settings - Conscious action
+  //   HR  Croatia       : Explicit
+  //   CY  Cyprus        : Explicit
+  //   LV  Latvia        : Explicit (for personal data)
+  //   LT  Lithuania     : Explicit (for personal data)
+  //   PT  Portugal      : Explicit (for personal data)
+  //   IE  Ireland       : Browser/App settings
+  //   IT  Italy         : Implied / Refusable
+  //   NL  Netherlands   : Ambiguous
+  //   PL  Poland        : Implied - Browser/App settings
+  //   GB  United Kingdom: Implied - Browser/App settings
+
+  // A cookie law does not exist
+  //   LI  Liechtenstein : Implied
+  //   GR  Greece        : Ambiguous
+  //   EE  Estonia       : Implied / Refusable
+  //   NO  Norway        : Implied - Browser/App settings
+  //   MT  Malta         : Implied - Browser/App settings
+  //   IS  Iceland       : Implied - Browser/App settings
+  //   DE  Germany       : Implied / Explicit (for personal data) / Refusable
+
+  // GDPR
+  //  - Organisations must obtain “explicit” consent for the collection and processing of all Personal data, whether sensitive or non-sensitive data.
+  //  - Inactivity, such as not clicking “Accept” on a notice on a web site but continuing to use the web site, is not accepted as consent under the new rules.
+  //  - Consent must also be informed, meaning the person who is consenting must be reasonably expected to understand what it is they are consenting to
+  //  - The age of the person giving consent is also relevant and any child aged 13 years or under cannot consent to the processing of personal data
+  //  - The “Right to be Forgotten” has also been formalized, as have individuals’ rights to deny or withdraw consent. Withdrawal or refusal of consent should not be detrimental to the individual
+  //  - The key words here are “informed” and “unambiguous”
+  // 
+  // (DOES NOT REQUIRE CONSENT) Activities likely to fall within the exception
+  //   Authentication Cookie - remember me"
+  //   Multimedia content player cookies
+  //   User-input cookies
+  //   Cookies that are used solely for the purpose of transmitting a communication, and
+  //   Cookies that are absolutely necessary for a website to provide the service that the user is requesting.
+  //   A cookie used to remember the goods a user wishes to buy when they proceed to the checkout or add goods to their shopping basket.
+  //   Certain cookies providing security that is essential to comply with the security requirements of the seventh data protection principle for an activity the user has requested – for example in connection with online banking services.
+  //   Some cookies help ensure that the content of your page loads quickly and effectively by distributing the workload across numerous computers
+  //   Used for the sole purpose of carrying out the transmission of a communication
+  //   Strictly necessary in order for the provider of an information society service explicitly required by the user to provide that service.
+  //   User‑input cookies (session-id) such as first‑party cookies to keep track of the user's input when filling online forms, shopping carts, etc., for the duration of a session or persistent cookies limited to a few hours in some cases
+  //   Authentication cookies, to identify the user once he has logged in, for the duration of a session
+  //   User‑centric security cookies, used to detect authentication abuses, for a limited persistent duration
+  //   Multimedia content player cookies, used to store technical data to play back video or audio content, for the duration of a session
+  //   Load‑balancing cookies, for the duration of session
+  //   User‑interface cookies, such as language or font preferences, for the duration of a session (or slightly longer)
+  //   Third‑party social plug‑in cookies, logged‑in members of a social network
+  //
+  // (REQUIRES CONSENT) Activities unlikely to fall within the exception
+  //   First and third party advertising cookies
+  //   Cookies used for analytics purposes to count the number of unique visits to a website for example
+  //   Cookies used to recognise a user when they return to a website so that the greeting they receive can be tailored
+
+  // Consent Options
+  // There are 3 generally accepted options when considering how to gain the consent of the end user of your website.
+  //   Explicit consent – This is where consent is actively given by the end user BEFORE a cookie is placed onto the end users terminal or web enabled device. This is the highest level of compliance that can be achieved. In some member states this is the required level of consent to be legally compliant.
+  //   Implied consent  – A level of implied consent is acceptable in certain member states (including the UK). This is where the user’s acceptance of cookies is implied and cookies can be set before active consent is given. This is normally done via some form of notification window informing the user that cookies are used but without any active consent.
+  //   Browser settings – The majority of member states do not accept this as a method of gaining consent. This is minimal consent at best and it is recommended that this not be used.
+
+  window.cookielaw = (function(){
+
+    var hasLaw = ['BE','DK','CZ','FR','BG','IT','SE','HU','RO','SK','SI','IE','PL','GB','FI','LU','ES','HR','CY','LV','LT','PT','NL'];
+    var explicit = ['HR','CY'];
+    var explicitPersonal = ['LV','LT','PT','DE'];
+    var implicit = ['BE','DK','CZ','FR','BG','IT','SE','HU','RO','SK','SI','IE','PL','GB','FI','LU','ES','LI','EE','NO','MT','IS','DE'];
+    var refusable = ['DK','CZ','FR','BG','IT','LU','EE','DE'];
+    var consciousDismiss = ['ES'];
+    var browserSettings = ['SE','HU','RO','SK','SI','IE','PL','GB','FI','LU','ES','NO','MT','IS'];
+
+    return {
+      get: function (countryCode) {
+        return {
+          hasLaw          : arrayIndexOf(hasLaw, countryCode) >= 0,
+          explicit        : arrayIndexOf(explicit, countryCode) >= 0,
+          explicitPersonal: arrayIndexOf(explicitPersonal, countryCode) >= 0,
+          implicit        : arrayIndexOf(implicit, countryCode) >= 0,
+          refusable       : arrayIndexOf(refusable, countryCode) >= 0,
+          consciousDismiss: arrayIndexOf(consciousDismiss, countryCode) >= 0,
+          browserSettings : arrayIndexOf(browserSettings, countryCode) >= 0,
+        };
+      },
+    };
+
+    function arrayIndexOf (array, searchElement /*, fromIndex */) {
+      if (array === void 0 || array === null)
+        throw new TypeError();
+
+      var t = Object(array);
+      var len = t.length >>> 0;
+      if (len === 0)
+        return -1;
+
+      var n = 0;
+      if (arguments.length > 0)
+      {
+        n = Number(arguments[1]);
+        if (n !== n) // shortcut for verifying if it's NaN
+          n = 0;
+        else if (n !== 0 && n !== (1 / 0) && n !== -(1 / 0))
+          n = (n > 0 || -1) * Math.floor(Math.abs(n));
+      }
+
+      if (n >= len)
+        return -1;
+
+      var k = n >= 0
+            ? n
+            : Math.max(len - Math.abs(n), 0);
+
+      for (; k < len; k++)
+      {
+        if (k in t && t[k] === searchElement)
+          return k;
+      }
+      return -1;
+    }
+
+  }());
 
 }(window.cookieconsent || {}));
