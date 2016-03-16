@@ -331,10 +331,6 @@
 
     dismissOnScroll: false, // dismiss when the user scroll down
 
-    onlyInEurope: false,
-    blacklistCountry: [],
-    whitelistCountry: [],
-
     enabled: true,
 
     dismissOnTimeout: false,
@@ -414,7 +410,6 @@
   };
 
   cc.open = function () {
-
   };
 
   cc.close = function (evt) {
@@ -457,29 +452,6 @@
     cc.util.setCookie(cc.DISMISSED_COOKIE, '', -1, this.options.domain, this.options.path);
   };
 
-  cc.setLocation = function (countryCode, continentCode) {
-    // remember these values for subsequent calls (prevent requiring a second ajax request)
-    this.countryCode = countryCode;
-    this.continentCode = continentCode;
-
-    // if only show in europe and the client is not in europe, disable
-    if (this.options.onlyInEurope && continentCode != 'EU') {
-      this.options.enabled = false;
-    }
-
-    // if our country is blacklisted, disable
-    var blacklist = this.options.blacklistCountry;
-    if (blacklist.length && blacklist.indexOf(countryCode) >= 0) {
-      this.options.enabled = false;
-    }
-
-    // if our country is whitelisted, force enable
-    var whitelist = this.options.whitelistCountry;
-    if (whitelist.length && whitelist.indexOf(countryCode) >= 0) {
-      this.options.enabled = true;
-    }
-  };
-
   cc.cookieLawApplies = function () {
     if (typeof this.continentCode != 'string' || !this.continentCode.length) {
       // if we don't know the answer, assume true
@@ -494,105 +466,8 @@
     return cc.util.readCookie(cc.DISMISSED_COOKIE) === 'yes';
   };
 
-  window.cookieconsent = cc;
 
-  // http://ec.europa.eu/ipg/basics/legal/cookies/index_en.htm
-  // http://www.fieldfisher.com/pdf/cookie-consent-tracking-table.pdf
-  // https://cookiepedia.co.uk/cookie-laws-across-europe
-  // https://www.binarymoon.co.uk/2012/05/eu-country-codes/
-  // https://www.cookiereports.com/articles/eu-eprivacy-directive/
-  // https://termsfeed.com/blog/austria-to-slovakia-eu-cookies-directive/
-  // https://www.cookiereports.com/articles/The-General-Data-Protection-Regulation-GDPR/
-  // https://www.dlapiper.com/~/media/Files/Insights/Publications/2014/09/EU_Cookies_Update_September_2014.pdf
-
-  // All assume informed consent with cookie audits
-  // All assume that personal identifying cookies are used
-  // No informed consent is required for non-personal-identifying cookies
-  // All assume that all collected data is destroyed after the expiration of a specified period of time
-
-  // Cookie policies must be site-specific and not generic
-  // Current browser settings are not sufficient to obtain consent (Data Protection Office)
-  // Any targetted ads, or other personally identifiable data NEEDS EXPLICIT PERMISSION
-
-  // Italy wants "per cookie control"
-  // Germany requires that a record of consent is kept, along with methods to view current consent and revoke consent
-
-  // Most require a mechanism to revoke consent
-  // Most require explicit consent for personal data
-
-  // A cookie law exists
-  //   BE  Belgium       : Implied
-  //   DK  Denmark       : Implied / Refusable
-  //   CZ  Czech Republic: Implied / Refusable
-  //   FR  France        : Implied / Refusable
-  //   BG  Bulgaria      : Implied / Refusable
-  //   SE  Sweden        : Implied - Browser/App settings
-  //   HU  Hungary       : Implied - Browser/App settings
-  //   RO  Romania       : Implied - Browser/App settings
-  //   SK  Slovakia      : Implied - Browser/App settings
-  //   SI  Slovenia      : Implied - Browser/App settings
-  //   LU  Luxembourg    : Implied - Browser/App settings - Refusable
-  //   FI  Finland       : Browser/App settings
-  //   ED  Spain         : Browser/App settings - Conscious action
-  //   HR  Croatia       : Explicit
-  //   CY  Cyprus        : Explicit
-  //   LV  Latvia        : Explicit (for personal data)
-  //   LT  Lithuania     : Explicit (for personal data)
-  //   PT  Portugal      : Explicit (for personal data)
-  //   IE  Ireland       : Browser/App settings
-  //   IT  Italy         : Implied / Refusable
-  //   NL  Netherlands   : Ambiguous
-  //   PL  Poland        : Implied - Browser/App settings
-  //   GB  United Kingdom: Implied - Browser/App settings
-
-  // A cookie law does not exist
-  //   LI  Liechtenstein : Implied
-  //   GR  Greece        : Ambiguous
-  //   EE  Estonia       : Implied / Refusable
-  //   NO  Norway        : Implied - Browser/App settings
-  //   MT  Malta         : Implied - Browser/App settings
-  //   IS  Iceland       : Implied - Browser/App settings
-  //   DE  Germany       : Implied / Explicit (for personal data) / Refusable
-
-  // GDPR
-  //  - Organisations must obtain “explicit” consent for the collection and processing of all Personal data, whether sensitive or non-sensitive data.
-  //  - Inactivity, such as not clicking “Accept” on a notice on a web site but continuing to use the web site, is not accepted as consent under the new rules.
-  //  - Consent must also be informed, meaning the person who is consenting must be reasonably expected to understand what it is they are consenting to
-  //  - The age of the person giving consent is also relevant and any child aged 13 years or under cannot consent to the processing of personal data
-  //  - The “Right to be Forgotten” has also been formalized, as have individuals’ rights to deny or withdraw consent. Withdrawal or refusal of consent should not be detrimental to the individual
-  //  - The key words here are “informed” and “unambiguous”
-  // 
-  // (DOES NOT REQUIRE CONSENT) Activities likely to fall within the exception
-  //   Authentication Cookie - remember me"
-  //   Multimedia content player cookies
-  //   User-input cookies
-  //   Cookies that are used solely for the purpose of transmitting a communication, and
-  //   Cookies that are absolutely necessary for a website to provide the service that the user is requesting.
-  //   A cookie used to remember the goods a user wishes to buy when they proceed to the checkout or add goods to their shopping basket.
-  //   Certain cookies providing security that is essential to comply with the security requirements of the seventh data protection principle for an activity the user has requested – for example in connection with online banking services.
-  //   Some cookies help ensure that the content of your page loads quickly and effectively by distributing the workload across numerous computers
-  //   Used for the sole purpose of carrying out the transmission of a communication
-  //   Strictly necessary in order for the provider of an information society service explicitly required by the user to provide that service.
-  //   User‑input cookies (session-id) such as first‑party cookies to keep track of the user's input when filling online forms, shopping carts, etc., for the duration of a session or persistent cookies limited to a few hours in some cases
-  //   Authentication cookies, to identify the user once he has logged in, for the duration of a session
-  //   User‑centric security cookies, used to detect authentication abuses, for a limited persistent duration
-  //   Multimedia content player cookies, used to store technical data to play back video or audio content, for the duration of a session
-  //   Load‑balancing cookies, for the duration of session
-  //   User‑interface cookies, such as language or font preferences, for the duration of a session (or slightly longer)
-  //   Third‑party social plug‑in cookies, logged‑in members of a social network
-  //
-  // (REQUIRES CONSENT) Activities unlikely to fall within the exception
-  //   First and third party advertising cookies
-  //   Cookies used for analytics purposes to count the number of unique visits to a website for example
-  //   Cookies used to recognise a user when they return to a website so that the greeting they receive can be tailored
-
-  // Consent Options
-  // There are 3 generally accepted options when considering how to gain the consent of the end user of your website.
-  //   Explicit consent – This is where consent is actively given by the end user BEFORE a cookie is placed onto the end users terminal or web enabled device. This is the highest level of compliance that can be achieved. In some member states this is the required level of consent to be legally compliant.
-  //   Implied consent  – A level of implied consent is acceptable in certain member states (including the UK). This is where the user’s acceptance of cookies is implied and cookies can be set before active consent is given. This is normally done via some form of notification window informing the user that cookies are used but without any active consent.
-  //   Browser settings – The majority of member states do not accept this as a method of gaining consent. This is minimal consent at best and it is recommended that this not be used.
-
-  window.cookielaw = (function(){
+  cc.law = (function(){
 
     var hasLaw = ['BE','DK','CZ','FR','BG','IT','SE','HU','RO','SK','SI','IE','PL','GB','FI','LU','ES','HR','CY','LV','LT','PT','NL'];
     var explicit = ['HR','CY'];
@@ -649,7 +524,248 @@
       }
       return -1;
     }
+  }());
+
+  cc.locate = (function(){
+    return {
+      currentServiceIndex: 0,
+
+      // When using a service, it could either return a data structure (like a JSON object) or a script
+      // If the service was defined with a `script` key, then we are expecting a script.
+      // If the service was defined with a `url` key, then we are expecting a data structure
+
+      // Because the response could be a script, there is a chance the service may require a second http request.
+      // Therefore you 
+
+      locationServices: [
+        {
+          url: 'http://ipinfo.io',
+          headers:['Accept: application/json'],
+          callback: function (done, response) {
+            var json = JSON.parse(response);
+            return json.error
+                ? new Error('Error ['+(json.code || 'UNKNOWN')+']: '+json.error)
+                : {code: json.country};
+          },
+        },
+        {
+          url: 'http://freegeoip.net/json/?callback=cookieconsent.locate.jsonp(1)',
+          isScript: true,
+          callback: function (done, response) {
+            var json = JSON.parse(response);
+            return json.error
+                ? new Error('Error ['+(json.code || 'UNKNOWN')+']: '+json.error)
+                : {code: json.country_code};
+          },
+        },
+        {
+          url: 'http://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
+          isScript: true,
+          callback: function (done) {
+            // if everything went okay then `geoip2` WILL be defined
+            if (!window.geoip2) {
+              done(new Error('Unexpected response format. The downloaded script should have exported `geoip2` to the global scope'));
+              return;
+            }
+
+            geoip2.country(function (location) {
+              done({code: location.country.iso_code});
+            }, function (err) {
+              done(new Error('Error ['+err.code+']: '+err.error));
+            });
+          },
+        }
+      ],
+
+      init: function(onLocationFound, services){
+        this.onComplete = onLocationFound;
+
+        // if caller provides additional services, use them
+        if(Object.prototype.toString.call(services) == '[object Array]'){
+          this.locationServices = this.locationServices.concat(services);
+        }
+
+        runServices.call(this);
+      },
+
+      jsonp: function(idx){
+        return cc.util.bind(function (response) {
+          runServiceCallback.call(this, runNextOnError, this.locationServices[idx], JSON.stringify(response));
+        }, this);
+      }
+    };
+
+    function runServices () {
+      var idx = this.currentServiceIndex;
+      var service = this.locationServices[idx];
+
+      if (!service) {
+        return;
+      }
+
+      var self = this;
+
+      // runs service[idx] and triggers the callback on complete
+      runService(service, function(){
+        runNextOnError.apply(self, arguments);
+      });
+    }
+    
+    // if `err` is set, the next service handler is called
+    // if `err` is null, the `onComplete` handler is called with `data`
+    function runNextOnError (err, data) {
+      var idx = this.currentServiceIndex;
+      var service = this.locationServices[idx];
+
+      if (err) {
+        console.log('The service['+idx+'] ('+service.url+') responded with the following error', err);
+
+        // an error occurred, try the next service
+        this.currentServiceIndex++;
+        runServices.call(this);
+      } else {
+        this.onComplete(data);
+      }
+    }
+
+    // requires a `service` object that defines at least a `url` and `callback`
+    function runService (service, complete) {
+      var self = this;
+
+      if (!service || !service.url) {
+        return;
+      }
+
+      // we call either `getScript` or `makeAsyncRequest` depending on the type of resource
+      var requestFunction = service.isScript ? getScript : makeAsyncRequest;
+
+      // both functions have similar signatures so we can pass the same arguments to both
+      requestFunction(service.url, function (xhr) {
+        // if `!xhr`, the `getScript` function was used, so there is no response text
+        var responseText = xhr ? xhr.responseText : '';
+
+        runServiceCallback.call(self, complete, service, responseText);
+
+      }, service.data, service.headers);
+    }
+
+    // The service request has run (and possibly has a `responseText`) [no `responseText` if `isScript`]
+    // We need to run it's callback which determines if its successful or not
+    // `complete` is called on success or failure
+    function runServiceCallback (complete, service, responseText) {
+      var self = this;
+
+      // this is called with the `result` from `service.callback` regardless of how it provided that result (sync or async)
+      var onResult = function(result) {
+        // convert result to nodejs style async callback
+        if(result instanceof Error){
+          complete.call(this, result, null);
+        }else{
+          complete.call(this, null, result);
+        }
+      };
+
+      // the function `service.callback` will either extract a country code from `responseText` and return it (in `result`)
+      // or (if it has to make additional requests) it will call a `done` callback with the country code when it is ready
+      var result = service.callback(function(asyncResult){
+        // if `result` is a valid value, then this function shouldn't really run
+        // even if it is called by `service.callback`
+        if(!result){
+          onResult.call(self, asyncResult)
+        }
+      }, responseText);
+
+      if(result){
+        onResult.call(this, result);
+      }
+    }
+
+    function getScript (url, callback) {
+      var s = document.createElement('script');
+
+      s.type = 'text/' + (url.type || 'javascript');
+      s.src = url.src || url;
+      s.async = false;
+
+      s.onreadystatechange = s.onload = function () {
+        var state = s.readyState;
+
+        if (!callback.done && (!state || /loaded|complete/.test(state))) {
+          callback.done = true;
+          callback();
+        }
+      };
+
+      document.body.appendChild(s);
+    }
+
+    function makeAsyncRequest (url, onComplete, postData, requestHeaders) {
+      var trimRegEx = /^\s+|\s+$/g;
+      var xhr = new(window.XMLHttpRequest || window.ActiveXObject)('MSXML2.XMLHTTP.3.0');
+
+      xhr.open(postData ? 'POST' : 'GET', url, 1);
+
+      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+      if (Object.prototype.toString.call(requestHeaders) === '[object Array]') {
+        for (var i = 0, l = requestHeaders.length; i < l; ++i) {
+          var split = requestHeaders[i].split(':', 2)
+          xhr.setRequestHeader(split[0].replace(trimRegEx, ''), split[1].replace(trimRegEx, ''));
+        }
+      }
+
+      if(typeof onComplete == 'function'){
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState > 3) {
+            onComplete(xhr);
+          }
+        };
+      }
+
+      xhr.send(postData);
+    }
 
   }());
+
+  window.cookieconsent = cc;
+
+  /*
+
+  var country = cookielaw.get('GB');
+
+  if(!country.hasLaw){
+    // I don't need to show you this popup. exit
+  }
+
+  if(country.browserSettings) {
+    // I have permission to get settings from browser
+  }
+
+  if(country.refusable){
+    // MUST provide a way to revoke consent at any time
+  }
+
+  if(country.consciousDismiss){
+    // cannot use autodismiss (on scroll or timeout) (user MUST click consent button)
+  }
+
+
+  ################## DO I REALLY NEED THESE ? ############################
+
+  if(d.explicit){
+    // requires explicit consent
+  }
+
+  if(d.explicitPersonal){
+    // requires explicit consent but only if the cookies used contain personal info
+  }
+
+  if(d.implicit){
+    // requires implicit consent
+  }
+  
+  */
+
 
 }(window.cookieconsent || {}));
