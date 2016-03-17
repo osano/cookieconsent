@@ -21,7 +21,7 @@
 
   /* Helper methods */
 
-  var fnBind = function (func, context /* , args */) {
+  var fnBind = function (func, context /* , args */ ) {
     var args = Array.prototype.slice.call(arguments, 2);
     return function () {
       return func.apply(context, args.concat.apply(args, arguments));
@@ -118,9 +118,11 @@
         el.attachEvent('on' + event, eventListener);
       }
     },
+
   };
 
   cc.dombuilder = (function () {
+
     /*
      The attribute we store events in.
      */
@@ -203,6 +205,7 @@
     };
 
     return {
+
       build: function (htmlStr, scope) {
         if (cc.util.isArray(htmlStr)) htmlStr = htmlStr.join('');
 
@@ -212,8 +215,10 @@
         applyConditionals(dom, scope);
 
         return dom;
-      }
+      },
+
     };
+
   })();
 
   /* Plugin */
@@ -413,7 +418,7 @@
       document.getElementsByTagName("head")[0].appendChild(link);
     }
 
-    function render() {
+    function render () {
       // remove current element (if we've already rendered)
       if (this.element && this.element.parentNode) {
         this.element.parentNode.removeChild(this.element);
@@ -463,33 +468,35 @@
       return false;
     }
 
-  } ());
+  }());
 
   cc.law = (function () {
 
-    var hasLaw = ['BE','DK','CZ','FR','BG','IT','SE','HU','RO','SK','SI','IE','PL','GB','FI','LU','ES','HR','CY','LV','LT','PT','NL'];
-    var explicit = ['HR','CY'];
-    var explicitPersonal = ['LV','LT','PT','DE'];
-    var implicit = ['BE','DK','CZ','FR','BG','IT','SE','HU','RO','SK','SI','IE','PL','GB','FI','LU','ES','LI','EE','NO','MT','IS','DE'];
-    var refusable = ['DK','CZ','FR','BG','IT','LU','EE','DE'];
+    var hasLaw = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'HR', 'CY', 'LV', 'LT', 'PT', 'NL'];
+    var explicit = ['HR', 'CY'];
+    var explicitPersonal = ['LV', 'LT', 'PT', 'DE'];
+    var implicit = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'LI', 'EE', 'NO', 'MT', 'IS', 'DE'];
+    var refusable = ['DK', 'CZ', 'FR', 'BG', 'IT', 'LU', 'EE', 'DE'];
     var consciousDismiss = ['ES'];
-    var browserSettings = ['SE','HU','RO','SK','SI','IE','PL','GB','FI','LU','ES','NO','MT','IS'];
+    var browserSettings = ['SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'NO', 'MT', 'IS'];
 
     return {
+
       get: function (countryCode) {
         return {
-          hasLaw          : arrayIndexOf(hasLaw, countryCode) >= 0,
-          explicit        : arrayIndexOf(explicit, countryCode) >= 0,
+          hasLaw: arrayIndexOf(hasLaw, countryCode) >= 0,
+          explicit: arrayIndexOf(explicit, countryCode) >= 0,
           explicitPersonal: arrayIndexOf(explicitPersonal, countryCode) >= 0,
-          implicit        : arrayIndexOf(implicit, countryCode) >= 0,
-          refusable       : arrayIndexOf(refusable, countryCode) >= 0,
+          implicit: arrayIndexOf(implicit, countryCode) >= 0,
+          refusable: arrayIndexOf(refusable, countryCode) >= 0,
           consciousDismiss: arrayIndexOf(consciousDismiss, countryCode) >= 0,
-          browserSettings : arrayIndexOf(browserSettings, countryCode) >= 0,
+          browserSettings: arrayIndexOf(browserSettings, countryCode) >= 0,
         };
       },
+
     };
 
-    function arrayIndexOf (array, searchElement /*, fromIndex */) {
+    function arrayIndexOf (array, searchElement /*, fromIndex */ ) {
       if (array === void 0 || array === null)
         throw new TypeError();
 
@@ -499,8 +506,7 @@
         return -1;
 
       var n = 0;
-      if (arguments.length > 0)
-      {
+      if (arguments.length > 0) {
         n = Number(arguments[1]);
         if (n !== n) // shortcut for verifying if it's NaN
           n = 0;
@@ -511,21 +517,21 @@
       if (n >= len)
         return -1;
 
-      var k = n >= 0
-            ? n
-            : Math.max(len - Math.abs(n), 0);
+      var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
 
-      for (; k < len; k++)
-      {
+      for (; k < len; k++) {
         if (k in t && t[k] === searchElement)
           return k;
       }
       return -1;
     }
-  } ());
+
+  }());
 
   cc.locate = (function () {
+
     return {
+
       // This is the index of the service that is currently being used
       currentServiceIndex: 0,
 
@@ -543,20 +549,22 @@
           headers: ['Accept: application/json'],
           callback: function (done, response) {
             var json = JSON.parse(response);
-            return json.error ? toError(json) : {code: json.country};
+            return json.error ? toError(json) : {
+              code: json.country
+            };
           },
-        },
-        {
+        }, {
           // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
           // The callback MUST BE `cookieconsent.locate.jsonp(SERVICE_INDEX)` (so cookieconsent.locate.jsonp(1))
           url: 'http://freegeoip.net/json/?callback=cookieconsent.locate.jsonp(1)',
           isScript: true, // this is JSONP, therefore we must set it to run as a script
           callback: function (done, response) {
             var json = JSON.parse(response);
-            return json.error ? toError(json) : {code: json.country_code};
+            return json.error ? toError(json) : {
+              code: json.country_code
+            };
           },
-        },
-        {
+        }, {
           // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
           // make an additional AJAX call. Therefore we provide a `done` callback that can be called asynchronously
           url: 'http://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
@@ -569,7 +577,9 @@
             }
 
             geoip2.country(function (location) {
-              done({code: location.country.iso_code});
+              done({
+                code: location.country.iso_code
+              });
             }, function (err) {
               done(toError(err));
             });
@@ -582,11 +592,11 @@
 
       // Pass an `onComplete` function which is called asynchronously when a service has returned some data, or when all services have failed.
       // You can pass additional services that you want to use as `services` (see format of `locationServices`)
-      init: function(onComplete, services){
+      init: function (onComplete, services) {
         this.onComplete = onComplete;
 
         // if caller provides additional services, use them
-        if(Object.prototype.toString.call(services) == '[object Array]'){
+        if (Object.prototype.toString.call(services) == '[object Array]') {
           this.locationServices = this.locationServices.concat(services);
         }
 
@@ -594,7 +604,7 @@
       },
 
       // This is called from the global scope in a script request that is executed as JSONP
-      jsonp: function(idx){
+      jsonp: function (idx) {
         var service = this.locationServices[idx];
         return function (response) {
           // it may seem like a waste to stringify it (when we are just going to parse it again) but the service
@@ -664,15 +674,15 @@
 
       // the function `service.callback` will either extract a country code from `responseText` and return it (in `result`)
       // or (if it has to make additional requests) it will call a `done` callback with the country code when it is ready
-      var result = service.callback(function(asyncResult){
+      var result = service.callback(function (asyncResult) {
         // if `result` is a valid value, then this function shouldn't really run
         // even if it is called by `service.callback`
-        if(!result){
+        if (!result) {
           onServiceResult.call(self, complete, asyncResult)
         }
       }, responseText);
 
-      if(result){
+      if (result) {
         onServiceResult.call(this, complete, result);
       }
     }
@@ -680,14 +690,14 @@
     // This is called with the `result` from `service.callback` regardless of how it provided that result (sync or async).
     // `result` will be whatever is returned from `service.callback`. A service callback should provide an object with data
     function onServiceResult (complete, result) {
-        // convert result to nodejs style async callback
-        if(result instanceof Error || (result && result.error) ){
-          complete.call(this, result, null);
-        }else{
-          complete.call(this, null, result);
-        }
+      // convert result to nodejs style async callback
+      if (result instanceof Error || (result && result.error)) {
+        complete.call(this, result, null);
+      } else {
+        complete.call(this, null, result);
+      }
     }
-    
+
     // if `err` is set, the next service handler is called
     // if `err` is null, the `onComplete` handler is called with `data`
     function runNextServiceOnError (err, data) {
@@ -695,10 +705,10 @@
       var service = this.locationServices[idx];
 
       if (err) {
-        console.log('The service['+idx+'] ('+service.url+') responded with the following error', err);
+        console.log('The service[' + idx + '] (' + service.url + ') responded with the following error', err);
 
         // if another service exists
-        if (this.locationServices[idx+1]) {
+        if (this.locationServices[idx + 1]) {
           // an error occurred, try the next service
           this.currentServiceIndex++;
           runServices.call(this);
@@ -752,7 +762,7 @@
         }
       }
 
-      if(typeof onComplete == 'function'){
+      if (typeof onComplete == 'function') {
         xhr.onreadystatechange = function () {
           if (xhr.readyState > 3) {
             onComplete(xhr);
@@ -764,11 +774,12 @@
     }
 
     function toError (obj) {
-      return new Error('Error ['+(obj.code || 'UNKNOWN')+']: '+obj.error);
+      return new Error('Error [' + (obj.code || 'UNKNOWN') + ']: ' + obj.error);
     }
-  } ());
 
-  cc.initialise = function(options, success, failure) {
+  }());
+
+  cc.initialise = function (options, success, failure) {
     this.getCountryOptions(options, function (result) {
       cc.popup.init(result);
     }, function (error) {
@@ -777,27 +788,27 @@
   };
 
   cc.getCountryOptions = function (options, success, failure) {
-    cc.locate.init(function(result) {
+    cc.locate.init(function (result) {
       var country = cc.law.get(result.code);
 
-      if(!country.hasLaw){
+      if (!country.hasLaw) {
         // I don't need to show you this popup. exit
         options.enabled = false;
       }
 
-      if(country.browserSettings) {
+      if (country.browserSettings) {
         // I have permission to get settings from browser
 
         // TODO what do I do here?
       }
 
-      if(country.refusable){
+      if (country.refusable) {
         // MUST provide a way to revoke consent at any time
 
         options.deny = 'No';
       }
 
-      if(country.consciousDismiss){
+      if (country.consciousDismiss) {
         // user must explicitly click the consent button. cannot use autodismiss (on scroll or timeout)
 
         options.dismissOnScroll = false;
