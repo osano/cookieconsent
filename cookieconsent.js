@@ -240,7 +240,7 @@
         expiryDays: 365,
         markup: [
           '<div class="cc_banner-wrapper {{containerClasses}}">',
-          '<div class="cc_banner cc_container cc_container--open">',
+          '<div class="cc_banner cc_container">',
           '<a href="#null" data-cc-event="click:dismiss" target="_blank" class="cc_btn cc_btn_accept_all">{{options.dismiss}}</a>',
 
           '<p class="cc_message">{{options.message}} <a data-cc-if="options.link" target="{{ options.target }}" class="cc_more_info" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
@@ -266,49 +266,43 @@
       },
 
       init: function (options) {
-        if (options) this.setOptions(options);
+        this.setOptions(cc.util.isObject(options) ? options : {});
 
-        if (window.navigator && !navigator.cookieEnabled) {
-          this.options.onComplete(false); // cannot use cookies
-          return;
+        // if this returns true, the `onComplete` hook was called and we've got nothing left to do
+        if (checkCallbackHooks.call(this)) {
+          return ;
         }
 
-        if ((window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
-          this.options.onComplete(true); // can use cookies
-          return;
-        }
-
-        var currentDismissed = cc.util.readCookie(cc.DISMISSED_COOKIE);
-        if (currentDismissed == 'yes') {
-          this.options.onComplete(true); // can use cookies
-          return;
-        } else if (currentDismissed == 'no') {
-          this.options.onComplete(false); // cannot use cookies
-          return;
-        } else if (typeof currentDismissed != 'undefined') {
-          // the dismissed cookie is invalid. delete it
-          this.unsetDismissedCookie();
-        }
-
-        // enable or disable this plugin depending on the page URI and white/black list configuration
+        // this enables or disables the plugin depending on the page URI and white/black list configuration
         applyPageFilter.call(this);
 
         if (!this.options.enabled) {
-          return;
+          return ;
         }
 
+        if (this.options.theme) {
+          loadTheme.call(this, this.options.theme, function () {
+            // theme loaded
+          });
+        }
+
+        // creates container property `this.container`
         setContainer.call(this);
 
-        // Calls render when theme is loaded.
-        if (this.options.theme) {
-          loadTheme.call(this, render);
-        } else {
-          render.call(this);
+        // create hidden HTML element
+        render.call(this);
+
+        var delay = this.options.dismissOnTimeout;
+        if (typeof delay == 'number') {
+          window.setTimeout(fnBind(function () {
+            this.dismiss();
+          }, this), Math.floor(delay));
         }
 
-        if (typeof this.options.dismissOnScroll == 'number') {
+        var scrollRange = this.options.dismissOnScroll;
+        if (typeof scrollRange == 'number') {
           var onWindowScroll = fnBind(function (evt) {
-            if (window.pageYOffset > Math.floor(this.options.dismissOnScroll)) {
+            if (window.pageYOffset > Math.floor(scrollRange)) {
               this.dismiss();
 
               window.removeEventListener('scroll', onWindowScroll);
@@ -317,34 +311,27 @@
 
           window.addEventListener('scroll', onWindowScroll);
         }
-
-        var delay = this.options.dismissOnTimeout;
-        if (typeof delay == 'number') {
-          window.setTimeout(fnBind(function () {
-            this.dismiss();
-          }, this), Math.floor(delay));
-        }
       },
+
+      destroy: function () {},
 
       setOptions: function (options) {
         cc.util.merge(this.options, options);
       },
 
-      open: function () {
+      open: function (callback) {
+        var fadeOut = /(?:\s+|^)cc_fade_out(?:\s+|$)/;
+        if (fadeOut.test(this.element.classList)) {
+          this.element.className = this.element.className.replace(fadeOut, '');
+        } else {
+          this.element.style.display = '';
+        }
       },
 
-      close: function (evt) {
+      close: function (callback) {
         var onTransitionEnd = fnBind(function (e) {
-          this.container.removeChild(this.element);
-          this.element.removeEventListener(cc.TRANSITION_END, onTransitionEnd);
+          callback();
         }, this);
-
-        if (evt) {
-          evt.preventDefault && evt.preventDefault();
-          evt.returnValue = false;
-        }
-
-        this.setDismissedCookie(true);
 
         // add event that removes the container on "transitionend"
         this.element.addEventListener(cc.TRANSITION_END, onTransitionEnd);
@@ -355,6 +342,11 @@
         //      then the element WILL NOT be removed (as the `transitionend` event will not be run)
         // 
         // TODO detect scenarios where adding this class does not trigger a `transformstart` event
+      },
+
+      dismiss: function () {
+        this.setDismissedCookie(true);
+        this.close;
       },
 
       setDismissedCookie: function (hasConsented) {
@@ -394,9 +386,7 @@
       }
     }
 
-    function loadTheme (callback) {
-      var theme = this.options.theme;
-
+    function loadTheme (theme, callback) {
       // If theme is specified by name
       if (theme.indexOf('.css') === -1) {
         theme = cc.THEME_BUCKET_PATH + theme + '.css';
@@ -426,11 +416,39 @@
       }
 
       this.element = cc.dombuilder.build(this.options.markup, this);
+
+      this.element.style.display = 'none';
+
       if (!this.container.firstChild) {
         this.container.appendChild(this.element);
       } else {
         this.container.insertBefore(this.element, this.container.firstChild);
       }
+    }
+
+    function checkCallbackHooks () {
+      if (window.navigator && !navigator.cookieEnabled) {
+        this.options.onComplete(false); // cannot use cookies
+        return true;
+      }
+
+      if ((window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
+        this.options.onComplete(true); // can use cookies
+        return true;
+      }
+
+      var currentDismissed = cc.util.readCookie(cc.DISMISSED_COOKIE);
+      if (currentDismissed == 'yes') {
+        this.options.onComplete(true); // can use cookies
+        return true;
+      } else if (currentDismissed == 'no') {
+        this.options.onComplete(false); // cannot use cookies
+        return true;
+      } else if (typeof currentDismissed != 'undefined') {
+        // the dismissed cookie is invalid. delete it
+        this.unsetDismissedCookie();
+      }
+      return false;
     }
 
     function applyPageFilter () {
@@ -476,7 +494,7 @@
     var explicit = ['HR', 'CY'];
     var explicitPersonal = ['LV', 'LT', 'PT', 'DE'];
     var implicit = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'LI', 'EE', 'NO', 'MT', 'IS', 'DE'];
-    var refusable = ['DK', 'CZ', 'FR', 'BG', 'IT', 'LU', 'EE', 'DE'];
+    var refusable = ['DK', 'CZ', 'FR', 'BG', 'IT', 'LU', 'EE', 'DE', 'NL'];
     var consciousDismiss = ['ES'];
     var browserSettings = ['SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'NO', 'MT', 'IS'];
 
