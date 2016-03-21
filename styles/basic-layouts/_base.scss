@@ -4,11 +4,10 @@
 
 .cc_banner-wrapper {
     z-index: 9001; // It's over 9000!
-    position:relative;
+    position: relative;
 }
 
 .cc_container {
-
 
     .cc_btn {
         cursor: pointer;
@@ -47,7 +46,7 @@
 .cc_fade_out {
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0s 2s, opacity 2s linear;
+  transition: visibility 0s 0.6s, opacity 0.6s linear;
 }
 
 @media screen and (min-width: $screen-xs-min) {

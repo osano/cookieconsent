@@ -1,5 +1,6 @@
 <!--
-    An example of how to use cookie consent only using the local files
+    An example of how to use cookie consent only using the local files.
+    This example doesn't include geolocation or country specific options
 -->
 <html>
 <head>
@@ -15,11 +16,25 @@
 </body>
 
 
-<script>
-    window.cookieconsent_options = {
-        learnMore: 'more info',
-        theme: 'styles/dark-top.css'
-    }
-</script>
 <script type="text/javascript" src="cookieconsent.js"></script>
+<script>
+    cookieconsent.oldinit({
+        theme: 'build/light-floating.css',
+
+        // cookies were accepted for the first time
+        onAllowCookies: function () {
+            alert('cookieconsent.popup.options.onAllowCookies()');
+        },
+
+        // cookies were denied for the first time
+        onDenyCookies: function () {
+            alert('cookieconsent.popup.options.onDenyCookies()');
+        },
+
+        // called on complete with the users preference to using cookies (bool)
+        onComplete: function (status) {
+            alert('cookieconsent.popup.options.onComplete('+status+')');
+        },
+    });
+</script>
 </html>

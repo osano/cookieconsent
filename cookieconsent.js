@@ -10,25 +10,46 @@
   /* Constants */
 
   // Name of cookie to be set when dismissed
-  cc.DISMISSED_COOKIE = 'cookieconsent_dismissed';
+  cc.COOKIE_STATUS_NAME = 'cookieconsent_status';
+
+  // Valid cookie values
+  cc.COOKIE_STATUS = {
+    DENIED: 'denied',
+    ALLOWED: 'allowed',
+    DISMISSED: 'dismissed',
+  };
 
   // The path to built in themes
   // Note: Directly linking to a version on the CDN like this is horrible, but it's less horrible
   //       than people downloading the code then discovering that their CSS bucket disappeared
   cc.THEME_BUCKET_PATH = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/';
 
-  cc.TRANSITION_END = 'webkitTransitionEnd transitionend msTransitionEnd oTransitionEnd';
+  // A cross browser method of getting the transition event name
+  // Note: If you simply provide a list of possible event names like 'transitionend webkitTransitionEnd msTransitionEnd' etc,
+  //       then the event may not be triggered. This method ensures that it is correctly triggered
+  cc.TRANSITION_END = (function () {
+    var el = document.createElement('div');
+    var transitions = {
+      transition: 'transitionend',
+      OTransition: 'otransitionend',
+      MozTransition: 'transitionend',
+      WebkitTransition: 'webkitTransitionEnd'
+    };
+
+    for (var prop in transitions) {
+      if (transitions.hasOwnProperty(prop) && typeof el.style[prop] != 'undefined') {
+        return transitions[prop];
+      }
+    }
+
+    el = null;
+
+    return null;
+  }());
 
   /* Helper methods */
 
-  var fnBind = function (func, context /* , args */ ) {
-    var args = Array.prototype.slice.call(arguments, 2);
-    return function () {
-      return func.apply(context, args.concat.apply(args, arguments));
-    };
-  };
-
-  cc.util = {
+  var util = {
 
     isArray: function (obj) {
       return Object.prototype.toString.call(obj) == '[object Array]';
@@ -46,14 +67,26 @@
       if (this.isObject(arr) && !force) {
         for (var key in arr) {
           if (arr.hasOwnProperty(key)) {
-            callback.call(context, arr[key], key, arr);
+            if (false === callback.call(context, arr[key], key, arr)) {
+              break;
+            }
           }
         }
       } else {
-        for (var i = 0, ii = arr.length; i < ii; i++) {
-          callback.call(context, arr[i], i, arr);
+        for (var i = 0, l = arr.length; i < l; ++i) {
+          if (false === callback.call(context, arr[i], i, arr)) {
+            break;
+          }
         }
       }
+    },
+
+    map: function (iterable, callback, context, force) {
+      var arr = [];
+      this.each(iterable, function (c, i) {
+        arr.push(callback.call(this, c, i, iterable));
+      }, context, force);
+      return arr;
     },
 
     merge: function (obj1, obj2) {
@@ -65,22 +98,6 @@
           obj1[key] = val;
         }
       }, this);
-    },
-
-    /*
-     find a property based on a . separated path.
-     i.e. queryObject({details: {name: 'Adam'}}, 'details.name') // -> 'Adam'
-     returns null if not found
-     */
-    queryObject: function (object, query) {
-      var queryPart;
-      var i = 0;
-      var head = object;
-      query = query.split('.');
-      while ((queryPart = query[i++]) && head.hasOwnProperty(queryPart) && (head = head[queryPart])) {
-        if (i === query.length) return head;
-      }
-      return null;
     },
 
     setCookie: function (name, value, expiryDays, domain, path) {
@@ -96,9 +113,7 @@
       ];
 
       if (domain) {
-        cookie.push(
-          'domain=' + domain
-        );
+        cookie.push('domain=' + domain);
       }
 
       document.cookie = cookie.join(';');
@@ -108,118 +123,100 @@
       var value = '; ' + document.cookie;
       var parts = value.split('; ' + name + '=');
       return parts.length != 2 ?
-        undefined : parts.pop().split(";").shift();
+        undefined : parts.pop().split(';').shift();
     },
 
     addEventListener: function (el, event, eventListener) {
       if (el.addEventListener) {
         el.addEventListener(event, eventListener);
-      } else {
+      } else if (el.attachEvent) {
         el.attachEvent('on' + event, eventListener);
       }
     },
 
-  };
-
-  cc.dombuilder = (function () {
-
-    /*
-     The attribute we store events in.
-     */
-    var eventAttribute = 'data-cc-event';
-    var conditionAttribute = 'data-cc-if';
-
-    /*
-     Shim to make addEventListener work correctly with IE.
-     */
-    var addEventListener = function (el, event, eventListener) {
-      // Add multiple event listeners at once if array is passed.
-      if (cc.util.isArray(event)) {
-        return cc.util.each(event, function (ev) {
-          addEventListener(el, ev, eventListener);
-        });
+    removeEventListener: function (el, event, eventListener) {
+      if (el.removeEventListener) {
+        el.removeEventListener(event, eventListener);
+      } else if (el.detachEvent) {
+        el.detachEvent('on' + event, eventListener);
       }
+    },
 
-      cc.util.addEventListener(el, event, eventListener);
-    };
-
-    /*
-     Replace {{variable.name}} with it's property on the scope
-     Also supports {{variable.name || another.name || 'string'}}
-     */
-    var insertReplacements = function (htmlStr, scope) {
-      return htmlStr.replace(/\{\{(.*?)\}\}/g, function (_match, sub) {
-        var tokens = sub.split('||');
-        var value, token;
-        while (token = tokens.shift()) {
-          token = cc.util.trim(token);
-
-          // If string
-          if (token[0] === '"') return token.slice(1, token.length - 1);
-
-          // If query matches
-          value = cc.util.queryObject(scope, token);
-
-          if (value) return value;
-        }
-
-        return '';
-      });
-    };
-
-    /*
-     Turn a string of html into DOM
-     */
-    var buildDom = function (htmlStr) {
+    buildDom: function (htmlStr) {
       var container = document.createElement('div');
       container.innerHTML = htmlStr;
-      return container.children[0];
-    };
+      var elem = container.children[0];
+      container = null;
+      return elem;
+    },
 
-    var applyToElementsWithAttribute = function (dom, attribute, func) {
-      var els = dom.parentNode.querySelectorAll('[' + attribute + ']');
-      cc.util.each(els, function (element) {
-        var attributeVal = element.getAttribute(attribute);
-        func(element, attributeVal);
-      }, window, true);
-    };
+    bind: function (func, context /* , args */ ) {
+      var args = Array.prototype.slice.call(arguments, 2);
+      return function () {
+        return func.apply(context, args.concat.apply(args, arguments));
+      };
+    },
 
-    /*
-     Parse event attributes in dom and set listeners to their matching scope methods
-     */
-    var applyEvents = function (dom, scope) {
-      applyToElementsWithAttribute(dom, eventAttribute, function (element, attributeVal) {
-        var parts = attributeVal.split(':');
-        var listener = cc.util.queryObject(scope, parts[1]);
-        addEventListener(element, parts[0], fnBind(listener, scope));
-      });
-    };
-
-    var applyConditionals = function (dom, scope) {
-      applyToElementsWithAttribute(dom, conditionAttribute, function (element, attributeVal) {
-        var value = cc.util.queryObject(scope, attributeVal);
-        if (!value) {
-          element.parentNode.removeChild(element);
+    contains: function (iterable, value) {
+      var found = false;
+      this.each(iterable, function (cur, idx, arr) {
+        if (cur == value) {
+          found = true;
+          return false; // break;
         }
       });
-    };
+      return found;
+    },
 
-    return {
+    getElementByClass: function (element, className) {
+      var foundElement = null,
+        found;
 
-      build: function (htmlStr, scope) {
-        if (cc.util.isArray(htmlStr)) htmlStr = htmlStr.join('');
+      function recurse (element, className, found) {
+        for (var i = 0, l = element.childNodes.length; i < l && !found; ++i) {
+          var el = element.childNodes[i];
 
-        htmlStr = insertReplacements(htmlStr, scope);
-        var dom = buildDom(htmlStr);
-        applyEvents(dom, scope);
-        applyConditionals(dom, scope);
+          if (this.hasClass(el, className)) {
+            foundElement = el;
+            found = true;
+            break;
+          }
 
-        return dom;
-      },
+          recurse.call(this, element.childNodes[i], className, found);
+        }
+      }
 
-    };
+      recurse.call(this, element, className, false);
 
-  })();
+      return foundElement;
+    },
+
+    hasClass: function (element, className) {
+      var safeClassName = this.escapeRegExp(className);
+      var regex = new RegExp('(?:\\s|^)' + safeClassName + '(?:\\s|$)');
+      return regex.test(element.className);
+    },
+
+    addClass: function (element, className) {
+      if (!this.hasClass(element, className)) {
+        element.className += ' ' + className;
+      }
+    },
+
+    removeClass: function (element, className) {
+      if (this.hasClass(element, className)) {
+        var safeClassName = this.escapeRegExp(className);
+        var regex = new RegExp('(\\s|^)' + safeClassName + '(\\s|$)');
+        element.className = element.className.replace(regex, '');
+      }
+    },
+
+    // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+    escapeRegExp: function (str) {
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    },
+
+  };
 
   /* Plugin */
 
@@ -228,162 +225,202 @@
     return {
 
       options: {
-        message: 'This website uses cookies to ensure you get the best experience on our website. ',
-        dismiss: 'Got it!',
-        learnMore: 'More info',
-        link: null,
-        target: '_self',
-        container: null, // selector
+        enabled: true,
+
+        // configuration
         theme: 'light-floating',
+        container: null, // selector
+        dismissOnScroll: false, // (disabled on false) auto-dismisses message when scrolled past a point. Pass number that `scrollTop` must exceed. E.G. 500
+        dismissOnTimeout: false, // (disabled on false) auto-dismisses message on a timeout. Pass timeout in milliseconds. E.G. 3000
+        blacklistPage: [], // match pages using a string or regex. matching pages in this array are automatically disabled
+        whitelistPage: [], // match pages using a string or regex. matching pages in this array are automatically enabled
+
+        // interface
+        message: 'This website uses cookies to ensure you get the best experience on our website.',
+        allow: 'Allow',
+        deny: 'Deny',
+        dismiss: null, // 'Got it!',
+
+        // extra link after `message`
+        learnMore: null, // '<a href="#null" target="_self">More Info</a>',
+
+        // cookie details
         domain: null, // default to current domain.
         path: '/',
         expiryDays: 365,
-        markup: [
-          '<div class="cc_banner-wrapper {{containerClasses}}">',
-          '<div class="cc_banner cc_container">',
-          '<a href="#null" data-cc-event="click:dismiss" target="_blank" class="cc_btn cc_btn_accept_all">{{options.dismiss}}</a>',
 
-          '<p class="cc_message">{{options.message}} <a data-cc-if="options.link" target="{{ options.target }}" class="cc_more_info" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
-
-          '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
-          '</div>',
-          '</div>'
-        ],
-
-        dismissOnScroll: false, // dismiss when the user scroll down
-
-        enabled: true,
-
-        dismissOnTimeout: false,
-
-        blacklistPage: [],
-        whitelistPage: [],
-
+        // Hooks
         onAllowCookies: function () {}, // cookies were accepted for the first time
         onDenyCookies: function () {}, // cookies were denied for the first time
+        onComplete: function (status) {}, // called on complete with the users preference to using cookies (see COOKIE_STATUS)
 
-        onComplete: function (hasConsented) {}, // called on complete with the users preference to using cookies (bool)
+        // interface html
+        markup: '<div class="cc_banner-wrapper">\
+          <div class="cc_banner cc_container">\
+            <a class="cc_btn"></a>\
+            <p class="cc_message"></p>\
+            <a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>\
+          </div>\
+        </div>',
       },
 
       init: function (options) {
-        this.setOptions(cc.util.isObject(options) ? options : {});
+        this.setOptions(util.isObject(options) ? options : {});
 
         // if this returns true, the `onComplete` hook was called and we've got nothing left to do
         if (checkCallbackHooks.call(this)) {
-          return ;
+          return;
         }
 
         // this enables or disables the plugin depending on the page URI and white/black list configuration
         applyPageFilter.call(this);
 
         if (!this.options.enabled) {
-          return ;
+          return;
         }
 
-        if (this.options.theme) {
+        // check if theme is already loaded
+        if (this.options.theme && !themeLoaded(this.options.theme)) {
           loadTheme.call(this, this.options.theme, function () {
             // theme loaded
+
+            // TODO we could potentially open the popup before the theme is loaded
+            //      in these cases, we should delay the `open` until the theme is loaded
           });
         }
 
         // creates container property `this.container`
-        setContainer.call(this);
+        if (this.options.container) {
+          this.container = document.querySelector(this.options.container);
+        } else {
+          this.container = document.body;
+        }
+
+        var allowedStatuses = util.map(cc.COOKIE_STATUS, function (c, i) {
+            return c;
+          })
+          .join('|');
+
+        var allowedButtonClass = new RegExp('(?:\\s|^)cc_btn_(' + allowedStatuses + ')(?:\\s|$)');
+
+        this._onButtonClick = util.bind(function (e) {
+          if (util.hasClass(e.target, 'cc_btn')) {
+            var matches = e.target.className.match(allowedButtonClass);
+
+            if (matches && matches[1]) {
+              this.setStatus(matches[1]);
+              this.close();
+            }
+          }
+        }, this);
 
         // create hidden HTML element
         render.call(this);
 
-        var delay = this.options.dismissOnTimeout;
-        if (typeof delay == 'number') {
-          window.setTimeout(fnBind(function () {
-            this.dismiss();
-          }, this), Math.floor(delay));
-        }
-
-        var scrollRange = this.options.dismissOnScroll;
-        if (typeof scrollRange == 'number') {
-          var onWindowScroll = fnBind(function (evt) {
-            if (window.pageYOffset > Math.floor(scrollRange)) {
-              this.dismiss();
-
-              window.removeEventListener('scroll', onWindowScroll);
-            }
-          }, this);
-
-          window.addEventListener('scroll', onWindowScroll);
-        }
+        // uses `dismissOnScroll` and `dismissOnTimeout`
+        applyAutoDismiss.call(this);
       },
 
-      destroy: function () {},
+      destroy: function () {
+        if (this.element) {
+          this._onButtonClick = null;
+
+          // remove from DOM
+          this.element.parentNode.removeChild(this.element);
+
+          // remove reference
+          this.element = null;
+        }
+
+        if (this.container) {
+          // remove reference
+          this.container = null;
+        }
+
+      },
 
       setOptions: function (options) {
-        cc.util.merge(this.options, options);
+        util.merge(this.options, options);
+      },
+
+      isOpen: function () {
+        return this.element && this.element.style.display === '' && !util.hasClass(this.element, 'cc_fade_out');
       },
 
       open: function (callback) {
-        var fadeOut = /(?:\s+|^)cc_fade_out(?:\s+|$)/;
-        if (fadeOut.test(this.element.classList)) {
-          this.element.className = this.element.className.replace(fadeOut, '');
-        } else {
+        if (!this.isOpen() && this.element) {
+          util.addEventListener(this.element, 'click', this._onButtonClick);
+
+          util.removeClass(this.element, 'cc_fade_out');
+
           this.element.style.display = '';
         }
       },
 
       close: function (callback) {
-        var onTransitionEnd = fnBind(function (e) {
-          callback();
-        }, this);
+        if (this.isOpen() && this.element) {
+          util.removeEventListener(this.element, 'click', this._onButtonClick);
 
-        // add event that removes the container on "transitionend"
-        this.element.addEventListener(cc.TRANSITION_END, onTransitionEnd);
+          // this is called after the popup has faded out
+          var onTransitionEnd = util.bind(function (e) {
+            this.element.style.display = 'none';
 
-        this.element.className += ' cc_fade_out'; // add transition class
+            // add event that removes the container on 'transitionend'
+            util.removeEventListener(this.element, cc.TRANSITION_END, onTransitionEnd);
+          }, this);
 
-        // NOTE if for any reason `cc_fade_out` is not set or it doesn't declare a css `transform`,
-        //      then the element WILL NOT be removed (as the `transitionend` event will not be run)
-        // 
-        // TODO detect scenarios where adding this class does not trigger a `transformstart` event
-      },
+          // bind event that hides the container after the transition
+          util.addEventListener(this.element, cc.TRANSITION_END, onTransitionEnd);
 
-      dismiss: function () {
-        this.setDismissedCookie(true);
-        this.close;
-      },
+          // the `render` function binds a 'transitionend' event that sets `display:none`.
+          // setting the display to 'none' is required to animate the popup when it opens.
+          util.addClass(this.element, 'cc_fade_out');
 
-      setDismissedCookie: function (hasConsented) {
-        var opts = this.options;
-        var cookieValue = cc.util.readCookie(cc.DISMISSED_COOKIE);
-        var chosenBefore = cookieValue == 'yes' || cookieValue == 'no';
-
-        cc.util.setCookie(cc.DISMISSED_COOKIE, hasConsented ? 'yes' : 'no', opts.expiryDays, opts.domain, opts.path);
-
-        if (!chosenBefore) {
-          hasConsented ? this.options.onAllowCookies() : this.options.onDenyCookies();
-          this.options.onComplete(hasConsented);
+          // NOTE if for any reason `cc_fade_out` is not set or it doesn't declare a css `transform`,
+          //      then the element WILL NOT be removed (as the `transitionend` event will not be run)
+          // 
+          // TODO detect scenarios where adding this class does not trigger a `transformstart` event
         }
       },
 
-      unsetDismissedCookie: function () {
-        cc.util.setCookie(cc.DISMISSED_COOKIE, '', -1, this.options.domain, this.options.path);
+      setStatus: function (status) {
+        var opts = this.options;
+        var value = util.readCookie(cc.COOKIE_STATUS_NAME);
+        var chosenBefore = util.contains(cc.COOKIE_STATUS, value);
+
+        // if `status` is valid
+        if (util.contains(cc.COOKIE_STATUS, status)) {
+          util.setCookie(cc.COOKIE_STATUS_NAME, status, opts.expiryDays, opts.domain, opts.path);
+
+          if (!chosenBefore) {
+            status == cc.COOKIE_STATUS.DENIED ? this.options.onDenyCookies() : this.options.onAllowCookies();
+            this.options.onComplete(status);
+          }
+        } else {
+          this.clearStatus();
+        }
       },
 
       getStatus: function () {
-        return cc.util.readCookie(cc.DISMISSED_COOKIE)
+        return util.readCookie(cc.COOKIE_STATUS_NAME)
       },
 
+      clearStatus: function () {
+        util.setCookie(cc.COOKIE_STATUS_NAME, '', -1, this.options.domain, this.options.path);
+      },
     };
 
-    function setContainer () {
-      if (this.options.container) {
-        this.container = document.querySelector(this.options.container);
-      } else {
-        this.container = document.body;
+    function themeLoaded (theme) {
+      var found = false;
+      var sheets = document.styleSheets;
+      for (var i = 0, l = sheets.length; i < l; ++i) {
+        var href = sheets[i].href;
+        if (href.substr(href.length - theme.length) == theme) {
+          found = true;
+          break;
+        }
       }
-
-      // Add class to container classes so we can specify css for IE8 only.
-      this.containerClasses = '';
-      if (navigator.appVersion.indexOf('MSIE 8') > -1) {
-        this.containerClasses += ' cc_ie8'
-      }
+      return found;
     }
 
     function loadTheme (theme, callback) {
@@ -397,25 +434,69 @@
       link.type = 'text/css';
       link.href = theme;
 
-      var loaded = false;
-      link.onload = fnBind(function () {
-        if (!loaded && callback) {
-          callback.call(this);
-          loaded = true;
-        }
+      var onCssLoad = util.bind(function () {
+        util.removeEventListener(link, 'load', onCssLoad);
+        link = null;
+        callback.call(this);
       }, this);
 
-      document.getElementsByTagName("head")[0].appendChild(link);
+      util.addEventListener(link, 'load', onCssLoad);
+
+      document.getElementsByTagName('head')[0].appendChild(link);
     }
 
     function render () {
-      // remove current element (if we've already rendered)
-      if (this.element && this.element.parentNode) {
-        this.element.parentNode.removeChild(this.element);
-        delete this.element;
+      // if already rendered, ignore
+      if (this.element) {
+        return;
       }
 
-      this.element = cc.dombuilder.build(this.options.markup, this);
+      // create markup
+      this.element = util.buildDom(this.options.markup);
+
+      // Add class to container classes so we can specify css for IE8 only
+      if (navigator.appVersion.indexOf('MSIE 8') > -1) {
+        util.addClass(this.element, 'cc_ie8');
+      }
+
+      var cont = util.getElementByClass(this.element, 'cc_container');
+      var para = util.getElementByClass(this.element, 'cc_message');
+      var button = util.getElementByClass(this.element, 'cc_btn');
+
+      para.innerHTML = this.options.message;
+
+      // if additional link exists, append it to the message
+      if (this.options.learnMore) {
+        var learnMore = util.buildDom(this.options.learnMore);
+        para.innerHTML += ' '; // add a space before we append the link
+        learnMore.className += ' cc_more_info';
+        para.appendChild(learnMore);
+
+        learnMore = null;
+      }
+
+      // remove class 'explicit' and add it later if needed
+      util.removeClass(cont, 'explicit');
+
+      if (this.options.dismiss) {
+        // just the dismiss button
+        button.innerHTML = this.options.dismiss;
+        button.className += ' cc_btn_' + cc.COOKIE_STATUS.DISMISSED;
+      } else {
+        var deny = button.cloneNode();
+        // accept / deny buttons
+        button.innerHTML = this.options.allow;
+        button.className += ' cc_btn_' + cc.COOKIE_STATUS.ALLOWED;
+
+        deny.innerHTML = this.options.deny;
+        deny.className += ' cc_btn_' + cc.COOKIE_STATUS.DENIED;
+
+        button.parentNode.insertBefore(deny, button.nextSibling);
+
+        util.addClass(cont, 'explicit');
+
+        deny = null;
+      }
 
       this.element.style.display = 'none';
 
@@ -424,29 +505,59 @@
       } else {
         this.container.insertBefore(this.element, this.container.firstChild);
       }
+
+      // attempting to clear references (though the browser should do this anyway...)
+      cont = null;
+      para = null;
+      button = null;
+    }
+
+    function applyAutoDismiss () {
+      var delay = this.options.dismissOnTimeout;
+      if (typeof delay == 'number') {
+        window.setTimeout(util.bind(function () {
+          this.dismiss();
+        }, this), Math.floor(delay));
+      }
+
+      var scrollRange = this.options.dismissOnScroll;
+      if (typeof scrollRange == 'number') {
+        var onWindowScroll = util.bind(function (evt) {
+          if (window.pageYOffset > Math.floor(scrollRange)) {
+            this.dismiss();
+
+            util.removeEventListener(window, 'scroll', onWindowScroll);
+          }
+        }, this);
+
+        util.addEventListener(window, 'scroll', onWindowScroll);
+      }
     }
 
     function checkCallbackHooks () {
       if (window.navigator && !navigator.cookieEnabled) {
-        this.options.onComplete(false); // cannot use cookies
+        this.options.onComplete(cc.COOKIE_STATUS.DENIED);
         return true;
       }
 
       if ((window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
-        this.options.onComplete(true); // can use cookies
+        this.options.onComplete(cc.COOKIE_STATUS.ALLOWED);
         return true;
       }
 
-      var currentDismissed = cc.util.readCookie(cc.DISMISSED_COOKIE);
-      if (currentDismissed == 'yes') {
-        this.options.onComplete(true); // can use cookies
+      var status = util.readCookie(cc.COOKIE_STATUS_NAME);
+      if (status == cc.COOKIE_STATUS.DISMISSED) {
+        this.options.onComplete(cc.COOKIE_STATUS.DISMISSED); // can use cookies
         return true;
-      } else if (currentDismissed == 'no') {
-        this.options.onComplete(false); // cannot use cookies
+      } else if (status == cc.COOKIE_STATUS.ALLOWED) {
+        this.options.onComplete(cc.COOKIE_STATUS.ALLOWED); // can use cookies
         return true;
-      } else if (typeof currentDismissed != 'undefined') {
+      } else if (status == cc.COOKIE_STATUS.DENIED) {
+        this.options.onComplete(cc.COOKIE_STATUS.DENIED); // cannot use cookies
+        return true;
+      } else if (typeof status != 'undefined') {
         // the dismissed cookie is invalid. delete it
-        this.unsetDismissedCookie();
+        this.clearStatus();
       }
       return false;
     }
@@ -571,9 +682,10 @@
               code: json.country
             };
           },
-        }, {
+        },
+        {
           // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
-          // The callback MUST BE `cookieconsent.locate.jsonp(SERVICE_INDEX)` (so cookieconsent.locate.jsonp(1))
+          // The callback MUST BE `cookieconsent.locate.jsonp(SERVICE_INDEX)` (so cookieconsent.locate.jsonp(1) for this index)
           url: 'http://freegeoip.net/json/?callback=cookieconsent.locate.jsonp(1)',
           isScript: true, // this is JSONP, therefore we must set it to run as a script
           callback: function (done, response) {
@@ -582,7 +694,8 @@
               code: json.country_code
             };
           },
-        }, {
+        },
+        {
           // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
           // make an additional AJAX call. Therefore we provide a `done` callback that can be called asynchronously
           url: 'http://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
@@ -603,7 +716,7 @@
             });
 
             // We can't return anything, because we need to wait for the second AJAX call to return.
-            // Then we can "complete" the service by passing data or an error to the `done` callback.
+            // Then we can 'complete' the service by passing data or an error to the `done` callback.
           },
         }
       ],
@@ -649,7 +762,7 @@
       var self = this;
 
       // runs service[idx] and triggers the callback on complete
-      runService(service, fnBind(runNextServiceOnError, self));
+      runService(service, util.bind(runNextServiceOnError, self));
     }
 
     // requires a `service` object that defines at least a `url` and `callback`
@@ -758,10 +871,13 @@
         if (!callback.done && (!state || /loaded|complete/.test(state))) {
           callback.done = true;
           callback();
+          s = null;
         }
       };
 
       document.body.appendChild(s);
+
+      s = null;
     }
 
     function makeAsyncRequest (url, onComplete, postData, requestHeaders) {
@@ -797,7 +913,7 @@
 
   }());
 
-  cc.initialise = function (options, success, failure) {
+  cc.initialise = function (options) {
     this.getCountryOptions(options, function (result) {
       cc.popup.init(result);
     }, function (error) {
@@ -807,52 +923,65 @@
 
   cc.getCountryOptions = function (options, success, failure) {
     cc.locate.init(function (result) {
-      var country = cc.law.get(result.code);
-
-      if (!country.hasLaw) {
-        // I don't need to show you this popup. exit
-        options.enabled = false;
-      }
-
-      if (country.browserSettings) {
-        // I have permission to get settings from browser
-
-        // TODO what do I do here?
-      }
-
-      if (country.refusable) {
-        // MUST provide a way to revoke consent at any time
-
-        options.deny = 'No';
-      }
-
-      if (country.consciousDismiss) {
-        // user must explicitly click the consent button. cannot use autodismiss (on scroll or timeout)
-
-        options.dismissOnScroll = false;
-        options.dismissOnTimeout = false;
-      }
-
-      /*
-      ################## DO I REALLY NEED THESE ? ############################
-
-      if(d.explicit){
-        // requires explicit consent
-      }
-
-      if(d.explicitPersonal){
-        // requires explicit consent but only if the cookies used contain personal info
-      }
-
-      if(d.implicit){
-        // requires implicit consent
-      }
-      */
-
-      success(options);
-
+      success(cc.applyCountryLaw(options, result.code));
     }, failure);
   };
+
+  cc.applyCountryLaw = function (options, countryCode) {
+    var country = cc.law.get(countryCode);
+
+    if (!country.hasLaw) {
+      // I don't need to show you this popup. exit
+      options.enabled = false;
+    }
+
+    if (country.browserSettings) {
+      // I have permission to get settings from browser
+
+      // TODO what do I do here?
+    }
+
+    if (country.refusable) {
+      // MUST provide a way to revoke consent at any time
+
+      options.deny = 'No';
+    }
+
+    if (country.consciousDismiss) {
+      // user must explicitly click the consent button. cannot use autodismiss (on scroll or timeout)
+
+      options.dismissOnScroll = false;
+      options.dismissOnTimeout = false;
+    }
+
+    /*
+    ################## DO I REALLY NEED THESE ? ############################
+
+    if(d.explicit){
+      // requires explicit consent
+    }
+
+    if(d.explicitPersonal){
+      // requires explicit consent but only if the cookies used contain personal info
+    }
+
+    if(d.implicit){
+      // requires implicit consent
+    }
+    */
+
+    return options;
+  };
+
+  cc.oldinit = function (options) {
+    cc.popup.init(options);
+    var status = cc.popup.getStatus();
+    if (!util.contains(cc.COOKIE_STATUS, status)) {
+      cc.popup.open();
+    }
+  };
+
+  cc.util = util;
 
   window.cookieconsent = cc;
 

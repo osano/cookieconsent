@@ -66,9 +66,20 @@
 
         padding-bottom:87px;
 
-
         .cc_message {
             font-size:1em;
+        }
+    }
+
+    .cc_container.explicit {
+
+        padding-bottom:117px;
+
+        .cc_btn.cc_btn_allowed {
+            bottom: 74px;
+        }
+        .cc_btn.cc_btn_denied {
+            bottom: 37px;
         }
     }
 
