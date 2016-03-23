@@ -16,7 +16,7 @@
   cc.COOKIE_STATUS = {
     DENIED: 'denied',
     ALLOWED: 'allowed',
-    DISMISSED: 'dismissed',
+    DISMISSED: 'dismissed'
   };
 
   // The path to built in themes
@@ -214,13 +214,19 @@
     // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
     escapeRegExp: function (str) {
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-    },
+    }
 
   };
 
   /* Plugin */
 
   cc.popup = (function () {
+
+    // array of values from COOKIE_STATUS
+    var allowedStatuses = util.map(cc.COOKIE_STATUS, util.escapeRegExp);
+
+    // regex to identify HTML button by class name. matches classes 'cc_btn_'+('denied' OR 'allowed' OR 'dismissed')
+    var allowedButtonClass = new RegExp('(?:\\s|^)cc_btn_(' + allowedStatuses.join('|') + ')(?:\\s|$)');
 
     return {
 
@@ -239,7 +245,8 @@
         message: 'This website uses cookies to ensure you get the best experience on our website.',
         allow: 'Allow',
         deny: 'Deny',
-        dismiss: null, // 'Got it!',
+        dismiss: 'Got it!',
+        explicit: false,
 
         // extra link after `message`
         learnMore: null, // '<a href="#null" target="_self">More Info</a>',
@@ -261,27 +268,29 @@
             <p class="cc_message"></p>\
             <a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>\
           </div>\
-        </div>',
+        </div>'
       },
 
       init: function (options) {
         this.setOptions(util.isObject(options) ? options : {});
 
-        // if this returns true, the `onComplete` hook was called and we've got nothing left to do
-        if (checkCallbackHooks.call(this)) {
-          return;
-        }
+        // calls `onComplete` if necessary
+        checkCallbackHooks.call(this);
 
-        // this enables or disables the plugin depending on the page URI and white/black list configuration
+        // enable / disable plugin depending on config
         applyPageFilter.call(this);
 
         if (!this.options.enabled) {
           return;
         }
 
+        if (!this.loadedThemes) {
+          this.loadedThemes = [];
+        }
+
         // check if theme is already loaded
-        if (this.options.theme && !themeLoaded(this.options.theme)) {
-          loadTheme.call(this, this.options.theme, function () {
+        if (this.options.theme) {
+          this.useTheme(this.options.theme, function () {
             // theme loaded
 
             // TODO we could potentially open the popup before the theme is loaded
@@ -289,19 +298,11 @@
           });
         }
 
-        // creates container property `this.container`
         if (this.options.container) {
           this.container = document.querySelector(this.options.container);
         } else {
           this.container = document.body;
         }
-
-        var allowedStatuses = util.map(cc.COOKIE_STATUS, function (c, i) {
-            return c;
-          })
-          .join('|');
-
-        var allowedButtonClass = new RegExp('(?:\\s|^)cc_btn_(' + allowedStatuses + ')(?:\\s|$)');
 
         this._onButtonClick = util.bind(function (e) {
           if (util.hasClass(e.target, 'cc_btn')) {
@@ -323,7 +324,13 @@
 
       destroy: function () {
         if (this.element) {
+          util.removeEventListener(this.element, 'click', this._onButtonClick);
+
           this._onButtonClick = null;
+
+          if (this.loadedThemes.length) {
+            this.unloadThemes();
+          }
 
           // remove from DOM
           this.element.parentNode.removeChild(this.element);
@@ -336,11 +343,41 @@
           // remove reference
           this.container = null;
         }
-
       },
 
       setOptions: function (options) {
         util.merge(this.options, options);
+      },
+
+      useTheme: function (theme, callback) {
+        // check if the theme has already been loaded
+        if (util.contains(this.loadedThemes, theme)) {
+          // disable current theme
+          findLoadedTheme(this.lastTheme).disabled = true;
+
+          // find `theme` and enable it
+          findLoadedTheme(theme).disabled = false;
+
+          this.lastTheme = theme;
+
+          callback.call(this);
+        } else {
+          loadTheme.call(this, theme, callback);
+        }
+      },
+
+      unloadThemes: function () {
+        // not the most efficient, but at least I don't have to implement an 'intersect' function
+        util.each(this.loadedThemes, function (theme) {
+          var linkTag = findLoadedTheme(theme);
+          if (linkTag && linkTag.ownerNode) {
+            var node = linkTag.ownerNode;
+            node.parentNode.removeChild(node);
+          }
+        });
+
+        this.loadedThemes = [];
+        this.lastTheme = undefined;
       },
 
       isOpen: function () {
@@ -349,37 +386,34 @@
 
       open: function (callback) {
         if (!this.isOpen() && this.element) {
-          util.addEventListener(this.element, 'click', this._onButtonClick);
+          if (cc.TRANSITION_END && this.element.style.display == '') {
+            util.removeClass(this.element, 'cc_fade_out');
 
-          util.removeClass(this.element, 'cc_fade_out');
+            // Sometimes the popup is hidden with '.cc_fade_out' (which uses visibility: hidden).
+            // The "open" animation will only run if the element is hidden (using display: none) before showing it, otherwise the animation won't run.
 
-          this.element.style.display = '';
+            // So we can either set 'display: none' after we close the popup OR directly before we open it.
+            // It would make more sense to do it after "close" however that means relying on "transitionend", which isn't exactly cross-browser 'reliable'
+            this.element.style.display = 'none';
+
+            // We must "show" the popup in a timeout. This is to give the browser chance to update and draw the DOM.
+            // If we don't do this, the animation won't run. If the delay period is < 20ms, the animation won't run.
+            setTimeout(util.bind(function(){
+              this.element.style.display = '';
+            }, this), 20);
+          } else {
+            this.element.style.display = '';
+          }
         }
       },
 
       close: function (callback) {
         if (this.isOpen() && this.element) {
-          util.removeEventListener(this.element, 'click', this._onButtonClick);
-
-          // this is called after the popup has faded out
-          var onTransitionEnd = util.bind(function (e) {
+          if (cc.TRANSITION_END) {
+            util.addClass(this.element, 'cc_fade_out');
+          } else {
             this.element.style.display = 'none';
-
-            // add event that removes the container on 'transitionend'
-            util.removeEventListener(this.element, cc.TRANSITION_END, onTransitionEnd);
-          }, this);
-
-          // bind event that hides the container after the transition
-          util.addEventListener(this.element, cc.TRANSITION_END, onTransitionEnd);
-
-          // the `render` function binds a 'transitionend' event that sets `display:none`.
-          // setting the display to 'none' is required to animate the popup when it opens.
-          util.addClass(this.element, 'cc_fade_out');
-
-          // NOTE if for any reason `cc_fade_out` is not set or it doesn't declare a css `transform`,
-          //      then the element WILL NOT be removed (as the `transitionend` event will not be run)
-          // 
-          // TODO detect scenarios where adding this class does not trigger a `transformstart` event
+          }
         }
       },
 
@@ -407,40 +441,53 @@
 
       clearStatus: function () {
         util.setCookie(cc.COOKIE_STATUS_NAME, '', -1, this.options.domain, this.options.path);
-      },
+      }
     };
 
-    function themeLoaded (theme) {
-      var found = false;
+    function findLoadedTheme (theme) {
+      var regex = new RegExp(util.escapeRegExp(theme) + '$');
       var sheets = document.styleSheets;
+      var linkTag = null;
+      var tag;
+
       for (var i = 0, l = sheets.length; i < l; ++i) {
-        var href = sheets[i].href;
-        if (href.substr(href.length - theme.length) == theme) {
-          found = true;
+        tag = sheets[i];
+
+        // if `tag.href` ends with `theme`
+        if (tag.href && tag.href.match(regex)) {
+          linkTag = tag;
           break;
         }
       }
-      return found;
+
+      return linkTag;
     }
 
     function loadTheme (theme, callback) {
+      var link = document.createElement('link');
+      var onCssLoad = util.bind(function () {
+        if(this.lastTheme) {
+          findLoadedTheme(this.lastTheme).disabled = true;
+        }
+
+        this.loadedThemes.push(theme);
+        this.lastTheme = theme;
+
+        util.removeEventListener(link, 'load', onCssLoad);
+        link = null;
+
+        callback.call(this);
+      }, this);
+
       // If theme is specified by name
       if (theme.indexOf('.css') === -1) {
         theme = cc.THEME_BUCKET_PATH + theme + '.css';
       }
 
-      var link = document.createElement('link');
+      util.addEventListener(link, 'load', onCssLoad);
       link.rel = 'stylesheet';
       link.type = 'text/css';
       link.href = theme;
-
-      var onCssLoad = util.bind(function () {
-        util.removeEventListener(link, 'load', onCssLoad);
-        link = null;
-        callback.call(this);
-      }, this);
-
-      util.addEventListener(link, 'load', onCssLoad);
 
       document.getElementsByTagName('head')[0].appendChild(link);
     }
@@ -478,7 +525,7 @@
       // remove class 'explicit' and add it later if needed
       util.removeClass(cont, 'explicit');
 
-      if (this.options.dismiss) {
+      if (!this.options.explicit) {
         // just the dismiss button
         button.innerHTML = this.options.dismiss;
         button.className += ' cc_btn_' + cc.COOKIE_STATUS.DISMISSED;
@@ -497,6 +544,8 @@
 
         deny = null;
       }
+
+      util.addEventListener(this.element, 'click', this._onButtonClick);
 
       this.element.style.display = 'none';
 
@@ -537,29 +586,23 @@
     function checkCallbackHooks () {
       if (window.navigator && !navigator.cookieEnabled) {
         this.options.onComplete(cc.COOKIE_STATUS.DENIED);
-        return true;
       }
 
       if ((window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
         this.options.onComplete(cc.COOKIE_STATUS.ALLOWED);
-        return true;
       }
 
       var status = util.readCookie(cc.COOKIE_STATUS_NAME);
       if (status == cc.COOKIE_STATUS.DISMISSED) {
         this.options.onComplete(cc.COOKIE_STATUS.DISMISSED); // can use cookies
-        return true;
       } else if (status == cc.COOKIE_STATUS.ALLOWED) {
         this.options.onComplete(cc.COOKIE_STATUS.ALLOWED); // can use cookies
-        return true;
       } else if (status == cc.COOKIE_STATUS.DENIED) {
         this.options.onComplete(cc.COOKIE_STATUS.DENIED); // cannot use cookies
-        return true;
       } else if (typeof status != 'undefined') {
         // the dismissed cookie is invalid. delete it
         this.clearStatus();
       }
-      return false;
     }
 
     function applyPageFilter () {
@@ -619,9 +662,9 @@
           implicit: arrayIndexOf(implicit, countryCode) >= 0,
           refusable: arrayIndexOf(refusable, countryCode) >= 0,
           consciousDismiss: arrayIndexOf(consciousDismiss, countryCode) >= 0,
-          browserSettings: arrayIndexOf(browserSettings, countryCode) >= 0,
+          browserSettings: arrayIndexOf(browserSettings, countryCode) >= 0
         };
-      },
+      }
 
     };
 
@@ -681,7 +724,7 @@
             return json.error ? toError(json) : {
               code: json.country
             };
-          },
+          }
         },
         {
           // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
@@ -693,7 +736,7 @@
             return json.error ? toError(json) : {
               code: json.country_code
             };
-          },
+          }
         },
         {
           // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
@@ -717,7 +760,7 @@
 
             // We can't return anything, because we need to wait for the second AJAX call to return.
             // Then we can 'complete' the service by passing data or an error to the `done` callback.
-          },
+          }
         }
       ],
 
@@ -745,7 +788,7 @@
           // this property is detected and replaced as the `responseText` of a request in the `onload` callback of a script tag
           service.__JSONP_DATA = JSON.stringify(response);
         };
-      },
+      }
 
     };
 
@@ -916,8 +959,10 @@
   cc.initialise = function (options) {
     this.getCountryOptions(options, function (result) {
       cc.popup.init(result);
+      cc.popup.open();
     }, function (error) {
       cc.popup.init(options);
+      cc.popup.open();
     });
   };
 
@@ -944,7 +989,7 @@
     if (country.refusable) {
       // MUST provide a way to revoke consent at any time
 
-      options.deny = 'No';
+      options.dismiss = null;
     }
 
     if (country.consciousDismiss) {
