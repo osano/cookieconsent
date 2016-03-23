@@ -5,12 +5,13 @@
   "main": "cookieconsent.js",
   "devDependencies": {
     "del": "^2.0.2",
-    "gulp": "^3.9.0",
-    "gulp-rename": "^1.2.0",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
     "gulp-sass": "^2.2.0",
-    "gulp-uglify": "^1.1.0",
-    "run-sequence": "^1.1.4"
+    "gulp-uglify": "^1.5.3",
+    "run-sequence": "^1.1.4",
+    "yargs": "^4.3.2"
   },
   "homepage": "http://silktide.com/tools/cookieconsent",
   "scripts": {
@@ -22,7 +23,5 @@
   },
   "author": "Silktide Ltd.",
   "license": "MIT",
-  "dependencies": {
-    "yargs": "^3.9.1"
-  }
+  "dependencies": {}
 }
