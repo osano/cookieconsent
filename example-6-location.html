@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Theme Template for Bootstrap</title>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+
+    <style>
+      .jumbotron{margin-top:100px}
+      .jumbotron .h1,.jumbotron h1{font-size:80px}
+      .btn-xl button{padding:18px 28px;font-size:22px;line-height:normal}
+    </style>
+  </head>
+
+  <body role="document">
+
+    <div class="container theme-showcase" role="main">
+      <div class="jumbotron text-center">
+        <h1>Location example</h1>
+        <p>The cookie law is not identical everywhere. Each member country must implement their own law. For example, some countries require that a consciopus action is taken (therefore timeouts and "dismiss on scroll" like options cannot be used). Some countries say that an informational banner is sufficient, and others say that websites MUST provide a way to allow the user to refuse consent. Other countries that are in europe but not part of the euopean union are exempt from this law</p>
+
+        <p>What we suggest is to assuming the highest level of compliance I.E. Explicit consent caused by a conscious action made directly by the user, and then alter features depending on the legislation of the user's country. That way you are covered for all countries, and in cases where the rules are less strict, we can migrate to less intrusive options.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Countries</label>
+        <select id="theme-selector" class="form-control"></select>
+      </div>
+
+      <p id="message1"></p>
+
+      <p class="text-center btn-xl large">
+        <button id="btn-clear-cookie" type="button" class="btn btn-primary" style="display:none">Clear previous answer</button>
+        <button id="btn-next-example" type="button" class="btn btn-success">Next example</button>
+      </p>
+
+    </div>
+
+  </body>
+</html>
+
+
+<script>
+  var COUNTRY_CODES = {AC: 'Ascension Island', AD: 'Andorra', AE: 'United Arab Emirates', AF: 'Afghanistan', AG: 'Antigua and Barbuda', AI: 'Anguilla', AL: 'Albania', AM: 'Armenia', AN: 'Netherlands Antilles', AO: 'Angola', AQ: 'Antarctica', AR: 'Argentina', AS: 'American Samoa', AT: 'Austria', AU: 'Australia', AW: 'Aruba', AX: 'Aland Islands', AZ: 'Azerbaijan', BA: 'Bosnia and Herzegovina', BB: 'Barbados', BD: 'Bangladesh', BE: 'Belgium', BF: 'Burkina Faso', BG: 'Bulgaria', BH: 'Bahrain', BI: 'Burundi', BJ: 'Benin', BM: 'Bermuda', BN: 'Brunei Darussalam', BO: 'Bolivia', BR: 'Brazil', BS: 'Bahamas', BT: 'Bhutan', BV: 'Bouvet Island', BW: 'Botswana', BY: 'Belarus', BZ: 'Belize', CA: 'Canada', CC: 'Cocos (Keeling) Islands', CD: 'Congo, Democratic Republic', CF: 'Central African Republic', CG: 'Congo', CH: 'Switzerland', CI: 'Cote D\'Ivoire (Ivory Coast)', CK: 'Cook Islands', CL: 'Chile', CM: 'Cameroon', CN: 'China', CO: 'Colombia', CR: 'Costa Rica', CS: 'Czechoslovakia (former)', CU: 'Cuba', CV: 'Cape Verde', CX: 'Christmas Island', CY: 'Cyprus', CZ: 'Czech Republic', DE: 'Germany', DJ: 'Djibouti', DK: 'Denmark', DM: 'Dominica', DO: 'Dominican Republic', DZ: 'Algeria', EC: 'Ecuador', EE: 'Estonia', EG: 'Egypt', EH: 'Western Sahara', ER: 'Eritrea', ES: 'Spain', ET: 'Ethiopia', EU: 'European Union', FI: 'Finland', FJ: 'Fiji', FK: 'Falkland Islands (Malvinas)', FM: 'Micronesia', FO: 'Faroe Islands', FR: 'France', FX: 'France, Metropolitan', GA: 'Gabon', GB: 'Great Britain (UK)', GD: 'Grenada', GE: 'Georgia', GF: 'French Guiana', GG: 'Guernsey', GH: 'Ghana', GI: 'Gibraltar', GL: 'Greenland', GM: 'Gambia', GN: 'Guinea', GP: 'Guadeloupe', GQ: 'Equatorial Guinea', GR: 'Greece', GS: 'S. Georgia and S. Sandwich Isls.', GT: 'Guatemala', GU: 'Guam', GW: 'Guinea-Bissau', GY: 'Guyana', HK: 'Hong Kong', HM: 'Heard and McDonald Islands', HN: 'Honduras', HR: 'Croatia (Hrvatska)', HT: 'Haiti', HU: 'Hungary', ID: 'Indonesia', IE: 'Ireland', IL: 'Israel', IM: 'Isle of Man', IN: 'India', IO: 'British Indian Ocean Territory', IQ: 'Iraq', IR: 'Iran', IS: 'Iceland', IT: 'Italy', JE: 'Jersey', JM: 'Jamaica', JO: 'Jordan', JP: 'Japan', KE: 'Kenya', KG: 'Kyrgyzstan', KH: 'Cambodia', KI: 'Kiribati', KM: 'Comoros', KN: 'Saint Kitts and Nevis', KP: 'Korea (North)', KR: 'Korea (South)', KW: 'Kuwait', KY: 'Cayman Islands', KZ: 'Kazakhstan', LA: 'Laos', LB: 'Lebanon', LC: 'Saint Lucia', LI: 'Liechtenstein', LK: 'Sri Lanka', LR: 'Liberia', LS: 'Lesotho', LT: 'Lithuania', LU: 'Luxembourg', LV: 'Latvia', LY: 'Libya', MA: 'Morocco', MC: 'Monaco', MD: 'Moldova', ME: 'Montenegro', MG: 'Madagascar', MH: 'Marshall Islands', MK: 'F.Y.R.O.M. (Macedonia)', ML: 'Mali', MM: 'Myanmar', MN: 'Mongolia', MO: 'Macau', MP: 'Northern Mariana Islands', MQ: 'Martinique', MR: 'Mauritania', MS: 'Montserrat', MT: 'Malta', MU: 'Mauritius', MV: 'Maldives', MW: 'Malawi', MX: 'Mexico', MY: 'Malaysia', MZ: 'Mozambique', NA: 'Namibia', NC: 'New Caledonia', NE: 'Niger', NF: 'Norfolk Island', NG: 'Nigeria', NI: 'Nicaragua', NL: 'Netherlands', NO: 'Norway', NP: 'Nepal', NR: 'Nauru', NT: 'Neutral Zone', NU: 'Niue', NZ: 'New Zealand (Aotearoa)', OM: 'Oman', PA: 'Panama', PE: 'Peru', PF: 'French Polynesia', PG: 'Papua New Guinea', PH: 'Philippines', PK: 'Pakistan', PL: 'Poland', PM: 'St. Pierre and Miquelon', PN: 'Pitcairn', PR: 'Puerto Rico', PS: 'Palestinian Territory, Occupied', PT: 'Portugal', PW: 'Palau', PY: 'Paraguay', QA: 'Qatar', RE: 'Reunion', RS: 'Serbia', RO: 'Romania', RU: 'Russian Federation', RW: 'Rwanda', SA: 'Saudi Arabia', SB: 'Solomon Islands', SC: 'Seychelles', SD: 'Sudan', SE: 'Sweden', SG: 'Singapore', SH: 'St. Helena', SI: 'Slovenia', SJ: 'Svalbard & Jan Mayen Islands', SK: 'Slovak Republic', SL: 'Sierra Leone', SM: 'San Marino', SN: 'Senegal', SO: 'Somalia', SR: 'Suriname', ST: 'Sao Tome and Principe', SU: 'USSR (former)', SV: 'El Salvador', SY: 'Syria', SZ: 'Swaziland', TC: 'Turks and Caicos Islands', TD: 'Chad', TF: 'French Southern Territories', TG: 'Togo', TH: 'Thailand', TJ: 'Tajikistan', TK: 'Tokelau', TM: 'Turkmenistan', TN: 'Tunisia', TO: 'Tonga', TP: 'East Timor', TR: 'Turkey', TT: 'Trinidad and Tobago', TV: 'Tuvalu', TW: 'Taiwan', TZ: 'Tanzania', UA: 'Ukraine', UG: 'Uganda', UK: 'United Kingdom', UM: 'US Minor Outlying Islands', US: 'United States', UY: 'Uruguay', UZ: 'Uzbekistan', VA: 'Vatican City State (Holy See)', VC: 'Saint Vincent & the Grenadines', VE: 'Venezuela', VG: 'British Virgin Islands', VI: 'Virgin Islands (U.S.)', VN: 'Viet Nam', VU: 'Vanuatu', WF: 'Wallis and Futuna Islands', WS: 'Samoa', YE: 'Yemen', YT: 'Mayotte', YU: 'Serbia and Montenegro (former Yugoslavia)', ZA: 'South Africa', ZM: 'Zambia', ZR: 'Zair', ZW: 'Zimbabw'};
+</script>
+<script src="cookieconsent.js"></script>
+<script>
+
+  var ccOptions = {
+    theme: 'build/light-floating.css',
+
+    explicit: true,
+
+    // hide the "clear" button when we don't need it (when there is nothing to clear)
+    onComplete: function (status){
+      btnClear.style.display = status ? '' : 'none';
+    }
+  };
+
+  var msg1 = document.getElementById('message1');
+  var btnNext = document.getElementById('btn-next-example');
+  var btnClear = document.getElementById('btn-clear-cookie');
+  var themeSelector = document.getElementById('theme-selector');
+
+  themeSelector.onchange = function (e) {
+    init(ccOptions, e.target.value);
+  };
+
+  btnClear.onclick = function () {
+    btnClear.style.display = 'none';
+
+    cookieconsent.popup.clearStatus();
+    cookieconsent.popup.open();
+  };
+
+  btnNext.onclick = function () {
+    window.location = '/cookieconsent2/example-7-javascript-api.html';
+  };
+
+  setSelectBox(themeSelector, COUNTRY_CODES);
+
+  init(ccOptions, themeSelector[0].value);
+
+  themeSelector.focus();
+
+  function init (opts, code) {
+    var msg = [];
+    var country = cookieconsent.law.get(code);
+    var clonedOpts = cookieconsent.util.clone(opts);
+
+    cookieconsent.oldinit(cookieconsent.applyCountryLaw(clonedOpts, code));
+
+    msg.push('Has Law: ' + (country.hasLaw ? 'true' : 'false'));
+
+    if (country.hasLaw) {
+      msg.push('Explicit consent required? ' + (country.explicit ? 'true' : 'false'));
+      msg.push('Must be revokable? ' + (country.revokable ? 'true' : 'false'));
+      msg.push('Can auto dismiss? ' + (country.Autodismiss ? 'true' : 'false'));
+    }
+
+    msg1.innerHTML = msg.join('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
+  }
+
+  function setSelectBox (selectbox, options) {
+    var htmlStr = '';
+    for (var prop in options) {
+      htmlStr += '<option value="' + prop + '">' + prop + ' - ' + options[prop] + '</option>';
+    }
+    selectbox.innerHTML = htmlStr;
+  }
+
+</script>

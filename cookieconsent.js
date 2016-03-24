@@ -27,24 +27,25 @@
   // A cross browser method of getting the transition event name
   // Note: If you simply provide a list of possible event names like 'transitionend webkitTransitionEnd msTransitionEnd' etc,
   //       then the event may not be triggered. This method ensures that it is correctly triggered
-  cc.TRANSITION_END = (function () {
-    var el = document.createElement('div');
-    var transitions = {
-      transition: 'transitionend',
-      OTransition: 'otransitionend',
-      MozTransition: 'transitionend',
-      WebkitTransition: 'webkitTransitionEnd'
-    };
+  cc.HAS_TRANSITION = (function supportsTransitions() {
+    var v = ['Moz', 'webkit', 'Webkit', 'Khtml', 'O', 'ms'],
+      b = document.body || document.documentElement,
+      p = 'transition',
+      s = b.style;
 
-    for (var prop in transitions) {
-      if (transitions.hasOwnProperty(prop) && typeof el.style[prop] != 'undefined') {
-        return transitions[prop];
+    if (typeof s[p] == 'string') {
+      return true;
+    }
+
+    p = p.charAt(0).toUpperCase() + p.substr(1);
+
+    for (var i = 0, l = v.length; i < l; ++i) {
+      if (typeof s[v[i] + p] == 'string') {
+        return true;
       }
     }
 
-    el = null;
-
-    return null;
+    return false;
   }());
 
   /* Helper methods */
@@ -214,6 +215,35 @@
     // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
     escapeRegExp: function (str) {
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    },
+
+    clone: function (obj) {
+      var c = obj instanceof Array ? [] : {};
+
+      if (typeof obj != 'object' || obj == null) {
+        return obj;
+      }
+
+      for (var i in obj) {
+        var prop = obj[i];
+        if (typeof prop == 'object') {
+          if (prop instanceof Array) {
+            c[i] = [];
+            for (var j = 0; j < prop.length; j++) {
+              if (typeof prop[j] != 'object') {
+                c[i].push(prop[j]);
+              } else {
+                c[i].push(this.clone(prop[j]));
+              }
+            }
+          } else {
+            c[i] = this.clone(prop);
+          }
+        } else {
+          c[i] = prop;
+        }
+      }
+      return c;
     }
 
   };
@@ -228,48 +258,48 @@
     // regex to identify HTML button by class name. matches classes 'cc_btn_'+('denied' OR 'allowed' OR 'dismissed')
     var allowedButtonClass = new RegExp('(?:\\s|^)cc_btn_(' + allowedStatuses.join('|') + ')(?:\\s|$)');
 
+    var defaultOptions = {
+      enabled: true,
+
+      // configuration
+      theme: 'light-floating',
+      container: null, // selector
+      dismissOnScroll: false, // (disabled on false) auto-dismisses message when scrolled past a point. Pass number that `scrollTop` must exceed. E.G. 500
+      dismissOnTimeout: false, // (disabled on false) auto-dismisses message on a timeout. Pass timeout in milliseconds. E.G. 3000
+      blacklistPage: [], // match pages using a string or regex. matching pages in this array are automatically disabled
+      whitelistPage: [], // match pages using a string or regex. matching pages in this array are automatically enabled
+
+      // interface
+      message: 'This website uses cookies to ensure you get the best experience on our website.',
+      allow: 'Allow',
+      deny: 'Deny',
+      dismiss: 'Got it!',
+      explicit: false,
+
+      // extra link after `message`
+      learnMore: null, // '<a href="#null" target="_self">More Info</a>',
+
+      // cookie details
+      domain: null, // default to current domain.
+      path: '/',
+      expiryDays: 365,
+
+      // Hooks
+      onAllowCookies: function () {}, // cookies were accepted for the first time
+      onDenyCookies: function () {}, // cookies were denied for the first time
+      onComplete: function (status) {}, // called on complete with the users preference to using cookies (see COOKIE_STATUS)
+
+      // interface html
+      markup: '<div class="cc_banner-wrapper">\
+        <div class="cc_banner cc_container">\
+          <a class="cc_btn"></a>\
+          <p class="cc_message"></p>\
+          <a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>\
+        </div>\
+      </div>'
+    };
+
     return {
-
-      options: {
-        enabled: true,
-
-        // configuration
-        theme: 'light-floating',
-        container: null, // selector
-        dismissOnScroll: false, // (disabled on false) auto-dismisses message when scrolled past a point. Pass number that `scrollTop` must exceed. E.G. 500
-        dismissOnTimeout: false, // (disabled on false) auto-dismisses message on a timeout. Pass timeout in milliseconds. E.G. 3000
-        blacklistPage: [], // match pages using a string or regex. matching pages in this array are automatically disabled
-        whitelistPage: [], // match pages using a string or regex. matching pages in this array are automatically enabled
-
-        // interface
-        message: 'This website uses cookies to ensure you get the best experience on our website.',
-        allow: 'Allow',
-        deny: 'Deny',
-        dismiss: 'Got it!',
-        explicit: false,
-
-        // extra link after `message`
-        learnMore: null, // '<a href="#null" target="_self">More Info</a>',
-
-        // cookie details
-        domain: null, // default to current domain.
-        path: '/',
-        expiryDays: 365,
-
-        // Hooks
-        onAllowCookies: function () {}, // cookies were accepted for the first time
-        onDenyCookies: function () {}, // cookies were denied for the first time
-        onComplete: function (status) {}, // called on complete with the users preference to using cookies (see COOKIE_STATUS)
-
-        // interface html
-        markup: '<div class="cc_banner-wrapper">\
-          <div class="cc_banner cc_container">\
-            <a class="cc_btn"></a>\
-            <p class="cc_message"></p>\
-            <a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>\
-          </div>\
-        </div>'
-      },
 
       init: function (options) {
         this.setOptions(util.isObject(options) ? options : {});
@@ -279,6 +309,10 @@
 
         // enable / disable plugin depending on config
         applyPageFilter.call(this);
+
+        if (this.isOpen()) {
+          this.close();
+        }
 
         if (!this.options.enabled) {
           return;
@@ -346,6 +380,10 @@
       },
 
       setOptions: function (options) {
+        // set options back to default options
+        this.options = util.clone(defaultOptions);
+
+        // merge new options
         util.merge(this.options, options);
       },
 
@@ -385,8 +423,8 @@
       },
 
       open: function (callback) {
-        if (!this.isOpen() && this.element) {
-          if (cc.TRANSITION_END && this.element.style.display == '') {
+        if (!this.isOpen()) {
+          if (cc.HAS_TRANSITION && this.element.style.display == '') {
             util.removeClass(this.element, 'cc_fade_out');
 
             // Sometimes the popup is hidden with '.cc_fade_out' (which uses visibility: hidden).
@@ -408,8 +446,8 @@
       },
 
       close: function (callback) {
-        if (this.isOpen() && this.element) {
-          if (cc.TRANSITION_END) {
+        if (this.isOpen()) {
+          if (cc.HAS_TRANSITION) {
             util.addClass(this.element, 'cc_fade_out');
           } else {
             this.element.style.display = 'none';
@@ -976,44 +1014,25 @@
     var country = cc.law.get(countryCode);
 
     if (!country.hasLaw) {
-      // I don't need to show you this popup. exit
+      // The country has no cookie law
       options.enabled = false;
     }
 
-    if (country.browserSettings) {
-      // I have permission to get settings from browser
-
-      // TODO what do I do here?
+    if (country.explicit) {
+      // we must provide a way to deny consent
+      options.explicit = true;
     }
 
-    if (country.refusable) {
-      // MUST provide a way to revoke consent at any time
-
-      options.dismiss = null;
+    if (country.revokable) {
+      // we must provide an option to revoke consent at a later time
+      options.revokable = true;
     }
 
-    if (country.consciousDismiss) {
-      // user must explicitly click the consent button. cannot use autodismiss (on scroll or timeout)
-
+    if (!country.autodismiss) {
+      // user must explicitly click the consent button
       options.dismissOnScroll = false;
       options.dismissOnTimeout = false;
     }
-
-    /*
-    ################## DO I REALLY NEED THESE ? ############################
-
-    if(d.explicit){
-      // requires explicit consent
-    }
-
-    if(d.explicitPersonal){
-      // requires explicit consent but only if the cookies used contain personal info
-    }
-
-    if(d.implicit){
-      // requires implicit consent
-    }
-    */
 
     return options;
   };
@@ -1021,7 +1040,7 @@
   cc.oldinit = function (options) {
     cc.popup.init(options);
     var status = cc.popup.getStatus();
-    if (!util.contains(cc.COOKIE_STATUS, status)) {
+    if (!util.contains(cc.COOKIE_STATUS, status) && cc.popup.options.enabled) {
       cc.popup.open();
     }
   };
