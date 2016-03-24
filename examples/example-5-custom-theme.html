@@ -12,12 +12,7 @@
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
-
-    <style>
-      .jumbotron{margin-top:100px;}
-      .btn-xl button {padding: 18px 28px; font-size: 22px; line-height: normal;}
-      @media screen and (min-width: 768px) { .jumbotron .h1, .jumbotron h1 {font-size: 80px;} }
-    </style>
+    <link href="example-style.css" rel="stylesheet">
 
     <style>
       .cc_banner-wrapper{z-index:9001;position:relative}
@@ -74,8 +69,6 @@
       <div class="jumbotron text-center">
         <h1>Custom theme example</h1>
         <p>This page creates a new theme based from an existing theme. The styling required for positioning and animation have been modularised, meaning it is very easy to re-use and extend a style.</p>
-
-        <em>Note: If you click a button on the popup, it will permanently dismiss the message. That means that the popup will not be shown again, even after a page refresh. That is unless you clear the previous decision that you made by clicking the 'Clear previous answer' button below (only displayed if an answer has been selected)</em>
       </div>
 
       <p class="text-center btn-xl large">
@@ -88,8 +81,19 @@
   </body>
 </html>
 
-<script src="cookieconsent.js"></script>
+<script src="../cookieconsent.js"></script>
 <script>
+
+  var options = {
+    theme: '../build/custom-theme.css',
+
+    explicit: true,
+
+    // hide the "clear" button when we don't need it (when there is nothing to clear)
+    onComplete: function (status){
+      btnClear.style.display = status ? '' : 'none';
+    }
+  };
 
   var btnNext = document.getElementById('btn-next-example');
   var btnClear = document.getElementById('btn-clear-cookie');
@@ -102,18 +106,9 @@
   };
 
   btnNext.onclick = function () {
-    window.location = '/cookieconsent2/example-6-location.html';
+    window.location = 'example-6-location.html';
   };
 
-  cookieconsent.oldinit({
-    theme: 'build/custom-theme.css',
-
-    explicit: true,
-
-    // hide the "clear" button when we don't need it (when there is nothing to clear)
-    onComplete: function (status){
-      btnClear.style.display = status ? '' : 'none';
-    }
-  });
+  cookieconsent.oldinit(options);
 
 </script>

@@ -12,22 +12,8 @@
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="example-style.css" rel="stylesheet">
 
-    <style>
-      .jumbotron{margin-top:100px;}
-
-      .btn-xl button {
-        padding: 18px 28px;
-        font-size: 22px;
-        line-height: normal;
-      }
-
-      @media screen and (min-width: 768px) {
-        .jumbotron .h1, .jumbotron h1 {
-            font-size: 80px;
-        }
-      }
-    </style>
   </head>
 
   <body role="document">
@@ -52,8 +38,17 @@
   </body>
 </html>
 
-<script src="cookieconsent.js"></script>
+<script src="../cookieconsent.js"></script>
 <script>
+
+  var options = {
+    theme: '../build/light-floating.css',
+
+    // hide the "clear" button when we don't need it (when there is nothing to clear)
+    onComplete: function (status){
+      btnClear.style.display = status ? '' : 'none';
+    }
+  };
 
   var btnNext = document.getElementById('btn-next-example');
   var btnClear = document.getElementById('btn-clear-cookie');
@@ -66,16 +61,10 @@
   };
 
   btnNext.onclick = function () {
-    window.location = '/cookieconsent2/example-2-opt-out.html';
+    window.location = 'example-2-opt-out.html';
   };
 
-  cookieconsent.oldinit({
-    theme: 'build/light-floating.css',
-
-    // hide the "clear" button when we don't need it (when there is nothing to clear)
-    onComplete: function (status){
-      btnClear.style.display = status ? '' : 'none';
-    }
-  });
+  // `oldinit` only opens the popup if there is no previously selected answer
+  cookieconsent.oldinit(options);
 
 </script>

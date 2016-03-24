@@ -423,7 +423,7 @@
       },
 
       open: function (callback) {
-        if (!this.isOpen()) {
+        if (!this.isOpen() && this.element) {
           if (cc.HAS_TRANSITION && this.element.style.display == '') {
             util.removeClass(this.element, 'cc_fade_out');
 
@@ -483,10 +483,20 @@
     };
 
     function findLoadedTheme (theme) {
-      var regex = new RegExp(util.escapeRegExp(theme) + '$');
       var sheets = document.styleSheets;
-      var linkTag = null;
-      var tag;
+      var regex, linkTag, tag;
+
+      // we find themes by checking if any of the CSS urls ends with `theme`.
+      // if `theme` was specified as a relative URL, then it could be preceeded by directory selectors ('.' or '..')
+      // seeing as we area checking if the url ends with `theme`, it's okay to remove these selectorss.
+      if(theme.substr(0, 2) == '..') {
+        theme = theme.substr(2);
+      }
+      if (theme[0] == '.') {
+        theme = theme.substr(1);
+      }
+
+      regex = new RegExp(util.escapeRegExp(theme) + '$');
 
       for (var i = 0, l = sheets.length; i < l; ++i) {
         tag = sheets[i];

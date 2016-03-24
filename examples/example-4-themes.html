@@ -12,22 +12,8 @@
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="example-style.css" rel="stylesheet">
 
-    <style>
-      .jumbotron{margin-top:100px;}
-
-      .btn-xl button {
-        padding: 18px 28px;
-        font-size: 22px;
-        line-height: normal;
-      }
-
-      @media screen and (min-width: 768px) {
-        .jumbotron .h1, .jumbotron h1 {
-            font-size: 80px;
-        }
-      }
-    </style>
   </head>
 
   <body role="document">
@@ -62,15 +48,27 @@
   </body>
 </html>
 
-<script src="cookieconsent.js"></script>
+<script src="../cookieconsent.js"></script>
 <script>
+
+  var options = {
+    theme: '../build/light-floating.css',
+
+    explicit: true,
+
+    // hide the "clear" button when we don't need it (when there is nothing to clear)
+    onComplete: function (status) {
+      btnClear.style.display = status ? '' : 'none';
+    }
+  };
 
   var btnNext = document.getElementById('btn-next-example');
   var btnClear = document.getElementById('btn-clear-cookie');
   var selectTheme = document.getElementById('theme-selector');
 
   var init = function (theme) {
-    cookieconsent.oldinit({theme: 'build/' + theme + '.css'});
+    options.theme = '../build/' + theme + '.css';
+    cookieconsent.oldinit(options);
   };
 
   btnClear.onclick = function () {
@@ -81,19 +79,8 @@
   };
 
   btnNext.onclick = function () {
-    window.location = '/cookieconsent2/example-5-custom-theme.html';
+    window.location = 'example-5-custom-theme.html';
   };
-
-  cookieconsent.oldinit({
-    theme: 'build/light-floating.css',
-
-    explicit: true,
-
-    // hide the "clear" button when we don't need it (when there is nothing to clear)
-    onComplete: function (status) {
-      btnClear.style.display = status ? '' : 'none';
-    }
-  });
 
   selectTheme.onchange = function (e) {
     init(e.target.value);

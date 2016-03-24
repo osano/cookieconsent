@@ -12,72 +12,95 @@
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="example-style.css" rel="stylesheet">
 
-    <style>
-      .jumbotron{margin-top:100px;}
-
-      .btn-xl button {
-        padding: 18px 28px;
-        font-size: 22px;
-        line-height: normal;
-      }
-
-      @media screen and (min-width: 768px) {
-        .jumbotron .h1, .jumbotron h1 {
-            font-size: 80px;
-        }
-      }
-    </style>
   </head>
 
   <body role="document">
 
     <div class="container theme-showcase" role="main">
       <div class="jumbotron text-center">
-        <h1>Opt-in example</h1>
-        <p>This example informs the user that cookies are used on this website. In this case, the cookies are disabled by default. Instead of simply informing the user that cookies are used, the user is given prior notice. Therefore cookies are only used if the user explicitly allows it. This is the best way to be compliant with the cookie consent law.</p>
-
-        <p>This still only applies for cookies that can personally identify you. (You must still specify all the cookies used on your website in the cookie policy). Therefore any other cookies for styling, functionality or preferences can be used without the need for consent.</p>
-
-        <em>Note: If you click a button on the popup, it will permanently dismiss the message. That means that the popup will not be shown again, even after a page refresh. That is unless you clear the previous decision that you made by clicking the 'Clear previous answer' button below (only displayed if an answer has been selected)</em>
+        <h1>Javascript API example</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque dictum ligula sed tortor aliquet, id pharetra lectus imperdiet. Curabitur euismod elit et euismod rhoncus. Curabitur eleifend tempus diam vitae sollicitudin. Maecenas sagittis sit amet dui et elementum. Aliquam venenatis erat vitae posuere ullamcorper. Cras ultrices arcu nec tortor vestibulum ornare. Duis vitae cursus ligula, sed interdum lacus. Donec vel mi dolor. In scelerisque interdum purus nec finibus. Nulla a arcu sit amet magna tempor lacinia et vitae risus. Maecenas volutpat, lectus ac placerat lacinia, sapien enim tincidunt erat, ac egestas lectus risus eu ex.</p>
       </div>
 
       <p class="text-center btn-xl large">
-        <button id="btn-clear-cookie" type="button" class="btn btn-primary" style="display:none">Clear previous answer</button>
-        <button id="btn-next-example" type="button" class="btn btn-success">Next example</button>
+        <button type="button" class="btn btn-primary" id="btn-initialise">Initialise</button>
+        <button type="button" class="btn btn-success" id="btn-open">Open</button>
+        <button type="button" class="btn btn-success" id="btn-close">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-destroy">Destroy</button>
+        <button type="button" class="btn" id="btn-status">Status</button>
       </p>
+
+      <p class="text-center btn-xl large">
+        <button type="button" class="btn" id="btn-getCookie">Get Cookie</button>
+        <button type="button" class="btn" id="btn-clearCookie">Clear Cookie</button>
+        <button type="button" class="btn btn-success" id="btn-dismissCookie">Dismissed</button>
+        <button type="button" class="btn btn-success" id="btn-allowCookie">Allowed</button>
+        <button type="button" class="btn btn-success" id="btn-denyCookie">Denied</button>
+      </p>
+
+      <p id="message" class="text-center" style="font-size:20px"></p>
 
     </div>
 
   </body>
 </html>
 
-<script src="cookieconsent.js"></script>
+<script src="../cookieconsent.js"></script>
 <script>
-
-  var btnNext = document.getElementById('btn-next-example');
-  var btnClear = document.getElementById('btn-clear-cookie');
-
-  btnClear.onclick = function () {
-    btnClear.style.display = 'none';
-
-    cookieconsent.popup.clearStatus();
-    cookieconsent.popup.open();
+  var options = {
+        theme: '../build/light-floating.css',
   };
 
-  btnNext.onclick = function () {
-    window.location = '/cookieconsent2/example-4-themes.html';
+  var p = cookieconsent.popup;
+  var s = cookieconsent.COOKIE_STATUS;
+  var m = document.getElementById('message');
+
+  document.getElementById('btn-getCookie').onclick = function (e) {
+    m.innerHTML = 'Get<br>Cookie is: ' + p.getStatus();
   };
 
-  cookieconsent.oldinit({
-    theme: 'build/light-floating.css',
+  document.getElementById('btn-clearCookie').onclick = function (e) {
+    p.clearStatus();
+    m.innerHTML = 'Clear<br>Cookie is: ' + p.getStatus();
+  };
 
-    explicit: true,
+  document.getElementById('btn-dismissCookie').onclick = function (e) {
+    p.setStatus(s.DISMISSED);
+    m.innerHTML = 'Dismiss<br>Cookie is: ' + p.getStatus();
+  };
 
-    // hide the "clear" button when we don't need it (when there is nothing to clear)
-    onComplete: function (status){
-      btnClear.style.display = status ? '' : 'none';
-    }
-  });
+  document.getElementById('btn-allowCookie').onclick = function (e) {
+    p.setStatus(s.ALLOWED);
+    m.innerHTML = 'Allow<br>Cookie is: ' + p.getStatus();
+  };
+
+  document.getElementById('btn-denyCookie').onclick = function (e) {
+    p.setStatus(s.DENIED);
+    m.innerHTML = 'Deny<br>Cookie is: ' + p.getStatus();
+  };
+
+  // ==========
+
+  document.getElementById('btn-initialise').onclick = function (e) {
+    p.init(options);
+  };
+
+  document.getElementById('btn-open').onclick = function (e) {
+    p.open();
+  };
+  
+  document.getElementById('btn-status').onclick = function (e) {
+    m.innerHTML = 'Is ' + (p.isOpen() ? 'open' : 'closed');
+  };
+  
+  document.getElementById('btn-close').onclick = function (e) {
+    p.close();
+  };
+  
+  document.getElementById('btn-destroy').onclick = function (e) {
+    p.destroy();
+  };
 
 </script>
