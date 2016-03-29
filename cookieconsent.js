@@ -693,12 +693,9 @@
   cc.law = (function () {
 
     var hasLaw = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'HR', 'CY', 'LV', 'LT', 'PT', 'NL'];
-    var explicit = ['HR', 'CY'];
-    var explicitPersonal = ['LV', 'LT', 'PT', 'DE'];
-    var implicit = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'LI', 'EE', 'NO', 'MT', 'IS', 'DE'];
-    var refusable = ['DK', 'CZ', 'FR', 'BG', 'IT', 'LU', 'EE', 'DE', 'NL'];
-    var consciousDismiss = ['ES'];
-    var browserSettings = ['SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'NO', 'MT', 'IS'];
+    var explicit = ['HR', 'CY', 'LV', 'LT', 'PT', 'DE'];
+    var revokable = ['DK', 'CZ', 'FR', 'BG', 'IT', 'LU', 'EE', 'DE', 'NL'];
+    var explicitAction = ['ES'];
 
     return {
 
@@ -706,12 +703,36 @@
         return {
           hasLaw: arrayIndexOf(hasLaw, countryCode) >= 0,
           explicit: arrayIndexOf(explicit, countryCode) >= 0,
-          explicitPersonal: arrayIndexOf(explicitPersonal, countryCode) >= 0,
-          implicit: arrayIndexOf(implicit, countryCode) >= 0,
-          refusable: arrayIndexOf(refusable, countryCode) >= 0,
-          consciousDismiss: arrayIndexOf(consciousDismiss, countryCode) >= 0,
-          browserSettings: arrayIndexOf(browserSettings, countryCode) >= 0
+          revokable: arrayIndexOf(revokable, countryCode) >= 0,
+          explicitAction: arrayIndexOf(explicitAction, countryCode) >= 0,
         };
+      },
+
+      applyLaw: function (options, countryCode) {
+        var country = this.get(countryCode);
+
+        if (!country.hasLaw) {
+          // The country has no cookie law
+          options.enabled = false;
+        }
+
+        if (country.explicit) {
+          // we must provide a way to deny consent
+          options.explicit = true;
+        }
+
+        if (country.revokable) {
+          // we must provide an option to revoke consent at a later time
+          options.revokable = true;
+        }
+
+        if (country.explicitAction) {
+          // user must explicitly click the consent button
+          options.dismissOnScroll = false;
+          options.dismissOnTimeout = false;
+        }
+
+        return options;
       }
 
     };
@@ -1016,35 +1037,8 @@
 
   cc.getCountryOptions = function (options, success, failure) {
     cc.locate.init(function (result) {
-      success(cc.applyCountryLaw(options, result.code));
+      success(cc.law.applyLaw(options, result.code));
     }, failure);
-  };
-
-  cc.applyCountryLaw = function (options, countryCode) {
-    var country = cc.law.get(countryCode);
-
-    if (!country.hasLaw) {
-      // The country has no cookie law
-      options.enabled = false;
-    }
-
-    if (country.explicit) {
-      // we must provide a way to deny consent
-      options.explicit = true;
-    }
-
-    if (country.revokable) {
-      // we must provide an option to revoke consent at a later time
-      options.revokable = true;
-    }
-
-    if (!country.autodismiss) {
-      // user must explicitly click the consent button
-      options.dismissOnScroll = false;
-      options.dismissOnTimeout = false;
-    }
-
-    return options;
   };
 
   cc.oldinit = function (options) {

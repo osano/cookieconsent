@@ -90,14 +90,17 @@
     var country = cookieconsent.law.get(code);
     var clonedOpts = cookieconsent.util.clone(opts);
 
-    cookieconsent.oldinit(cookieconsent.applyCountryLaw(clonedOpts, code));
+    // have to destroy it first. i'll fix this later so it can simply be re-initialised
+    cookieconsent.popup.destroy();
+
+    cookieconsent.oldinit(cookieconsent.law.applyLaw(clonedOpts, code));
 
     msg.push('Has Law: ' + (country.hasLaw ? 'true' : 'false'));
 
     if (country.hasLaw) {
       msg.push('Explicit consent required? ' + (country.explicit ? 'true' : 'false'));
       msg.push('Must be revokable? ' + (country.revokable ? 'true' : 'false'));
-      msg.push('Can auto dismiss? ' + (country.Autodismiss ? 'true' : 'false'));
+      msg.push('Requires explicit action? ' + (country.explicitAction ? 'true' : 'false'));
     }
 
     msg1.innerHTML = msg.join('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
