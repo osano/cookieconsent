@@ -1,0 +1,19 @@
+
+.jumbotron {
+  margin-top: 100px;
+}
+
+.jumbotron .h1, .jumbotron h1 {
+  font-size: 80px;
+}
+
+.btn-xl button {
+  padding: 18px 28px;
+  font-size: 22px;
+  line-height: normal;
+}
+
+#cookie-widget {
+  border: 3px dashed black;
+  padding: 0 20px;
+}
