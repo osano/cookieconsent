@@ -333,6 +333,9 @@
       evt.returnValue = false;
       this.setDismissedCookie();
       this.container.removeChild(this.element);
+      if(window[OPTIONS_VARIABLE].onDismiss != undefined){
+      	window[OPTIONS_VARIABLE].onDismiss();
+      }
     },
 
     setDismissedCookie: function () {
