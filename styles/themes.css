@@ -1,6 +1,5 @@
 /* Themes */
 
-
 /********** Red theme **********/
 
 .cc-theme-red.cc-window {
@@ -33,5 +32,41 @@
   color: #fff;
 }
 .cc-theme-blue .cc-btn {
+  border-color: #fff;
+}
+
+/********** Clean theme **********/
+
+.cc-theme-clean.cc-window {
+  background-color: #fafafa;
+}
+
+.cc-theme-clean .cc-header,
+.cc-theme-clean .cc-message,
+.cc-theme-clean .cc-link,
+.cc-theme-clean .cc-link:hover,
+.cc-theme-clean .cc-close,
+.cc-theme-clean .cc-btn {
+  color: #000;
+}
+.cc-theme-clean .cc-btn {
+  border-color: #000;
+}
+
+/********** Haystack theme **********/
+
+.cc-theme-haystack.cc-window {
+  background-color: #4a90e2;
+}
+
+.cc-theme-haystack .cc-header,
+.cc-theme-haystack .cc-message,
+.cc-theme-haystack .cc-link,
+.cc-theme-haystack .cc-link:hover,
+.cc-theme-haystack .cc-close,
+.cc-theme-haystack .cc-btn {
+  color: #fff;
+}
+.cc-theme-haystack .cc-btn {
   border-color: #fff;
 }

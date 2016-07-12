@@ -241,28 +241,33 @@
         deny: '<a class="cc-btn cc-deny">{children}</a>',
         dismiss: '<a class="cc-btn cc-dismiss">{children}</a>',
         link: '<a href="/" class="cc-link">{children}</a>',
+        link: '<a href="/" class="cc-link right">{children}</a>',
         close: '<span class="cc-close">&#x274c;</span>',
       },
 
       layouts: {
         'simple': [
-          ['header'],
-          ['message', 'link'],
+          ['message'],
+          ['link'],
+          ['close']
         ],
         'dismiss': [
-          ['header'],
           ['message'],
           ['link', 'dismiss'],
         ],
+        'dismiss-other': [
+          ['message'],
+          ['dismiss'],
+          ['link-right'], 
+        ],
         'choose': [
-          ['header'],
           ['message', 'link'],
           ['allow', 'deny'],
         ],
       },
 
-      theme: 'blue',
-      layout: 'dismiss',
+      theme: 'clean',
+      layout: 'simple',
       position: 'bottom-right',
     };
 
@@ -507,26 +512,6 @@
       document.getElementsByTagName('head')[0].appendChild(link);
     }
 
-    function applyPageFilter () {
-      var page = location.pathname;
-
-      var invalidPages = this.options.blacklistPage;
-      if (invalidPages && invalidPages.length) {
-        // if this url matches an entry in `invalidPages`, disable
-        if (matchStringArray.call(this, page, invalidPages)) {
-          this.options.enabled = false;
-        }
-      }
-
-      var validPages = this.options.whitelistPage;
-      if (validPages && validPages.length) {
-        // if this url matches an entry in `validPages`, enable
-        if (matchStringArray.call(this, page, validPages)) {
-          this.options.enabled = true;
-        }
-      }
-    }
-
     function applyAutoDismiss () {
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number') {
@@ -625,6 +610,26 @@
         this.container.appendChild(this.element);
       } else {
         this.container.insertBefore(this.element, this.container.firstChild);
+      }
+    }
+
+    function applyPageFilter () {
+      var page = location.pathname;
+
+      var invalidPages = this.options.blacklistPage;
+      if (invalidPages && invalidPages.length) {
+        // if this url matches an entry in `invalidPages`, disable
+        if (matchStringArray.call(this, page, invalidPages)) {
+          this.options.enabled = false;
+        }
+      }
+
+      var validPages = this.options.whitelistPage;
+      if (validPages && validPages.length) {
+        // if this url matches an entry in `validPages`, enable
+        if (matchStringArray.call(this, page, validPages)) {
+          this.options.enabled = true;
+        }
       }
     }
 
@@ -999,8 +1004,6 @@
       cc.popup.open();
     }
   };
-
-  cc.util = util;
 
   cc.hasInitialised = true;
 
