@@ -34,12 +34,26 @@
       return Object.prototype.toString.call(obj) == '[object Object]';
     },
 
-    trim: function (str) {
-      return str.replace(/^\s+|\s+$/g, '');
+    bind: function (func, context /* , args */ ) {
+      var args = Array.prototype.slice.call(arguments, 2);
+      return function () {
+        return func.apply(context, args.concat.apply(args, arguments));
+      };
     },
 
-    each: function (arr, callback, /* optional: */ context, force) {
-      if (this.isObject(arr) && !force) {
+    contains: function (iterable, value) {
+      var found = false;
+      this.each(iterable, function (cur, idx, arr) {
+        if (cur == value) {
+          found = true;
+          return false; // break;
+        }
+      });
+      return found;
+    },
+
+    each: function (arr, callback, /* optional */ context) {
+      if (this.isObject(arr)) {
         for (var key in arr) {
           if (arr.hasOwnProperty(key)) {
             if (false === callback.call(context, arr[key], key, arr)) {
@@ -47,7 +61,7 @@
             }
           }
         }
-      } else {
+      } else if (this.isArray(arr)) {
         for (var i = 0, l = arr.length; i < l; ++i) {
           if (false === callback.call(context, arr[i], i, arr)) {
             break;
@@ -56,16 +70,17 @@
       }
     },
 
-    map: function (iterable, callback, context, force) {
+    map: function (iterable, callback, /* optional */ context) {
       var arr = [];
       this.each(iterable, function (c, i) {
         arr.push(callback.call(this, c, i, iterable));
-      }, context, force);
+      }, context);
       return arr;
     },
 
     merge: function (obj1, obj2) {
       if (!obj1) return;
+
       this.each(obj2, function (val, key) {
         if (this.isObject(val) && this.isObject(obj1[key])) {
           this.merge(obj1[key], val);
@@ -75,6 +90,77 @@
       }, this);
     },
 
+    clone: function (obj) {
+      var c = util.isArray(obj) ? [] : {};
+
+      util.each(obj, function(prop, i) {
+        if (util.isObject(prop) || util.isArray(prop)) {
+          c[i] = this.clone(prop);
+        } else {
+          c[i] = prop;
+        }
+      }, this);
+
+      return c;
+    },
+
+    trim: function (str) {
+      return str.replace(/^\s+|\s+$/g, '');
+    },
+
+    // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+    escapeRegExp: function (str) {
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    },
+  };
+
+  var dom = {
+    addEventListener: function (el, event, eventListener) {
+      if (el.addEventListener) {
+        el.addEventListener(event, eventListener);
+      } else if (el.attachEvent) {
+        el.attachEvent('on' + event, eventListener);
+      }
+    },
+
+    removeEventListener: function (el, event, eventListener) {
+      if (el.removeEventListener) {
+        el.removeEventListener(event, eventListener);
+      } else if (el.detachEvent) {
+        el.detachEvent('on' + event, eventListener);
+      }
+    },
+
+    buildDom: function (htmlStr) {
+      var container = document.createElement('div');
+      container.innerHTML = htmlStr;
+      var elem = container.children[0];
+      container = null;
+      return elem;
+    },
+
+    hasClass: function (element, className) {
+      var safeClassName = util.escapeRegExp(className);
+      var regex = new RegExp('(?:\\s|^)' + safeClassName + '(?:\\s|$)');
+      return regex.test(element.className);
+    },
+
+    addClass: function (element, className) {
+      if (!this.hasClass(element, className)) {
+        element.className += ' ' + className;
+      }
+    },
+
+    removeClass: function (element, className) {
+      if (this.hasClass(element, className)) {
+        var safeClassName = util.escapeRegExp(className);
+        var regex = new RegExp('(\\s|^)' + safeClassName + '(\\s|$)');
+        element.className = element.className.replace(regex, '');
+      }
+    },
+  };
+
+  var cookie = {
     setCookie: function (name, value, expiryDays, domain, path) {
       expiryDays = expiryDays || 365;
 
@@ -100,125 +186,6 @@
       return parts.length != 2 ?
         undefined : parts.pop().split(';').shift();
     },
-
-    addEventListener: function (el, event, eventListener) {
-      if (el.addEventListener) {
-        el.addEventListener(event, eventListener);
-      } else if (el.attachEvent) {
-        el.attachEvent('on' + event, eventListener);
-      }
-    },
-
-    removeEventListener: function (el, event, eventListener) {
-      if (el.removeEventListener) {
-        el.removeEventListener(event, eventListener);
-      } else if (el.detachEvent) {
-        el.detachEvent('on' + event, eventListener);
-      }
-    },
-
-    buildDom: function (htmlStr) {
-      var container = document.createElement('div');
-      container.innerHTML = htmlStr;
-      var elem = container.children[0];
-      container = null;
-      return elem;
-    },
-
-    bind: function (func, context /* , args */ ) {
-      var args = Array.prototype.slice.call(arguments, 2);
-      return function () {
-        return func.apply(context, args.concat.apply(args, arguments));
-      };
-    },
-
-    contains: function (iterable, value) {
-      var found = false;
-      this.each(iterable, function (cur, idx, arr) {
-        if (cur == value) {
-          found = true;
-          return false; // break;
-        }
-      });
-      return found;
-    },
-
-    getElementByClass: function (element, className) {
-      return this.recurseElement.call(this, element, className, false);
-    },
-
-    recurseElement: function (element, className, found) {
-      var foundElement = null;
-      for (var i = 0, l = element.childNodes.length; i < l && !found; ++i) {
-        var el = element.childNodes[i];
-
-        if (this.hasClass(el, className)) {
-          foundElement = el;
-          found = true;
-          break;
-        }
-
-        foundElement = this.recurseElement.call(this, element.childNodes[i], className, found);
-        if (foundElement) {
-          found = true;
-        }
-      }
-      return foundElement;
-    },
-
-    hasClass: function (element, className) {
-      var safeClassName = this.escapeRegExp(className);
-      var regex = new RegExp('(?:\\s|^)' + safeClassName + '(?:\\s|$)');
-      return regex.test(element.className);
-    },
-
-    addClass: function (element, className) {
-      if (!this.hasClass(element, className)) {
-        element.className += ' ' + className;
-      }
-    },
-
-    removeClass: function (element, className) {
-      if (this.hasClass(element, className)) {
-        var safeClassName = this.escapeRegExp(className);
-        var regex = new RegExp('(\\s|^)' + safeClassName + '(\\s|$)');
-        element.className = element.className.replace(regex, '');
-      }
-    },
-
-    // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
-    escapeRegExp: function (str) {
-      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-    },
-
-    clone: function (obj) {
-      var c = obj instanceof Array ? [] : {};
-
-      if (typeof obj != 'object' || obj == null) {
-        return obj;
-      }
-
-      for (var i in obj) {
-        var prop = obj[i];
-        if (typeof prop == 'object') {
-          if (prop instanceof Array) {
-            c[i] = [];
-            for (var j = 0; j < prop.length; j++) {
-              if (typeof prop[j] != 'object') {
-                c[i].push(prop[j]);
-              } else {
-                c[i].push(this.clone(prop[j]));
-              }
-            }
-          } else {
-            c[i] = this.clone(prop);
-          }
-        } else {
-          c[i] = prop;
-        }
-      }
-      return c;
-    }
   };
 
   cc.popup = (function () {
@@ -339,7 +306,7 @@
         }
 
         this._onButtonClick = util.bind(function (e) {
-          if (util.hasClass(e.target, 'cc-btn')) {
+          if (dom.hasClass(e.target, 'cc-btn')) {
             var matches = e.target.className.match(allowedButtonClass);
 
             if (matches && matches[1]) {
@@ -358,7 +325,7 @@
 
       destroy: function () {
         if (this.element) {
-          util.removeEventListener(this.element, 'click', this._onButtonClick);
+          dom.removeEventListener(this.element, 'click', this._onButtonClick);
 
           this._onButtonClick = null;
 
@@ -419,13 +386,13 @@
       },
 
       isOpen: function () {
-        return this.element && this.element.style.display === '' && !util.hasClass(this.element, 'cc_fade_out');
+        return this.element && this.element.style.display === '' && !dom.hasClass(this.element, 'cc_fade_out');
       },
 
       open: function (callback) {
         if (!this.isOpen() && this.element) {
           if (cc.hasTransition && this.element.style.display == '') {
-            util.removeClass(this.element, 'cc-fadeout');
+            dom.removeClass(this.element, 'cc-fadeout');
 
             // Sometimes the popup is hidden with '.cc-fadeout' (which uses visibility: hidden).
             // The "open" animation will only run if the element is hidden (using display: none) before showing it, otherwise the animation won't run.
@@ -448,7 +415,7 @@
       close: function (callback) {
         if (this.isOpen()) {
           if (cc.hasTransition) {
-            util.addClass(this.element, 'cc-fadeout');
+            dom.addClass(this.element, 'cc-fadeout');
           } else {
             this.element.style.display = 'none';
           }
@@ -457,12 +424,12 @@
 
       setStatus: function (status) {
         var opts = this.options;
-        var value = util.readCookie(cc.cookieName);
+        var value = cookie.readCookie(cc.cookieName);
         var chosenBefore = util.contains(cc.status, value);
 
         // if `status` is valid
         if (util.contains(cc.status, status)) {
-          util.setCookie(cc.cookieName, status, opts.expiryDays, opts.domain, opts.path);
+          cookie.setCookie(cc.cookieName, status, opts.expiryDays, opts.domain, opts.path);
 
           if (!chosenBefore) {
             status == cc.status.denied ? this.options.onDenyCookies() : this.options.onAllowCookies();
@@ -474,11 +441,11 @@
       },
 
       getStatus: function () {
-        return util.readCookie(cc.cookieName)
+        return cookie.readCookie(cc.cookieName)
       },
 
       clearStatus: function () {
-        util.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
+        cookie.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
       }
     };
 
@@ -521,7 +488,7 @@
         this.loadedStylesheets.push(stylesheet);
         this.lastStylesheet = stylesheet;
 
-        util.removeEventListener(link, 'load', onCssLoad);
+        dom.removeEventListener(link, 'load', onCssLoad);
         link = null;
 
         callback.call(this);
@@ -532,7 +499,7 @@
         stylesheet = cc.stylesheetPath + stylesheet + '.css';
       }
 
-      util.addEventListener(link, 'load', onCssLoad);
+      dom.addEventListener(link, 'load', onCssLoad);
       link.rel = 'stylesheet';
       link.type = 'text/css';
       link.href = stylesheet;
@@ -574,11 +541,11 @@
           if (window.pageYOffset > Math.floor(scrollRange)) {
             this.dismiss();
 
-            util.removeEventListener(window, 'scroll', onWindowScroll);
+            dom.removeEventListener(window, 'scroll', onWindowScroll);
           }
         }, this);
 
-        util.addEventListener(window, 'scroll', onWindowScroll);
+        dom.addEventListener(window, 'scroll', onWindowScroll);
       }
     }
 
@@ -591,7 +558,7 @@
         this.options.onComplete(cc.status.allowed);
       }
 
-      var status = util.readCookie(cc.cookieName);
+      var status = cookie.readCookie(cc.cookieName);
       if (status == cc.status.dismissed) {
         this.options.onComplete(cc.status.dismissed); // can use cookies
       } else if (status == cc.status.allowed) {
@@ -642,14 +609,14 @@
       var fullHtml = opts.wrapper.replace('{classes}', classes).replace('{children}', markup);
 
       // create markup
-      this.element = util.buildDom(fullHtml);
+      this.element = dom.buildDom(fullHtml);
 
       // add class to container classes so we can specify css for IE8 only
       if (navigator.appVersion.indexOf('MSIE 8') > -1) {
-        util.addClass(this.element, 'cc-ie8');
+        dom.addClass(this.element, 'cc-ie8');
       }
 
-      util.addEventListener(this.element, 'click', this._onButtonClick);
+      dom.addEventListener(this.element, 'click', this._onButtonClick);
 
       // hide it before adding to DOM
       this.element.style.display = 'none';
