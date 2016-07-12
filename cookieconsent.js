@@ -274,20 +274,23 @@
           ['dismiss']
         ],
 
+        'banner-simple': [
+          ['message', 'link'],
+        ],
         'banner-1': [
-          ['message', 'link', 'dismiss']
+          ['message', 'link', 'dismiss'],
         ],
         'banner-2': [
-          ['message', 'dismiss']
+          ['message', 'dismiss'],
         ],
         'banner-3': [
-          ['header', ['message', 'link'], 'customButton']
+          ['header', ['message', 'link'], 'customButton'],
         ],
       },
 
       theme: 'haystack',
-      layout: 'dismiss-2',
-      position: 'bottom-right',
+      layout: 'banner-simple',
+      position: 'banner-top',
     };
 
     return {

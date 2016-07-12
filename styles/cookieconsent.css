@@ -21,6 +21,13 @@
 /*  - these are added to `cc-window` by the plugin configuration */
 .cc-top {top: 1em} .cc-left {left: 1em} .cc-right {right: 1em} .cc-bottom {bottom: 1em}
 
+.cc-banner.cc-top {
+  top: 0; left: 0; right: 0;
+}
+.cc-banner.cc-bottom {
+  bottom: 0; left: 0; right: 0;
+}
+
 /* the popup window */
 .cc-window {
   font-family: 'Helvetica Neue Light', 'HelveticaNeue-Light', 'Helvetica Neue', Calibri, Helvetica, Arial, sans-serif;
@@ -28,6 +35,12 @@
   padding: 2em;
   font-size: 1em;
   max-width: 24em; /* 1em == 15px therefore 24em == 360px */
+}
+
+.cc-window.cc-banner {
+  width: 100%;
+  max-width: 100%;
+  padding: 1em
 }
 
 .cc-header, .cc-message, .cc-link {
