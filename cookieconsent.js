@@ -230,6 +230,7 @@
         message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
         dismiss: 'Close and don\'t show again',
         link: 'Learn more',
+        'link-right': 'Learn more',
         allow: 'Allow',
         deny: 'Deny',
       },
@@ -241,7 +242,7 @@
         deny: '<a class="cc-btn cc-deny">{children}</a>',
         dismiss: '<a class="cc-btn cc-dismiss">{children}</a>',
         link: '<a href="/" class="cc-link">{children}</a>',
-        link: '<a href="/" class="cc-link right">{children}</a>',
+        'link-right': '<a href="/" class="cc-link right">{children}</a>',
         close: '<span class="cc-close">&#x274c;</span>',
       },
 
@@ -267,7 +268,7 @@
       },
 
       theme: 'clean',
-      layout: 'simple',
+      layout: 'dismiss-other',
       position: 'bottom-right',
     };
 

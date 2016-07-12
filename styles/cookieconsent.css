@@ -59,6 +59,13 @@
   font-size: .8em;
   opacity: .7;
   text-decoration: underline;
+  text-align: center;
+}
+.cc-link.left {
+  text-align: left;
+}
+.cc-link.right {
+  text-align: right;
 }
 
 .cc-link:hover {
@@ -78,6 +85,11 @@
   padding: .5em;
   color: #000;
   font-weight: 600;
+  margin-bottom: 1em;
+}
+
+.cc-group>.cc-btn {
+  margin:0;
 }
 
 .cc-btn:hover {
