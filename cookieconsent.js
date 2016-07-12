@@ -51,7 +51,6 @@
   /* Helper methods */
 
   var util = {
-
     isArray: function (obj) {
       return Object.prototype.toString.call(obj) == '[object Array]';
     },
@@ -170,25 +169,25 @@
     },
 
     getElementByClass: function (element, className) {
-      var foundElement = null,
-        found;
+      return this.recurseElement.call(this, element, className, false);
+    },
 
-      function recurse (element, className, found) {
-        for (var i = 0, l = element.childNodes.length; i < l && !found; ++i) {
-          var el = element.childNodes[i];
+    recurseElement: function (element, className, found) {
+      var foundElement = null;
+      for (var i = 0, l = element.childNodes.length; i < l && !found; ++i) {
+        var el = element.childNodes[i];
 
-          if (this.hasClass(el, className)) {
-            foundElement = el;
-            found = true;
-            break;
-          }
+        if (this.hasClass(el, className)) {
+          foundElement = el;
+          found = true;
+          break;
+        }
 
-          recurse.call(this, element.childNodes[i], className, found);
+        foundElement = this.recurseElement.call(this, element.childNodes[i], className, found);
+        if (foundElement) {
+          found = true;
         }
       }
-
-      recurse.call(this, element, className, false);
-
       return foundElement;
     },
 
@@ -245,7 +244,6 @@
       }
       return c;
     }
-
   };
 
   /* Plugin */
@@ -261,42 +259,55 @@
     var defaultOptions = {
       enabled: true,
 
+      // defaults to the current domain
+      cookie: {
+        path: '/',
+        domain: null,
+        expiryDays: 365,
+      },
+
       // configuration
-      theme: 'light-floating',
+      theme: '../build/new.css',
       container: null, // selector
       dismissOnScroll: false, // (disabled on false) auto-dismisses message when scrolled past a point. Pass number that `scrollTop` must exceed. E.G. 500
       dismissOnTimeout: false, // (disabled on false) auto-dismisses message on a timeout. Pass timeout in milliseconds. E.G. 3000
       blacklistPage: [], // match pages using a string or regex. matching pages in this array are automatically disabled
       whitelistPage: [], // match pages using a string or regex. matching pages in this array are automatically enabled
 
-      // interface
-      message: 'This website uses cookies to ensure you get the best experience on our website.',
-      allow: 'Allow',
-      deny: 'Deny',
-      dismiss: 'Got it!',
-      explicit: false,
-
-      // extra link after `message`
-      learnMore: null, // '<a href="#null" target="_self">More Info</a>',
-
-      // cookie details
-      domain: null, // default to current domain.
-      path: '/',
-      expiryDays: 365,
-
-      // Hooks
+      // hooks
       onAllowCookies: function () {}, // cookies were accepted for the first time
       onDenyCookies: function () {}, // cookies were denied for the first time
       onComplete: function (status) {}, // called on complete with the users preference to using cookies (see COOKIE_STATUS)
 
-      // interface html
-      markup: '<div class="cc_banner-wrapper">\
-        <div class="cc_banner cc_container">\
-          <a class="cc_btn"></a>\
-          <p class="cc_message"></p>\
-          <a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>\
-        </div>\
-      </div>'
+      // interface
+      explicit: false,
+
+      wrapper: '<div class="cc-wrapper"><div class="cc-window theme-blue cc-bottom cc-right">{children}</div></div>',
+
+      content: {
+        header: 'Cookie Policy',
+        message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
+        dismiss: 'Close and don\'t show again',
+        link: 'Learn more',
+        allow: 'Allow',
+        deny: 'Deny',
+      },
+
+      element: {
+        header: '<span class="cc-header">{children}</span>',
+        message: '<span class="cc-message">{children}</span>',
+        allow: '<a class="cc-btn cc-allow">{children}</a>',
+        deny: '<a class="cc-btn cc-deny">{children}</a>',
+        dismiss: '<a class="cc-btn cc-dismiss">{children}</a>',
+        link: '<a href="/" class="cc-link">{children}</a>',
+        close: '<span class="cc-close">&#x274c;</span>',
+      },
+
+      display: {
+        showClose: false,
+        showHeader: false,
+      }
+
     };
 
     return {
@@ -540,73 +551,24 @@
       document.getElementsByTagName('head')[0].appendChild(link);
     }
 
-    function render () {
-      // if already rendered, ignore
-      if (this.element) {
-        return;
+    function applyPageFilter () {
+      var page = location.pathname;
+
+      var invalidPages = this.options.blacklistPage;
+      if (invalidPages && invalidPages.length) {
+        // if this url matches an entry in `invalidPages`, disable
+        if (matchStringArray.call(this, page, invalidPages)) {
+          this.options.enabled = false;
+        }
       }
 
-      // create markup
-      this.element = util.buildDom(this.options.markup);
-
-      // Add class to container classes so we can specify css for IE8 only
-      if (navigator.appVersion.indexOf('MSIE 8') > -1) {
-        util.addClass(this.element, 'cc_ie8');
+      var validPages = this.options.whitelistPage;
+      if (validPages && validPages.length) {
+        // if this url matches an entry in `validPages`, enable
+        if (matchStringArray.call(this, page, validPages)) {
+          this.options.enabled = true;
+        }
       }
-
-      var cont = util.getElementByClass(this.element, 'cc_container');
-      var para = util.getElementByClass(this.element, 'cc_message');
-      var button = util.getElementByClass(this.element, 'cc_btn');
-
-      para.innerHTML = this.options.message;
-
-      // if additional link exists, append it to the message
-      if (this.options.learnMore) {
-        var learnMore = util.buildDom(this.options.learnMore);
-        para.innerHTML += ' '; // add a space before we append the link
-        learnMore.className += ' cc_more_info';
-        para.appendChild(learnMore);
-
-        learnMore = null;
-      }
-
-      // remove class 'explicit' and add it later if needed
-      util.removeClass(cont, 'explicit');
-
-      if (!this.options.explicit) {
-        // just the dismiss button
-        button.innerHTML = this.options.dismiss;
-        button.className += ' cc_btn_' + cc.COOKIE_STATUS.DISMISSED;
-      } else {
-        var deny = button.cloneNode();
-        // accept / deny buttons
-        button.innerHTML = this.options.allow;
-        button.className += ' cc_btn_' + cc.COOKIE_STATUS.ALLOWED;
-
-        deny.innerHTML = this.options.deny;
-        deny.className += ' cc_btn_' + cc.COOKIE_STATUS.DENIED;
-
-        button.parentNode.insertBefore(deny, button.nextSibling);
-
-        util.addClass(cont, 'explicit');
-
-        deny = null;
-      }
-
-      util.addEventListener(this.element, 'click', this._onButtonClick);
-
-      this.element.style.display = 'none';
-
-      if (!this.container.firstChild) {
-        this.container.appendChild(this.element);
-      } else {
-        this.container.insertBefore(this.element, this.container.firstChild);
-      }
-
-      // attempting to clear references (though the browser should do this anyway...)
-      cont = null;
-      para = null;
-      button = null;
     }
 
     function applyAutoDismiss () {
@@ -653,29 +615,64 @@
       }
     }
 
-    function applyPageFilter () {
-      var page = location.pathname;
+    function buildHtml (order, elements) {
+      var str = '';
+      util.each(order, function(list) {
+        var useGroup = list.length > 1;
 
-      var invalidPages = this.options.blacklistPage;
-      if (invalidPages && invalidPages.length) {
-        // if this url matches an entry in `invalidPages`, disable
-        if (matchStringArray.call(this, page, invalidPages)) {
-          this.options.enabled = false;
-        }
+        if (useGroup) str += '<div class="cc-group">';
+
+        util.each(list, function(name) {
+          str += elements[name];
+        });
+
+        if (useGroup) str += '</div>';
+      });
+      return str;
+    }
+
+    function interpolateHtml (elements, content) {
+      var elems = {};
+
+      util.each(elements, function(cur, name) {
+        elems[name] = cur.replace('{children}', content[name]);
+      });
+
+      return elems;
+    }
+
+    function render () {
+      // if already rendered, ignore
+      if (this.element) return;
+
+      var opts = this.options;
+      var elements = interpolateHtml(opts.element, opts.content);
+      var markup = buildHtml(opts.display, elements);
+      var fullHtml = opts.wrapper.replace('{children}', markup);
+
+      // create markup
+      this.element = util.buildDom(fullHtml);
+
+      // add class to container classes so we can specify css for IE8 only
+      if (navigator.appVersion.indexOf('MSIE 8') > -1) {
+        util.addClass(this.element, 'cc-ie8');
       }
 
-      var validPages = this.options.whitelistPage;
-      if (validPages && validPages.length) {
-        // if this url matches an entry in `validPages`, enable
-        if (matchStringArray.call(this, page, validPages)) {
-          this.options.enabled = true;
-        }
+      util.addEventListener(this.element, 'click', this._onButtonClick);
+
+      // hide it before adding to DOM
+      this.element.style.display = 'none';
+
+      if (!this.container.firstChild) {
+        this.container.appendChild(this.element);
+      } else {
+        this.container.insertBefore(this.element, this.container.firstChild);
       }
     }
 
     // `search` is a string
-    // returns true if any of the items in `array` match `search`
-    // values in `array` can be a string or an instance of RegExp
+    //  - returns true if any of the items in `array` match `search`
+    //  - values in `array` can be a string or an instance of RegExp
     function matchStringArray (search, array) {
       for (var i = 0, l = array.length; i < l; ++i) {
         var str = array[i];
@@ -687,7 +684,6 @@
       }
       return false;
     }
-
   }());
 
   cc.law = (function () {
@@ -766,7 +762,6 @@
       }
       return -1;
     }
-
   }());
 
   cc.locate = (function () {
@@ -993,7 +988,6 @@
     }
 
     function makeAsyncRequest (url, onComplete, postData, requestHeaders) {
-      var trimRegEx = /^\s+|\s+$/g;
       var xhr = new(window.XMLHttpRequest || window.ActiveXObject)('MSXML2.XMLHTTP.3.0');
 
       xhr.open(postData ? 'POST' : 'GET', url, 1);
@@ -1004,7 +998,7 @@
       if (Object.prototype.toString.call(requestHeaders) === '[object Array]') {
         for (var i = 0, l = requestHeaders.length; i < l; ++i) {
           var split = requestHeaders[i].split(':', 2)
-          xhr.setRequestHeader(split[0].replace(trimRegEx, ''), split[1].replace(trimRegEx, ''));
+          xhr.setRequestHeader(util.trim(split[0]), util.trim(split[1]));
         }
       }
 
@@ -1022,7 +1016,6 @@
     function toError (obj) {
       return new Error('Error [' + (obj.code || 'UNKNOWN') + ']: ' + obj.error);
     }
-
   }());
 
   cc.initialise = function (options) {
