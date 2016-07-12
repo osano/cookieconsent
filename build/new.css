@@ -40,14 +40,6 @@
   color: #000;
 }
 
-.cc-group .cc-btn, .cc-group .cc-link {
-  display: inline-block;
-}
-
-.cc-group .cc-link {
-  margin-right: 1em;
-}
-
 .cc-header, .cc-message, .cc-link {
   color: #000;
   display: block;
@@ -81,12 +73,18 @@
 }
 
 .cc-close {
+  cursor: pointer;
   display: block;
   position: absolute;
-  top: 1em;
-  right: 1em;
+  top: .5em;
+  right: .5em;
   font-size: 1.6em;
   line-height: .75; /* setting the font to 2em makes the element taller than it needs to be - setting the line height normalises the height */
+  opacity: .9;
+}
+
+.cc-close:hover {
+  opacity: 1;
 }
 
 .cc-fadeout {
@@ -113,6 +111,48 @@
   0%   {opacity: 0; -webkit-transform: translateX(20px); transform: translateX(20px)}
   100% {opacity: 1; -webkit-transform: translateX( 0  ); transform: translateX( 0  )}
 }
+
+/***** Layouts *****/
+
+
+.cc-group {
+  margin-bottom: 10px;
+}
+.cc-group:last-child {
+  margin-bottom: 0;
+}
+
+.cc-group .cc-btn, .cc-group .cc-link {
+  display: inline-block;
+}
+
+.cc-group .cc-link {
+  margin-right: 1em;
+}
+
+.cc-group .cc-btn {
+  margin-right: 1em;
+}
+.cc-group .cc-btn:last-child {
+  margin-right: 0;
+}
+
+/* select adjacent messages-links and inline them */
+.cc-group .cc-message + .cc-link {
+  display: inline;
+}
+
+.cc-group .cc-message  {
+  display: inline;
+}
+.cc-group .cc-message:after {
+  content: ' ';
+}
+
+.cc-group .cc-btn {
+  width: 9.5em;
+}
+
 
 /***** Themes *****/
 

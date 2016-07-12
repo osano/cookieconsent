@@ -1,54 +1,29 @@
 
 (function (cc) {
 
-  // Stop from running again, if accidently included more than once.
-  if (cc.hasInitialised) {
-    return;
-  }
-  cc.hasInitialised = true;
+  // stop from running again, if accidently included more than once.
+  if (cc.hasInitialised) return;
 
-  /* Constants */
+  // name of cookie to be set when dismissed
+  cc.cookieName = 'cookieconsent_status';
 
-  // Name of cookie to be set when dismissed
-  cc.COOKIE_STATUS_NAME = 'cookieconsent_status';
+  // valid cookie values
+  cc.status = {denied: 'denied', allowed: 'allowed', dismissed: 'dismissed'};
 
-  // Valid cookie values
-  cc.COOKIE_STATUS = {
-    DENIED: 'denied',
-    ALLOWED: 'allowed',
-    DISMISSED: 'dismissed'
-  };
-
-  // The path to built in themes
+  // the path to built-in styles
   // Note: Directly linking to a version on the CDN like this is horrible, but it's less horrible
   //       than people downloading the code then discovering that their CSS bucket disappeared
-  cc.THEME_BUCKET_PATH = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/';
+  cc.stylesheetPath = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/';
 
-  // A cross browser method of getting the transition event name
-  // Note: If you simply provide a list of possible event names like 'transitionend webkitTransitionEnd msTransitionEnd' etc,
-  //       then the event may not be triggered. This method ensures that it is correctly triggered
-  cc.HAS_TRANSITION = (function supportsTransitions() {
-    var v = ['Moz', 'webkit', 'Webkit', 'Khtml', 'O', 'ms'],
-      b = document.body || document.documentElement,
-      p = 'transition',
-      s = b.style;
-
-    if (typeof s[p] == 'string') {
-      return true;
+  // is true if the browser supports css transitions
+  cc.hasTransition = (function supportsTransitions() {
+    var style = document.documentElement.style;
+    var trans = ['t','OT','msT','MozT','KhtmlT','WebkitT'];
+    for (var i = 0, l = trans.length; i < l; ++i) {
+      if (style[trans[i]+'ransition']) return true;
     }
-
-    p = p.charAt(0).toUpperCase() + p.substr(1);
-
-    for (var i = 0, l = v.length; i < l; ++i) {
-      if (typeof s[v[i] + p] == 'string') {
-        return true;
-      }
-    }
-
     return false;
   }());
-
-  /* Helper methods */
 
   var util = {
     isArray: function (obj) {
@@ -246,15 +221,13 @@
     }
   };
 
-  /* Plugin */
-
   cc.popup = (function () {
 
-    // array of values from COOKIE_STATUS
-    var allowedStatuses = util.map(cc.COOKIE_STATUS, util.escapeRegExp);
+    // array of values from `cc.status`
+    var allowedStatuses = util.map(cc.status, util.escapeRegExp);
 
     // regex to identify HTML button by class name. matches classes 'cc_btn_'+('denied' OR 'allowed' OR 'dismissed')
-    var allowedButtonClass = new RegExp('(?:\\s|^)cc_btn_(' + allowedStatuses.join('|') + ')(?:\\s|$)');
+    var allowedButtonClass = new RegExp('(?:\\s|^)cc-btn-(' + allowedStatuses.join('|') + ')(?:\\s|$)');
 
     var defaultOptions = {
       enabled: true,
@@ -267,7 +240,7 @@
       },
 
       // configuration
-      theme: '../build/new.css',
+      css: '../build/new.css',
       container: null, // selector
       dismissOnScroll: false, // (disabled on false) auto-dismisses message when scrolled past a point. Pass number that `scrollTop` must exceed. E.G. 500
       dismissOnTimeout: false, // (disabled on false) auto-dismisses message on a timeout. Pass timeout in milliseconds. E.G. 3000
@@ -277,7 +250,7 @@
       // hooks
       onAllowCookies: function () {}, // cookies were accepted for the first time
       onDenyCookies: function () {}, // cookies were denied for the first time
-      onComplete: function (status) {}, // called on complete with the users preference to using cookies (see COOKIE_STATUS)
+      onComplete: function (status) {}, // called on complete with the users preference to using cookies (see cc.status)
 
       // interface
       explicit: false,
@@ -303,11 +276,23 @@
         close: '<span class="cc-close">&#x274c;</span>',
       },
 
-      display: {
-        showClose: false,
-        showHeader: false,
-      }
+      layouts: {
+        'simple': [
+          ['message', 'link'],
+        ],
+        'dismiss': [
+          ['message'],
+          ['link', 'dismiss'],
+          ['close']
+        ],
+        'choice': [
+          ['message', 'link'],
+          ['allow', 'deny'],
+        ],
+      },
 
+      layout: 'dismiss',
+      theme: 'blue',
     };
 
     return {
@@ -329,17 +314,17 @@
           return;
         }
 
-        if (!this.loadedThemes) {
-          this.loadedThemes = [];
+        if (!this.loadedStylesheets) {
+          this.loadedStylesheets = [];
         }
 
-        // check if theme is already loaded
-        if (this.options.theme) {
-          this.useTheme(this.options.theme, function () {
-            // theme loaded
+        // check if css is already loaded
+        if (this.options.css) {
+          this.useStylesheet(this.options.css, function () {
+            // css loaded
 
-            // TODO we could potentially open the popup before the theme is loaded
-            //      in these cases, we should delay the `open` until the theme is loaded
+            // TODO we could potentially open the popup before the stylesheet is loaded
+            //      in these cases, we should delay the `open` until the stylesheet is loaded
           });
         }
 
@@ -350,7 +335,7 @@
         }
 
         this._onButtonClick = util.bind(function (e) {
-          if (util.hasClass(e.target, 'cc_btn')) {
+          if (util.hasClass(e.target, 'cc-btn')) {
             var matches = e.target.className.match(allowedButtonClass);
 
             if (matches && matches[1]) {
@@ -373,8 +358,8 @@
 
           this._onButtonClick = null;
 
-          if (this.loadedThemes.length) {
-            this.unloadThemes();
+          if (this.loadedStylesheets.length) {
+            this.unloadStylesheets();
           }
 
           // remove from DOM
@@ -398,35 +383,35 @@
         util.merge(this.options, options);
       },
 
-      useTheme: function (theme, callback) {
-        // check if the theme has already been loaded
-        if (util.contains(this.loadedThemes, theme)) {
-          // disable current theme
-          findLoadedTheme(this.lastTheme).disabled = true;
+      useStylesheet: function (stylesheet, callback) {
+        // check if the stylesheet has already been loaded
+        if (util.contains(this.loadedStylesheets, stylesheet)) {
+          // disable current stylesheet
+          findLoadedStylesheet(this.lastStylesheet).disabled = true;
 
-          // find `theme` and enable it
-          findLoadedTheme(theme).disabled = false;
+          // find `stylesheet` and enable it
+          findLoadedStylesheet(stylesheet).disabled = false;
 
-          this.lastTheme = theme;
+          this.lastStylesheet = stylesheet;
 
           callback.call(this);
         } else {
-          loadTheme.call(this, theme, callback);
+          loadStylesheet.call(this, stylesheet, callback);
         }
       },
 
-      unloadThemes: function () {
+      unloadStylesheet: function () {
         // not the most efficient, but at least I don't have to implement an 'intersect' function
-        util.each(this.loadedThemes, function (theme) {
-          var linkTag = findLoadedTheme(theme);
+        util.each(this.loadedStylesheets, function (stylesheet) {
+          var linkTag = findLoadedStylesheet(stylesheet);
           if (linkTag && linkTag.ownerNode) {
             var node = linkTag.ownerNode;
             node.parentNode.removeChild(node);
           }
         });
 
-        this.loadedThemes = [];
-        this.lastTheme = undefined;
+        this.loadedStylesheets = [];
+        this.lastStylesheet = undefined;
       },
 
       isOpen: function () {
@@ -435,10 +420,10 @@
 
       open: function (callback) {
         if (!this.isOpen() && this.element) {
-          if (cc.HAS_TRANSITION && this.element.style.display == '') {
-            util.removeClass(this.element, 'cc_fade_out');
+          if (cc.hasTransition && this.element.style.display == '') {
+            util.removeClass(this.element, 'cc-fade-out');
 
-            // Sometimes the popup is hidden with '.cc_fade_out' (which uses visibility: hidden).
+            // Sometimes the popup is hidden with '.cc-fade-out' (which uses visibility: hidden).
             // The "open" animation will only run if the element is hidden (using display: none) before showing it, otherwise the animation won't run.
 
             // So we can either set 'display: none' after we close the popup OR directly before we open it.
@@ -458,8 +443,8 @@
 
       close: function (callback) {
         if (this.isOpen()) {
-          if (cc.HAS_TRANSITION) {
-            util.addClass(this.element, 'cc_fade_out');
+          if (cc.hasTransition) {
+            util.addClass(this.element, 'cc-fade-out');
           } else {
             this.element.style.display = 'none';
           }
@@ -468,15 +453,15 @@
 
       setStatus: function (status) {
         var opts = this.options;
-        var value = util.readCookie(cc.COOKIE_STATUS_NAME);
-        var chosenBefore = util.contains(cc.COOKIE_STATUS, value);
+        var value = util.readCookie(cc.cookieName);
+        var chosenBefore = util.contains(cc.status, value);
 
         // if `status` is valid
-        if (util.contains(cc.COOKIE_STATUS, status)) {
-          util.setCookie(cc.COOKIE_STATUS_NAME, status, opts.expiryDays, opts.domain, opts.path);
+        if (util.contains(cc.status, status)) {
+          util.setCookie(cc.cookieName, status, opts.expiryDays, opts.domain, opts.path);
 
           if (!chosenBefore) {
-            status == cc.COOKIE_STATUS.DENIED ? this.options.onDenyCookies() : this.options.onAllowCookies();
+            status == cc.status.denied ? this.options.onDenyCookies() : this.options.onAllowCookies();
             this.options.onComplete(status);
           }
         } else {
@@ -485,34 +470,34 @@
       },
 
       getStatus: function () {
-        return util.readCookie(cc.COOKIE_STATUS_NAME)
+        return util.readCookie(cc.cookieName)
       },
 
       clearStatus: function () {
-        util.setCookie(cc.COOKIE_STATUS_NAME, '', -1, this.options.domain, this.options.path);
+        util.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
       }
     };
 
-    function findLoadedTheme (theme) {
+    function findLoadedStylesheet (stylesheet) {
       var sheets = document.styleSheets;
       var regex, linkTag, tag;
 
-      // we find themes by checking if any of the CSS urls ends with `theme`.
-      // if `theme` was specified as a relative URL, then it could be preceeded by directory selectors ('.' or '..')
-      // seeing as we area checking if the url ends with `theme`, it's okay to remove these selectorss.
-      if(theme.substr(0, 2) == '..') {
-        theme = theme.substr(2);
+      // we find stylesheets by checking if any of the CSS urls ends with `stylesheet`.
+      // if `stylesheet` was specified as a relative URL, then it could be preceeded by directory selectors ('.' or '..')
+      // seeing as we area checking if the url ends with `stylesheet`, it's okay to remove these selectorss.
+      if(stylesheets.substr(0, 2) == '..') {
+        stylesheet = stylesheet.substr(2);
       }
-      if (theme[0] == '.') {
-        theme = theme.substr(1);
+      if (stylesheet[0] == '.') {
+        stylesheet = stylesheet.substr(1);
       }
 
-      regex = new RegExp(util.escapeRegExp(theme) + '$');
+      regex = new RegExp(util.escapeRegExp(stylesheet) + '$');
 
       for (var i = 0, l = sheets.length; i < l; ++i) {
         tag = sheets[i];
 
-        // if `tag.href` ends with `theme`
+        // if `tag.href` ends with `stylesheet`
         if (tag.href && tag.href.match(regex)) {
           linkTag = tag;
           break;
@@ -522,15 +507,15 @@
       return linkTag;
     }
 
-    function loadTheme (theme, callback) {
+    function loadStylesheet (stylesheet, callback) {
       var link = document.createElement('link');
       var onCssLoad = util.bind(function () {
-        if(this.lastTheme) {
-          findLoadedTheme(this.lastTheme).disabled = true;
+        if(this.lastStylesheet) {
+          findLoadedStylesheet(this.lastStylesheet).disabled = true;
         }
 
-        this.loadedThemes.push(theme);
-        this.lastTheme = theme;
+        this.loadedStylesheets.push(stylesheet);
+        this.lastStylesheet = stylesheet;
 
         util.removeEventListener(link, 'load', onCssLoad);
         link = null;
@@ -538,15 +523,15 @@
         callback.call(this);
       }, this);
 
-      // If theme is specified by name
-      if (theme.indexOf('.css') === -1) {
-        theme = cc.THEME_BUCKET_PATH + theme + '.css';
+      // If stylesheet is specified by name
+      if (stylesheet.indexOf('.css') === -1) {
+        stylesheet = cc.stylesheetPath + stylesheet + '.css';
       }
 
       util.addEventListener(link, 'load', onCssLoad);
       link.rel = 'stylesheet';
       link.type = 'text/css';
-      link.href = theme;
+      link.href = stylesheet;
 
       document.getElementsByTagName('head')[0].appendChild(link);
     }
@@ -595,20 +580,20 @@
 
     function checkCallbackHooks () {
       if (window.navigator && !navigator.cookieEnabled) {
-        this.options.onComplete(cc.COOKIE_STATUS.DENIED);
+        this.options.onComplete(cc.status.denied);
       }
 
       if ((window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
-        this.options.onComplete(cc.COOKIE_STATUS.ALLOWED);
+        this.options.onComplete(cc.status.allowed);
       }
 
-      var status = util.readCookie(cc.COOKIE_STATUS_NAME);
-      if (status == cc.COOKIE_STATUS.DISMISSED) {
-        this.options.onComplete(cc.COOKIE_STATUS.DISMISSED); // can use cookies
-      } else if (status == cc.COOKIE_STATUS.ALLOWED) {
-        this.options.onComplete(cc.COOKIE_STATUS.ALLOWED); // can use cookies
-      } else if (status == cc.COOKIE_STATUS.DENIED) {
-        this.options.onComplete(cc.COOKIE_STATUS.DENIED); // cannot use cookies
+      var status = util.readCookie(cc.cookieName);
+      if (status == cc.status.dismissed) {
+        this.options.onComplete(cc.status.dismissed); // can use cookies
+      } else if (status == cc.status.allowed) {
+        this.options.onComplete(cc.status.allowed); // can use cookies
+      } else if (status == cc.status.denied) {
+        this.options.onComplete(cc.status.denied); // cannot use cookies
       } else if (typeof status != 'undefined') {
         // the dismissed cookie is invalid. delete it
         this.clearStatus();
@@ -647,7 +632,7 @@
 
       var opts = this.options;
       var elements = interpolateHtml(opts.element, opts.content);
-      var markup = buildHtml(opts.display, elements);
+      var markup = buildHtml(opts.layouts[opts.layout], elements);
       var fullHtml = opts.wrapper.replace('{children}', markup);
 
       // create markup
@@ -1037,13 +1022,15 @@
   cc.oldinit = function (options) {
     cc.popup.init(options);
     var status = cc.popup.getStatus();
-    if (!util.contains(cc.COOKIE_STATUS, status) && cc.popup.options.enabled) {
+    if (!util.contains(cc.status, status) && cc.popup.options.enabled) {
       cc.popup.open();
     }
   };
 
   cc.util = util;
 
+  cc.hasInitialised = true;
+
   window.cookieconsent = cc;
 
-}(window.cookieconsent || {}));
+} (window.cookieconsent || {}));
