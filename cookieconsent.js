@@ -240,7 +240,8 @@
       },
 
       // configuration
-      css: '../build/new.css',
+      css: 'cookieconsent.min.css',
+
       container: null, // selector
       dismissOnScroll: false, // (disabled on false) auto-dismisses message when scrolled past a point. Pass number that `scrollTop` must exceed. E.G. 500
       dismissOnTimeout: false, // (disabled on false) auto-dismisses message on a timeout. Pass timeout in milliseconds. E.G. 3000
@@ -255,7 +256,7 @@
       // interface
       explicit: false,
 
-      wrapper: '<div class="cc-wrapper"><div class="cc-window theme-blue cc-bottom cc-right">{children}</div></div>',
+      wrapper: '<div class="cc-wrapper"><div class="cc-window {classes}">{children}</div></div>',
 
       content: {
         header: 'Cookie Policy',
@@ -278,21 +279,24 @@
 
       layouts: {
         'simple': [
+          ['header'],
           ['message', 'link'],
         ],
         'dismiss': [
+          ['header'],
           ['message'],
           ['link', 'dismiss'],
-          ['close']
         ],
-        'choice': [
+        'choose': [
+          ['header'],
           ['message', 'link'],
           ['allow', 'deny'],
         ],
       },
 
-      layout: 'dismiss',
       theme: 'blue',
+      layout: 'dismiss',
+      position: 'bottom-right',
     };
 
     return {
@@ -421,9 +425,9 @@
       open: function (callback) {
         if (!this.isOpen() && this.element) {
           if (cc.hasTransition && this.element.style.display == '') {
-            util.removeClass(this.element, 'cc-fade-out');
+            util.removeClass(this.element, 'cc-fadeout');
 
-            // Sometimes the popup is hidden with '.cc-fade-out' (which uses visibility: hidden).
+            // Sometimes the popup is hidden with '.cc-fadeout' (which uses visibility: hidden).
             // The "open" animation will only run if the element is hidden (using display: none) before showing it, otherwise the animation won't run.
 
             // So we can either set 'display: none' after we close the popup OR directly before we open it.
@@ -444,7 +448,7 @@
       close: function (callback) {
         if (this.isOpen()) {
           if (cc.hasTransition) {
-            util.addClass(this.element, 'cc-fade-out');
+            util.addClass(this.element, 'cc-fadeout');
           } else {
             this.element.style.display = 'none';
           }
@@ -485,7 +489,7 @@
       // we find stylesheets by checking if any of the CSS urls ends with `stylesheet`.
       // if `stylesheet` was specified as a relative URL, then it could be preceeded by directory selectors ('.' or '..')
       // seeing as we area checking if the url ends with `stylesheet`, it's okay to remove these selectorss.
-      if(stylesheets.substr(0, 2) == '..') {
+      if(stylesheet.substr(0, 2) == '..') {
         stylesheet = stylesheet.substr(2);
       }
       if (stylesheet[0] == '.') {
@@ -633,7 +637,9 @@
       var opts = this.options;
       var elements = interpolateHtml(opts.element, opts.content);
       var markup = buildHtml(opts.layouts[opts.layout], elements);
-      var fullHtml = opts.wrapper.replace('{children}', markup);
+      var pos = opts.position.split('-', 2);
+      var classes = 'cc-'+pos[0]+' cc-'+pos[1]+' cc-layout-'+opts.layout+' cc-theme-'+opts.theme;
+      var fullHtml = opts.wrapper.replace('{classes}', classes).replace('{children}', markup);
 
       // create markup
       this.element = util.buildDom(fullHtml);

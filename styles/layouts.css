@@ -1,0 +1,40 @@
+/* @author Alex Morly-Finch */
+
+/* a `cc-group` is a div where all the children should be displayed inline */
+.cc-group {
+  margin-bottom: 1em;
+}
+.cc-group:last-child {
+  margin-bottom: 0;
+}
+
+.cc-group .cc-btn, .cc-group .cc-link {
+  display: inline-block;
+}
+
+.cc-group .cc-link, .cc-group .cc-btn {
+  margin-right: 1em;
+}
+
+.cc-group .cc-btn:last-child {
+  margin-right: 0;
+}
+
+.cc-group .cc-message  {
+  display: inline;
+}
+
+/* select adjacent messages-links and inline them */
+.cc-group .cc-message + .cc-link {
+  display: inline;
+}
+
+.cc-group .cc-message:after {
+  content: ' ';
+}
+
+.cc-layout-choose .cc-group .cc-btn {
+  width: 9.5em;
+}
+
+/* specific for layouts */

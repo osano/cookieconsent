@@ -1,0 +1,37 @@
+/* Themes */
+
+
+/********** Red theme **********/
+
+.cc-theme-red.cc-window {
+  background-color: #d34040;
+}
+
+.cc-theme-red .cc-header,
+.cc-theme-red .cc-message,
+.cc-theme-red .cc-link,
+.cc-theme-red .cc-link:hover,
+.cc-theme-red .cc-close {
+  color: #fff;
+}
+.cc-theme-blue .cc-btn {
+  border-color: #fff;
+}
+
+/********** Blue theme **********/
+
+.cc-theme-blue.cc-window {
+  background-color: #4a90e2;
+}
+
+.cc-theme-blue .cc-header,
+.cc-theme-blue .cc-message,
+.cc-theme-blue .cc-link,
+.cc-theme-blue .cc-link:hover,
+.cc-theme-blue .cc-close,
+.cc-theme-blue .cc-btn {
+  color: #fff;
+}
+.cc-theme-blue .cc-btn {
+  border-color: #fff;
+}
