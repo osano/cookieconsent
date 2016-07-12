@@ -1,76 +1,42 @@
 var gulp = require('gulp');
-var sass = require('gulp-sass');
-var uglify = require('gulp-uglify');
-var rename = require("gulp-rename");
-var replace = require("gulp-replace");
-var yargs = require("yargs");
-var del = require("del");
-var runSequence = require("run-sequence");
-var baseCdnUrl = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/';
+var concat = require('gulp-concat');
+var rename = require('gulp-rename');
+var minifyJS = require('gulp-uglify');
+var minifyCSS = require('gulp-minify-css');
+var deleteDirs = require('del');
+var runSequence = require('run-sequence');
 
-gulp.task('sass:copy', function(){
-  return gulp.src('./styles/**/*')
-    .pipe(gulp.dest('sass-tmp'));
+var buildFolder = './build';
+
+gulp.task('cleanup:begin', function () {
+  return deleteDirs(['./build']);
 });
 
-gulp.task('sass:tag', function(){
-  if (yargs.argv.tag===undefined) {
-    return;
-  }
-
-  return gulp.src("./sass-tmp/_variables.scss")
-    .pipe(replace(/(\$logo:(?: )?url\()(.*)(\);)/, '$1' + baseCdnUrl + yargs.argv.tag+'/logo.png$3'))
-    .pipe(gulp.dest('./sass-tmp'));
-    //.pipe(gulp.dest('./tmp'));
+gulp.task('minify:js', function () {
+  return _minify({
+    in: './cookieconsent.js',
+    out: 'cookieconsent.min.js',
+    dest: buildFolder,
+    minifyFunc: minifyJS
+  });
 });
 
-gulp.task('sass:build', function(){
-  return gulp.src('./sass-tmp/*.scss')
-    .pipe(sass({outputStyle: 'compressed'}))
-    .pipe(gulp.dest('./build'));
+gulp.task('minify:css', function () {
+  return _minify({
+    in: './styles/*.css',
+    out: 'cookieconsent.min.css',
+    dest: buildFolder,
+    minifyFunc: minifyCSS
+  });
 });
 
-
-gulp.task('minify', function () {
-  var pipeline = gulp.src('./cookieconsent.js');
-
-  if (yargs.argv.tag!==undefined) {
-    pipeline.pipe(replace(/(var THEME_BUCKET_PATH(?: )*=(?: )*')(.*)(';)/, '$1' + baseCdnUrl + yargs.argv.tag+'/$3'));
-  }
-
-  return pipeline
-  .pipe(uglify())
-  .pipe(rename('cookieconsent.min.js'))
-  .pipe(gulp.dest('./build'));
+gulp.task('build', function(callback) {
+  return runSequence('cleanup:begin', 'minify:js', 'minify:css', callback);
 });
 
-gulp.task('copy:images', function() {
-  return gulp.src('./images/*')
-    .pipe(gulp.dest('./build'));
-});
-
-gulp.task('cleanup:begin', function() {
-  return del([
-    "./sass-tmp",
-    "./build"
-  ]);
-});
-
-gulp.task('cleanup:end', function() {
-  return del([
-    "./sass-tmp"
-  ]);
-});
-
-gulp.task('build', function(callback){
-  runSequence(
-    'cleanup:begin',
-    'minify',
-    'sass:copy',
-    'sass:tag',
-    'sass:build',
-    'copy:images',
-    'cleanup:end',
-    callback
-  );
-});
+function _minify(opts) {
+  return gulp.src(opts.in)       // get files
+    .pipe(opts.minifyFunc())     // minify them
+    .pipe(concat(opts.out))      // combine them
+    .pipe(gulp.dest(opts.dest)); // save under a new name
+}
