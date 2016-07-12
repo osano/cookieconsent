@@ -8,10 +8,9 @@
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
-    "gulp-sass": "^2.2.0",
     "gulp-uglify": "^1.5.3",
-    "run-sequence": "^1.1.4",
-    "yargs": "^4.3.2"
+    "gulp-minify-css": "^1.2.4",
+    "run-sequence": "^1.1.4"
   },
   "homepage": "http://silktide.com/tools/cookieconsent",
   "scripts": {
@@ -23,5 +22,4 @@
   },
   "author": "Silktide Ltd.",
   "license": "MIT",
-  "dependencies": {}
 }
