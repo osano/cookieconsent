@@ -59,7 +59,7 @@
 /********** Haystack theme **********/
 
 .cc-theme-haystack.cc-window {
-  background-color: #4a90e2;
+  background-color: #000;
 }
 
 .cc-theme-haystack .cc-header,
@@ -71,5 +71,6 @@
   color: #fff;
 }
 .cc-theme-haystack .cc-btn {
-  border-color: #fff;
+  background-color: #f8e71c;
+  color: #000;
 }

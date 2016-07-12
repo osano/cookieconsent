@@ -233,6 +233,7 @@
         'link-right': 'Learn more',
         allow: 'Allow',
         deny: 'Deny',
+        customButton: 'Continue',
       },
 
       element: {
@@ -244,6 +245,7 @@
         link: '<a href="/" class="cc-link">{children}</a>',
         'link-right': '<a href="/" class="cc-link right">{children}</a>',
         close: '<span class="cc-close">&#x274c;</span>',
+        customButton: '<span class="cc-btn customButton"><img src="some-icon.png"><span>{children}</span></span>',
       },
 
       layouts: {
@@ -252,23 +254,39 @@
           ['link'],
           ['close']
         ],
-        'dismiss': [
-          ['message'],
-          ['link', 'dismiss'],
-        ],
-        'dismiss-other': [
-          ['message'],
-          ['dismiss'],
-          ['link-right'], 
-        ],
         'choose': [
           ['message', 'link'],
           ['allow', 'deny'],
         ],
+
+        'dismiss-1': [
+          ['message'],
+          ['link', 'dismiss'],
+        ],
+        'dismiss-2': [
+          ['message'],
+          ['dismiss'],
+          ['link-right'], 
+        ],
+        'dismiss-3': [
+          ['message'],
+          ['link'], 
+          ['dismiss']
+        ],
+
+        'banner-1': [
+          ['message', 'link', 'dismiss']
+        ],
+        'banner-2': [
+          ['message', 'dismiss']
+        ],
+        'banner-3': [
+          ['header', ['message', 'link'], 'customButton']
+        ],
       },
 
-      theme: 'clean',
-      layout: 'dismiss-other',
+      theme: 'haystack',
+      layout: 'dismiss-2',
       position: 'bottom-right',
     };
 
