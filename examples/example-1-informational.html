@@ -15,11 +15,10 @@
       <p>Here we tell users that we use cookies, and let them dismiss the message.</p>
 
       <div class="buttons">
-        <button id="btn-clear-cookie" style="display:none">Clear previous answer</button>
+        <button id="btn-clear-cookie" style="display:none">Clear answer</button>
         <button id="btn-next-example">Next example</button>
       </div>
     </div>
-
 
   </body>
 </html>
@@ -28,14 +27,22 @@
 <script src="../cookieconsent.js"></script>
 <script>
 
-  var options = {
-    css: '../build/cookieconsent.min.css',
+  /* ========== COOKIE SETUP ========== */
+
+  var popup1 = cookieconsent.factory({
+    theme: 'haystack',
+    layout: 'banner-3',
+    position: 'banner-top',
 
     // hide the "clear" button when we don't need it (when there is nothing to clear)
     onComplete: function (status) {
       btnClear.style.display = status ? '' : 'none';
-    }
-  };
+    },
+  });
+
+  popup1.open();
+
+  /* ========== PAGE SETUP ========== */
 
   var btnNext = document.getElementById('btn-next-example');
   var btnClear = document.getElementById('btn-clear-cookie');
@@ -50,8 +57,7 @@
   btnNext.onclick = function () {
     window.location = 'example-2-opt-out.html';
   };
+  
 
-  // `oldinit` only opens the popup if there is no previously selected answer
-  cookieconsent.oldinit(options);
 
 </script>
