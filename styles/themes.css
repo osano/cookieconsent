@@ -17,6 +17,15 @@
   border-color: #fff;
 }
 
+.cc-cookie-image {
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
+
+  filter: invert(1);
+  -webkit-filter: invert(1);
+}
+
 /********** Blue theme **********/
 
 .cc-theme-blue.cc-window {
@@ -56,23 +65,23 @@
   border-color: #86b4ea;
 }
 
-/********** Haystack theme **********/
+/********** Black theme **********/
 
-.cc-theme-haystack.cc-window {
+.cc-theme-black.cc-window {
   background-color: #000;
 }
 
-.cc-theme-haystack .cc-header,
-.cc-theme-haystack .cc-message,
-.cc-theme-haystack .cc-close,
-.cc-theme-haystack .cc-btn {
+.cc-theme-black .cc-header,
+.cc-theme-black .cc-message,
+.cc-theme-black .cc-close,
+.cc-theme-black .cc-btn {
   color: #fff;
 }
-.cc-theme-haystack .cc-btn {
+.cc-theme-black .cc-btn {
   background-color: #f8e71c;
   color: #000;
 }
-.cc-theme-haystack .cc-link,
-.cc-theme-haystack .cc-link:hover {
+.cc-theme-black .cc-link,
+.cc-theme-black .cc-link:hover {
   color: #4a90e2;
 }

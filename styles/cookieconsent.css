@@ -17,6 +17,13 @@
   font-size: 15px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
 }
 
+.cc-left-align {text-align: left}
+.cc-right-align {text-align: right}
+
+/* same as above, but override link */
+.cc-link.cc-left-align {text-align: left}
+.cc-link.cc-right-align {text-align: right}
+
 /* aligns icon images with text */
 .cc-middle>img, .cc-middle>span {
   vertical-align: middle;

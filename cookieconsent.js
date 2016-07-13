@@ -188,7 +188,7 @@
     },
   };
 
-  cc.popup = (function () {
+  cc.CookieWindow = (function () {
 
     // array of values from `cc.status`
     var allowedStatuses = util.map(cc.status, util.escapeRegExp);
@@ -207,7 +207,9 @@
       },
 
       // configuration
-      css: 'cookieconsent.min.css',
+      //css: 'cookieconsent.min.css', THIS IS WHAT IT SHOULD BE
+      css: 'build/cookieconsent.min.css',
+
 
       container: null, // selector
       dismissOnScroll: false, // (disabled on false) auto-dismisses message when scrolled past a point. Pass number that `scrollTop` must exceed. E.G. 500
@@ -226,13 +228,10 @@
       wrapper: '<div class="cc-wrapper"><div class="cc-window {classes}">{children}</div></div>',
 
       content: {
-        //header: 'Cookie Policy',
-        //message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
         header: 'Cookies used on the website',
         message: 'Our website uses cookies. They help us to understand how customers use our website so we can give you the best experience possible and also keep our online services relevant.',
         dismiss: 'Close and don\'t show again',
         link: 'Read more about our cookies',
-        'link-right': 'Learn more',
         allow: 'Allow',
         deny: 'Deny',
         customButton: 'Continue',
@@ -244,238 +243,240 @@
         allow: '<a class="cc-btn cc-allow">{children}</a>',
         deny: '<a class="cc-btn cc-deny">{children}</a>',
         dismiss: '<a class="cc-btn cc-dismiss">{children}</a>',
-        link: '<a href="/" class="cc-link">{children}</a>',
-        'link-right': '<a href="/" class="cc-link right">{children}</a>',
+        link: '<a href="/" class="cc-link {classes}">{children}</a>',
         close: '<span class="cc-close">&#x274c;</span>',
         customButton: '<span class="cc-btn cc-middle customButton"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
+        cookieImage: '<img class="{classes}" src="http://plainicon.com/dboard/userprod/2921_4eb4c/prod_thumb/plainicon.com-64226-256px-fa8.png" width="32px"/>'
       },
 
       layouts: {
-        'simple': [
-          ['message'],
-          ['link'],
-          ['close']
-        ],
-        'choose': [
-          ['message', 'link'],
-          ['allow', 'deny'],
-        ],
 
-        'dismiss-1': [
-          ['message'],
-          ['link', 'dismiss'],
-        ],
-        'dismiss-2': [
+        /* The following closely follow the given designs */
+
+        'clean-demo': [
           ['message'],
           ['dismiss'],
-          ['link-right'], 
-        ],
-        'dismiss-3': [
-          ['message'],
-          ['link'], 
-          ['dismiss']
+          ['link:cc-right-align'],
         ],
 
-        'banner-simple': [
-          ['message', 'link'],
+        'red-demo': [
+          ['header'],
+          ['message'],
+          ['link:cc-left-align'],
+          ['cookieImage:cc-cookie-image'],
+          ['close'],
         ],
-        'banner-1': [
-          ['message', 'link', 'dismiss'],
+
+        'blue-demo': [
+          ['message:cc-center-align'],
+          ['link', 'dismiss'],
         ],
-        'banner-2': [
-          ['message', 'dismiss'],
+
+        'black-demo': [
+          ['message:cc-center-align'],
+          ['link'],
+          ['dismiss'],
+          ['close'],
         ],
-        'banner-3': [
-          ['header', ['message', 'link'], 'customButton'],
-        ],
+
+        /* I just made up the following - not even sure if they work */
+
+        'simple': [['message'], ['link'], ['close']],
+        'choose': [['message', 'link'], ['allow', 'deny']],
+
+        'dismiss-1': [['message'], ['link', 'dismiss']],
+        'dismiss-2': [['message'], ['dismiss'], ['link-right']],
+        'dismiss-3': [['message'], ['link'], ['dismiss']],
+
+        'banner-simple': [['message', 'link']],
+        'banner-1': [['message', 'link', 'dismiss']],
+        'banner-2': [['message', 'dismiss']],
+        'banner-3': [['header', ['message', 'link'], 'customButton']],
       },
 
-      theme: 'haystack',
-      layout: 'banner-3',
-      position: 'banner-top',
+      theme: null,
+      layout: 'simple',
+      position: 'bottom-left',
     };
 
-    return {
+    function CookieWindow (options) {
+      this.setOptions(util.isObject(options) ? options : {});
 
-      init: function (options) {
-        this.setOptions(util.isObject(options) ? options : {});
+      // calls `onComplete` if necessary
+      checkCallbackHooks.call(this);
 
-        // calls `onComplete` if necessary
-        checkCallbackHooks.call(this);
+      // enable / disable plugin depending on config
+      applyPageFilter.call(this);
 
-        // enable / disable plugin depending on config
-        applyPageFilter.call(this);
-
-        if (this.isOpen()) {
-          this.close();
-        }
-
-        if (!this.options.enabled) {
-          return;
-        }
-
-        if (!this.loadedStylesheets) {
-          this.loadedStylesheets = [];
-        }
-
-        // check if css is already loaded
-        if (this.options.css) {
-          this.useStylesheet(this.options.css, function () {
-            // css loaded
-
-            // TODO we could potentially open the popup before the stylesheet is loaded
-            //      in these cases, we should delay the `open` until the stylesheet is loaded
-          });
-        }
-
-        if (this.options.container) {
-          this.container = document.querySelector(this.options.container);
-        } else {
-          this.container = document.body;
-        }
-
-        this._onButtonClick = util.bind(function (e) {
-          if (dom.hasClass(e.target, 'cc-btn')) {
-            var matches = e.target.className.match(allowedButtonClass);
-
-            if (matches && matches[1]) {
-              this.setStatus(matches[1]);
-              this.close();
-            }
-          }
-        }, this);
-
-        // create hidden HTML element
-        render.call(this);
-
-        // uses `dismissOnScroll` and `dismissOnTimeout`
-        applyAutoDismiss.call(this);
-      },
-
-      destroy: function () {
-        if (this.element) {
-          dom.removeEventListener(this.element, 'click', this._onButtonClick);
-
-          this._onButtonClick = null;
-
-          if (this.loadedStylesheets.length) {
-            this.unloadStylesheets();
-          }
-
-          // remove from DOM
-          this.element.parentNode.removeChild(this.element);
-
-          // remove reference
-          this.element = null;
-        }
-
-        if (this.container) {
-          // remove reference
-          this.container = null;
-        }
-      },
-
-      setOptions: function (options) {
-        // set options back to default options
-        this.options = util.clone(defaultOptions);
-
-        // merge new options
-        util.merge(this.options, options);
-      },
-
-      useStylesheet: function (stylesheet, callback) {
-        // check if the stylesheet has already been loaded
-        if (util.contains(this.loadedStylesheets, stylesheet)) {
-          // disable current stylesheet
-          findLoadedStylesheet(this.lastStylesheet).disabled = true;
-
-          // find `stylesheet` and enable it
-          findLoadedStylesheet(stylesheet).disabled = false;
-
-          this.lastStylesheet = stylesheet;
-
-          callback.call(this);
-        } else {
-          loadStylesheet.call(this, stylesheet, callback);
-        }
-      },
-
-      unloadStylesheet: function () {
-        // not the most efficient, but at least I don't have to implement an 'intersect' function
-        util.each(this.loadedStylesheets, function (stylesheet) {
-          var linkTag = findLoadedStylesheet(stylesheet);
-          if (linkTag && linkTag.ownerNode) {
-            var node = linkTag.ownerNode;
-            node.parentNode.removeChild(node);
-          }
-        });
-
-        this.loadedStylesheets = [];
-        this.lastStylesheet = undefined;
-      },
-
-      isOpen: function () {
-        return this.element && this.element.style.display === '' && !dom.hasClass(this.element, 'cc_fade_out');
-      },
-
-      open: function (callback) {
-        if (!this.isOpen() && this.element) {
-          if (cc.hasTransition && this.element.style.display == '') {
-            dom.removeClass(this.element, 'cc-fadeout');
-
-            // Sometimes the popup is hidden with '.cc-fadeout' (which uses visibility: hidden).
-            // The "open" animation will only run if the element is hidden (using display: none) before showing it, otherwise the animation won't run.
-
-            // So we can either set 'display: none' after we close the popup OR directly before we open it.
-            // It would make more sense to do it after "close" however that means relying on "transitionend", which isn't exactly cross-browser 'reliable'
-            this.element.style.display = 'none';
-
-            // We must "show" the popup in a timeout. This is to give the browser chance to update and draw the DOM.
-            // If we don't do this, the animation won't run. If the delay period is < 20ms, the animation won't run.
-            setTimeout(util.bind(function(){
-              this.element.style.display = '';
-            }, this), 20);
-          } else {
-            this.element.style.display = '';
-          }
-        }
-      },
-
-      close: function (callback) {
-        if (this.isOpen()) {
-          if (cc.hasTransition) {
-            dom.addClass(this.element, 'cc-fadeout');
-          } else {
-            this.element.style.display = 'none';
-          }
-        }
-      },
-
-      setStatus: function (status) {
-        var opts = this.options;
-        var value = cookie.readCookie(cc.cookieName);
-        var chosenBefore = util.contains(cc.status, value);
-
-        // if `status` is valid
-        if (util.contains(cc.status, status)) {
-          cookie.setCookie(cc.cookieName, status, opts.expiryDays, opts.domain, opts.path);
-
-          if (!chosenBefore) {
-            status == cc.status.denied ? this.options.onDenyCookies() : this.options.onAllowCookies();
-            this.options.onComplete(status);
-          }
-        } else {
-          this.clearStatus();
-        }
-      },
-
-      getStatus: function () {
-        return cookie.readCookie(cc.cookieName)
-      },
-
-      clearStatus: function () {
-        cookie.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
+      if (this.isOpen()) {
+        this.close();
       }
+
+      if (!this.options.enabled) {
+        return;
+      }
+
+      if (!this.loadedStylesheets) {
+        this.loadedStylesheets = [];
+      }
+
+      // check if css is already loaded
+      if (this.options.css) {
+        this.useStylesheet(this.options.css, function () {
+          // css loaded
+
+          // TODO we could potentially open the popup before the stylesheet is loaded
+          //      in these cases, we should delay the `open` until the stylesheet is loaded
+        });
+      }
+
+      if (this.options.container) {
+        this.container = document.querySelector(this.options.container);
+      } else {
+        this.container = document.body;
+      }
+
+      this._onButtonClick = util.bind(function (e) {
+        if (dom.hasClass(e.target, 'cc-btn')) {
+          var matches = e.target.className.match(allowedButtonClass);
+
+          if (matches && matches[1]) {
+            this.setStatus(matches[1]);
+            this.close();
+          }
+        }
+      }, this);
+
+      // create hidden HTML element
+      render.call(this);
+
+      // uses `dismissOnScroll` and `dismissOnTimeout`
+      applyAutoDismiss.call(this);
+    }
+
+    CookieWindow.prototype.destroy = function () {
+      if (this.element) {
+        dom.removeEventListener(this.element, 'click', this._onButtonClick);
+
+        this._onButtonClick = null;
+
+        if (this.loadedStylesheets.length) {
+          this.unloadStylesheets();
+        }
+
+        // remove from DOM
+        this.element.parentNode.removeChild(this.element);
+
+        // remove reference
+        this.element = null;
+      }
+
+      if (this.container) {
+        // remove reference
+        this.container = null;
+      }
+    };
+
+    CookieWindow.prototype.setOptions = function (options) {
+      // set options back to default options
+      this.options = util.clone(defaultOptions);
+
+      // merge new options
+      util.merge(this.options, options);
+    };
+
+    CookieWindow.prototype.useStylesheet = function (stylesheet, callback) {
+      // check if the stylesheet has already been loaded
+      if (util.contains(this.loadedStylesheets, stylesheet)) {
+        // disable current stylesheet
+        findLoadedStylesheet(this.lastStylesheet).disabled = true;
+
+        // find `stylesheet` and enable it
+        findLoadedStylesheet(stylesheet).disabled = false;
+
+        this.lastStylesheet = stylesheet;
+
+        callback.call(this);
+      } else {
+        loadStylesheet.call(this, stylesheet, callback);
+      }
+    };
+
+    CookieWindow.prototype.unloadStylesheet = function () {
+      // not the most efficient, but at least I don't have to implement an 'intersect' function
+      util.each(this.loadedStylesheets, function (stylesheet) {
+        var linkTag = findLoadedStylesheet(stylesheet);
+        if (linkTag && linkTag.ownerNode) {
+          var node = linkTag.ownerNode;
+          node.parentNode.removeChild(node);
+        }
+      });
+
+      this.loadedStylesheets = [];
+      this.lastStylesheet = undefined;
+    };
+
+    CookieWindow.prototype.isOpen = function () {
+      return this.element && this.element.style.display === '' && !dom.hasClass(this.element, 'cc_fade_out');
+    };
+
+    CookieWindow.prototype.open = function (callback) {
+      if (!this.isOpen() && this.element) {
+        if (cc.hasTransition && this.element.style.display == '') {
+          dom.removeClass(this.element, 'cc-fadeout');
+
+          // Sometimes the popup is hidden with '.cc-fadeout' (which uses visibility: hidden).
+          // The "open" animation will only run if the element is hidden (using display: none) before showing it, otherwise the animation won't run.
+
+          // So we can either set 'display: none' after we close the popup OR directly before we open it.
+          // It would make more sense to do it after "close" however that means relying on "transitionend", which isn't exactly cross-browser 'reliable'
+          this.element.style.display = 'none';
+
+          // We must "show" the popup in a timeout. This is to give the browser chance to update and draw the DOM.
+          // If we don't do this, the animation won't run. If the delay period is < 20ms, the animation won't run.
+          setTimeout(util.bind(function(){
+            this.element.style.display = '';
+          }, this), 20);
+        } else {
+          this.element.style.display = '';
+        }
+      }
+    };
+
+    CookieWindow.prototype.close = function (callback) {
+      if (this.isOpen()) {
+        if (cc.hasTransition) {
+          dom.addClass(this.element, 'cc-fadeout');
+        } else {
+          this.element.style.display = 'none';
+        }
+      }
+    };
+
+    CookieWindow.prototype.setStatus = function (status) {
+      var opts = this.options;
+      var value = cookie.readCookie(cc.cookieName);
+      var chosenBefore = util.contains(cc.status, value);
+
+      // if `status` is valid
+      if (util.contains(cc.status, status)) {
+        cookie.setCookie(cc.cookieName, status, opts.expiryDays, opts.domain, opts.path);
+
+        if (!chosenBefore) {
+          status == cc.status.denied ? this.options.onDenyCookies() : this.options.onAllowCookies();
+          this.options.onComplete(status);
+        }
+      } else {
+        this.clearStatus();
+      }
+    };
+
+    CookieWindow.prototype.getStatus = function () {
+      return cookie.readCookie(cc.cookieName)
+    };
+
+    CookieWindow.prototype.clearStatus = function () {
+      cookie.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
     };
 
     function findLoadedStylesheet (stylesheet) {
@@ -580,27 +581,26 @@
       }
     }
 
-    function buildHtml (order, elements) {
+    function buildHtml (order, elements, isBlock) {
       var str = '';
       util.each(order, function(list) {
         if (util.isArray(list)) {
-          var useGroup = list.length > 1;
+          if (list.length > 1) str += '<div class="' + (isBlock ? 'cc-block' : 'cc-inline') + '">';
 
-          if (useGroup) str += '<div class="cc-inline">';
+          str += buildHtml(list, elements, !isBlock);
 
-          util.each(list, function(name) {
-            if (util.isArray(name)) {
-              str += '<div class="cc-block">';
-              str += buildHtml(name, elements);
-              str += '</div>';
-            } else {
-              str += elements[name];
-            }
-          });
-
-          if (useGroup) str += '</div>';
+          if (list.length > 1) str += '</div>';
         } else {
-          str += elements[list];
+          if (typeof list == 'string' && list.length) {
+            if (list.indexOf(':') > -1) {
+              var parts = list.split(':', 2);
+              var name = util.trim(parts[0]);
+              var elem = elements[name];
+              str += elem.replace('{classes}', util.trim(parts[1]));
+            } else {
+              str += elements[list];
+            }
+          }
         }
       });
       return str;
@@ -681,6 +681,8 @@
       }
       return false;
     }
+
+    return CookieWindow
   }());
 
   cc.law = (function () {
@@ -1031,12 +1033,15 @@
     }, failure);
   };
 
-  cc.oldinit = function (options) {
-    cc.popup.init(options);
-    var status = cc.popup.getStatus();
-    if (!util.contains(cc.status, status) && cc.popup.options.enabled) {
-      cc.popup.open();
+  cc.factory = function (options) {
+    var popup = new cc.CookieWindow(options);
+
+    var status = popup.getStatus();
+    if (!util.contains(cc.status, status) && popup.options.enabled) {
+      popup.open();
     }
+
+    return popup;
   };
 
   cc.hasInitialised = true;
