@@ -20,6 +20,9 @@
 .cc-left-align {text-align: left}
 .cc-right-align {text-align: right}
 
+.cc-f-left {float: left}
+.cc-f-right {float: right}
+
 /* same as above, but override link */
 .cc-link.cc-left-align {text-align: left}
 .cc-link.cc-right-align {text-align: right}

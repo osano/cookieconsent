@@ -188,6 +188,105 @@
     },
   };
 
+  cc.StyleManager = (function () {
+
+    function StyleManager () {
+      this.last = null;
+      this.stylesheets = [];
+    }
+
+    StyleManager.prototype.useStylesheet = function (stylesheet, callback) {
+      // check if the stylesheet has already been loaded
+      if (util.contains(this.loadedStylesheets, stylesheet)) {
+        // disable current stylesheet
+        findLoadedStylesheet(this.lastStylesheet).disabled = true;
+
+        // find `stylesheet` and enable it
+        findLoadedStylesheet(stylesheet).disabled = false;
+
+        this.lastStylesheet = stylesheet;
+
+        callback.call(this);
+      } else {
+        loadStylesheet.call(this, stylesheet, callback);
+      }
+    };
+
+    StyleManager.prototype.unloadStylesheet = function () {
+      // not the most efficient, but at least I don't have to implement an 'intersect' function
+      util.each(this.loadedStylesheets, function (stylesheet) {
+        var linkTag = findLoadedStylesheet(stylesheet);
+        if (linkTag && linkTag.ownerNode) {
+          var node = linkTag.ownerNode;
+          node.parentNode.removeChild(node);
+        }
+      });
+
+      this.loadedStylesheets = [];
+      this.lastStylesheet = undefined;
+    };
+
+    function findLoadedStylesheet (stylesheet) {
+      var sheets = document.styleSheets;
+      var regex, linkTag, tag;
+
+      // we find stylesheets by checking if any of the CSS urls ends with `stylesheet`.
+      // if `stylesheet` was specified as a relative URL, then it could be preceeded by directory selectors ('.' or '..')
+      // seeing as we area checking if the url ends with `stylesheet`, it's okay to remove these selectorss.
+      if(stylesheet.substr(0, 2) == '..') {
+        stylesheet = stylesheet.substr(2);
+      }
+      if (stylesheet[0] == '.') {
+        stylesheet = stylesheet.substr(1);
+      }
+
+      regex = new RegExp(util.escapeRegExp(stylesheet) + '$');
+
+      for (var i = 0, l = sheets.length; i < l; ++i) {
+        tag = sheets[i];
+
+        // if `tag.href` ends with `stylesheet`
+        if (tag.href && tag.href.match(regex)) {
+          linkTag = tag;
+          break;
+        }
+      }
+
+      return linkTag;
+    }
+
+    function loadStylesheet (stylesheet, callback) {
+      var link = document.createElement('link');
+      var onCssLoad = util.bind(function () {
+        if(this.last) {
+          findLoadedStylesheet(this.last).disabled = true;
+        }
+
+        this.stylesheets.push(stylesheet);
+        this.last = stylesheet;
+
+        dom.removeEventListener(link, 'load', onCssLoad);
+        link = null;
+
+        callback.call(this);
+      }, this);
+
+      // If stylesheet is specified by name
+      if (stylesheet.indexOf('.css') === -1) {
+        stylesheet = cc.stylesheetPath + stylesheet + '.css';
+      }
+
+      dom.addEventListener(link, 'load', onCssLoad);
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = stylesheet;
+
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+
+    return StyleManager;
+  } ());
+
   cc.CookieWindow = (function () {
 
     // array of values from `cc.status`
@@ -238,14 +337,14 @@
       },
 
       element: {
-        header: '<span class="cc-header">{children}</span>',
-        message: '<span class="cc-message">{children}</span>',
-        allow: '<a class="cc-btn cc-allow">{children}</a>',
-        deny: '<a class="cc-btn cc-deny">{children}</a>',
-        dismiss: '<a class="cc-btn cc-dismiss">{children}</a>',
+        header: '<span class="cc-header {classes}">{children}</span>',
+        message: '<span class="cc-message {classes}">{children}</span>',
+        allow: '<a class="cc-btn cc-allow {classes}">{children}</a>',
+        deny: '<a class="cc-btn cc-deny {classes}">{children}</a>',
+        dismiss: '<a class="cc-btn cc-dismiss {classes}">{children}</a>',
         link: '<a href="/" class="cc-link {classes}">{children}</a>',
-        close: '<span class="cc-close">&#x274c;</span>',
-        customButton: '<span class="cc-btn cc-middle customButton"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
+        close: '<span class="cc-close {classes}">&#x274c;</span>',
+        customButton: '<span class="cc-btn cc-middle customButton {classes}"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
         cookieImage: '<img class="{classes}" src="http://plainicon.com/dboard/userprod/2921_4eb4c/prod_thumb/plainicon.com-64226-256px-fa8.png" width="32px"/>'
       },
 
@@ -282,7 +381,7 @@
         /* The following closely follow the given banner designs */
 
         'clean-banner': [
-          [['message'], ['link:cc-right-align'], ['dismiss:cc-right-align']],
+          [['message'], ['dismiss:cc-f-right'], ['link:cc-f-right']],
         ],
 
         'red-banner': [
@@ -334,13 +433,11 @@
         return;
       }
 
-      if (!this.loadedStylesheets) {
-        this.loadedStylesheets = [];
-      }
+      this.theme = new cc.StyleManager();
 
       // check if css is already loaded
       if (this.options.css) {
-        this.useStylesheet(this.options.css, function () {
+        this.theme.useStylesheet(this.options.css, function () {
           // css loaded
 
           // TODO we could potentially open the popup before the stylesheet is loaded
@@ -378,9 +475,7 @@
 
         this._onButtonClick = null;
 
-        if (this.loadedStylesheets.length) {
-          this.unloadStylesheets();
-        }
+        this.theme.unloadStylesheet();
 
         // remove from DOM
         this.element.parentNode.removeChild(this.element);
@@ -401,37 +496,6 @@
 
       // merge new options
       util.merge(this.options, options);
-    };
-
-    CookieWindow.prototype.useStylesheet = function (stylesheet, callback) {
-      // check if the stylesheet has already been loaded
-      if (util.contains(this.loadedStylesheets, stylesheet)) {
-        // disable current stylesheet
-        findLoadedStylesheet(this.lastStylesheet).disabled = true;
-
-        // find `stylesheet` and enable it
-        findLoadedStylesheet(stylesheet).disabled = false;
-
-        this.lastStylesheet = stylesheet;
-
-        callback.call(this);
-      } else {
-        loadStylesheet.call(this, stylesheet, callback);
-      }
-    };
-
-    CookieWindow.prototype.unloadStylesheet = function () {
-      // not the most efficient, but at least I don't have to implement an 'intersect' function
-      util.each(this.loadedStylesheets, function (stylesheet) {
-        var linkTag = findLoadedStylesheet(stylesheet);
-        if (linkTag && linkTag.ownerNode) {
-          var node = linkTag.ownerNode;
-          node.parentNode.removeChild(node);
-        }
-      });
-
-      this.loadedStylesheets = [];
-      this.lastStylesheet = undefined;
     };
 
     CookieWindow.prototype.isOpen = function () {
@@ -497,64 +561,6 @@
       cookie.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
     };
 
-    function findLoadedStylesheet (stylesheet) {
-      var sheets = document.styleSheets;
-      var regex, linkTag, tag;
-
-      // we find stylesheets by checking if any of the CSS urls ends with `stylesheet`.
-      // if `stylesheet` was specified as a relative URL, then it could be preceeded by directory selectors ('.' or '..')
-      // seeing as we area checking if the url ends with `stylesheet`, it's okay to remove these selectorss.
-      if(stylesheet.substr(0, 2) == '..') {
-        stylesheet = stylesheet.substr(2);
-      }
-      if (stylesheet[0] == '.') {
-        stylesheet = stylesheet.substr(1);
-      }
-
-      regex = new RegExp(util.escapeRegExp(stylesheet) + '$');
-
-      for (var i = 0, l = sheets.length; i < l; ++i) {
-        tag = sheets[i];
-
-        // if `tag.href` ends with `stylesheet`
-        if (tag.href && tag.href.match(regex)) {
-          linkTag = tag;
-          break;
-        }
-      }
-
-      return linkTag;
-    }
-
-    function loadStylesheet (stylesheet, callback) {
-      var link = document.createElement('link');
-      var onCssLoad = util.bind(function () {
-        if(this.lastStylesheet) {
-          findLoadedStylesheet(this.lastStylesheet).disabled = true;
-        }
-
-        this.loadedStylesheets.push(stylesheet);
-        this.lastStylesheet = stylesheet;
-
-        dom.removeEventListener(link, 'load', onCssLoad);
-        link = null;
-
-        callback.call(this);
-      }, this);
-
-      // If stylesheet is specified by name
-      if (stylesheet.indexOf('.css') === -1) {
-        stylesheet = cc.stylesheetPath + stylesheet + '.css';
-      }
-
-      dom.addEventListener(link, 'load', onCssLoad);
-      link.rel = 'stylesheet';
-      link.type = 'text/css';
-      link.href = stylesheet;
-
-      document.getElementsByTagName('head')[0].appendChild(link);
-    }
-
     function applyAutoDismiss () {
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number') {
@@ -614,9 +620,9 @@
               var parts = list.split(':', 2);
               var name = util.trim(parts[0]);
               var elem = elements[name];
-              str += elem.replace('{classes}', util.trim(parts[1]));
+              str += elem.replace('{classes}', util.trim(parts[1]) || '');
             } else {
-              str += elements[list];
+              str += elements[list].replace('{classes}', '');
             }
           }
         }
