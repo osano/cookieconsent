@@ -34,6 +34,10 @@ gulp.task('build', function(callback) {
   return runSequence('cleanup:begin', 'minify:js', 'minify:css', callback);
 });
 
+gulp.task('watch', function() {
+  gulp.watch('styles/*.css', ['build']);
+});
+
 function _minify(opts) {
   return gulp.src(opts.in)       // get files
     .pipe(opts.minifyFunc())     // minify them
