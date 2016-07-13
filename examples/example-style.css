@@ -1,16 +1,40 @@
 
-.jumbotron {
-  margin-top: 100px;
+body, html {
+  position: relative;
+
+  margin: 0;
+  height: 100%;
+
+  font-size: 20px;
+  font-family: "proxima-nova", sans-serif;
 }
 
-.jumbotron .h1, .jumbotron h1 {
-  font-size: 80px;
+.example-window {
+  padding: 2em;
+  width: 30em;
+  background: #EEE;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+
+  border-radius: 1em;
+  text-align: center;
 }
 
-.btn-xl button {
-  padding: 18px 28px;
-  font-size: 22px;
-  line-height: normal;
+.example-window h1 {
+  margin: 0 0 .5em 0;
+}
+.example-window p {
+  margin: 0 0 1em 0;
+}
+
+.example-window button {
+  padding: .8em 1.6em;
+  margin: 0;
+  font-size: 1em;
 }
 
 #cookie-widget {
