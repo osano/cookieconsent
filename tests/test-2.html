@@ -11,9 +11,9 @@
   <body role="document">
 
     <div class="example-window">
-      <h1>Testing rectangular popups</h1>
+      <h1>Testing banner popups</h1>
       <p>Look at all the layouts on screen and see if any look wrong</p>
-      <button onclick="javascript: window.location = 'tests/test-2.html';">Next test</button>
+      <button onclick="javascript: window.location = 'tests/test-1.html';">Prev test</button>
     </div>
 
   </body>
@@ -27,23 +27,13 @@
   var popups = [
     cookieconsent.factory({
       theme: 'clean',
-      layout: 'clean-demo',
-      position: 'top-left',
+      layout: 'clean-banner',
+      position: 'banner-top',
     }),
     cookieconsent.factory({
       theme: 'red',
-      layout: 'red-demo',
-      position: 'top-right',
-    }),
-    cookieconsent.factory({
-      theme: 'blue',
-      layout: 'blue-demo',
-      position: 'bottom-left',
-    }),
-    cookieconsent.factory({
-      theme: 'black',
-      layout: 'black-demo',
-      position: 'bottom-right',
+      layout: 'red-banner',
+      position: 'banner-bottom',
     }),
   ];
 

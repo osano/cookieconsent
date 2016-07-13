@@ -4,6 +4,8 @@
 
 .cc-theme-red.cc-window {
   background-color: #d34040;
+  border-radius: 5px;
+  border: 1px solid #6b0e0e;
 }
 
 .cc-theme-red .cc-header,

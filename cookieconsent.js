@@ -279,6 +279,24 @@
           ['close'],
         ],
 
+        /* The following closely follow the given banner designs */
+
+        'clean-banner': [
+          [['message'], ['link:cc-right-align'], ['dismiss:cc-right-align']],
+        ],
+
+        'red-banner': [
+          [['message'], ['dismiss:cc-right-align']],
+        ],
+
+        'blue-banner': [
+          [['message'], ['link:cc-left-align'], ['dismiss:cc-right-align']]
+        ],
+
+        'black-banner': [
+          ['header', ['message', 'link'], 'customButton']
+        ],
+
         /* I just made up the following - not even sure if they work */
 
         'simple': [['message'], ['link'], ['close']],
@@ -291,7 +309,7 @@
         'banner-simple': [['message', 'link']],
         'banner-1': [['message', 'link', 'dismiss']],
         'banner-2': [['message', 'dismiss']],
-        'banner-3': [['header', ['message', 'link'], 'customButton']],
+        'banner-3': [],
       },
 
       theme: null,
