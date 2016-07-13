@@ -1,0 +1,38 @@
+
+body, html {
+  position: relative;
+
+  margin: 0;
+  height: 100%;
+
+  font-size: 20px;
+  font-family: "proxima-nova", sans-serif;
+}
+
+.example-window {
+  padding: 2em;
+  width: 30em;
+  background: #EEE;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  border-radius: 1em;
+  text-align: center;
+}
+
+.example-window h1 {
+  margin: 0 0 .5em 0;
+}
+.example-window p {
+  margin: 0 0 1em 0;
+}
+
+.example-window button {
+  padding: .8em 1.6em;
+  margin: 0;
+  font-size: 1em;
+}
