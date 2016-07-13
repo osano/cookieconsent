@@ -64,8 +64,6 @@
 
 .cc-theme-haystack .cc-header,
 .cc-theme-haystack .cc-message,
-.cc-theme-haystack .cc-link,
-.cc-theme-haystack .cc-link:hover,
 .cc-theme-haystack .cc-close,
 .cc-theme-haystack .cc-btn {
   color: #fff;
@@ -73,4 +71,8 @@
 .cc-theme-haystack .cc-btn {
   background-color: #f8e71c;
   color: #000;
+}
+.cc-theme-haystack .cc-link,
+.cc-theme-haystack .cc-link:hover {
+  color: #4a90e2;
 }

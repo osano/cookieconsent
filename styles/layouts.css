@@ -1,40 +1,71 @@
 /* @author Alex Morly-Finch */
 
-/* a `cc-group` is a div where all the children should be displayed inline */
-.cc-group {
+/* a `cc-inline` is a div where all the children should be displayed inline */
+.cc-inline {
   margin-bottom: 1em;
 }
-.cc-group:last-child {
+.cc-inline:last-child {
   margin-bottom: 0;
 }
 
-.cc-group .cc-btn, .cc-group .cc-link {
+.cc-inline .cc-btn, .cc-inline .cc-link {
   display: inline-block;
 }
 
-.cc-group .cc-link, .cc-group .cc-btn {
+.cc-inline .cc-link, .cc-inline .cc-btn {
   margin-right: 1em;
 }
 
-.cc-group .cc-btn:last-child {
+.cc-inline .cc-btn:last-child {
   margin-right: 0;
 }
 
-.cc-group .cc-message  {
+.cc-inline .cc-message  {
   display: inline;
 }
 
 /* select adjacent messages-links and inline them */
-.cc-group .cc-message + .cc-link {
+.cc-inline .cc-message + .cc-link {
   display: inline;
 }
 
-.cc-group .cc-message:after {
+.cc-inline .cc-message:after {
   content: ' ';
 }
 
-.cc-layout-choose .cc-group .cc-btn {
+.cc-layout-choose .cc-inline .cc-btn {
   width: 9.5em;
 }
 
-/* specific for layouts */
+.cc-block>.cc-header,
+.cc-block>.cc-message,
+.cc-block>.cc-link {
+  display: block
+}
+.cc-inline>.cc-header,
+.cc-inline>.cc-message,
+.cc-inline>.cc-link,
+.cc-inline>.cc-block {
+  vertical-align: top;
+  display: inline-block;
+}
+
+.cc-inline>.cc-btn{
+  margin:0;
+}
+
+/************************/
+
+.cc-layout-banner-3 .cc-block {
+  max-width: 600px;
+}
+.cc-layout-banner-3 .cc-header {
+  max-width: 140px;
+  margin-right: 10px;
+  margin-left: 120px;
+}
+.cc-layout-banner-3 .cc-message {
+  margin-bottom: .2em;
+}
+.cc-layout-banner-3 {}
+

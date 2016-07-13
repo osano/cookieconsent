@@ -17,6 +17,11 @@
   font-size: 15px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
 }
 
+/* aligns icon images with text */
+.cc-middle>img, .cc-middle>span {
+  vertical-align: middle;
+}
+
 /* the popup positioned using `cc-top`, `cc-left`, `cc-right` and `cc-bottom` */
 /*  - these are added to `cc-window` by the plugin configuration */
 .cc-top {top: 1em} .cc-left {left: 1em} .cc-right {right: 1em} .cc-bottom {bottom: 1em}
@@ -35,6 +40,7 @@
   padding: 2em;
   font-size: 1em;
   max-width: 24em; /* 1em == 15px therefore 24em == 360px */
+  box-sizing: border-box;
 }
 
 .cc-window.cc-banner {

@@ -226,10 +226,12 @@
       wrapper: '<div class="cc-wrapper"><div class="cc-window {classes}">{children}</div></div>',
 
       content: {
-        header: 'Cookie Policy',
-        message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
+        //header: 'Cookie Policy',
+        //message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
+        header: 'Cookies used on the website',
+        message: 'Our website uses cookies. They help us to understand how customers use our website so we can give you the best experience possible and also keep our online services relevant.',
         dismiss: 'Close and don\'t show again',
-        link: 'Learn more',
+        link: 'Read more about our cookies',
         'link-right': 'Learn more',
         allow: 'Allow',
         deny: 'Deny',
@@ -245,7 +247,7 @@
         link: '<a href="/" class="cc-link">{children}</a>',
         'link-right': '<a href="/" class="cc-link right">{children}</a>',
         close: '<span class="cc-close">&#x274c;</span>',
-        customButton: '<span class="cc-btn customButton"><img src="some-icon.png"><span>{children}</span></span>',
+        customButton: '<span class="cc-btn cc-middle customButton"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
       },
 
       layouts: {
@@ -289,7 +291,7 @@
       },
 
       theme: 'haystack',
-      layout: 'banner-simple',
+      layout: 'banner-3',
       position: 'banner-top',
     };
 
@@ -581,15 +583,25 @@
     function buildHtml (order, elements) {
       var str = '';
       util.each(order, function(list) {
-        var useGroup = list.length > 1;
+        if (util.isArray(list)) {
+          var useGroup = list.length > 1;
 
-        if (useGroup) str += '<div class="cc-group">';
+          if (useGroup) str += '<div class="cc-inline">';
 
-        util.each(list, function(name) {
-          str += elements[name];
-        });
+          util.each(list, function(name) {
+            if (util.isArray(name)) {
+              str += '<div class="cc-block">';
+              str += buildHtml(name, elements);
+              str += '</div>';
+            } else {
+              str += elements[name];
+            }
+          });
 
-        if (useGroup) str += '</div>';
+          if (useGroup) str += '</div>';
+        } else {
+          str += elements[list];
+        }
       });
       return str;
     }
