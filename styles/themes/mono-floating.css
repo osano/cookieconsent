@@ -1,0 +1,30 @@
+
+.cc-theme-mono-floating.cc-window {
+  color: #fff;
+  background-color: #4a90e2;
+}
+
+.cc-theme-mono-floating .cc-message {
+  display: block;
+  margin-bottom: 1em;
+}
+
+.cc-theme-mono-floating .cc-link {
+  color: #fff;
+  margin-right: 1em;
+}
+
+.cc-theme-mono-floating .cc-btn {
+  border-color: #fff;
+  font-weight: bold;
+  padding: .5em .8em;
+}
+
+.cc-theme-mono-floating .cc-deny, .cc-theme-mono-floating .cc-allow {
+  width: 9.4em;
+  text-align: center;
+}
+
+.cc-theme-mono-floating .cc-btn:first-child {
+  margin-right: 1em;
+}
