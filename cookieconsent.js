@@ -555,7 +555,13 @@
       // hide it before adding to DOM
       this.element.style.display = 'none';
 
-      this.options.container.appendChild(this.element);
+      var cont = this.options.container;
+      if (!cont.firstChild) {
+        cont.appendChild(this.element);
+      } else {
+        cont.insertBefore(this.element, cont.firstChild)
+      }
+
     }
 
     function applyPageFilter () {

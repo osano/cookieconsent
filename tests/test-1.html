@@ -18,10 +18,10 @@
       <button onclick="javascript: window.location = 'tests/test-2.html';">Next test</button>
     </div>
 
-    <img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q2W5STX-5d7bf5c424/pasted_image_at_2016_07_08_05_34_pm_360.png" style="position:absolute;top:250px;left:0px;" />
+    <!--img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q2W5STX-5d7bf5c424/pasted_image_at_2016_07_08_05_34_pm_360.png" style="position:absolute;top:250px;left:0px;" />
     <img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q2W4BL7-f3efd7696f/pasted_image_at_2016_07_08_05_34_pm_360.png" style="position:absolute;top:250px;right:0px;" />
     <img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q373WCS-bb23c04895/pasted_image_at_2016_07_08_05_34_pm_360.png" style="position:absolute;bottom:250px;left:0px;" />
-    <img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q2MU1KQ-73c6f891a2/pasted_image_at_2016_07_08_05_35_pm_360.png" style="position:absolute;bottom:250px;right:0px;" />
+    <img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q2MU1KQ-73c6f891a2/pasted_image_at_2016_07_08_05_35_pm_360.png" style="position:absolute;bottom:250px;right:0px;" /-->
 
   </body>
 </html>
@@ -46,6 +46,9 @@
       content: standardContent,
     }),
     cookieconsent.factory({
+      container: document.querySelector('.cc-wrapper'),
+      useWrapper: false,
+
       theme: 'red',
       layout: 'red-demo',
       position: 'top-right',
@@ -53,6 +56,9 @@
       content: standardContent,
     }),
     cookieconsent.factory({
+      container: document.querySelector('.cc-wrapper'),
+      useWrapper: false,
+
       theme: 'blue',
       layout: 'blue-demo',
       position: 'bottom-left',
@@ -60,6 +66,9 @@
       content: standardContent,
     }),
     cookieconsent.factory({
+      container: document.querySelector('.cc-wrapper'),
+      useWrapper: false,
+
       theme: 'black',
       layout: 'black-demo',
       position: 'bottom-right',
