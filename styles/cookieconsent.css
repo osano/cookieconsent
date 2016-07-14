@@ -36,29 +36,7 @@
 .cc-header {font-weight: bold;}
 .cc-message {font-size: .9em;}
 
-.cc-header, .cc-message, .cc-link {color: #000;}
 .cc-btn, .cc-link, .cc-close {cursor: pointer;}
-
-/* helpful classes */
-
-.cc-f-left {float: left}
-.cc-f-right {float: right}
-
-.cc-align-left {text-align: left}
-.cc-align-right {text-align: right}
-.cc-align-center {text-align: center}
-
-.cc-full {width: 100%;}
-
-/* aligns icon images with text */
-.cc-middle>img, .cc-middle>span {vertical-align: middle;}
-
-/* the popup positioned using `cc-top`, `cc-left`, `cc-right` and `cc-bottom` */
-/*  - these are added to `cc-window` by the plugin configuration */
-.cc-top {top: 1em} .cc-left {left: 1em} .cc-right {right: 1em} .cc-bottom {bottom: 1em}
-
-.cc-banner.cc-top {left: 0; right: 0; top: 0;}
-.cc-banner.cc-bottom {left: 0; right: 0; bottom: 0;}
 
 /* element styles */
 .cc-link {
@@ -69,26 +47,16 @@
 
 .cc-link:hover {
   opacity: .9;
-
-  /* there is a chance that somebody has written a style for `a:hover`
-      - which would get applied here (if `cc-link` is an `a` tag)...
-      - therefore we must force the colour on hover */
-  color: #000;
 }
 
 .cc-btn {
   font-size: 1em;
   border: 2px solid #000;
   padding: .5em;
-  color: #000;
   box-sizing: border-box;
 }
 
 .cc-btn:hover {
-  /* this seems unnecessary because we set the colour above in `cc-btn`. however some sites */
-  /* tend to define `a:hover` without defining `a`, which would of course change the colour. */
-  /* therefore this forces that the hover colour is the same */
-  color: #000;
   text-decoration: underline;
 }
 
@@ -110,15 +78,40 @@
   opacity: 1;
 }
 
+
+
+
+
+.cc-full {width: 100%;}
+
+/* aligns icon images with text */
+.cc-middle>img, .cc-middle>span {vertical-align: middle;}
+
+/* the popup positioned using `cc-top`, `cc-left`, `cc-right` and `cc-bottom` */
+/*  - these are added to `cc-window` by the plugin configuration */
+.cc-top {top: 1em} .cc-left {left: 1em} .cc-right {right: 1em} .cc-bottom {bottom: 1em}
+
+.cc-banner.cc-top {left: 0; right: 0; top: 0;}
+.cc-banner.cc-bottom {left: 0; right: 0; bottom: 0;}
+
+
+
+
+
 /* layouts */
 .cc-inline>* {
-  display: inline;
+  display: inline-block;
   vertical-align: middle;
 }
 .cc-block>* {display: block;}
 
 .cc-block {margin-bottom: 1em;}
 .cc-block:last-child {margin-bottom: 0;}
+
+
+
+
+
 
 /* animation - scaling */
 .cc-fadeout {
@@ -142,6 +135,7 @@
   -moz-animation-duration: 0.8s;
   -moz-animation-fill-mode: both;
 }*/
+
 
 @media print {
   .cc-wrapper {

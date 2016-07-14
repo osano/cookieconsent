@@ -227,8 +227,6 @@
       window: '<div class="cc-window {classes}">{children}</div>',
 
       content: {
-        wrapper: '<div class="cc-wrapper">{children}</div>',
-        window: '<div class="cc-window {classes}">{children}</div>',
         header: 'Cookies used on the website',
         message: 'Our website uses cookies. They help us to understand how customers use our website so we can give you the best experience possible and also keep our online services relevant.',
         dismiss: 'Close and don\'t show again',
@@ -238,84 +236,36 @@
         customButton: 'Continue',
       },
 
-      element: {
-        header: '<span class="cc-header {classes}">{children}</span>',
-        message: '<span class="cc-message {classes}">{children}</span>',
-        allow: '<a class="cc-btn cc-allow {classes}">{children}</a>',
-        deny: '<a class="cc-btn cc-deny {classes}">{children}</a>',
-        dismiss: '<a class="cc-btn cc-dismiss {classes}">{children}</a>',
-        link: '<a href="/" class="cc-link {classes}">{children}</a>',
-        close: '<span class="cc-close {classes}">&#x274c;</span>',
-        customButton: '<span class="cc-btn cc-middle customButton {classes}"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
-        cookieImage: '<img class="{classes}" src="http://plainicon.com/dboard/userprod/2921_4eb4c/prod_thumb/plainicon.com-64226-256px-fa8.png" width="32px"/>'
+      elements: {
+        header: '<span class="cc-header">{children}</span>',
+        message: '<span class="cc-message">{children}</span>',
+        allow: '<a class="cc-btn cc-allow">{children}</a>',
+        deny: '<a class="cc-btn cc-deny">{children}</a>',
+        dismiss: '<a class="cc-btn cc-dismiss">{children}</a>',
+        link: '<a href="/" class="cc-link">{children}</a>',
+        close: '<span class="cc-close">&#x274c;</span>',
+
+        // extensions
+        customButton: '<span class="cc-btn cc-middle customButton"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
+        cookieImage: '<img src="http://plainicon.com/dboard/userprod/2921_4eb4c/prod_thumb/plainicon.com-64226-256px-fa8.png" width="32px"/>'
       },
 
-      layouts: {
-
-        /* The following closely follow the given designs */
-
-        'clean-demo': [
-          ['message:cc-align-center'],
-          ['dismiss:cc-align-center'],
-          ['link:cc-align-right'],
-        ],
-
-        'red-demo': [
-          ['header'],
-          ['message'],
-          ['-close'],
-          ['-cookieImage:cc-cookie-image'],
-          ['link:cc-left-align'],
-        ],
-
-        'blue-demo': [
-          ['message:cc-center-align'],
-          [['link', 'dismiss']],
-        ],
-
-        'black-demo': [
-          ['message:cc-center-align'],
-          ['link:cc-align-center'],
-          ['-close'],
-          ['dismiss:cc-align-center'],
-        ],
-
-        /* The following closely follow the given banner designs */
-
-        'clean-banner': [
-          [['message', 'link', 'dismiss']],
-        ],
-
-        'red-banner': [
-          [['message', 'dismiss']],
-        ],
-
-        'blue-banner': [
-          [['message', 'link:cc-left-align', 'dismiss:cc-right-align']]
-        ],
-
-        'black-banner': [
-          [['header', ['message', 'link'], 'customButton']]
-        ],
-
-        /* I just made up the following - not even sure if they work */
-
-        'simple': [['message'], ['link'], ['close']],
-        'choose': [['message', 'link'], ['allow', 'deny']],
-
-        'dismiss-1': [['message'], ['link', 'dismiss']],
-        'dismiss-2': [['message'], ['dismiss'], ['link-right']],
-        'dismiss-3': [['message'], ['link'], ['dismiss']],
-
-        'banner-simple': [['message', 'link']],
-        'banner-1': [['message', 'link', 'dismiss']],
-        'banner-2': [['message', 'dismiss']],
-        'banner-3': [],
+      palettes: {
+        'custom': {background:'pink', text: 'blue', buttonBackground: 'red', buttonText: 'green', buttonBorder: 'purple'},
       },
 
-      theme: null,
-      layout: 'simple',
-      position: 'bottom-left',
+      themes: {
+        'mono-floating:info': '{message}<div class="cc-inline">{link}{dismiss}</div>',
+        'mono-floating:opt-in': '{message}<div class="cc-inline">{allow}{deny}</div>',
+        'mono-floating:opt-out': '{message}<div class="cc-inline">{deny}{allow}</div>',
+
+
+      },
+
+      type: 'info',
+      theme: 'mono-floating',
+      palette: '',
+      position: 'bottom-right',
     };
 
     function CookieWindow (options) {
@@ -527,15 +477,68 @@
       return elems;
     }
 
+    function buildHtmlString (str, elements) {
+      for (var name in elements) {
+        str = str.replace('{' + name + '}', elements[name]);
+      }
+      return str
+    }
+
+    function createStyle() {
+      // Create the <style> tag
+      var style = document.createElement("style");
+
+      // Add a media (and/or media query) here if you'd like!
+      // style.setAttribute("media", "screen")
+      // style.setAttribute("media", "only screen and (max-width : 1024px)")
+
+      // WebKit hack :(
+      style.appendChild(document.createTextNode(""));
+
+      // Add the <style> element to the page
+      document.head.appendChild(style);
+
+      return style.sheet;
+    }
+
+    function addCSSRule(sheet, selector, rules, index) {
+      if("insertRule" in sheet) {
+        sheet.insertRule(selector + "{" + rules + "}", index);
+      }
+      else if("addRule" in sheet) {
+        sheet.addRule(selector, rules, index);
+      }
+    }
+
     function render () {
       // if already rendered, ignore
       if (this.element) return;
 
       var opts = this.options;
-      var elements = interpolateHtml(opts.element, opts.content);
-      var markup = buildHtml(opts.layouts[opts.layout], elements);
+      var override = false;
+
+      if (opts.palette && opts.palettes[opts.palette]) {
+        var pal = opts.palettes[opts.palette];
+        this.dynamicStyle = createStyle();
+
+        addCSSRule(this.dynamicStyle, '.cc-color-override.cc-window', '\
+          background-color: '+pal.background+' !important;\
+          color: '+pal.text+' !important;');
+
+        addCSSRule(this.dynamicStyle, '.cc-color-override .cc-btn', '\
+          border-color: '+pal.buttonBorder+';\
+          background-color: '+pal.buttonBackground+' !important;\
+          color: '+pal.buttonText+' !important;');
+
+        override = true;
+      }
+      var elements = interpolateHtml(opts.elements, opts.content);
+      var markup = buildHtmlString(opts.themes[opts.theme+':'+opts.type], elements)
       var pos = opts.position.split('-', 2);
-      var classes = 'cc-'+pos[0]+' cc-'+pos[1]+' cc-layout-'+opts.layout+' cc-theme-'+opts.theme;
+      var classes = 'cc-'+pos[0]+' cc-'+pos[1]+' cc-type-'+opts.type+' cc-theme-'+opts.theme;
+      if (override) {
+        classes += ' cc-color-override';
+      }
       var cookieWindow = opts.window.replace('{classes}', classes).replace('{children}', markup);
 
       var fullHtml = !opts.useWrapper

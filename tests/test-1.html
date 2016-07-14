@@ -39,13 +39,15 @@
   // initialise multiple cookie windows
   var popups = [
     cookieconsent.factory({
-      theme: 'clean',
-      layout: 'clean-demo',
+      type: 'opt-out',
+      theme: 'mono-floating',
       position: 'top-left',
+      //palette: 'custom',
 
       content: standardContent,
     }),
-    cookieconsent.factory({
+    
+    /*cookieconsent.factory({
       container: document.querySelector('.cc-wrapper'),
       useWrapper: false,
 
@@ -74,7 +76,7 @@
       position: 'bottom-right',
 
       content: standardContent,
-    }),
+    }),*/
   ];
 
   // open each one
