@@ -8,6 +8,11 @@
     <link href="tests/test-style.css" rel="stylesheet">
 
     <link href="build/cookieconsent.min.css" rel="stylesheet">
+
+    <style>
+      .cc-banner.cc-top_extra {left: 0; right: 0; top: 5em;}
+      .cc-banner.cc-bottom_extra {left: 0; right: 0; bottom: 5em;}
+    </style>
   </head>
 
   <body role="document">
@@ -38,6 +43,7 @@
         link: 'Learn more'
       }
     }),
+
     cookieconsent.factory({
       container: document.querySelector('.cc-wrapper'),
       useWrapper: false,
@@ -45,6 +51,24 @@
       theme: 'red',
       layout: 'red-banner',
       position: 'banner-bottom',
+    }),
+
+    cookieconsent.factory({
+      container: document.querySelector('.cc-wrapper'),
+      useWrapper: false,
+
+      theme: 'blue',
+      layout: 'blue-banner',
+      position: 'banner-top_extra',
+    }),
+
+    cookieconsent.factory({
+      container: document.querySelector('.cc-wrapper'),
+      useWrapper: false,
+
+      theme: 'black',
+      layout: 'black-banner',
+      position: 'banner-bottom_extra',
     }),
   ];
 

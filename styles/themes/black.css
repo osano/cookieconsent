@@ -15,5 +15,8 @@
 }
 .cc-theme-black .cc-link,
 .cc-theme-black .cc-link:hover {
-  color: #4a90e2;
+  color: #fff;
+}
+.cc-theme-black .cc-message {
+  width: 20em;
 }

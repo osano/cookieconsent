@@ -291,11 +291,11 @@
         ],
 
         'blue-banner': [
-          [['message'], ['link:cc-left-align'], ['dismiss:cc-right-align']]
+          [['message', 'link:cc-left-align', 'dismiss:cc-right-align']]
         ],
 
         'black-banner': [
-          ['header', ['message', 'link'], 'customButton']
+          [['header', ['message', 'link'], 'customButton']]
         ],
 
         /* I just made up the following - not even sure if they work */
