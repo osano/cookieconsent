@@ -1,11 +1,64 @@
 /* Themes */
 
+/* generally, when using a banner, we want to remove the border styles */
+
+/********** Clean theme **********/
+
+.cc-theme-clean.cc-window {
+  background-color: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+
+.cc-theme-clean.cc-window.cc-banner {
+  border: 0;
+  border-radius: 0;
+  border-bottom: 2px solid #EEE
+}
+
+.cc-theme-clean .cc-header,
+.cc-theme-clean .cc-message,
+.cc-theme-clean .cc-link,
+.cc-theme-clean .cc-link:hover,
+.cc-theme-clean .cc-close {
+  color: #000;
+}
+.cc-theme-clean .cc-btn {
+  color: #86b4ea;
+  border-width: 1px;
+  border-color: #86b4ea;
+}
+.cc-theme-clean .cc-link {
+  opacity: .4;
+  font-weight: bold;
+  text-decoration: none;
+}
+.cc-theme-clean .cc-message {
+  font-size: 1em;
+}
+.cc-theme-clean .cc-link:hover {
+  opacity: .8;
+}
+.cc-theme-clean.cc-banner .cc-message {
+  margin-left: 3em;
+  margin-right: 10em;
+}
+.cc-theme-clean.cc-banner .cc-link {
+  margin-right: 1em
+}
+
+
 /********** Red theme **********/
 
 .cc-theme-red.cc-window {
   background-color: #d34040;
   border-radius: 5px;
   border: 1px solid #6b0e0e;
+}
+
+.cc-theme-red.cc-window.cc-banner {
+  border: 0;
+  border-radius: 0;
 }
 
 .cc-theme-red .cc-header,
@@ -15,11 +68,17 @@
 .cc-theme-red .cc-close {
   color: #fff;
 }
-.cc-theme-blue .cc-btn {
+
+.cc-theme-red .cc-btn {
   border-color: #fff;
+  color: #fff;
 }
 
-.cc-cookie-image {
+.cc-theme-red .cc-message {
+  margin-right: 1em;
+}
+
+.cc-theme-red .cc-cookie-image {
   position: absolute;
   bottom: 1em;
   right: 1em;
@@ -44,27 +103,10 @@
 }
 .cc-theme-blue .cc-btn {
   border-color: #fff;
+  font-weight: bold;
 }
-
-/********** Clean theme **********/
-
-.cc-theme-clean.cc-window {
-  background-color: #fafafa;
-  border: 1px solid #eee;
-  border-radius: 5px;
-}
-
-.cc-theme-clean .cc-header,
-.cc-theme-clean .cc-message,
-.cc-theme-clean .cc-link,
-.cc-theme-clean .cc-link:hover,
-.cc-theme-clean .cc-close {
-  color: #000;
-}
-.cc-theme-clean .cc-btn, .cc-theme-clean .cc-btn:hover {
-  color: #86b4ea;
-  border-width: 1px;
-  border-color: #86b4ea;
+.cc-theme-blue .cc-link {
+  margin-right: 10px;
 }
 
 /********** Black theme **********/

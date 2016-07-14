@@ -188,105 +188,6 @@
     },
   };
 
-  cc.StyleManager = (function () {
-
-    function StyleManager () {
-      this.last = null;
-      this.stylesheets = [];
-    }
-
-    StyleManager.prototype.useStylesheet = function (stylesheet, callback) {
-      // check if the stylesheet has already been loaded
-      if (util.contains(this.loadedStylesheets, stylesheet)) {
-        // disable current stylesheet
-        findLoadedStylesheet(this.lastStylesheet).disabled = true;
-
-        // find `stylesheet` and enable it
-        findLoadedStylesheet(stylesheet).disabled = false;
-
-        this.lastStylesheet = stylesheet;
-
-        callback.call(this);
-      } else {
-        loadStylesheet.call(this, stylesheet, callback);
-      }
-    };
-
-    StyleManager.prototype.unloadStylesheet = function () {
-      // not the most efficient, but at least I don't have to implement an 'intersect' function
-      util.each(this.loadedStylesheets, function (stylesheet) {
-        var linkTag = findLoadedStylesheet(stylesheet);
-        if (linkTag && linkTag.ownerNode) {
-          var node = linkTag.ownerNode;
-          node.parentNode.removeChild(node);
-        }
-      });
-
-      this.loadedStylesheets = [];
-      this.lastStylesheet = undefined;
-    };
-
-    function findLoadedStylesheet (stylesheet) {
-      var sheets = document.styleSheets;
-      var regex, linkTag, tag;
-
-      // we find stylesheets by checking if any of the CSS urls ends with `stylesheet`.
-      // if `stylesheet` was specified as a relative URL, then it could be preceeded by directory selectors ('.' or '..')
-      // seeing as we area checking if the url ends with `stylesheet`, it's okay to remove these selectorss.
-      if(stylesheet.substr(0, 2) == '..') {
-        stylesheet = stylesheet.substr(2);
-      }
-      if (stylesheet[0] == '.') {
-        stylesheet = stylesheet.substr(1);
-      }
-
-      regex = new RegExp(util.escapeRegExp(stylesheet) + '$');
-
-      for (var i = 0, l = sheets.length; i < l; ++i) {
-        tag = sheets[i];
-
-        // if `tag.href` ends with `stylesheet`
-        if (tag.href && tag.href.match(regex)) {
-          linkTag = tag;
-          break;
-        }
-      }
-
-      return linkTag;
-    }
-
-    function loadStylesheet (stylesheet, callback) {
-      var link = document.createElement('link');
-      var onCssLoad = util.bind(function () {
-        if(this.last) {
-          findLoadedStylesheet(this.last).disabled = true;
-        }
-
-        this.stylesheets.push(stylesheet);
-        this.last = stylesheet;
-
-        dom.removeEventListener(link, 'load', onCssLoad);
-        link = null;
-
-        callback.call(this);
-      }, this);
-
-      // If stylesheet is specified by name
-      if (stylesheet.indexOf('.css') === -1) {
-        stylesheet = cc.stylesheetPath + stylesheet + '.css';
-      }
-
-      dom.addEventListener(link, 'load', onCssLoad);
-      link.rel = 'stylesheet';
-      link.type = 'text/css';
-      link.href = stylesheet;
-
-      document.getElementsByTagName('head')[0].appendChild(link);
-    }
-
-    return StyleManager;
-  } ());
-
   cc.CookieWindow = (function () {
 
     // array of values from `cc.status`
@@ -305,12 +206,8 @@
         expiryDays: 365,
       },
 
-      // configuration
-      //css: 'cookieconsent.min.css', THIS IS WHAT IT SHOULD BE
-      css: 'build/cookieconsent.min.css',
+      container: document.body, // selector
 
-
-      container: null, // selector
       dismissOnScroll: false, // (disabled on false) auto-dismisses message when scrolled past a point. Pass number that `scrollTop` must exceed. E.G. 500
       dismissOnTimeout: false, // (disabled on false) auto-dismisses message on a timeout. Pass timeout in milliseconds. E.G. 3000
       blacklistPage: [], // match pages using a string or regex. matching pages in this array are automatically disabled
@@ -324,9 +221,14 @@
       // interface
       explicit: false,
 
-      wrapper: '<div class="cc-wrapper"><div class="cc-window {classes}">{children}</div></div>',
+      useWrapper: true,
+
+      wrapper: '<div class="cc-wrapper">{children}</div>',
+      window: '<div class="cc-window {classes}">{children}</div>',
 
       content: {
+        wrapper: '<div class="cc-wrapper">{children}</div>',
+        window: '<div class="cc-window {classes}">{children}</div>',
         header: 'Cookies used on the website',
         message: 'Our website uses cookies. They help us to understand how customers use our website so we can give you the best experience possible and also keep our online services relevant.',
         dismiss: 'Close and don\'t show again',
@@ -353,39 +255,39 @@
         /* The following closely follow the given designs */
 
         'clean-demo': [
-          ['message'],
-          ['dismiss'],
-          ['link:cc-right-align'],
+          ['message:cc-align-center'],
+          ['dismiss:cc-align-center'],
+          ['link:cc-align-right'],
         ],
 
         'red-demo': [
           ['header'],
           ['message'],
+          ['-close'],
+          ['-cookieImage:cc-cookie-image'],
           ['link:cc-left-align'],
-          ['cookieImage:cc-cookie-image'],
-          ['close'],
         ],
 
         'blue-demo': [
           ['message:cc-center-align'],
-          ['link', 'dismiss'],
+          [['link', 'dismiss']],
         ],
 
         'black-demo': [
           ['message:cc-center-align'],
-          ['link'],
-          ['dismiss'],
-          ['close'],
+          ['link:cc-align-center'],
+          ['-close'],
+          ['dismiss:cc-align-center'],
         ],
 
         /* The following closely follow the given banner designs */
 
         'clean-banner': [
-          [['message'], ['dismiss:cc-f-right'], ['link:cc-f-right']],
+          [['message', 'link', 'dismiss']],
         ],
 
         'red-banner': [
-          [['message'], ['dismiss:cc-right-align']],
+          [['message', 'dismiss']],
         ],
 
         'blue-banner': [
@@ -433,24 +335,6 @@
         return;
       }
 
-      this.theme = new cc.StyleManager();
-
-      // check if css is already loaded
-      if (this.options.css) {
-        this.theme.useStylesheet(this.options.css, function () {
-          // css loaded
-
-          // TODO we could potentially open the popup before the stylesheet is loaded
-          //      in these cases, we should delay the `open` until the stylesheet is loaded
-        });
-      }
-
-      if (this.options.container) {
-        this.container = document.querySelector(this.options.container);
-      } else {
-        this.container = document.body;
-      }
-
       this._onButtonClick = util.bind(function (e) {
         if (dom.hasClass(e.target, 'cc-btn')) {
           var matches = e.target.className.match(allowedButtonClass);
@@ -475,18 +359,12 @@
 
         this._onButtonClick = null;
 
-        this.theme.unloadStylesheet();
-
         // remove from DOM
         this.element.parentNode.removeChild(this.element);
 
         // remove reference
         this.element = null;
-      }
-
-      if (this.container) {
-        // remove reference
-        this.container = null;
+        this.options = null;
       }
     };
 
@@ -609,11 +487,20 @@
       var str = '';
       util.each(order, function(list) {
         if (util.isArray(list)) {
-          if (list.length > 1) str += '<div class="' + (isBlock ? 'cc-block' : 'cc-inline') + '">';
+          var preventGrouping = list[0][0] == '-';
+
+          if (preventGrouping) {
+            list[0] = list[0].slice(1);
+          }
+          if (!preventGrouping) {
+            str += '<div class="' + (!isBlock ? 'cc-block' : 'cc-inline') + '">';
+          }
 
           str += buildHtml(list, elements, !isBlock);
 
-          if (list.length > 1) str += '</div>';
+          if (!preventGrouping) {
+            str += '</div>';
+          }
         } else {
           if (typeof list == 'string' && list.length) {
             if (list.indexOf(':') > -1) {
@@ -649,7 +536,11 @@
       var markup = buildHtml(opts.layouts[opts.layout], elements);
       var pos = opts.position.split('-', 2);
       var classes = 'cc-'+pos[0]+' cc-'+pos[1]+' cc-layout-'+opts.layout+' cc-theme-'+opts.theme;
-      var fullHtml = opts.wrapper.replace('{classes}', classes).replace('{children}', markup);
+      var cookieWindow = opts.window.replace('{classes}', classes).replace('{children}', markup);
+
+      var fullHtml = !opts.useWrapper
+          ? cookieWindow
+          : opts.wrapper.replace('{children}', cookieWindow);
 
       // create markup
       this.element = dom.buildDom(fullHtml);
@@ -664,11 +555,7 @@
       // hide it before adding to DOM
       this.element.style.display = 'none';
 
-      if (!this.container.firstChild) {
-        this.container.appendChild(this.element);
-      } else {
-        this.container.insertBefore(this.element, this.container.firstChild);
-      }
+      this.options.container.appendChild(this.element);
     }
 
     function applyPageFilter () {

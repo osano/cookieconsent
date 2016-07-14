@@ -17,15 +17,38 @@
   font-size: 15px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
 }
 
-.cc-left-align {text-align: left}
-.cc-right-align {text-align: right}
+/* the popup window */
+.cc-window {
+  font-family: 'Helvetica Neue Light', 'HelveticaNeue-Light', 'Helvetica Neue', Calibri, Helvetica, Arial, sans-serif;
+  position: absolute;
+  padding: 2em;
+  font-size: 1em;
+  max-width: 24em; /* 1em == 15px therefore 24em == 360px */
+  box-sizing: border-box;
+}
+
+.cc-window.cc-banner {
+  width: 100%;
+  max-width: 100%;
+  padding: 1em;
+}
+
+.cc-header, .cc-message, .cc-link {
+  color: #000;
+}
+
+.cc-btn, .cc-link, .cc-close {
+  cursor: pointer;
+}
+
+/****************************/
+
+.cc-align-left {text-align: left}
+.cc-align-right {text-align: right}
+.cc-align-center {text-align: center}
 
 .cc-f-left {float: left}
 .cc-f-right {float: right}
-
-/* same as above, but override link */
-.cc-link.cc-left-align {text-align: left}
-.cc-link.cc-right-align {text-align: right}
 
 /* aligns icon images with text */
 .cc-middle>img, .cc-middle>span {
@@ -43,58 +66,34 @@
   bottom: 0; left: 0; right: 0;
 }
 
-/* the popup window */
-.cc-window {
-  font-family: 'Helvetica Neue Light', 'HelveticaNeue-Light', 'Helvetica Neue', Calibri, Helvetica, Arial, sans-serif;
-  position: absolute;
-  padding: 2em;
-  font-size: 1em;
-  max-width: 24em; /* 1em == 15px therefore 24em == 360px */
-  box-sizing: border-box;
-}
-
-.cc-window.cc-banner {
+.cc-full {
   width: 100%;
-  max-width: 100%;
-  padding: 1em
 }
 
-.cc-header, .cc-message, .cc-link {
-  color: #000;
-  display: block;
-}
-
-.cc-btn, .cc-link, .cc-close {
-  cursor: pointer;
-}
+/****************************/
 
 .cc-header {
-  margin-bottom: .6em;
-}
-
-.cc-message {
-  margin-bottom: 1em;
 }
 
 .cc-header {
   font-weight: 600;
 }
 
+/****************************/
+
+.cc-message {
+}
+
 .cc-message {
   font-size: .9em;
 }
+
+/****************************/
 
 .cc-link {
   font-size: .8em;
   opacity: .7;
   text-decoration: underline;
-  text-align: center;
-}
-.cc-link.left {
-  text-align: left;
-}
-.cc-link.right {
-  text-align: right;
 }
 
 .cc-link:hover {
@@ -106,19 +105,14 @@
   color: #000;
 }
 
+/****************************/
+
 .cc-btn {
-  display: block;
   font-size: 1em;
-  text-align: center;
   border: 2px solid #000;
   padding: .5em;
   color: #000;
-  font-weight: 600;
-  margin-bottom: 1em;
-}
-
-.cc-group>.cc-btn {
-  margin:0;
+  box-sizing: border-box;
 }
 
 .cc-btn:hover {
@@ -126,7 +120,10 @@
   /* tend to define `a:hover` without defining `a`, which would of course change the colour. */
   /* therefore this forces that the hover colour is the same */
   color: #000;
+  text-decoration: underline;
 }
+
+/****************************/
 
 .cc-close {
   display: block;
@@ -145,6 +142,27 @@
 .cc-close:hover {
   opacity: 1;
 }
+
+/****************************/
+
+.cc-inline>* {
+  display: inline;
+  vertical-align: middle;
+}
+
+.cc-block>* {
+  display: block;
+}
+
+
+.cc-block {
+  margin-bottom: 1em;
+}
+.cc-block:last-child {
+  margin-bottom: 0;
+}
+
+/****************************/
 
 .cc-fadeout {
   opacity: 0;
