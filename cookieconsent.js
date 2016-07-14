@@ -233,6 +233,7 @@
         link: 'Read more about our cookies',
         allow: 'Allow',
         deny: 'Deny',
+        close: '&#x274c;',
         customButton: 'Continue',
       },
 
@@ -243,7 +244,7 @@
         deny: '<a class="cc-btn cc-deny">{children}</a>',
         dismiss: '<a class="cc-btn cc-dismiss">{children}</a>',
         link: '<a href="/" class="cc-link">{children}</a>',
-        close: '<span class="cc-close">&#x274c;</span>',
+        close: '<span class="cc-close">{children}</span>',
 
         // extensions
         customButton: '<span class="cc-btn cc-middle customButton"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
@@ -254,12 +255,20 @@
         'custom': {background:'pink', text: 'blue', buttonBackground: 'red', buttonText: 'green', buttonBorder: 'purple'},
       },
 
+      types: {
+        'buttons-info': '<div class="cc-inline">{link}{dismiss}</div>',
+        'buttons-opt-in': '<div class="cc-inline">{allow}{deny}</div>',
+        'buttons-opt-out': '<div class="cc-inline">{deny}{allow}</div>',
+      },
+
       themes: {
-        'mono-floating:info': '{message}<div class="cc-inline">{link}{dismiss}</div>',
-        'mono-floating:opt-in': '{message}<div class="cc-inline">{allow}{deny}</div>',
-        'mono-floating:opt-out': '{message}<div class="cc-inline">{deny}{allow}</div>',
+        'mono-floating:info': '{message}{buttons-info}',
+        'mono-floating:opt-in': '{message}{buttons-opt-in}',
+        'mono-floating:opt-out': '{message}{buttons-opt-out}',
 
-
+        'image-floating:info': '{header}{message}{buttons}{close}{cookieImage}',
+        'image-floating:opt-in': '{header}{message}{buttons}{close}{cookieImage}',
+        'image-floating:opt-out': '{header}{message}{buttons}{close}{cookieImage}',
       },
 
       type: 'info',
@@ -532,7 +541,23 @@
 
         override = true;
       }
+
       var elements = interpolateHtml(opts.elements, opts.content);
+
+      /******************/
+
+      util.each(opts.types, function(cur, prop) {
+        elements[prop] = cur.replace(/{([a-z][a-z0-9\-_]*)}/ig, function(matches){
+          var name = arguments[1];
+          if (name && elements[name]) {
+            return elements[name];
+          }
+          return '';
+        })
+      })
+
+      /******************/
+
       var markup = buildHtmlString(opts.themes[opts.theme+':'+opts.type], elements)
       var pos = opts.position.split('-', 2);
       var classes = 'cc-'+pos[0]+' cc-'+pos[1]+' cc-type-'+opts.type+' cc-theme-'+opts.theme;
