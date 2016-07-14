@@ -33,63 +33,34 @@
   padding: 1em;
 }
 
-.cc-header, .cc-message, .cc-link {
-  color: #000;
-}
+.cc-header {font-weight: bold;}
+.cc-message {font-size: .9em;}
 
-.cc-btn, .cc-link, .cc-close {
-  cursor: pointer;
-}
+.cc-header, .cc-message, .cc-link {color: #000;}
+.cc-btn, .cc-link, .cc-close {cursor: pointer;}
 
-/****************************/
+/* helpful classes */
+
+.cc-f-left {float: left}
+.cc-f-right {float: right}
 
 .cc-align-left {text-align: left}
 .cc-align-right {text-align: right}
 .cc-align-center {text-align: center}
 
-.cc-f-left {float: left}
-.cc-f-right {float: right}
+.cc-full {width: 100%;}
 
 /* aligns icon images with text */
-.cc-middle>img, .cc-middle>span {
-  vertical-align: middle;
-}
+.cc-middle>img, .cc-middle>span {vertical-align: middle;}
 
 /* the popup positioned using `cc-top`, `cc-left`, `cc-right` and `cc-bottom` */
 /*  - these are added to `cc-window` by the plugin configuration */
 .cc-top {top: 1em} .cc-left {left: 1em} .cc-right {right: 1em} .cc-bottom {bottom: 1em}
 
-.cc-banner.cc-top {
-  top: 0; left: 0; right: 0;
-}
-.cc-banner.cc-bottom {
-  bottom: 0; left: 0; right: 0;
-}
+.cc-banner.cc-top {left: 0; right: 0; top: 0;}
+.cc-banner.cc-bottom {left: 0; right: 0; bottom: 0;}
 
-.cc-full {
-  width: 100%;
-}
-
-/****************************/
-
-.cc-header {
-}
-
-.cc-header {
-  font-weight: 600;
-}
-
-/****************************/
-
-.cc-message {
-}
-
-.cc-message {
-  font-size: .9em;
-}
-
-/****************************/
-
+/* element styles */
 .cc-link {
   font-size: .8em;
   opacity: .7;
@@ -104,8 +75,6 @@
       - therefore we must force the colour on hover */
   color: #000;
 }
-
-/****************************/
 
 .cc-btn {
   font-size: 1em;
@@ -122,8 +91,6 @@
   color: #000;
   text-decoration: underline;
 }
-
-/****************************/
 
 .cc-close {
   display: block;
@@ -143,27 +110,17 @@
   opacity: 1;
 }
 
-/****************************/
-
+/* layouts */
 .cc-inline>* {
   display: inline;
   vertical-align: middle;
 }
+.cc-block>* {display: block;}
 
-.cc-block>* {
-  display: block;
-}
+.cc-block {margin-bottom: 1em;}
+.cc-block:last-child {margin-bottom: 0;}
 
-
-.cc-block {
-  margin-bottom: 1em;
-}
-.cc-block:last-child {
-  margin-bottom: 0;
-}
-
-/****************************/
-
+/* animation - scaling */
 .cc-fadeout {
   opacity: 0;
   visibility: hidden;
@@ -185,8 +142,6 @@
   -moz-animation-duration: 0.8s;
   -moz-animation-fill-mode: both;
 }*/
-
-
 
 @media print {
   .cc-wrapper {
