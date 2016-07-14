@@ -1,0 +1,37 @@
+
+.cc-theme-red.cc-window {
+  background-color: #d34040;
+  border-radius: 5px;
+  border: 1px solid #6b0e0e;
+}
+
+.cc-theme-red.cc-window.cc-banner {
+  border: 0;
+  border-radius: 0;
+}
+
+.cc-theme-red .cc-header,
+.cc-theme-red .cc-message,
+.cc-theme-red .cc-link,
+.cc-theme-red .cc-link:hover,
+.cc-theme-red .cc-close {
+  color: #fff;
+}
+
+.cc-theme-red .cc-btn {
+  border-color: #fff;
+  color: #fff;
+}
+
+.cc-theme-red .cc-message {
+  margin-right: 1em;
+}
+
+.cc-theme-red .cc-cookie-image {
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
+
+  filter: invert(1);
+  -webkit-filter: invert(1);
+}

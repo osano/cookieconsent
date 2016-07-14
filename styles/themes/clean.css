@@ -1,0 +1,43 @@
+
+.cc-theme-clean.cc-window {
+  background-color: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+
+.cc-theme-clean.cc-window.cc-banner {
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid #EEE
+}
+
+.cc-theme-clean .cc-header,
+.cc-theme-clean .cc-message,
+.cc-theme-clean .cc-link,
+.cc-theme-clean .cc-link:hover,
+.cc-theme-clean .cc-close {
+  color: #000;
+}
+.cc-theme-clean .cc-btn {
+  color: #86b4ea;
+  border-width: 1px;
+  border-color: #86b4ea;
+}
+.cc-theme-clean .cc-link {
+  opacity: .4;
+  font-weight: bold;
+  text-decoration: none;
+}
+.cc-theme-clean .cc-message {
+  font-size: 1em;
+}
+.cc-theme-clean .cc-link:hover {
+  opacity: .8;
+}
+.cc-theme-clean.cc-banner .cc-message {
+  margin-left: 3em;
+  margin-right: 10em;
+}
+.cc-theme-clean.cc-banner .cc-link {
+  margin-right: 1em
+}

@@ -1,0 +1,19 @@
+
+.cc-theme-black.cc-window {
+  background-color: #000;
+}
+
+.cc-theme-black .cc-header,
+.cc-theme-black .cc-message,
+.cc-theme-black .cc-close,
+.cc-theme-black .cc-btn {
+  color: #fff;
+}
+.cc-theme-black .cc-btn {
+  background-color: #f8e71c;
+  color: #000;
+}
+.cc-theme-black .cc-link,
+.cc-theme-black .cc-link:hover {
+  color: #4a90e2;
+}

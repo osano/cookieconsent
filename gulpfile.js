@@ -6,7 +6,11 @@ var minifyCSS = require('gulp-minify-css');
 var deleteDirs = require('del');
 var runSequence = require('run-sequence');
 
+
 var buildFolder = './build';
+var jsBuildFiles = ['./cookieconsent.js'];
+var cssBuildFiles = ['./styles/*.css', './styles/**/*.css'];
+
 
 gulp.task('cleanup:begin', function () {
   return deleteDirs(['./build']);
@@ -14,7 +18,7 @@ gulp.task('cleanup:begin', function () {
 
 gulp.task('minify:js', function () {
   return _minify({
-    in: './cookieconsent.js',
+    in: jsBuildFiles,
     out: 'cookieconsent.min.js',
     dest: buildFolder,
     minifyFunc: minifyJS
@@ -23,7 +27,7 @@ gulp.task('minify:js', function () {
 
 gulp.task('minify:css', function () {
   return _minify({
-    in: './styles/*.css',
+    in: cssBuildFiles,
     out: 'cookieconsent.min.css',
     dest: buildFolder,
     minifyFunc: minifyCSS
@@ -35,7 +39,7 @@ gulp.task('build', function(callback) {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('styles/*.css', ['build']);
+  gulp.watch(cssBuildFiles.concat(jsBuildFiles), ['build']);
 });
 
 function _minify(opts) {
