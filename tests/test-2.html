@@ -6,6 +6,8 @@
     <title>Testing cookie consent</title>
 
     <link href="tests/test-style.css" rel="stylesheet">
+
+    <link href="build/cookieconsent.min.css" rel="stylesheet">
   </head>
 
   <body role="document">
@@ -37,6 +39,9 @@
       }
     }),
     cookieconsent.factory({
+      container: document.querySelector('.cc-wrapper'),
+      useWrapper: false,
+
       theme: 'red',
       layout: 'red-banner',
       position: 'banner-bottom',
