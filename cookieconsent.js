@@ -208,6 +208,10 @@
       // defaults to the current domain
       cookie: { path: '/', domain: 'localhost', expiryDays: 365 },
 
+      onAllowCookies: function() {},
+      onDenyCookies: function() {},
+      onComplete: function(status) {},
+
       // this is where you set the content of each element
       content: {
         header: 'Cookies used on the website',
@@ -236,11 +240,12 @@
 
         // extensions
         customButton: '<span class="cc-btn cc-middle customButton"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
-        cookieImage: '<img src="{children}" width="32px"/>'
+        cookieImage: '<img class="cc-cookie-image" src="{children}" width="32px"/>'
       },
 
       // define types of compliance here
       compliance: {
+        'rinfo': '<div class="cc-inline">{dismiss}{link}</div>',
         'info': '<div class="cc-inline">{link}{dismiss}</div>',
         'opt-in': '<div class="cc-inline">{allow}{deny}</div>',
         'opt-out': '<div class="cc-inline">{deny}{allow}</div>',
@@ -250,7 +255,7 @@
       themes: {
         'mono-floating': '{message}{compliance}',
         'header-floating': '{header}{message}{compliance}',
-        'image-floating': '{message}{compliance}{cookieImage}',
+        'image-floating': '{header}{message}{compliance}{cookieImage}',
         'close-floating': '{message}{compliance}{close}',
         'all-floating': '{header}{message}{compliance}{close}',
       },
@@ -408,7 +413,7 @@
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number') {
         window.setTimeout(util.bind(function () {
-          this.dismiss();
+          this.setStatus(cc.status.dismiss);
         }, this), Math.floor(delay));
       }
 
@@ -416,7 +421,7 @@
       if (typeof scrollRange == 'number') {
         var onWindowScroll = util.bind(function (evt) {
           if (window.pageYOffset > Math.floor(scrollRange)) {
-            this.dismiss();
+          this.setStatus(cc.status.dismiss);
 
             dom.removeEventListener(window, 'scroll', onWindowScroll);
           }
