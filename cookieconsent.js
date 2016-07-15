@@ -215,9 +215,9 @@
       // this is where you set the content of each element
       content: {
         header: 'Cookies used on the website',
-        message: 'Our website uses cookies. They help us to understand how customers use our website so we can give you the best experience possible and also keep our online services relevant.',
+        message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
         dismiss: 'Close and don\'t show again',
-        link: 'Read more about our cookies',
+        link: 'Learn more',
         allow: 'Allow',
         deny: 'Deny',
         close: '&#x274c;',

@@ -30,46 +30,36 @@
 <script src="cookieconsent.js"></script>
 <script>
 
-  var standardContent = {
-    message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
-    dismiss: 'Close and don\'t show again',
-    link: 'Learn more',
+  // this page tests a single theme against all it's options
+
+
+  var options = {
+    theme: 'image-floating',
   };
+
 
   // initialise multiple cookie windows
   var popups = [
-    cookieconsent.factory({
+    cookieconsent.factory(Object.assign({}, options, {
       type: 'info',
-      theme: 'mono-floating',
       position: 'top-left',
-      //palette: 'custom',
+    })),
 
-      content: standardContent,
-    }), 
-
-    cookieconsent.factory({
+    cookieconsent.factory(Object.assign({}, options, {
       container: document.querySelector('.cc-wrapper'),
       useWrapper: false,
 
       type: 'opt-in',
-      theme: 'mono-floating',
       position: 'top-right',
-      //palette: 'custom',
+    })),
 
-      content: standardContent,
-    }),
-
-    cookieconsent.factory({
+    cookieconsent.factory(Object.assign({}, options, {
       container: document.querySelector('.cc-wrapper'),
       useWrapper: false,
 
-      type: 'info',
-      theme: 'image-floating',
+      type: 'opt-out',
       position: 'bottom-left',
-      //palette: 'custom',
-
-      content: standardContent,
-    }),
+    })),
 
     /*cookieconsent.factory({
       container: document.querySelector('.cc-wrapper'),
