@@ -8,7 +8,7 @@
   cc.cookieName = 'cookieconsent_status';
 
   // valid cookie values
-  cc.status = {denied: 'denied', allowed: 'allowed', dismissed: 'dismissed'};
+  cc.status = {deny: 'deny', allow: 'allow', dismiss: 'dismiss'};
 
   // the path to built-in styles
   // Note: Directly linking to a version on the CDN like this is horrible, but it's less horrible
@@ -170,7 +170,7 @@
       var cookie = [
         name + '=' + value,
         'expires=' + exdate.toUTCString(),
-        'path=' + path || '/'
+        'path=' + (path || '/')
       ];
 
       if (domain) {
@@ -194,7 +194,7 @@
     var allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
 
     // regex to identify HTML button by class name. matches classes 'cc_btn_'+('denied' OR 'allowed' OR 'dismissed')
-    var allowedButtonClass = new RegExp('(?:\\s|^)cc-btn-(' + allowedStatuses.join('|') + ')(?:\\s|$)');
+    var allowedButtonClass = new RegExp('(?:\\s|^)cc-(' + allowedStatuses.join('|') + ')(?:\\s|$)');
 
     var defaultOptions = {
       enabled: true,
@@ -202,9 +202,19 @@
       // defaults to the current domain
       cookie: {
         path: '/',
-        domain: null,
+        domain: 'localhost',
         expiryDays: 365,
       },
+
+      // when false, the wrapper won't get used. this is useful if you want to append the cookie
+      // popup to an existing wrapper (for instance, if you have multiple instances of popups)
+      // (the wrapper is a full height/width div which is absolutley positioned at top-left 0)
+      useWrapper: true,
+
+      // {classes} is where additional classes get added
+      // {children} is where the inner html is set
+      wrapper: '<div class="cc-wrapper">{children}</div>',
+      window: '<div class="cc-window {classes}">{children}</div>',
 
       container: document.body, // selector
 
@@ -218,13 +228,6 @@
       onDenyCookies: function () {}, // cookies were denied for the first time
       onComplete: function (status) {}, // called on complete with the users preference to using cookies (see cc.status)
 
-      // interface
-      explicit: false,
-
-      useWrapper: true,
-
-      wrapper: '<div class="cc-wrapper">{children}</div>',
-      window: '<div class="cc-window {classes}">{children}</div>',
 
       content: {
         header: 'Cookies used on the website',
@@ -278,31 +281,25 @@
     function CookieWindow (options) {
       this.setOptions(util.isObject(options) ? options : {});
 
-      // calls `onComplete` if necessary
-      checkCallbackHooks.call(this);
-
-      // enable / disable plugin depending on config
+      // this sets `this.options.enabled`
       applyPageFilter.call(this);
 
-      if (this.isOpen()) {
-        this.close();
-      }
-
+      // if this should be disabled, stop initialisation
       if (!this.options.enabled) {
         return;
       }
 
-      this._onButtonClick = util.bind(function (e) {
-        debugger;
-        if (dom.hasClass(e.target, 'cc-btn')) {
-          var matches = e.target.className.match(allowedButtonClass);
+      // if it's open, 
+      if (this.isOpen()) {
+        this.close();
+      }
 
-          if (matches && matches[1]) {
-            this.setStatus(matches[1]);
-            this.close();
-          }
-        }
-      }, this);
+      // returns true if `onComplete` was called
+      if (checkCallbackHooks.call(this)) {
+        return;
+      }
+
+      bindButtonHandler.call(this);
 
       // create hidden HTML element
       render.call(this);
@@ -375,13 +372,14 @@
       var opts = this.options;
       var value = cookie.readCookie(cc.cookieName);
       var chosenBefore = util.contains(cc.status, value);
+      var c = opts.cookie;
 
       // if `status` is valid
       if (util.contains(cc.status, status)) {
-        cookie.setCookie(cc.cookieName, status, opts.expiryDays, opts.domain, opts.path);
+        cookie.setCookie(cc.cookieName, status, c.expiryDays, c.domain, c.path);
 
         if (!chosenBefore) {
-          status == cc.status.denied ? this.options.onDenyCookies() : this.options.onAllowCookies();
+          status == cc.status.deny ? this.options.onDenyCookies() : this.options.onAllowCookies();
           this.options.onComplete(status);
         }
       } else {
@@ -396,6 +394,20 @@
     CookieWindow.prototype.clearStatus = function () {
       cookie.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
     };
+
+    function bindButtonHandler() {
+      this._onButtonClick = util.bind(function (e) {
+        var targ = e.target;
+        if (dom.hasClass(targ, 'cc-btn')) {
+          var matches = targ.className.match(allowedButtonClass);
+
+          if (matches && matches[1]) {
+            this.setStatus(matches[1]);
+            this.close();
+          }
+        }
+      }, this);
+    }
 
     function applyAutoDismiss () {
       var delay = this.options.dismissOnTimeout;
@@ -420,25 +432,34 @@
     }
 
     function checkCallbackHooks () {
-      if (window.navigator && !navigator.cookieEnabled) {
-        this.options.onComplete(cc.status.denied);
+      var st = cc.status;
+      var complete = this.options.onComplete;
+
+      if (window.navigator) {
+        if (!navigator.cookieEnabled) {
+          complete(st.deny);
+          return true;
+        }
+        if (navigator.CookiesOK) {
+          complete(st.allow);
+          return true;
+        }
       }
 
-      if ((window.navigator && window.navigator.CookiesOK) || window.CookiesOK) {
-        this.options.onComplete(cc.status.allowed);
+      if (window.CookiesOK) {
+        complete(st.allow);
+        return true;
       }
 
-      var status = cookie.readCookie(cc.cookieName);
-      if (status == cc.status.dismissed) {
-        this.options.onComplete(cc.status.dismissed); // can use cookies
-      } else if (status == cc.status.allowed) {
-        this.options.onComplete(cc.status.allowed); // can use cookies
-      } else if (status == cc.status.denied) {
-        this.options.onComplete(cc.status.denied); // cannot use cookies
-      } else if (typeof status != 'undefined') {
-        // the dismissed cookie is invalid. delete it
-        this.clearStatus();
+      switch (cookie.readCookie(cc.cookieName)) {
+        case st.deny: complete(st.deny); break;
+        case st.allow: complete(st.allow); break;
+        case st.dismiss: complete(st.dismiss); break;
+        default: 
+          this.clearStatus();
+          return false;
       }
+      return true;
     }
 
     function createStyle() {
