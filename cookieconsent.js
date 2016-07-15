@@ -71,11 +71,11 @@
     },
 
     map: function (iterable, callback, /* optional */ context) {
-      var arr = [];
+      var ret = util.isObject(iterable) ? {} : [];
       this.each(iterable, function (c, i) {
-        arr.push(callback.call(this, c, i, iterable));
+        ret[i] = callback.call(this, c, i, iterable);
       }, context);
-      return arr;
+      return ret;
     },
 
     merge: function (obj1, obj2) {
@@ -191,7 +191,7 @@
   cc.CookieWindow = (function () {
 
     // array of values from `cc.status`
-    var allowedStatuses = util.map(cc.status, util.escapeRegExp);
+    var allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
 
     // regex to identify HTML button by class name. matches classes 'cc_btn_'+('denied' OR 'allowed' OR 'dismissed')
     var allowedButtonClass = new RegExp('(?:\\s|^)cc-btn-(' + allowedStatuses.join('|') + ')(?:\\s|$)');
@@ -255,20 +255,18 @@
         'custom': {background:'pink', text: 'blue', buttonBackground: 'red', buttonText: 'green', buttonBorder: 'purple'},
       },
 
-      types: {
-        'buttons-info': '<div class="cc-inline">{link}{dismiss}</div>',
-        'buttons-opt-in': '<div class="cc-inline">{allow}{deny}</div>',
-        'buttons-opt-out': '<div class="cc-inline">{deny}{allow}</div>',
+      compliance: {
+        'info': '<div class="cc-inline">{link}{dismiss}</div>',
+        'opt-in': '<div class="cc-inline">{allow}{deny}</div>',
+        'opt-out': '<div class="cc-inline">{deny}{allow}</div>',
       },
 
       themes: {
-        'mono-floating:info': '{message}{buttons-info}',
-        'mono-floating:opt-in': '{message}{buttons-opt-in}',
-        'mono-floating:opt-out': '{message}{buttons-opt-out}',
-
-        'image-floating:info': '{header}{message}{buttons}{close}{cookieImage}',
-        'image-floating:opt-in': '{header}{message}{buttons}{close}{cookieImage}',
-        'image-floating:opt-out': '{header}{message}{buttons}{close}{cookieImage}',
+        'mono-floating': '{message}{compliance}',
+        'header-floating': '{header}{message}{compliance}',
+        'image-floating': '{message}{compliance}{cookieImage}',
+        'close-floating': '{message}{compliance}{close}',
+        'all-floating': '{header}{message}{compliance}{close}',
       },
 
       type: 'info',
@@ -295,6 +293,7 @@
       }
 
       this._onButtonClick = util.bind(function (e) {
+        debugger;
         if (dom.hasClass(e.target, 'cc-btn')) {
           var matches = e.target.className.match(allowedButtonClass);
 
@@ -442,67 +441,16 @@
       }
     }
 
-    function buildHtml (order, elements, isBlock) {
-      var str = '';
-      util.each(order, function(list) {
-        if (util.isArray(list)) {
-          var preventGrouping = list[0][0] == '-';
-
-          if (preventGrouping) {
-            list[0] = list[0].slice(1);
-          }
-          if (!preventGrouping) {
-            str += '<div class="' + (!isBlock ? 'cc-block' : 'cc-inline') + '">';
-          }
-
-          str += buildHtml(list, elements, !isBlock);
-
-          if (!preventGrouping) {
-            str += '</div>';
-          }
-        } else {
-          if (typeof list == 'string' && list.length) {
-            if (list.indexOf(':') > -1) {
-              var parts = list.split(':', 2);
-              var name = util.trim(parts[0]);
-              var elem = elements[name];
-              str += elem.replace('{classes}', util.trim(parts[1]) || '');
-            } else {
-              str += elements[list].replace('{classes}', '');
-            }
-          }
-        }
-      });
-      return str;
-    }
-
-    function interpolateHtml (elements, content) {
-      var elems = {};
-
-      util.each(elements, function(cur, name) {
-        elems[name] = cur.replace('{children}', content[name]);
-      });
-
-      return elems;
-    }
-
-    function buildHtmlString (str, elements) {
-      for (var name in elements) {
-        str = str.replace('{' + name + '}', elements[name]);
-      }
-      return str
-    }
-
     function createStyle() {
       // Create the <style> tag
-      var style = document.createElement("style");
+      var style = document.createElement('style');
 
       // Add a media (and/or media query) here if you'd like!
       // style.setAttribute("media", "screen")
       // style.setAttribute("media", "only screen and (max-width : 1024px)")
 
       // WebKit hack :(
-      style.appendChild(document.createTextNode(""));
+      style.appendChild(document.createTextNode(''));
 
       // Add the <style> element to the page
       document.head.appendChild(style);
@@ -511,72 +459,102 @@
     }
 
     function addCSSRule(sheet, selector, rules, index) {
-      if("insertRule" in sheet) {
+      if ('insertRule' in sheet) {
         sheet.insertRule(selector + "{" + rules + "}", index);
-      }
-      else if("addRule" in sheet) {
+      } else if('addRule' in sheet) {
         sheet.addRule(selector, rules, index);
       }
     }
 
-    function render () {
-      // if already rendered, ignore
-      if (this.element) return;
-
-      var opts = this.options;
-      var override = false;
-
-      if (opts.palette && opts.palettes[opts.palette]) {
-        var pal = opts.palettes[opts.palette];
-        this.dynamicStyle = createStyle();
-
-        addCSSRule(this.dynamicStyle, '.cc-color-override.cc-window', '\
-          background-color: '+pal.background+' !important;\
-          color: '+pal.text+' !important;');
-
-        addCSSRule(this.dynamicStyle, '.cc-color-override .cc-btn', '\
-          border-color: '+pal.buttonBorder+';\
-          background-color: '+pal.buttonBackground+' !important;\
-          color: '+pal.buttonText+' !important;');
-
-        override = true;
-      }
-
-      var elements = interpolateHtml(opts.elements, opts.content);
-
-      /******************/
-
-      util.each(opts.types, function(cur, prop) {
-        elements[prop] = cur.replace(/{([a-z][a-z0-9\-_]*)}/ig, function(matches){
-          var name = arguments[1];
-          if (name && elements[name]) {
-            return elements[name];
-          }
-          return '';
-        })
+    function interpolateString (str, callback) {
+      var marker = /{([a-z][a-z0-9\-_]*)}/ig;
+      return str.replace(marker, function (matches) {
+        return callback(arguments[1]) || '';
       })
+    }
 
-      /******************/
+    function getWindowClasses () {
+      var opts = this.options;
+      var pos = opts.position.split('-', 2); // top, bottom, left, right
+      return [pos[0], pos[1], 'type-' + opts.type, 'theme-' + opts.theme];
+    }
 
-      var markup = buildHtmlString(opts.themes[opts.theme+':'+opts.type], elements)
-      var pos = opts.position.split('-', 2);
-      var classes = 'cc-'+pos[0]+' cc-'+pos[1]+' cc-type-'+opts.type+' cc-theme-'+opts.theme;
-      if (override) {
-        classes += ' cc-color-override';
-      }
-      var cookieWindow = opts.window.replace('{classes}', classes).replace('{children}', markup);
+    function getInnerMarkup () {
+      var interpolated = {};
+      var opts = this.options;
 
-      var fullHtml = !opts.useWrapper
+      util.map(opts.elements, function (elementStr, prop) {
+        interpolated[prop] = interpolateString(elementStr, function (name) {
+          // we only deal with "children"
+          if (name == 'children') {
+            var contentStr = opts.content[prop];
+            return opts.content[prop] || '';
+          }
+        })
+      });
+
+      var complianceType = opts.compliance[opts.type];
+
+      // build the compliance types from the already interpolated `elements`
+      interpolated.compliance = interpolateString(complianceType, function (name) {
+        return interpolated[name];
+      });
+
+      var theme = opts.themes[opts.theme];
+
+      return interpolateString(theme, function(match) {
+        return interpolated[match];
+      });
+    }
+
+    // this function automatically prefixes the CSS classes
+    function getOuterMarkup (innerMarkup, classes) {
+      var opts = this.options;
+
+      // add prefix and join into a space separated string
+      var classString = classes.map(function(cur) {return 'cc-' + cur}).join(' ');
+
+      var cookieWindow = opts.window
+        .replace('{classes}', classString)
+        .replace('{children}', innerMarkup);
+
+      return !opts.useWrapper
           ? cookieWindow
           : opts.wrapper.replace('{children}', cookieWindow);
+    }
 
-      // create markup
-      this.element = dom.buildDom(fullHtml);
+    function render () {
+      var opts = this.options;
+
+      // if already rendered, ignore
+      if (this.element) {
+        return false;
+      }
+
+      // `classes` depends on the configuration options
+      var classes = getWindowClasses.call(this);
+
+      // we only add extra styles if `pallete` has been set to a valid value
+      var didAttach = attachCustomPalette.call(this);
+
+      // if we override the pallete, add the class that enables this
+      if (didAttach) {
+        classes.push('color-override');
+      }
 
       // add class to container classes so we can specify css for IE8 only
       if (navigator.appVersion.indexOf('MSIE 8') > -1) {
-        dom.addClass(this.element, 'cc-ie8');
+        classes.push('ie8');
       }
+
+      // calculate inner markup from configuration
+      var markup = getInnerMarkup.call(this);
+
+      // the full markup either contains the wrapper or it does not (for multiple instances)
+      var fullHtml = getOuterMarkup.call(this, markup, classes);
+
+      // create markup
+      this.element = dom.buildDom(fullHtml);
 
       dom.addEventListener(this.element, 'click', this._onButtonClick);
 
@@ -589,7 +567,26 @@
       } else {
         cont.insertBefore(this.element, cont.firstChild)
       }
+      return true;
+    }
 
+    function attachCustomPalette () {
+      var opts = this.options;
+      var palette = opts.palette && opts.palettes && opts.palettes[opts.palette];
+
+      if (palette) {
+        this.dynamicStyle = createStyle();
+
+        addCSSRule(this.dynamicStyle, '.cc-color-override.cc-window', '\
+          background-color: '+palette.background+';\
+          color: '+palette.text+';');
+
+        addCSSRule(this.dynamicStyle, '.cc-color-override .cc-btn', '\
+          border-color: '+palette.buttonBorder+';\
+          background-color: '+palette.buttonBackground+';\
+          color: '+palette.buttonText+';');
+      }
+      return !!palette;
     }
 
     function applyPageFilter () {
