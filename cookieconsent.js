@@ -1,6 +1,5 @@
 
 (function (cc) {
-
   // stop from running again, if accidently included more than once.
   if (cc.hasInitialised) return;
 
@@ -10,17 +9,12 @@
   // valid cookie values
   cc.status = {deny: 'deny', allow: 'allow', dismiss: 'dismiss'};
 
-  // the path to built-in styles
-  // Note: Directly linking to a version on the CDN like this is horrible, but it's less horrible
-  //       than people downloading the code then discovering that their CSS bucket disappeared
-  cc.stylesheetPath = '//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/1.0.10/';
-
   // is true if the browser supports css transitions
-  cc.hasTransition = (function supportsTransitions() {
+  cc.hasTransition = (function () {
     var style = document.documentElement.style;
     var trans = ['t','OT','msT','MozT','KhtmlT','WebkitT'];
     for (var i = 0, l = trans.length; i < l; ++i) {
-      if (style[trans[i]+'ransition']) return true;
+      if (trans[i]+'ransition' in style) return true;
     }
     return false;
   }());
@@ -145,6 +139,12 @@
       return regex.test(element.className);
     },
 
+    matchClass: function (element, regExp) {
+      var regex = new RegExp('(?:\\s|^)' + regExp + '(?:\\s|$)');
+      var matches = element.className.match(regex);
+      return (matches && matches[1]) || false;
+    },
+
     addClass: function (element, className) {
       if (!this.hasClass(element, className)) {
         element.className += ' ' + className;
@@ -190,21 +190,10 @@
 
   cc.CookieWindow = (function () {
 
-    // array of values from `cc.status`
-    var allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
-
-    // regex to identify HTML button by class name. matches classes 'cc_btn_'+('denied' OR 'allowed' OR 'dismissed')
-    var allowedButtonClass = new RegExp('(?:\\s|^)cc-(' + allowedStatuses.join('|') + ')(?:\\s|$)');
-
     var defaultOptions = {
       enabled: true,
 
-      // defaults to the current domain
-      cookie: {
-        path: '/',
-        domain: 'localhost',
-        expiryDays: 365,
-      },
+      container: document.body, // the element will be preppened to this
 
       // when false, the wrapper won't get used. this is useful if you want to append the cookie
       // popup to an existing wrapper (for instance, if you have multiple instances of popups)
@@ -216,19 +205,10 @@
       wrapper: '<div class="cc-wrapper">{children}</div>',
       window: '<div class="cc-window {classes}">{children}</div>',
 
-      container: document.body, // selector
+      // defaults to the current domain
+      cookie: { path: '/', domain: 'localhost', expiryDays: 365 },
 
-      dismissOnScroll: false, // (disabled on false) auto-dismisses message when scrolled past a point. Pass number that `scrollTop` must exceed. E.G. 500
-      dismissOnTimeout: false, // (disabled on false) auto-dismisses message on a timeout. Pass timeout in milliseconds. E.G. 3000
-      blacklistPage: [], // match pages using a string or regex. matching pages in this array are automatically disabled
-      whitelistPage: [], // match pages using a string or regex. matching pages in this array are automatically enabled
-
-      // hooks
-      onAllowCookies: function () {}, // cookies were accepted for the first time
-      onDenyCookies: function () {}, // cookies were denied for the first time
-      onComplete: function (status) {}, // called on complete with the users preference to using cookies (see cc.status)
-
-
+      // this is where you set the content of each element
       content: {
         header: 'Cookies used on the website',
         message: 'Our website uses cookies. They help us to understand how customers use our website so we can give you the best experience possible and also keep our online services relevant.',
@@ -237,33 +217,36 @@
         allow: 'Allow',
         deny: 'Deny',
         close: '&#x274c;',
+
+        // extensions
         customButton: 'Continue',
+        cookieImage: 'http://plainicon.com/dboard/userprod/2921_4eb4c/prod_thumb/plainicon.com-64226-256px-fa8.png',
       },
 
+      // this is the HTML for the elements above.
+      // {children} will be replaced with the equivalent 'content' above
       elements: {
         header: '<span class="cc-header">{children}</span>',
         message: '<span class="cc-message">{children}</span>',
-        allow: '<a class="cc-btn cc-allow">{children}</a>',
-        deny: '<a class="cc-btn cc-deny">{children}</a>',
         dismiss: '<a class="cc-btn cc-dismiss">{children}</a>',
         link: '<a href="/" class="cc-link">{children}</a>',
+        allow: '<a class="cc-btn cc-allow">{children}</a>',
+        deny: '<a class="cc-btn cc-deny">{children}</a>',
         close: '<span class="cc-close">{children}</span>',
 
         // extensions
         customButton: '<span class="cc-btn cc-middle customButton"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
-        cookieImage: '<img src="http://plainicon.com/dboard/userprod/2921_4eb4c/prod_thumb/plainicon.com-64226-256px-fa8.png" width="32px"/>'
+        cookieImage: '<img src="{children}" width="32px"/>'
       },
 
-      palettes: {
-        'custom': {background:'pink', text: 'blue', buttonBackground: 'red', buttonText: 'green', buttonBorder: 'purple'},
-      },
-
+      // define types of compliance here
       compliance: {
         'info': '<div class="cc-inline">{link}{dismiss}</div>',
         'opt-in': '<div class="cc-inline">{allow}{deny}</div>',
         'opt-out': '<div class="cc-inline">{deny}{allow}</div>',
       },
 
+      // define layout themes here
       themes: {
         'mono-floating': '{message}{compliance}',
         'header-floating': '{header}{message}{compliance}',
@@ -272,14 +255,33 @@
         'all-floating': '{header}{message}{compliance}{close}',
       },
 
-      type: 'info',
-      theme: 'mono-floating',
-      palette: '',
+      // define custom color palettes here
+      palettes: {
+        'custom': {background:'pink', text: 'blue', buttonBackground: 'red', buttonText: 'green', buttonBorder: 'purple'},
+      },
+
+      // this refers to the popup windows position. we currently support:
+      //  - top-left  top-right  bottom-left  bottom-right                 (for floating themes)
+      //  - banner-top  banner-bottom                                      (for banner themes)
       position: 'bottom-right',
+
+      // select your type of popup here
+      type: 'info',                       // refers to `compliance`
+      theme: 'mono-floating',             // refers to `themes`
+      palette: '',                        // refers to `palettes`
     };
 
-    function CookieWindow (options) {
-      this.setOptions(util.isObject(options) ? options : {});
+    function CookieWindow () {
+      this.initialise.apply(this, arguments);
+    }
+
+    CookieWindow.prototype.initialise = function (options) {
+      // set options back to default options
+      this.options = util.clone(defaultOptions);
+
+      if (util.isObject(options)) {
+        util.merge(this.options, options);
+      }
 
       // this sets `this.options.enabled`
       applyPageFilter.call(this);
@@ -306,7 +308,7 @@
 
       // uses `dismissOnScroll` and `dismissOnTimeout`
       applyAutoDismiss.call(this);
-    }
+    };
 
     CookieWindow.prototype.destroy = function () {
       if (this.element) {
@@ -321,14 +323,6 @@
         this.element = null;
         this.options = null;
       }
-    };
-
-    CookieWindow.prototype.setOptions = function (options) {
-      // set options back to default options
-      this.options = util.clone(defaultOptions);
-
-      // merge new options
-      util.merge(this.options, options);
     };
 
     CookieWindow.prototype.isOpen = function () {
@@ -399,10 +393,11 @@
       this._onButtonClick = util.bind(function (e) {
         var targ = e.target;
         if (dom.hasClass(targ, 'cc-btn')) {
-          var matches = targ.className.match(allowedButtonClass);
+          var allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
+          var match = dom.matchClass(targ, 'cc-(' + allowedStatuses.join('|') + ')')
 
-          if (matches && matches[1]) {
-            this.setStatus(matches[1]);
+          if (match) {
+            this.setStatus(match);
             this.close();
           }
         }
