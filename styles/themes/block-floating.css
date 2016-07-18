@@ -1,0 +1,22 @@
+
+.cc-theme-centered-floating.cc-window {
+  background-color: #000;
+}
+
+.cc-theme-centered-floating .cc-header,
+.cc-theme-centered-floating .cc-message,
+.cc-theme-centered-floating .cc-close,
+.cc-theme-centered-floating .cc-btn {
+  color: #fff;
+}
+.cc-theme-centered-floating .cc-btn {
+  background-color: #f8e71c;
+  color: #000;
+}
+.cc-theme-centered-floating .cc-link,
+.cc-theme-centered-floating .cc-link:hover {
+  color: #fff;
+}
+.cc-theme-centered-floating .cc-message {
+  width: 20em;
+}

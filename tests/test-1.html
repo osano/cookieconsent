@@ -20,8 +20,8 @@
 
     <!--img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q2W5STX-5d7bf5c424/pasted_image_at_2016_07_08_05_34_pm_360.png" style="position:absolute;top:250px;left:0px;" />
     <img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q2W4BL7-f3efd7696f/pasted_image_at_2016_07_08_05_34_pm_360.png" style="position:absolute;top:250px;right:0px;" />
-    <img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q373WCS-bb23c04895/pasted_image_at_2016_07_08_05_34_pm_360.png" style="position:absolute;bottom:250px;left:0px;" />
-    <img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q2MU1KQ-73c6f891a2/pasted_image_at_2016_07_08_05_35_pm_360.png" style="position:absolute;bottom:250px;right:0px;" /-->
+    <img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q373WCS-bb23c04895/pasted_image_at_2016_07_08_05_34_pm_360.png" style="position:absolute;bottom:250px;left:0px;" /-->
+    <img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q2MU1KQ-73c6f891a2/pasted_image_at_2016_07_08_05_35_pm_360.png" style="position:absolute;bottom:250px;right:0px;" />
 
   </body>
 </html>
@@ -34,20 +34,19 @@
 
 
   var options = {
-    theme: 'image-floating',
+    theme: 'centered-floating',
   };
 
 
   // initialise multiple cookie windows
   var popups = [
     cookieconsent.factory(Object.assign({}, options, {
-      type: 'info',
+      type: 'dismiss',
       position: 'top-left',
     })),
 
     cookieconsent.factory(Object.assign({}, options, {
       container: document.querySelector('.cc-wrapper'),
-      useWrapper: false,
 
       type: 'opt-in',
       position: 'top-right',
@@ -55,7 +54,6 @@
 
     cookieconsent.factory(Object.assign({}, options, {
       container: document.querySelector('.cc-wrapper'),
-      useWrapper: false,
 
       type: 'opt-out',
       position: 'bottom-left',

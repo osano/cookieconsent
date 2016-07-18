@@ -106,6 +106,13 @@
     escapeRegExp: function (str) {
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
     },
+
+    interpolateString: function (str, callback) {
+      var marker = /{([a-z][a-z0-9\-_]*)}/ig;
+      return str.replace(marker, function (matches) {
+        return callback(arguments[1]) || '';
+      })
+    },
   };
 
   var dom = {
@@ -158,6 +165,37 @@
         element.className = element.className.replace(regex, '');
       }
     },
+
+    createStyle: function (attrs) {
+      var style = document.createElement('style');
+
+      for (var prop in attrs) {
+        style.setAttribute(prop, attrs[prop]);
+      }
+
+      style.appendChild(document.createTextNode('')); // webkit hack
+
+      document.head.appendChild(style);
+
+      return style.sheet;
+    },
+
+    addCSSRule: function(sheet, selector, rules, index) {
+      if ('insertRule' in sheet) {
+        sheet.insertRule(selector + '{' + rules + '}', index);
+      }
+      else if('addRule' in sheet) {
+        sheet.addRule(selector, rules, index);
+      }
+    },
+
+    prependElem: function (container, element) {
+      if (!container.firstChild) {
+        container.appendChild(element);
+      } else {
+        container.insertBefore(element, container.firstChild)
+      }
+    },
   };
 
   var cookie = {
@@ -193,12 +231,7 @@
     var defaultOptions = {
       enabled: true,
 
-      container: document.body, // the element will be preppened to this
-
-      // when false, the wrapper won't get used. this is useful if you want to append the cookie
-      // popup to an existing wrapper (for instance, if you have multiple instances of popups)
-      // (the wrapper is a full height/width div which is absolutley positioned at top-left 0)
-      useWrapper: true,
+      container: null, // optional (expecting a HTML element)
 
       // {classes} is where additional classes get added
       // {children} is where the inner html is set
@@ -211,6 +244,9 @@
       onAllowCookies: function() {},
       onDenyCookies: function() {},
       onComplete: function(status) {},
+
+      whitelistPage: [],
+      blacklistPage: [],
 
       // this is where you set the content of each element
       content: {
@@ -245,19 +281,18 @@
 
       // define types of compliance here
       compliance: {
-        'rinfo': '<div class="cc-inline">{dismiss}{link}</div>',
-        'info': '<div class="cc-inline">{link}{dismiss}</div>',
+        'dismiss': '<div class="cc-inline">{dismiss}</div>',
+        'pre-info': '<div class="cc-inline">{link}{dismiss}</div>',
+        'post-info': '<div class="cc-inline">{dismiss}{link}</div>',
         'opt-in': '<div class="cc-inline">{allow}{deny}</div>',
         'opt-out': '<div class="cc-inline">{deny}{allow}</div>',
       },
 
       // define layout themes here
       themes: {
-        'mono-floating': '{message}{compliance}',
-        'header-floating': '{header}{message}{compliance}',
-        'image-floating': '{header}{message}{compliance}{cookieImage}',
-        'close-floating': '{message}{compliance}{close}',
-        'all-floating': '{header}{message}{compliance}{close}',
+        'simple-floating': '{message}{compliance}',
+        'link-floating': '{message}{link}{compliance}',
+        'centered-floating': '{message}{link}{compliance}',
       },
 
       // define custom color palettes here
@@ -271,7 +306,7 @@
       position: 'bottom-right',
 
       // select your type of popup here
-      type: 'info',                       // refers to `compliance`
+      type: 'pre-info',                   // refers to `compliance`
       theme: 'mono-floating',             // refers to `themes`
       palette: '',                        // refers to `palettes`
     };
@@ -284,29 +319,29 @@
       // set options back to default options
       this.options = util.clone(defaultOptions);
 
+      // merge in user options
       if (util.isObject(options)) {
         util.merge(this.options, options);
       }
 
-      // this sets `this.options.enabled`
-      applyPageFilter.call(this);
+      // returns true if `onComplete` was called
+      if (checkCallbackHooks.call(this)) {
+        // user has already answered
+        this.options.enabled = false;
+      }
+
+      // apply blacklist / whitelist
+      if (arrayContainsMatches(this.options.blacklistPage, location.pathname)) {
+        this.options.enabled = false;
+      }
+      if (arrayContainsMatches(this.options.whitelistPage, location.pathname)) {
+        this.options.enabled = true;
+      }
 
       // if this should be disabled, stop initialisation
       if (!this.options.enabled) {
         return;
       }
-
-      // if it's open, 
-      if (this.isOpen()) {
-        this.close();
-      }
-
-      // returns true if `onComplete` was called
-      if (checkCallbackHooks.call(this)) {
-        return;
-      }
-
-      bindButtonHandler.call(this);
 
       // create hidden HTML element
       render.call(this);
@@ -326,7 +361,10 @@
 
         // remove reference
         this.element = null;
+        this.wrapper = null;
         this.options = null;
+
+        // @todo remove custom <style> tag
       }
     };
 
@@ -394,38 +432,38 @@
       cookie.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
     };
 
-    function bindButtonHandler() {
-      this._onButtonClick = util.bind(function (e) {
-        var targ = e.target;
-        if (dom.hasClass(targ, 'cc-btn')) {
-          var allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
-          var match = dom.matchClass(targ, 'cc-(' + allowedStatuses.join('|') + ')')
+    function handleButtonClick (event) {
+      var targ = event.target;
+      if (dom.hasClass(targ, 'cc-btn')) {
+        var allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
+        var match = dom.matchClass(targ, 'cc-(' + allowedStatuses.join('|') + ')')
 
-          if (match) {
-            this.setStatus(match);
-            this.close();
-          }
+        if (match) {
+          this.setStatus(match);
+          this.close();
         }
-      }, this);
+      }
     }
 
     function applyAutoDismiss () {
+      var setStatus = this.setStatus.bind(this);
+
       var delay = this.options.dismissOnTimeout;
-      if (typeof delay == 'number') {
-        window.setTimeout(util.bind(function () {
-          this.setStatus(cc.status.dismiss);
-        }, this), Math.floor(delay));
+      if (typeof delay == 'number' && delay >= 0) {
+        window.setTimeout(function () {
+          setStatus(cc.status.dismiss);
+        }, Math.floor(delay));
       }
 
       var scrollRange = this.options.dismissOnScroll;
-      if (typeof scrollRange == 'number') {
-        var onWindowScroll = util.bind(function (evt) {
+      if (typeof scrollRange == 'number' && scrollRange >= 0) {
+        var onWindowScroll = function (evt) {
           if (window.pageYOffset > Math.floor(scrollRange)) {
-          this.setStatus(cc.status.dismiss);
+            setStatus(cc.status.dismiss);
 
             dom.removeEventListener(window, 'scroll', onWindowScroll);
           }
-        }, this);
+        };
 
         dom.addEventListener(window, 'scroll', onWindowScroll);
       }
@@ -455,48 +493,18 @@
         case st.deny: complete(st.deny); break;
         case st.allow: complete(st.allow); break;
         case st.dismiss: complete(st.dismiss); break;
-        default: 
+        default:
           this.clearStatus();
           return false;
       }
       return true;
     }
 
-    function createStyle() {
-      // Create the <style> tag
-      var style = document.createElement('style');
-
-      // Add a media (and/or media query) here if you'd like!
-      // style.setAttribute("media", "screen")
-      // style.setAttribute("media", "only screen and (max-width : 1024px)")
-
-      // WebKit hack :(
-      style.appendChild(document.createTextNode(''));
-
-      // Add the <style> element to the page
-      document.head.appendChild(style);
-
-      return style.sheet;
-    }
-
-    function addCSSRule(sheet, selector, rules, index) {
-      if ('insertRule' in sheet) {
-        sheet.insertRule(selector + "{" + rules + "}", index);
-      } else if('addRule' in sheet) {
-        sheet.addRule(selector, rules, index);
-      }
-    }
-
-    function interpolateString (str, callback) {
-      var marker = /{([a-z][a-z0-9\-_]*)}/ig;
-      return str.replace(marker, function (matches) {
-        return callback(arguments[1]) || '';
-      })
-    }
-
     function getWindowClasses () {
       var opts = this.options;
       var pos = opts.position.split('-', 2); // top, bottom, left, right
+
+      // prefixes are added to these classes in `getCookieWindow`
       return [pos[0], pos[1], 'type-' + opts.type, 'theme-' + opts.theme];
     }
 
@@ -505,7 +513,7 @@
       var opts = this.options;
 
       util.map(opts.elements, function (elementStr, prop) {
-        interpolated[prop] = interpolateString(elementStr, function (name) {
+        interpolated[prop] = util.interpolateString(elementStr, function (name) {
           // we only deal with "children"
           if (name == 'children') {
             var contentStr = opts.content[prop];
@@ -517,31 +525,27 @@
       var complianceType = opts.compliance[opts.type];
 
       // build the compliance types from the already interpolated `elements`
-      interpolated.compliance = interpolateString(complianceType, function (name) {
+      interpolated.compliance = util.interpolateString(complianceType, function (name) {
         return interpolated[name];
       });
 
       var theme = opts.themes[opts.theme];
 
-      return interpolateString(theme, function(match) {
+      return util.interpolateString(theme, function(match) {
         return interpolated[match];
       });
     }
 
     // this function automatically prefixes the CSS classes
-    function getOuterMarkup (innerMarkup, classes) {
+    function getCookieWindow (innerMarkup, classes) {
       var opts = this.options;
 
       // add prefix and join into a space separated string
       var classString = classes.map(function(cur) {return 'cc-' + cur}).join(' ');
 
-      var cookieWindow = opts.window
+      return opts.window
         .replace('{classes}', classString)
         .replace('{children}', innerMarkup);
-
-      return !opts.useWrapper
-          ? cookieWindow
-          : opts.wrapper.replace('{children}', cookieWindow);
     }
 
     function render () {
@@ -549,6 +553,9 @@
 
       // if already rendered, ignore
       if (this.element) {
+        if (this.isOpen()) {
+          this.close();
+        }
         return false;
       }
 
@@ -572,23 +579,40 @@
       var markup = getInnerMarkup.call(this);
 
       // the full markup either contains the wrapper or it does not (for multiple instances)
-      var fullHtml = getOuterMarkup.call(this, markup, classes);
+      var cookieWindow = getCookieWindow.call(this, markup, classes);
 
-      // create markup
-      this.element = dom.buildDom(fullHtml);
+      appendMarkup.call(this, cookieWindow);
 
-      dom.addEventListener(this.element, 'click', this._onButtonClick);
+      return true;
+    }
+
+    function appendMarkup (markup) {
+      var opts = this.options;
+      var cont = opts.container;
+      var validCont = cont && cont.nodeType === 1;
+
+      if (validCont) {
+        this.element = dom.buildDom(markup);
+        this.wrapper = cont;
+      } else {
+        var fullHtml = opts.wrapper.replace('{children}', markup);
+        this.wrapper = dom.buildDom(fullHtml);
+        this.element = this.wrapper.firstChild;
+      }
 
       // hide it before adding to DOM
       this.element.style.display = 'none';
 
-      var cont = this.options.container;
-      if (!cont.firstChild) {
-        cont.appendChild(this.element);
-      } else {
-        cont.insertBefore(this.element, cont.firstChild)
-      }
-      return true;
+      // save ref to the function handle so we can unbind it later
+      this._onButtonClick = handleButtonClick.bind(this);
+
+      dom.addEventListener(this.element, 'click', this._onButtonClick);
+
+      // use <body> if no container
+      cont = validCont ? cont : document.body;
+
+      // prepend element to container
+      dom.prependElem(cont, this.element);
     }
 
     function attachCustomPalette () {
@@ -610,30 +634,7 @@
       return !!palette;
     }
 
-    function applyPageFilter () {
-      var page = location.pathname;
-
-      var invalidPages = this.options.blacklistPage;
-      if (invalidPages && invalidPages.length) {
-        // if this url matches an entry in `invalidPages`, disable
-        if (matchStringArray.call(this, page, invalidPages)) {
-          this.options.enabled = false;
-        }
-      }
-
-      var validPages = this.options.whitelistPage;
-      if (validPages && validPages.length) {
-        // if this url matches an entry in `validPages`, enable
-        if (matchStringArray.call(this, page, validPages)) {
-          this.options.enabled = true;
-        }
-      }
-    }
-
-    // `search` is a string
-    //  - returns true if any of the items in `array` match `search`
-    //  - values in `array` can be a string or an instance of RegExp
-    function matchStringArray (search, array) {
+    function arrayContainsMatches (array, search) {
       for (var i = 0, l = array.length; i < l; ++i) {
         var str = array[i];
         // if regex matches or string is equal, return true
@@ -648,7 +649,7 @@
     return CookieWindow
   }());
 
-  cc.law = (function () {
+  cc.CookieLaw = (function () {
 
     var hasLaw = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'HR', 'CY', 'LV', 'LT', 'PT', 'NL'];
     var explicit = ['HR', 'CY', 'LV', 'LT', 'PT', 'DE'];
@@ -659,10 +660,10 @@
 
       get: function (countryCode) {
         return {
-          hasLaw: arrayIndexOf(hasLaw, countryCode) >= 0,
-          explicit: arrayIndexOf(explicit, countryCode) >= 0,
-          revokable: arrayIndexOf(revokable, countryCode) >= 0,
-          explicitAction: arrayIndexOf(explicitAction, countryCode) >= 0,
+          hasLaw: hasLaw.indexOf(countryCode) >= 0,
+          explicit: explicit.indexOf(countryCode) >= 0,
+          revokable: revokable.indexOf(countryCode) >= 0,
+          explicitAction: explicitAction.indexOf(countryCode) >= 0,
         };
       },
 
@@ -692,41 +693,10 @@
 
         return options;
       }
-
     };
-
-    function arrayIndexOf (array, searchElement /*, fromIndex */ ) {
-      if (array === void 0 || array === null)
-        throw new TypeError();
-
-      var t = Object(array);
-      var len = t.length >>> 0;
-      if (len === 0)
-        return -1;
-
-      var n = 0;
-      if (arguments.length > 0) {
-        n = Number(arguments[1]);
-        if (n !== n) // shortcut for verifying if it's NaN
-          n = 0;
-        else if (n !== 0 && n !== (1 / 0) && n !== -(1 / 0))
-          n = (n > 0 || -1) * Math.floor(Math.abs(n));
-      }
-
-      if (n >= len)
-        return -1;
-
-      var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-
-      for (; k < len; k++) {
-        if (k in t && t[k] === searchElement)
-          return k;
-      }
-      return -1;
-    }
   }());
 
-  cc.locate = (function () {
+  cc.CookieLocate = (function () {
 
     return {
 
