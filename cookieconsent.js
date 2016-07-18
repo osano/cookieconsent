@@ -290,9 +290,10 @@
 
       // define layout themes here
       themes: {
-        'simple-floating': '{message}{compliance}',
+        'mono-floating': '{message}{compliance}',
         'link-floating': '{message}{link}{compliance}',
         'centered-floating': '{message}{link}{compliance}',
+        'all-floating': '{header}{message}{compliance}{close}',
       },
 
       // define custom color palettes here
@@ -369,7 +370,7 @@
     };
 
     CookieWindow.prototype.isOpen = function () {
-      return this.element && this.element.style.display === '' && !dom.hasClass(this.element, 'cc_fade_out');
+      return this.element && this.element.style.display === '' && !dom.hasClass(this.element, 'cc_fadeout');
     };
 
     CookieWindow.prototype.open = function (callback) {

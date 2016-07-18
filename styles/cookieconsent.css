@@ -14,7 +14,7 @@
   width: 100vw;
   height: 100vh;
 
-  font-size: 15px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
+  font-size: 12px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
 }
 
 /* the popup window */
