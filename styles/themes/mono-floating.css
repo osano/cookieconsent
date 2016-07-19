@@ -1,26 +1,4 @@
 
-.cc-theme-mono-floating .cc-message {
-  display: block;
-  margin-bottom: 1em;
-}
+.cc-theme-mono-floating {
 
-.cc-theme-mono-floating .cc-dismiss {
-  width: 100%;
-}
-.cc-theme-mono-floating.cc-type-info .cc-dismiss {
-  width: auto;
-}
-.cc-theme-mono-floating.cc-type-info .cc-link {
-  margin: .9em;
-}
-
-.cc-theme-mono-floating .cc-deny, .cc-theme-mono-floating .cc-allow {
-  width: 49%;
-}
-
-.cc-theme-mono-floating.cc-type-opt-in .cc-allow {
-  margin-right: 2%;
-}
-.cc-theme-mono-floating.cc-type-opt-out .cc-deny {
-  margin-right: 2%;
 }

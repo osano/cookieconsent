@@ -1,37 +1,4 @@
 
 .cc-theme-centered-floating.cc-window {
-  color: #fff;
-  background-color: #000;
-  text-align: center;
-}
-
-.cc-theme-centered-floating .cc-message,
-.cc-theme-centered-floating .cc-link {
-  display: block;
-  margin-bottom: 1em;
-}
-
-.cc-theme-centered-floating .cc-link {
-  color: #fff;
-  margin-right: 1em;
-}
-
-.cc-theme-centered-floating .cc-btn {
-  color: #000;
-  border-width: 0;
-  padding: .5em .8em;
-  background-color: #f8e71c;
-}
-
-.cc-theme-centered-floating .cc-deny, .cc-theme-centered-floating .cc-allow {
-  width: 9.4em;
-  text-align: center;
-}
-.cc-theme-centered-floating .cc-btn:first-child {
-  margin-right: 1em;
-}
-
-.cc-theme-centered-floating .cc-btn.cc-dismiss {
-  width: 100%;
-  margin-right: 0;
+  text-align: center
 }

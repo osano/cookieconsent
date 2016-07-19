@@ -1,54 +1,7 @@
 
-.cc-theme-image-floating.cc-window {
-  color: #fff;
-  background-color: #d34040;
-  border-radius: 5px;
-  border: 1px solid #6b0e0e;
-}
-
-.cc-theme-image-floating.cc-window.cc-banner {
-  border: 0;
-  border-radius: 0;
-}
-
-.cc-theme-image-floating .cc-header {
-  display: block;
-  margin-bottom: 1em;
-}
-
-.cc-theme-image-floating .cc-message {
-  display: block;
-  margin-bottom: 1em;
-}
-
-.cc-theme-image-floating .cc-link {
-  color: #fff;
-  margin-right: 1em;
-}
-
-.cc-theme-image-floating .cc-btn {
-  border-color: #fff;
-  font-weight: bold;
-  padding: .5em .8em;
-  color: #fff;
-}
-
-.cc-theme-image-floating .cc-deny, .cc-theme-image-floating .cc-allow {
-  width: 9.4em;
-  text-align: center;
-}
-
-.cc-theme-image-floating .cc-inline>* {
-  margin-right: .8em;
-}
-.cc-theme-image-floating .cc-inline>:last-child {
-  margin-right: 0;
-}
-
-
 .cc-theme-image-floating .cc-cookie-image {
   position: absolute;
-  top: 1em;
+  top: 5em;
   right: 1em;
 
   filter: invert(1);
@@ -59,4 +12,8 @@
 
 .cc-theme-image-floating .cc-cookie-image:hover {
   opacity:1;
+}
+
+.cc-theme-image-floating.cc-window>.cc-link {
+  margin: 0;
 }

@@ -241,10 +241,14 @@
       // defaults to the current domain
       cookie: { path: '/', domain: 'localhost', expiryDays: 365 },
 
-      onAllowCookies: function() {},
-      onDenyCookies: function() {},
-      onComplete: function(status) {},
+      // some callback hooks which are called at certain points in the app
+      onAllowCookies: function() {},    // called the FIRST time cookies are accepted
+      onDenyCookies: function() {},     // called the FIRST time cookies are denied
+      onComplete: function(status) {},  // called on init if the app can imply consent, or directly after the above hooks
 
+      // simple whitelist/blacklist for pages.
+      // you can specify pages using a string '/index.html'           (matches '/index.html' exactly)
+      // OR by specifying a regular expression /\/page_[\d]+\.html/   (matched '/page_1.html' and '/page_2.html' etc)
       whitelistPage: [],
       blacklistPage: [],
 
@@ -260,7 +264,6 @@
 
         // extensions
         customButton: 'Continue',
-        cookieImage: 'http://plainicon.com/dboard/userprod/2921_4eb4c/prod_thumb/plainicon.com-64226-256px-fa8.png',
       },
 
       // this is the HTML for the elements above.
@@ -276,7 +279,6 @@
 
         // extensions
         customButton: '<span class="cc-btn cc-middle customButton"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
-        cookieImage: '<img class="cc-cookie-image" src="{children}" width="32px"/>'
       },
 
       // define types of compliance here
@@ -289,14 +291,15 @@
 
       // define layout themes here
       themes: {
+        'all-floating': '{header}{message}{compliance}{close}',
         'mono-floating': '{message}{compliance}',
         'link-floating': '{message}{link}{compliance}',
         'centered-floating': '{message}{link}{compliance}',
-        'all-floating': '{header}{message}{compliance}{close}',
       },
 
       // define custom color palettes here
       palettes: {
+        'red': {background:'#d34040', text: '#fff', link: '#fff', buttonBackground: 'transparent', buttonText: '#fff', buttonBorder: '#fff'},
         'blue': {background:'#4a90e2', text: '#fff', link: '#fff', buttonBackground: 'transparent', buttonText: '#fff', buttonBorder: '#fff'},
         'black': {background:'#000', text: '#fff', link: '#fff', buttonBackground: '#f8e71c', buttonText: '#000', buttonBorder: '#f8e71c'},
       },
@@ -310,6 +313,16 @@
       type: 'dismiss',                 // refers to `compliance`
       theme: 'mono-floating',          // refers to `themes`
       palette: '',                     // refers to `palettes`
+
+      // If this is defined, then it is used as the inner html instead of `themes`. This allows for ultimate customisation.
+      // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click handlers.
+      // You can use other pre-existing classes too. See the cookieconsent.css file
+      overrideHTML: null,
+
+      // cookie consent appends its self to `container`. this decides whether to append to wrapper or the element.
+      // (the wrapper is sometimes not needed when integrating with existing apps, or when instanciating many windows).
+      // if this is false, the user can get a new wrapper element at any time (independently from CookieWindow) by calling `cc.getWrapper`
+      useWrapper: true,
     };
 
     function CookieWindow () {
@@ -358,7 +371,13 @@
         this._onButtonClick = null;
 
         // remove from DOM
-        this.element.parentNode.removeChild(this.element);
+        if (this.wrapper && this.wrapper.parentNode) {
+          this.wrapper.parentNode.removeChild(this.wrapper);
+        }
+
+        if (this.element && this.element.parentNode) {
+          this.element.parentNode.removeChild(this.element);
+        }
 
         // remove reference
         this.element = null;
@@ -589,16 +608,21 @@
 
     function appendMarkup (markup) {
       var opts = this.options;
-      var cont = opts.container;
+      var cont = opts.container ;
       var validCont = cont && cont.nodeType === 1;
 
-      if (validCont) {
-        this.element = dom.buildDom(markup);
-        this.wrapper = cont;
-      } else {
+      if (!validCont) {
+        cont = document.body;
+      }
+
+
+      if (opts.useWrapper) {
         var fullHtml = opts.wrapper.replace('{children}', markup);
         this.wrapper = dom.buildDom(fullHtml);
         this.element = this.wrapper.firstChild;
+      } else {
+        this.element = dom.buildDom(markup);
+        this.wrapper = null;
       }
 
       // hide it before adding to DOM
@@ -609,11 +633,8 @@
 
       dom.addEventListener(this.element, 'click', this._onButtonClick);
 
-      // use <body> if no container
-      cont = validCont ? cont : document.body;
-
       // prepend element to container
-      dom.prependElem(cont, this.element);
+      dom.prependElem(cont, opts.useWrapper ? this.wrapper : this.element);
     }
 
     function attachCustomPalette () {

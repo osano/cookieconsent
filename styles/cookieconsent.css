@@ -14,7 +14,7 @@
   width: 100vw;
   height: 100vh;
 
-  font-size: 12px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
+  font-size: 16px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
 }
 
 /* the popup window */
@@ -42,6 +42,7 @@
 .cc-link {
   opacity: .8;
   font-size: .8em;
+  display: inline-block;
   text-decoration: underline;
 }
 
@@ -108,6 +109,42 @@
 
 .cc-block {margin-bottom: 1em;}
 .cc-block:last-child {margin-bottom: 0;}
+
+/***/
+
+.cc-message, .cc-header {
+  display: block;
+  margin-bottom: 1em;
+}
+
+.cc-dismiss {
+  width: 100%;
+}
+.cc-type-info .cc-dismiss {
+  width: auto;
+}
+
+.cc-type-info .cc-inline .cc-link {
+  margin: .9em;
+}
+
+.cc-deny, .cc-allow {
+  width: 49%;
+}
+
+.cc-type-opt-in .cc-allow {
+  margin-right: 2%;
+}
+.cc-type-opt-out .cc-deny {
+  margin-right: 2%;
+}
+.cc-window>.cc-link {
+  margin-bottom: 1em
+}
+.cc-window.cc-message>.cc-link {
+}
+
+/***/
 
 /* animation - scaling */
 .cc-fadeout {
