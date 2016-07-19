@@ -16,6 +16,17 @@
       <h1>Testing rectangular popups</h1>
       <p>Look at all the layouts on screen and see if any look wrong</p>
       <button onclick="javascript: window.location = 'tests/test-2.html';">Next test</button>
+
+      <select id="theme">
+        <option value="mono-floating">Mono</option>
+        <option value="centered-floating">Centered</option>
+        <option value="all-floating">Header / Close</option>
+      </select>
+
+      <select id="palette">
+        <option value="blue">Blue</option>
+        <option value="black">Black</option>
+      </select>
     </div>
 
     <!--img src="https://files.slack.com/files-tmb/T02GS44MZ-F1Q2W5STX-5d7bf5c424/pasted_image_at_2016_07_08_05_34_pm_360.png" style="position:absolute;top:250px;left:0px;" />
@@ -32,48 +43,56 @@
 
   // this page tests a single theme against all it's options
 
-
-  var options = {
-    theme: 'centered-floating',
+  var _popups = [];
+  var _options = {
+    theme: 'mono-floating',
+    palette: 'blue',
   };
 
+  run(_options);
 
-  // initialise multiple cookie windows
-  var popups = [
-    cookieconsent.factory(Object.assign({}, options, {
-      type: 'dismiss',
-      position: 'top-left',
-    })),
+  document.getElementById('theme').onchange = function (e) {
+    _options.theme = e.target.value;
+    run(_options);
+  };
 
-    cookieconsent.factory(Object.assign({}, options, {
-      container: document.querySelector('.cc-wrapper'),
+  document.getElementById('palette').onchange = function (e) {
+    _options.palette = e.target.value;
+    run(_options);
+  };
 
-      type: 'opt-in',
-      position: 'top-right',
-    })),
+  // ---------------------------------------------------------
 
-    cookieconsent.factory(Object.assign({}, options, {
-      container: document.querySelector('.cc-wrapper'),
+  function run(commonOptions) {
+    if (_popups.length) {
+      callPopupMethod(_popups, 'destroy', []);
+      _popups = [];
+    }
+    initPopups(_popups, commonOptions, [
+      {type: 'dismiss', position: 'top-left'},
+      {type: 'info',    position: 'top-right'},
+      {type: 'opt-in',  position: 'bottom-left'},
+      {type: 'opt-out', position: 'bottom-right'},
+    ]);
+  }
 
-      type: 'opt-out',
-      position: 'bottom-left',
-    })),
+  function initPopups (popups, commonOpts, arrayOfOpts) {
+    arrayOfOpts.forEach(function (opts) {
+      var myOpts = Object.assign({}, commonOpts, opts);
 
-    /*cookieconsent.factory({
-      container: document.querySelector('.cc-wrapper'),
-      useWrapper: false,
+      // so we don't end up with many wrappers, we'll make all cookie windows use the same wrapper
+      if (!myOpts.container && popups.length) {
+        myOpts.container = document.querySelector('.cc-wrapper');
+      }
 
-      theme: 'black',
-      layout: 'black-demo',
-      position: 'bottom-right',
+      popups.push(cookieconsent.factory(myOpts));
+    });
+  }
 
-      content: standardContent,
-    }),*/
-  ];
-
-  // open each one
-  popups.forEach(function (popup) {
-    popup.open();
-  });
+  function callPopupMethod(popups, method, args) {
+    return popups.map(function (popup) {
+      return popup[method].apply(popup, args);
+    });
+  }
 
 </script>

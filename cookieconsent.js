@@ -282,8 +282,7 @@
       // define types of compliance here
       compliance: {
         'dismiss': '<div class="cc-inline">{dismiss}</div>',
-        'pre-info': '<div class="cc-inline">{link}{dismiss}</div>',
-        'post-info': '<div class="cc-inline">{dismiss}{link}</div>',
+        'info': '<div class="cc-inline">{dismiss}{link}</div>',
         'opt-in': '<div class="cc-inline">{allow}{deny}</div>',
         'opt-out': '<div class="cc-inline">{deny}{allow}</div>',
       },
@@ -298,7 +297,8 @@
 
       // define custom color palettes here
       palettes: {
-        'custom': {background:'pink', text: 'blue', buttonBackground: 'red', buttonText: 'green', buttonBorder: 'purple'},
+        'blue': {background:'#4a90e2', text: '#fff', link: '#fff', buttonBackground: 'transparent', buttonText: '#fff', buttonBorder: '#fff'},
+        'black': {background:'#000', text: '#fff', link: '#fff', buttonBackground: '#f8e71c', buttonText: '#000', buttonBorder: '#f8e71c'},
       },
 
       // this refers to the popup windows position. we currently support:
@@ -307,9 +307,9 @@
       position: 'bottom-right',
 
       // select your type of popup here
-      type: 'pre-info',                   // refers to `compliance`
-      theme: 'mono-floating',             // refers to `themes`
-      palette: '',                        // refers to `palettes`
+      type: 'dismiss',                 // refers to `compliance`
+      theme: 'mono-floating',          // refers to `themes`
+      palette: '',                     // refers to `palettes`
     };
 
     function CookieWindow () {
@@ -621,16 +621,18 @@
       var palette = opts.palette && opts.palettes && opts.palettes[opts.palette];
 
       if (palette) {
-        this.dynamicStyle = createStyle();
+        this.dynamicStyle = dom.createStyle();
 
-        addCSSRule(this.dynamicStyle, '.cc-color-override.cc-window', '\
+        dom.addCSSRule(this.dynamicStyle, '.cc-color-override.cc-window', '\
           background-color: '+palette.background+';\
           color: '+palette.text+';');
 
-        addCSSRule(this.dynamicStyle, '.cc-color-override .cc-btn', '\
+        dom.addCSSRule(this.dynamicStyle, '.cc-color-override .cc-btn', '\
           border-color: '+palette.buttonBorder+';\
           background-color: '+palette.buttonBackground+';\
           color: '+palette.buttonText+';');
+
+        dom.addCSSRule(this.dynamicStyle, '.cc-color-override .cc-link', 'color: '+palette.link+';');
       }
       return !!palette;
     }

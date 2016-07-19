@@ -1,30 +1,26 @@
 
-.cc-theme-mono-floating.cc-window {
-  color: #fff;
-  background-color: #4a90e2;
-}
-
 .cc-theme-mono-floating .cc-message {
   display: block;
   margin-bottom: 1em;
 }
 
-.cc-theme-mono-floating .cc-link {
-  color: #fff;
-  margin-right: 1em;
+.cc-theme-mono-floating .cc-dismiss {
+  width: 100%;
 }
-
-.cc-theme-mono-floating .cc-btn {
-  border-color: #fff;
-  font-weight: bold;
-  padding: .5em .8em;
+.cc-theme-mono-floating.cc-type-info .cc-dismiss {
+  width: auto;
+}
+.cc-theme-mono-floating.cc-type-info .cc-link {
+  margin: .9em;
 }
 
 .cc-theme-mono-floating .cc-deny, .cc-theme-mono-floating .cc-allow {
-  width: 9.4em;
-  text-align: center;
+  width: 49%;
 }
 
-.cc-theme-mono-floating .cc-btn:first-child {
-  margin-right: 1em;
+.cc-theme-mono-floating.cc-type-opt-in .cc-allow {
+  margin-right: 2%;
+}
+.cc-theme-mono-floating.cc-type-opt-out .cc-deny {
+  margin-right: 2%;
 }
