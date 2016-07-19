@@ -1,19 +1,1 @@
 
-.cc-theme-image-floating .cc-cookie-image {
-  position: absolute;
-  top: 5em;
-  right: 1em;
-
-  filter: invert(1);
-  -webkit-filter: invert(1);
-
-  opacity:.8;
-}
-
-.cc-theme-image-floating .cc-cookie-image:hover {
-  opacity:1;
-}
-
-.cc-theme-image-floating.cc-window>.cc-link {
-  margin: 0;
-}

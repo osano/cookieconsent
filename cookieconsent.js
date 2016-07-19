@@ -302,6 +302,7 @@
         'red': {background:'#d34040', text: '#fff', link: '#fff', buttonBackground: 'transparent', buttonText: '#fff', buttonBorder: '#fff'},
         'blue': {background:'#4a90e2', text: '#fff', link: '#fff', buttonBackground: 'transparent', buttonText: '#fff', buttonBorder: '#fff'},
         'black': {background:'#000', text: '#fff', link: '#fff', buttonBackground: '#f8e71c', buttonText: '#000', buttonBorder: '#f8e71c'},
+        'white': {background:'#fafafa', text: '#000', link: '#888', buttonBackground: 'transparent', buttonText: '#86b4ea', buttonBorder: '#86b4ea'},
       },
 
       // this refers to the popup windows position. we currently support:
