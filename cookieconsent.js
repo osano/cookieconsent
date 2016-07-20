@@ -295,6 +295,8 @@
         'mono-floating': '{message}{compliance}',
         'link-floating': '{message}{link}{compliance}',
         'centered-floating': '{message}{link}{compliance}',
+
+        'basic-banner': '{message}{compliance}',
       },
 
       // define custom color palettes here
