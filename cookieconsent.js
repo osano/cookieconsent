@@ -19,6 +19,9 @@
     return false;
   }());
 
+  // contains the custom <style> tags
+  cc.customStyles = {};
+
   // helper libraries
   var util = {
     isArray: function (obj) {
@@ -370,10 +373,14 @@
      * Removes element from the DOM, and nullifies properties
      */
     CookieWindow.prototype.destroy = function () {
-      var styleNode = this.dynamicStyle && this.dynamicStyle.ownerNode;
+      var opts = this.options;
+      var customStyle = opts.palette && cc.customStyles[opts.palette];
 
-      if (styleNode && styleNode.parentNode) {
-        styleNode.parentNode.removeChild(styleNode);
+      if (customStyle && !--customStyle.references) {
+        var styleNode = customStyle.element.ownerNode;
+        if (styleNode && styleNode.parentNode) {
+          styleNode.parentNode.removeChild(styleNode);
+        }
       }
 
       if (this._onButtonClick && this.element) {
@@ -603,7 +610,7 @@
 
       // if we override the pallete, add the class that enables this
       if (didAttach) {
-        classes.push('color-override');
+        classes.push('color-override-' + opts.palette);
       }
 
       // add class to container classes so we can specify css for IE8 only
@@ -631,7 +638,6 @@
         cont = document.body;
       }
 
-
       if (opts.useWrapper) {
         var fullHtml = opts.wrapper.replace('{children}', markup);
         this.wrapper = dom.buildDom(fullHtml);
@@ -654,32 +660,36 @@
     }
 
     function attachCustomPalette () {
+      var colorStyles = {};
       var opts = this.options;
       var palette = opts.palette && opts.palettes && opts.palettes[opts.palette];
 
       if (palette) {
-        var ruleIndex = 0;
-        var colorStyles = {
-          '.cc-color-override .cc-link': [
-            'color: '+palette.link
-          ],
-          '.cc-color-override.cc-window': [
-            'color: '+palette.text,
-            'background-color: '+palette.background,
-          ],
-          '.cc-color-override .cc-btn': [
-            'color: '+palette.buttonText,
-            'border-color: '+palette.buttonBorder,
-            'background-color: '+palette.buttonBackground,
-          ],
-        };
+        var prefix = '.cc-color-override-'+opts.palette;
 
-        this.dynamicStyle = dom.createStyle();
+        colorStyles[prefix + '.cc-window'] = ['color: '+palette.text, 'background-color: '+palette.background];
+        colorStyles[prefix + ' .cc-link'] = ['color: '+palette.link];
+        colorStyles[prefix + ' .cc-btn'] = ['color: '+palette.buttonText, 'border-color: '+palette.buttonBorder, 'background-color: '+palette.buttonBackground];
 
-        for (var prop in colorStyles) {
-          var ruleBody = colorStyles[prop].join(';');
-          dom.addCSSRule(this.dynamicStyle, prop, ruleBody, ruleIndex++);
+        if (cc.customStyles[opts.palette]) {
+          // increment reference count
+          ++cc.customStyles[opts.palette].references;
+        } else {
+          var ruleIndex = 0;
+          var newStyle = dom.createStyle();
+
+          cc.customStyles[opts.palette] = {
+            references: 1,
+            element: newStyle,
+          };
+
+          // actually add rules
+          for (var prop in colorStyles) {
+            var ruleBody = colorStyles[prop].join(';');
+            dom.addCSSRule(newStyle, prop, ruleBody, ruleIndex++);
+          }
         }
+
       }
       return !!palette;
     }
