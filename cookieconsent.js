@@ -381,6 +381,7 @@
         if (styleNode && styleNode.parentNode) {
           styleNode.parentNode.removeChild(styleNode);
         }
+        cc.customStyles[opts.palette] = null;
       }
 
       if (this._onButtonClick && this.element) {
@@ -548,7 +549,7 @@
       var pos = opts.position.split('-', 2); // top, bottom, left, right
 
       // prefixes are added to these classes in `getCookieWindow`
-      return [pos[0], pos[1], 'type-' + opts.type, 'theme-' + opts.theme];
+      return ['cc-' + pos[0], 'cc-' + pos[1], 'cc-type-' + opts.type, 'cc-theme-' + opts.theme];
     }
 
     function getInnerMarkup () {
@@ -583,11 +584,8 @@
     function getCookieWindow (innerMarkup, classes) {
       var opts = this.options;
 
-      // add prefix and join into a space separated string
-      var classString = classes.map(function(cur) {return 'cc-' + cur}).join(' ');
-
       return opts.window
-        .replace('{classes}', classString)
+        .replace('{classes}', classes.join(' '))
         .replace('{children}', innerMarkup);
     }
 
@@ -610,12 +608,12 @@
 
       // if we override the pallete, add the class that enables this
       if (didAttach) {
-        classes.push('color-override-' + opts.palette);
+        classes.push('cc-color-override-' + opts.palette);
       }
 
       // add class to container classes so we can specify css for IE8 only
       if (navigator.appVersion.indexOf('MSIE 8') > -1) {
-        classes.push('ie8');
+        classes.push('cc-ie8');
       }
 
       // calculate inner markup from configuration
