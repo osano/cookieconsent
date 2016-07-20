@@ -8,8 +8,20 @@ var runSequence = require('run-sequence');
 
 
 var buildFolder = './build';
-var jsBuildFiles = ['./cookieconsent.js'];
-var cssBuildFiles = ['./styles/**/*.css', './styles/*.css'];
+var jsBuildFiles = [
+  './cookieconsent.js'
+];
+var cssBuildFiles = [
+  // defined explicitly so they are combined in order
+  './styles/base.css',
+  './styles/layout.css',
+  './styles/classes.css',
+  './styles/animation.css',
+  './styles/media.css',
+
+  // all theme files
+  './styles/themes/*.css',
+];
 
 
 gulp.task('cleanup:begin', function () {

@@ -1,0 +1,85 @@
+/* Base style  */
+/*  - the popups base theme is black text on a white background without a border */
+/*  - the popups position is defined by the plugins configuration */
+/*  - the popups colour scheme is defined by the plugins configuration and `themes` */
+
+/* the wrapper is a div element that completely fills the window screen space */
+/*  - popup (.cc-window) can be positioned anywhere on the page using the wrapper */
+.cc-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  font-size: 16px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
+}
+
+/* the popup window */
+.cc-window {
+  font-family: 'Helvetica Neue Light', 'HelveticaNeue-Light', 'Helvetica Neue', Calibri, Helvetica, Arial, sans-serif;
+  position: absolute;
+  padding: 2em;
+  font-size: 1em;
+  max-width: 24em; /* 1em == 15px therefore 24em == 360px */
+  box-sizing: border-box;
+}
+
+.cc-window.cc-banner {
+  width: 100%;
+  max-width: 100%;
+  padding: 1em;
+}
+
+.cc-header {font-weight: bold;}
+.cc-message {font-size: .9em;}
+
+.cc-btn, .cc-link, .cc-close {cursor: pointer;}
+
+/* element styles */
+.cc-link {
+  opacity: .8;
+  font-size: .8em;
+  display: inline-block;
+  text-decoration: underline;
+}
+
+.cc-link:active, .cc-link:visited {
+  color: initial;
+}
+
+.cc-link:hover {
+  opacity: 1;
+}
+
+.cc-btn {
+  padding: .5em;
+  font-size: 1em;
+  font-weight: bold;
+  border-width: 2px;
+  border-style: solid;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.cc-btn:hover {
+  text-decoration: underline;
+}
+
+.cc-close {
+  display: block;
+  position: absolute;
+  top: .5em;
+  right: .5em;
+  font-size: 1.6em;
+  opacity: .9;
+
+  /* seeing as this contains text and not an image, the element taller than it is wide (because it is text) */
+  /*  - we want it to be a square, because it's acting as an icon */
+  /*  - setting the line height normalises the height */
+  line-height: .75;
+}
+
+.cc-close:hover {
+  opacity: 1;
+}

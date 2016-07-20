@@ -1,0 +1,6 @@
+
+@media print {
+  .cc-wrapper {
+    display: none;
+  }
+}
