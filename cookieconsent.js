@@ -19,6 +19,7 @@
     return false;
   }());
 
+  // helper libraries
   var util = {
     isArray: function (obj) {
       return Object.prototype.toString.call(obj) == '[object Array]';
@@ -114,7 +115,6 @@
       })
     },
   };
-
   var dom = {
     addEventListener: function (el, event, eventListener) {
       if (el.addEventListener) {
@@ -197,7 +197,6 @@
       }
     },
   };
-
   var cookie = {
     setCookie: function (name, value, expiryDays, domain, path) {
       expiryDays = expiryDays || 365;
@@ -367,30 +366,44 @@
       applyAutoDismiss.call(this);
     };
 
+    /**
+     * Removes element from the DOM, and nullifies properties
+     */
     CookieWindow.prototype.destroy = function () {
-      if (this.element) {
+      var styleNode = this.dynamicStyle && this.dynamicStyle.ownerNode;
+
+      if (styleNode && styleNode.parentNode) {
+        styleNode.parentNode.removeChild(styleNode);
+      }
+
+      if (this._onButtonClick && this.element) {
         dom.removeEventListener(this.element, 'click', this._onButtonClick);
+      }
 
-        this._onButtonClick = null;
+      if (this.element && this.element.parentNode) {
+        this.element.parentNode.removeChild(this.element);
+      }
 
-        // remove from DOM
-        if (this.wrapper && this.wrapper.parentNode) {
+      if (this.wrapper && this.wrapper.parentNode) {
+        // caller could have passed a custom wrapper, therefor we
+        // must make sure that it is empty before we remove it!
+        if (!this.wrapper.children.length) {
           this.wrapper.parentNode.removeChild(this.wrapper);
         }
-
-        if (this.element && this.element.parentNode) {
-          this.element.parentNode.removeChild(this.element);
-        }
-
-        // remove reference
-        this.element = null;
-        this.wrapper = null;
-        this.options = null;
-
-        // @todo remove custom <style> tag
       }
+
+      // remove references
+      this.dynamicStyle = null;
+      this._onButtonClick = null;
+
+      this.element = null;
+      this.wrapper = null;
+      this.options = null;
     };
 
+    /**
+     * Returns true if thecookie popup window is visible
+     */
     CookieWindow.prototype.isOpen = function () {
       return this.element && this.element.style.display === '' && !dom.hasClass(this.element, 'cc_fadeout');
     };
@@ -611,7 +624,7 @@
 
     function appendMarkup (markup) {
       var opts = this.options;
-      var cont = opts.container ;
+      var cont = opts.container;
       var validCont = cont && cont.nodeType === 1;
 
       if (!validCont) {
@@ -625,7 +638,7 @@
         this.element = this.wrapper.firstChild;
       } else {
         this.element = dom.buildDom(markup);
-        this.wrapper = null;
+        this.wrapper = cont;
       }
 
       // hide it before adding to DOM
@@ -645,18 +658,28 @@
       var palette = opts.palette && opts.palettes && opts.palettes[opts.palette];
 
       if (palette) {
+        var ruleIndex = 0;
+        var colorStyles = {
+          '.cc-color-override .cc-link': [
+            'color: '+palette.link
+          ],
+          '.cc-color-override.cc-window': [
+            'color: '+palette.text,
+            'background-color: '+palette.background,
+          ],
+          '.cc-color-override .cc-btn': [
+            'color: '+palette.buttonText,
+            'border-color: '+palette.buttonBorder,
+            'background-color: '+palette.buttonBackground,
+          ],
+        };
+
         this.dynamicStyle = dom.createStyle();
 
-        dom.addCSSRule(this.dynamicStyle, '.cc-color-override.cc-window', '\
-          background-color: '+palette.background+';\
-          color: '+palette.text+';');
-
-        dom.addCSSRule(this.dynamicStyle, '.cc-color-override .cc-btn', '\
-          border-color: '+palette.buttonBorder+';\
-          background-color: '+palette.buttonBackground+';\
-          color: '+palette.buttonText+';');
-
-        dom.addCSSRule(this.dynamicStyle, '.cc-color-override .cc-link', 'color: '+palette.link+';');
+        for (var prop in colorStyles) {
+          var ruleBody = colorStyles[prop].join(';');
+          dom.addCSSRule(this.dynamicStyle, prop, ruleBody, ruleIndex++);
+        }
       }
       return !!palette;
     }
