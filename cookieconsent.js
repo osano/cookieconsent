@@ -487,6 +487,10 @@
           this.close();
         }
       }
+      if (dom.hasClass(targ, 'cc-close')) {
+        this.setStatus(cc.status.dismiss);
+        this.close();
+      }
     }
 
     function applyAutoDismiss () {
