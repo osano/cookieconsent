@@ -307,6 +307,13 @@
         'blue': {background:'#4a90e2', text: '#fff', link: '#fff', buttonBackground: 'transparent', buttonText: '#fff', buttonBorder: '#fff'},
         'black': {background:'#000', text: '#fff', link: '#fff', buttonBackground: '#f8e71c', buttonText: '#000', buttonBorder: '#f8e71c'},
         'white': {background:'#fafafa', text: '#000', link: '#888', buttonBackground: 'transparent', buttonText: '#86b4ea', buttonBorder: '#86b4ea'},
+
+        'black-orange': {background:'#252c33', text: '#fff', link: '#fff', buttonBackground: '#fa6956', buttonText: '#fff', buttonBorder: '#fa6956'},
+        'green-green': {background:'#4ea8af', text: '#fff', link: '#fff', buttonBackground: '#91e23e', buttonText: '#fff', buttonBorder: '#91e23e'},
+        'blue-grey': {background:'#205072', text: '#fff', link: '#fff', buttonBackground: '#b7bbc0', buttonText: '#fff', buttonBorder: '#b7bbc0'},
+        'grey-black': {background:'#b7bbc0', text: '#fff', link: '#fff', buttonBackground: '#252c33', buttonText: '#fff', buttonBorder: '#252c33'},
+        'red-white': {background:'#fa5656', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
+        'purple-white': {background:'#9012fe', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
       },
 
       // this refers to the popup windows position. we currently support:
@@ -335,6 +342,11 @@
     }
 
     CookieWindow.prototype.initialise = function (options) {
+      if (this.options) {
+        // already rendered
+        this.destroy();
+      }
+
       // set options back to default options
       this.options = util.clone(defaultOptions);
 
@@ -376,20 +388,20 @@
       var opts = this.options;
       var customStyle = opts.palette && cc.customStyles[opts.palette];
 
-      if (customStyle && !--customStyle.references) {
-        var styleNode = customStyle.element.ownerNode;
-        if (styleNode && styleNode.parentNode) {
-          styleNode.parentNode.removeChild(styleNode);
-        }
-        cc.customStyles[opts.palette] = null;
-      }
-
       if (this._onButtonClick && this.element) {
         dom.removeEventListener(this.element, 'click', this._onButtonClick);
       }
 
       if (this.element && this.element.parentNode) {
         this.element.parentNode.removeChild(this.element);
+      }
+
+      if (customStyle && !--customStyle.references) {
+        var styleNode = customStyle.element.ownerNode;
+        if (styleNode && styleNode.parentNode) {
+          styleNode.parentNode.removeChild(styleNode);
+        }
+        cc.customStyles[opts.palette] = null;
       }
 
       if (this.wrapper && this.wrapper.parentNode) {
@@ -596,14 +608,6 @@
     function render () {
       var opts = this.options;
 
-      // if already rendered, ignore
-      if (this.element) {
-        if (this.isOpen()) {
-          this.close();
-        }
-        return false;
-      }
-
       // `classes` depends on the configuration options
       var classes = getWindowClasses.call(this);
 
@@ -627,8 +631,6 @@
       var cookieWindow = getCookieWindow.call(this, markup, classes);
 
       appendMarkup.call(this, cookieWindow);
-
-      return true;
     }
 
     function appendMarkup (markup) {
@@ -1012,6 +1014,10 @@
     }
   }());
 
+  cc.factory = function (options) {
+    return new cc.CookieWindow(options);
+  };
+
   cc.initialise = function (options) {
     this.getCountryOptions(options, function (result) {
       cc.popup.init(result);
@@ -1028,8 +1034,8 @@
     }, failure);
   };
 
-  cc.factory = function (options) {
-    var popup = new cc.CookieWindow(options);
+  cc.autoOpen = function (options) {
+    var popup = cc.factory(options);
 
     var status = popup.getStatus();
     if (!util.contains(cc.status, status) && popup.options.enabled) {
