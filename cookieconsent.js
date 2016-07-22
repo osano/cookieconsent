@@ -310,10 +310,10 @@
 
         'black-orange': {background:'#252c33', text: '#fff', link: '#fff', buttonBackground: '#fa6956', buttonText: '#fff', buttonBorder: '#fa6956'},
         'green-green': {background:'#4ea8af', text: '#fff', link: '#fff', buttonBackground: '#91e23e', buttonText: '#fff', buttonBorder: '#91e23e'},
-        'blue-grey': {background:'#205072', text: '#fff', link: '#fff', buttonBackground: '#b7bbc0', buttonText: '#fff', buttonBorder: '#b7bbc0'},
+        'blue-grey': {background:'#205072', text: '#fff', link: '#fff', buttonBackground: '#b7bbc0', buttonText: '#000', buttonBorder: '#b7bbc0'},
         'grey-black': {background:'#b7bbc0', text: '#fff', link: '#fff', buttonBackground: '#252c33', buttonText: '#fff', buttonBorder: '#252c33'},
         'red-white': {background:'#fa5656', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
-        'purple-white': {background:'#9012fe', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
+        'purple-white': {background:'#956cb9', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
       },
 
       // this refers to the popup windows position. we currently support:

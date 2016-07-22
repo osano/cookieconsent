@@ -24,6 +24,8 @@
   font-size: 1em;
   max-width: 24em; /* 1em == 15px therefore 24em == 360px */
   box-sizing: border-box;
+
+  z-index: 0; /* cc-window could inherit the -10000 from cc-wrapper, so reset it here */
 }
 
 .cc-window.cc-banner {

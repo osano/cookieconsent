@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Testing cookie consent configurator code</title>
+    <link href="build/cookieconsent.min.css" rel="stylesheet">
+    <style>
+      #injector {
+        margin: 300px auto;
+        max-width: 502px;
+      }
+    </style>
+  </head>
+
+  <body role="document">
+    <div id="injector">
+      <p>Paste code into here to test that it works</p>
+      <button id="test">Test code</button>
+      <button onclick="javascript: window.location = 'configurator.html';">Go back</button>
+      <br><br>
+      <textarea id="code" rows="10" cols="60"></textarea>
+    </div>
+  </body>
+</html>
+
+<!--script src="../build/cookieconsent.min.js"></script-->
+<script src="cookieconsent.js"></script>
+<script>
+  var lastPopup = null;
+  var button = document.getElementById('test');
+
+  button.onclick = function () {
+    if (lastPopup) {
+      lastPopup.destroy();
+    }
+    lastPopup = eval(getCode());
+  };
+
+  function getCode () {
+    var code = document.getElementById('code').value;
+    return code
+      .replace(/^\s*<script[^>]*>\s*/, '')
+      .replace(/\s*<\/script>\s*$/, '');
+  }
+
+</script>
