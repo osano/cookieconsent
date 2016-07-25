@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="../">
+
+  <title>Compliance - Opt-in</title>
+
+  <link href="examples/style.css" rel="stylesheet">
+  <link href="build/cookieconsent.min.css" rel="stylesheet">
+
+<body role="document">
+
+  <div class="example-window" role="main">
+    <h1>Opt-in demo</h1>
+    <p>Here we ask users for permission to use cookies. Unless they say so, no cookies will be used.</p>
+
+    <button onclick="javascript: window.location = './examples/example-6-location.html';">Next Example</button>
+  </div>
+
+<script src="build/cookieconsent.min.js"></script>
+<script>
+
+  var popup = cookieconsent.factory({
+    type: 'opt-in',
+    palette: 'blue',
+  });
+
+  popup.open();
+
+</script>

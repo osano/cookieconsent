@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="../">
+
+  <title>Appearance - Standard Themes</title>
+
+  <link href="examples/style.css" rel="stylesheet">
+  <link href="build/cookieconsent.min.css" rel="stylesheet">
+
+<body role="document">
+
+  <div class="example-window" role="main">
+    <h1>Standard themes</h1>
+    <p>Pick a standard layout and a colour scheme. Or build your own</p>
+
+    <label>Palette</label>
+    <select id="palette" class="selectbox"></select>
+
+    <label>Theme</label>
+    <select id="theme" class="selectbox"></select>
+    
+    <label>Position</label>
+    <select id="position" class="selectbox"></select>
+    
+    <label>Compliance</label>
+    <select id="compliance" class="selectbox"></select>
+
+    <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Next Example</button>
+  </div>
+
+<script src="build/cookieconsent.min.js"></script>
+<script>
+
+  var cwin = cookieconsent.CookieWindow;
+
+  var _theme = document.getElementById('theme');
+  var _palet = document.getElementById('palette');
+  var _posit = document.getElementById('position');
+  var _compl = document.getElementById('compliance');
+
+  _theme.onchange = function (e) { update() };
+  _palet.onchange = function (e) { update() };
+  _posit.onchange = function (e) { update() };
+  _compl.onchange = function (e) { update() };
+
+  fillSelect(_theme, formatOptions(cwin.getThemes()));
+  fillSelect(_palet, formatOptions(cwin.getPalettes()));
+  fillSelect(_compl, formatOptions(cwin.getCompliances()));
+  fillSelect(_posit, formatOptions(['banner-top', 'top-left', 'top-right', 'banner-bottom', 'bottom-left', 'bottom-right']));
+
+  function getInputs() {
+    return {
+      theme: _theme[_theme.selectedIndex].value,
+      palette: _palet[_palet.selectedIndex].value,
+      position: _posit[_posit.selectedIndex].value,
+      compliance: _compl[_compl.selectedIndex].value,
+    }
+  }
+
+  function getOptions(inputs) {
+    return {
+      theme: inputs.theme,
+      type: inputs.compliance,
+      palette: inputs.palette,
+      position: inputs.position,
+    };
+  }
+
+  function draw(options) {
+    var name = '__cookieconsent_popup';
+    if (!window[name]) {
+      window[name] = cookieconsent.factory(options);
+    } else {
+      window[name].initialise(options);
+    }
+    window[name].open();
+  }
+
+  function fillSelect (select, options) {
+    var html = '';
+    for (var prop in options) {
+      var val = options[prop];
+      if (typeof val == 'string') {
+        html += '<option value="' + prop + '">' + val + '</option>'
+      }
+    }
+    select.innerHTML = html;
+  }
+
+  function formatOptions (arr) {
+    var opts = {}
+    arr.forEach(function (val) {
+      opts[val] = pretty(val);
+    })
+    return opts;
+  }
+
+  function pretty (str) {
+    return str[0].toUpperCase() + str.slice(1).replace(/\-/g, ' ');
+  }
+
+  function update() {
+    draw(getOptions(getInputs()));
+  };
+
+  update();
+  _palet.focus();
+
+</script>

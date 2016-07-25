@@ -38,3 +38,24 @@ body, html {
   margin: 0;
   font-size: 1em;
 }
+
+#cookie-widget {
+  border: 3px dashed black;
+  padding: 0 20px;
+}
+
+.selectbox {
+  font-size: inherit;
+  color: #555;
+  margin: 10px;
+  max-width: 300px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #AAA;
+}
+
+.selectbox:focus {
+  outline: none;
+  border-color: #51a7e8;
+  box-shadow: inset 0 0 10px 3px rgba(81, 167, 232, 0.5);
+}

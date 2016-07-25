@@ -341,6 +341,10 @@
       this.initialise.apply(this, arguments);
     }
 
+    CookieWindow.getThemes = function () { return Object.keys(defaultOptions.themes) };
+    CookieWindow.getPalettes = function () { return Object.keys(defaultOptions.palettes) };
+    CookieWindow.getCompliances = function () { return Object.keys(defaultOptions.compliance) };
+
     CookieWindow.prototype.initialise = function (options) {
       if (this.options) {
         // already rendered

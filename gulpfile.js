@@ -9,18 +9,18 @@ var runSequence = require('run-sequence');
 
 var buildFolder = './build';
 var jsBuildFiles = [
-  './cookieconsent.js'
+  './src/cookieconsent.js'
 ];
 var cssBuildFiles = [
   // defined explicitly so they are combined in order
-  './styles/base.css',
-  './styles/layout.css',
-  './styles/classes.css',
-  './styles/animation.css',
-  './styles/media.css',
+  './src/styles/base.css',
+  './src/styles/layout.css',
+  './src/styles/classes.css',
+  './src/styles/animation.css',
+  './src/styles/media.css',
 
   // all theme files
-  './styles/themes/*.css',
+  './src/styles/themes/*.css',
 ];
 
 

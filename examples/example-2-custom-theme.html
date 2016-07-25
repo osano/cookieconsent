@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="../">
+
+  <title>Appearance - Custom CSS Themes</title>
+
+  <link href="examples/style.css" rel="stylesheet">
+  <link href="build/cookieconsent.min.css" rel="stylesheet">
+
+<body role="document">
+
+  <div class="example-window" role="main">
+    <h1>Custom CSS</h1>
+    <p>Here every part of Cookie Consent has been overridden with custom CSS. View source to see.</p>
+
+    <button onclick="javascript: window.location = './examples/example-3-informational.html';">Next Example</button>
+  </div>
+
+<script src="build/cookieconsent.min.js"></script>
+<script>
+
+  var options = {
+    palettes: {
+      'blah': {background:'pink', text: 'green', link: 'blue', buttonBackground: 'orange', buttonText: 'black', buttonBorder: 'orange'},
+    },
+
+    type: 'info',
+    palette: 'blah',
+  };
+
+  var popup = cookieconsent.factory(options);
+
+  popup.open();
+
+</script>

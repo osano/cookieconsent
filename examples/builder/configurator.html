@@ -171,9 +171,13 @@
   }
 
   function getCode (config) {
-    // this code will be displayed on the page. it is meant to be copied & pasted
     var json = JSON.stringify(config);
-    return escapeHtml('<scr'+'ipt>(window["cookieconsent"] && window["cookieconsent"].autoOpen('+json+')) || console.error("cookieconsent.js has not been included")</scr'+'ipt>');
+    // this is the code that initialises the cookie consent popup. it will be injected into HTML
+    var injector = function (cc, opts, msg) { return (cc && cc.autoOpen(opts)) || console.error(msg) };
+    // build the self evaluating function call, passing the cookieconent namespace along with options (and an error message)
+    var selfEval = '(' + injector.toString() + '(window["cookieconsent"],' + json + ', "cookieconsent.js has not been included"));'
+
+    return escapeHtml('<scr'+'ipt>' + selfEval + '</scr'+'ipt>');
   }
 
   function setCode (code) {
