@@ -228,7 +228,7 @@
     },
   };
 
-  cc.CookieWindow = (function () {
+  cc.Popup = (function () {
 
     var defaultOptions = {
       enabled: true,
@@ -333,19 +333,23 @@
 
       // cookie consent appends its self to `container`. this decides whether to append to wrapper or the element.
       // (the wrapper is sometimes not needed when integrating with existing apps, or when instanciating many windows).
-      // if this is false, the user can get a new wrapper element at any time (independently from CookieWindow) by calling `cc.getWrapper`
+      // if this is false, the user can get a new wrapper element at any time (independently from CookiePopup) by calling `cc.getWrapper`
       useWrapper: true,
     };
 
-    function CookieWindow () {
+    function CookiePopup () {
       this.initialise.apply(this, arguments);
     }
 
-    CookieWindow.getThemes = function () { return Object.keys(defaultOptions.themes) };
-    CookieWindow.getPalettes = function () { return Object.keys(defaultOptions.palettes) };
-    CookieWindow.getCompliances = function () { return Object.keys(defaultOptions.compliance) };
+    CookiePopup.getThemes = function () { return Object.keys(defaultOptions.themes) };
+    CookiePopup.getPalettes = function () { return Object.keys(defaultOptions.palettes) };
+    CookiePopup.getCompliances = function () { return Object.keys(defaultOptions.compliance) };
 
-    CookieWindow.prototype.initialise = function (options) {
+    CookiePopup.getNewWrapper = function () {
+      return dom.buildDom(defaultOptions.wrapper.replace('{children}', ''));
+    };
+
+    CookiePopup.prototype.initialise = function (options) {
       if (this.options) {
         // already rendered
         this.destroy();
@@ -378,17 +382,23 @@
         return;
       }
 
-      // create hidden HTML element
-      render.call(this);
+      // the full markup either contains the wrapper or it does not (for multiple instances)
+      var cookiePopup = this.options.window
+        .replace('{classes}', getPopupClasses.call(this).join(' '))
+        .replace('{children}', getPopupInnerMarkup.call(this));
+
+      appendMarkup.call(this, cookiePopup);
 
       // uses `dismissOnScroll` and `dismissOnTimeout`
       applyAutoDismiss.call(this);
+
+      return this;
     };
 
     /**
      * Removes element from the DOM, and nullifies properties
      */
-    CookieWindow.prototype.destroy = function () {
+    CookiePopup.prototype.destroy = function () {
       var opts = this.options;
       var customStyle = opts.palette && cc.customStyles[opts.palette];
 
@@ -428,11 +438,11 @@
     /**
      * Returns true if thecookie popup window is visible
      */
-    CookieWindow.prototype.isOpen = function () {
-      return this.element && this.element.style.display === '' && !dom.hasClass(this.element, 'cc_fadeout');
+    CookiePopup.prototype.isOpen = function () {
+      return this.element && this.element.style.display === '' && !dom.hasClass(this.element, 'cc-fadeout');
     };
 
-    CookieWindow.prototype.open = function (callback) {
+    CookiePopup.prototype.open = function (callback) {
       if (!this.isOpen() && this.element) {
         if (cc.hasTransition && this.element.style.display == '') {
           dom.removeClass(this.element, 'cc-fadeout');
@@ -453,9 +463,10 @@
           this.element.style.display = '';
         }
       }
+      return this;
     };
 
-    CookieWindow.prototype.close = function (callback) {
+    CookiePopup.prototype.close = function (callback) {
       if (this.isOpen()) {
         if (cc.hasTransition) {
           dom.addClass(this.element, 'cc-fadeout');
@@ -463,9 +474,10 @@
           this.element.style.display = 'none';
         }
       }
+      return this;
     };
 
-    CookieWindow.prototype.setStatus = function (status) {
+    CookiePopup.prototype.setStatus = function (status) {
       var opts = this.options;
       var value = cookie.readCookie(cc.cookieName);
       var chosenBefore = util.contains(cc.status, value);
@@ -484,54 +496,13 @@
       }
     };
 
-    CookieWindow.prototype.getStatus = function () {
+    CookiePopup.prototype.getStatus = function () {
       return cookie.readCookie(cc.cookieName)
     };
 
-    CookieWindow.prototype.clearStatus = function () {
+    CookiePopup.prototype.clearStatus = function () {
       cookie.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
     };
-
-    function handleButtonClick (event) {
-      var targ = event.target;
-      if (dom.hasClass(targ, 'cc-btn')) {
-        var allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
-        var match = dom.matchClass(targ, 'cc-(' + allowedStatuses.join('|') + ')')
-
-        if (match) {
-          this.setStatus(match);
-          this.close();
-        }
-      }
-      if (dom.hasClass(targ, 'cc-close')) {
-        this.setStatus(cc.status.dismiss);
-        this.close();
-      }
-    }
-
-    function applyAutoDismiss () {
-      var setStatus = this.setStatus.bind(this);
-
-      var delay = this.options.dismissOnTimeout;
-      if (typeof delay == 'number' && delay >= 0) {
-        window.setTimeout(function () {
-          setStatus(cc.status.dismiss);
-        }, Math.floor(delay));
-      }
-
-      var scrollRange = this.options.dismissOnScroll;
-      if (typeof scrollRange == 'number' && scrollRange >= 0) {
-        var onWindowScroll = function (evt) {
-          if (window.pageYOffset > Math.floor(scrollRange)) {
-            setStatus(cc.status.dismiss);
-
-            dom.removeEventListener(window, 'scroll', onWindowScroll);
-          }
-        };
-
-        dom.addEventListener(window, 'scroll', onWindowScroll);
-      }
-    }
 
     function checkCallbackHooks () {
       var st = cc.status;
@@ -564,15 +535,35 @@
       return true;
     }
 
-    function getWindowClasses () {
+    function getPopupClasses () {
       var opts = this.options;
       var pos = opts.position.split('-', 2); // top, bottom, left, right
 
-      // prefixes are added to these classes in `getCookieWindow`
-      return ['cc-' + pos[0], 'cc-' + pos[1], 'cc-type-' + opts.type, 'cc-theme-' + opts.theme];
+      var classes = [
+        'cc-' + pos[0],
+        'cc-' + pos[1],
+
+        'cc-type-' + opts.type,
+        'cc-theme-' + opts.theme
+      ];
+
+      // we only add extra styles if `pallete` has been set to a valid value
+      var didAttach = attachCustomPalette.call(this);
+
+      // if we override the pallete, add the class that enables this
+      if (didAttach) {
+        classes.push('cc-color-override-' + opts.palette);
+      }
+
+      // add class to container classes so we can specify css for IE8 only
+      if (navigator.appVersion.indexOf('MSIE 8') > -1) {
+        classes.push('cc-ie8');
+      }
+
+      return classes;
     }
 
-    function getInnerMarkup () {
+    function getPopupInnerMarkup () {
       var interpolated = {};
       var opts = this.options;
 
@@ -588,6 +579,10 @@
 
       var complianceType = opts.compliance[opts.type];
 
+      if (!complianceType) {
+        complianceType = opts.compliance.info;
+      }
+
       // build the compliance types from the already interpolated `elements`
       interpolated.compliance = util.interpolateString(complianceType, function (name) {
         return interpolated[name];
@@ -595,52 +590,19 @@
 
       var theme = opts.themes[opts.theme];
 
+      if (!theme) {
+        theme = opts.themes['mono-floating'];
+      }
+
       return util.interpolateString(theme, function(match) {
         return interpolated[match];
       });
     }
 
-    // this function automatically prefixes the CSS classes
-    function getCookieWindow (innerMarkup, classes) {
-      var opts = this.options;
-
-      return opts.window
-        .replace('{classes}', classes.join(' '))
-        .replace('{children}', innerMarkup);
-    }
-
-    function render () {
-      var opts = this.options;
-
-      // `classes` depends on the configuration options
-      var classes = getWindowClasses.call(this);
-
-      // we only add extra styles if `pallete` has been set to a valid value
-      var didAttach = attachCustomPalette.call(this);
-
-      // if we override the pallete, add the class that enables this
-      if (didAttach) {
-        classes.push('cc-color-override-' + opts.palette);
-      }
-
-      // add class to container classes so we can specify css for IE8 only
-      if (navigator.appVersion.indexOf('MSIE 8') > -1) {
-        classes.push('cc-ie8');
-      }
-
-      // calculate inner markup from configuration
-      var markup = getInnerMarkup.call(this);
-
-      // the full markup either contains the wrapper or it does not (for multiple instances)
-      var cookieWindow = getCookieWindow.call(this, markup, classes);
-
-      appendMarkup.call(this, cookieWindow);
-    }
-
     function appendMarkup (markup) {
       var opts = this.options;
       var cont = opts.container;
-      var validCont = cont && cont.nodeType === 1;
+      var validCont = (cont && cont.nodeType === 1);
 
       if (!validCont) {
         cont = document.body;
@@ -664,42 +626,66 @@
       dom.addEventListener(this.element, 'click', this._onButtonClick);
 
       // prepend element to container
-      dom.prependElem(cont, opts.useWrapper ? this.wrapper : this.element);
+      if (opts.useWrapper) {
+        // add wrapper to cont (which is body)
+        dom.prependElem(cont, this.wrapper);
+      } else {
+        // add element to wrapper
+        dom.prependElem(cont, this.element);
+      }
+    }
+
+    function handleButtonClick (event) {
+      var targ = event.target;
+      if (dom.hasClass(targ, 'cc-btn')) {
+        var allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
+        var match = dom.matchClass(targ, 'cc-(' + allowedStatuses.join('|') + ')')
+
+        if (match) {
+          this.setStatus(match);
+          this.close();
+        }
+      }
+      if (dom.hasClass(targ, 'cc-close')) {
+        this.setStatus(cc.status.dismiss);
+        this.close();
+      }
     }
 
     function attachCustomPalette () {
       var colorStyles = {};
-      var opts = this.options;
-      var palette = opts.palette && opts.palettes && opts.palettes[opts.palette];
+      var pName = this.options.palette;
+      var pOpts = pName && this.options.palettes && this.options.palettes[pName];
 
-      if (palette) {
-        var prefix = '.cc-color-override-'+opts.palette;
+      if (pOpts) {
+        var prefix = '.cc-color-override-' + pName;
 
-        colorStyles[prefix + '.cc-window'] = ['color: '+palette.text, 'background-color: '+palette.background];
-        colorStyles[prefix + ' .cc-link'] = ['color: '+palette.link];
-        colorStyles[prefix + ' .cc-btn'] = ['color: '+palette.buttonText, 'border-color: '+palette.buttonBorder, 'background-color: '+palette.buttonBackground];
+        // this will be interpretted as CSS. the key is the selector, and each array element is a rule
+        colorStyles[prefix + '.cc-window'] = ['color: '+pOpts.text, 'background-color: '+pOpts.background];
+        colorStyles[prefix + ' .cc-link'] = ['color: '+pOpts.link];
+        colorStyles[prefix + ' .cc-btn'] = ['color: '+pOpts.buttonText, 'border-color: '+pOpts.buttonBorder, 'background-color: '+pOpts.buttonBackground];
 
-        if (cc.customStyles[opts.palette]) {
-          // increment reference count
-          ++cc.customStyles[opts.palette].references;
-        } else {
-          var ruleIndex = 0;
+        if (!cc.customStyles[pName]) {
           var newStyle = dom.createStyle();
-
-          cc.customStyles[opts.palette] = {
+          // custom style doesn't exist, so we create it
+          cc.customStyles[pName] = {
             references: 1,
             element: newStyle,
           };
 
-          // actually add rules
+          var ruleIndex = 0;
+          // actually add the rules
           for (var prop in colorStyles) {
             var ruleBody = colorStyles[prop].join(';');
             dom.addCSSRule(newStyle, prop, ruleBody, ruleIndex++);
           }
+        } else {
+          // custom style already exists, so increment the reference count
+          ++cc.customStyles[pName].references;
         }
-
       }
-      return !!palette;
+      // returns true if a custom style is chosen
+      return !!pOpts;
     }
 
     function arrayContainsMatches (array, search) {
@@ -714,10 +700,34 @@
       return false;
     }
 
-    return CookieWindow
+    function applyAutoDismiss () {
+      var setStatus = this.setStatus.bind(this);
+
+      var delay = this.options.dismissOnTimeout;
+      if (typeof delay == 'number' && delay >= 0) {
+        window.setTimeout(function () {
+          setStatus(cc.status.dismiss);
+        }, Math.floor(delay));
+      }
+
+      var scrollRange = this.options.dismissOnScroll;
+      if (typeof scrollRange == 'number' && scrollRange >= 0) {
+        var onWindowScroll = function (evt) {
+          if (window.pageYOffset > Math.floor(scrollRange)) {
+            setStatus(cc.status.dismiss);
+
+            dom.removeEventListener(window, 'scroll', onWindowScroll);
+          }
+        };
+
+        dom.addEventListener(window, 'scroll', onWindowScroll);
+      }
+    }
+
+    return CookiePopup
   }());
 
-  cc.CookieLaw = (function () {
+  cc.law = (function () {
 
     var hasLaw = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'HR', 'CY', 'LV', 'LT', 'PT', 'NL'];
     var explicit = ['HR', 'CY', 'LV', 'LT', 'PT', 'DE'];
@@ -745,7 +755,7 @@
 
         if (country.explicit) {
           // we must provide a way to deny consent
-          options.explicit = true;
+          options.type = 'opt-in';
         }
 
         if (country.revokable) {
@@ -764,7 +774,7 @@
     };
   }());
 
-  cc.CookieLocate = (function () {
+  cc.locate = (function () {
 
     return {
 
@@ -1019,7 +1029,7 @@
   }());
 
   cc.factory = function (options) {
-    return new cc.CookieWindow(options);
+    return new cc.Popup(options);
   };
 
   cc.initialise = function (options) {

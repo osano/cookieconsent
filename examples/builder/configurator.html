@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <base href="../../">
+
     <title>Testing cookie consent</title>
 
     <link href="build/cookieconsent.min.css" rel="stylesheet">
@@ -96,13 +98,11 @@
         <p>If you need help, see our <a href="">documentation</a></p>
         <button onclick="event.preventDefault(); window.location = 'injector.html';">Test code here</button>
       </fieldset>
-
     <form>
   </body>
 </html>
 
-<!--script src="../build/cookieconsent.min.js"></script-->
-<script src="cookieconsent.js"></script>
+<script src="build/cookieconsent.min.js"></script>
 <script>
 
   var form = document.querySelector('.configurator-form');

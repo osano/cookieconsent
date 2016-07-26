@@ -8,44 +8,36 @@
   <link href="examples/style.css" rel="stylesheet">
   <link href="build/cookieconsent.min.css" rel="stylesheet">
 
-
 <body role="document">
 
-  <div class="container theme-showcase" role="main">
-    <div class="jumbotron text-center">
-      <h1>JavaScript API</h1>
-      <p>Fire JavaScript events to see what happens.</p>
-    </div>
+  <div class="example-window" role="main">
+    <h1>Javascript API</h1>
+    <p>Fire JavaScript events to see what happens.</p>
 
-    <p class="text-center btn-xl large">
-      <button type="button" class="btn" id="btn-initialise">Initialise</button>
-      <button type="button" class="btn" id="btn-open">Open</button>
-      <button type="button" class="btn" id="btn-close">Close</button>
-      <button type="button" class="btn" id="btn-destroy">Destroy</button>
-      <button type="button" class="btn" id="btn-status">Status</button>
-    </p>
+    <div id="message"></div>
 
-    <p class="text-center btn-xl large">
+    <div class="btn-group">
       <button type="button" class="btn" id="btn-getCookie">Get Cookie</button>
       <button type="button" class="btn" id="btn-clearCookie">Clear Cookie</button>
       <button type="button" class="btn" id="btn-dismissCookie">Dismissed</button>
       <button type="button" class="btn" id="btn-allowCookie">Allowed</button>
       <button type="button" class="btn" id="btn-denyCookie">Denied</button>
-    </p>
-
-    <p id="message" class="text-center" style="font-size:20px"></p>
-
+    </div>
+    
+    <div class="btn-group">
+      <button type="button" class="btn" id="btn-initialise">Initialise</button>
+      <button type="button" class="btn" id="btn-open">Open</button>
+      <button type="button" class="btn" id="btn-close">Close</button>
+      <button type="button" class="btn" id="btn-destroy">Destroy</button>
+      <button type="button" class="btn" id="btn-status">Status</button>
+    </div>
   </div>
 
 <script src="build/cookieconsent.min.js"></script>
 <script>
-  var options = {
-        theme: '../build/light-floating.css',
-  };
 
-  var p = cookieconsent.popup;
-  var s = cookieconsent.COOKIE_STATUS;
   var m = document.getElementById('message');
+  var p = cookieconsent.factory();
 
   document.getElementById('btn-getCookie').onclick = function (e) {
     m.innerHTML = 'Get<br>Cookie is: ' + p.getStatus();
@@ -57,24 +49,22 @@
   };
 
   document.getElementById('btn-dismissCookie').onclick = function (e) {
-    p.setStatus(s.DISMISSED);
+    p.setStatus(cookieconsent.status.dismiss);
     m.innerHTML = 'Dismiss<br>Cookie is: ' + p.getStatus();
   };
 
   document.getElementById('btn-allowCookie').onclick = function (e) {
-    p.setStatus(s.ALLOWED);
+    p.setStatus(cookieconsent.status.allow);
     m.innerHTML = 'Allow<br>Cookie is: ' + p.getStatus();
   };
 
   document.getElementById('btn-denyCookie').onclick = function (e) {
-    p.setStatus(s.DENIED);
+    p.setStatus(cookieconsent.status.deny);
     m.innerHTML = 'Deny<br>Cookie is: ' + p.getStatus();
   };
 
-  // ==========
-
   document.getElementById('btn-initialise').onclick = function (e) {
-    p.init(options);
+    p.initialise();
   };
 
   document.getElementById('btn-open').onclick = function (e) {

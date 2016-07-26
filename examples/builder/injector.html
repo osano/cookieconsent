@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <base href="../../">
+
     <title>Testing cookie consent configurator code</title>
+
     <link href="build/cookieconsent.min.css" rel="stylesheet">
+
     <style>
       #injector {
         margin: 300px auto;
@@ -22,8 +26,7 @@
   </body>
 </html>
 
-<!--script src="../build/cookieconsent.min.js"></script-->
-<script src="cookieconsent.js"></script>
+<script src="build/cookieconsent.min.js"></script>
 <script>
   var lastPopup = null;
   var button = document.getElementById('test');

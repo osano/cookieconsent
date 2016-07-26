@@ -14,6 +14,8 @@
   z-index: 0; /* enforce that the wrapper is always behind other on screen elements */
 
   font-size: 16px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
+
+  overflow: hidden;
 }
 
 /* the popup window */
@@ -24,8 +26,6 @@
   font-size: 1em;
   max-width: 24em; /* 1em == 15px therefore 24em == 360px */
   box-sizing: border-box;
-
-  z-index: 0; /* cc-window could inherit the -10000 from cc-wrapper, so reset it here */
 }
 
 .cc-window.cc-banner {

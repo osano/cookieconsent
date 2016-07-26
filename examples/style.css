@@ -34,9 +34,13 @@ body, html {
 }
 
 .example-window button {
-  padding: .8em 1.6em;
   margin: 0;
+  padding: .5em;
   font-size: 1em;
+}
+
+.example-window .btn-group {
+  margin: 0 0 1em 0;
 }
 
 #cookie-widget {
