@@ -68,15 +68,11 @@
 
 
 
-      #cookie-window-area {
+      #cookie-window-area, .cc-window {
         position:absolute;
       }
       .tab-content {
         position: relative;
-      }
-      .cc-window {
-        position: absolute;
-        font-size: 6px;
       }
     </style>
     <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js?ver=1.9.1'></script>
@@ -545,40 +541,54 @@
 
     <script src="../../src/cookieconsent.js"></script>
     <script>
+      var ccName = '__cookieconsent_popup';
+      var currentView = '#desktop-view';
+
+      var form = document.getElementById('cookie-consent-configurator');
 
       var navItems = document.querySelector('.nav-tabs');
       var container = document.getElementById('cookie-window-area');
 
-      navItems.onclick = function (e) {
-        positionCookieWrapper(e.target.hash, container);
-      };
-
-      positionCookieWrapper('#desktop-view', container);
-
       // -----------------------------------------------------------------
-
-      var form = document.getElementById('cookie-consent-configurator');
 
       form.onchange = function () {
         update();
+      };
+
+      navItems.onclick = function (e) {
+        currentView = e.target.hash;
+        update(true);
       };
 
       update();
 
       // -----------------------------------------------------------------
 
-      function update () {
-        draw(getOptions(getInputs(form)));
+      function update (wait) {
+        draw(getOptions(getInputs(form)), wait);
       }
 
-      function draw(options) {
-        var name = '__cookieconsent_popup';
-        if (!window[name]) {
-          window[name] = cookieconsent.factory(options);
+      function updateView () {
+        positionCookieWrapper(currentView, container, window[ccName].element);
+      }
+
+      function draw(options, wait) {
+        if (!window[ccName]) {
+          window[ccName] = cookieconsent.factory(options);
         } else {
-          window[name].initialise(options);
+          window[ccName].close().initialise(options);
         }
-        window[name].open();
+
+        // reposition before we show
+        updateView();
+
+        if (wait) {
+          setTimeout(function(){
+            window[ccName].open();
+          }, 200)
+        } else {
+          window[ccName].open();
+        }
 
         setCode(getCode(options));
       }
@@ -653,19 +663,23 @@
         return div.innerHTML;
       }
 
-      function positionCookieWrapper(hash, cont) {
+      function positionCookieWrapper(hash, cont, win) {
         var s = cont.style;
         if (hash == '#desktop-view') {
           s.height = '83%';
           s.width = '76%';
           s.left = '12%';
           s.top = '5%';
+
+          win.style.fontSize = '6px';
         }
         if (hash == '#mobile-view') {
           s.height = '75.3%';
           s.width = '37.99%';
           s.left = '31.1%';
           s.top = '12.5%';
+
+          win.style.fontSize = '10px';
         }
       }
 
