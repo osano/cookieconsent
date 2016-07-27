@@ -237,7 +237,7 @@
 
       // {classes} is where additional classes get added
       // {children} is where the inner html is set
-      wrapper: '<div class="cc-wrapper">{children}</div>',
+      //wrapper: '<div class="cc-wrapper">{children}</div>',
       window: '<div class="cc-window {classes}">{children}</div>',
 
       // defaults to the current domain
@@ -345,9 +345,9 @@
     CookiePopup.getPalettes = function () { return Object.keys(defaultOptions.palettes) };
     CookiePopup.getCompliances = function () { return Object.keys(defaultOptions.compliance) };
 
-    CookiePopup.getNewWrapper = function () {
-      return dom.buildDom(defaultOptions.wrapper.replace('{children}', ''));
-    };
+    //CookiePopup.getNewWrapper = function () {
+    //  return dom.buildDom(defaultOptions.wrapper.replace('{children}', ''));
+    //};
 
     CookiePopup.prototype.initialise = function (options) {
       if (this.options) {
@@ -418,20 +418,20 @@
         cc.customStyles[opts.palette] = null;
       }
 
-      if (this.wrapper && this.wrapper.parentNode) {
+      /*if (this.wrapper && this.wrapper.parentNode) {
         // caller could have passed a custom wrapper, therefor we
         // must make sure that it is empty before we remove it!
         if (!this.wrapper.children.length) {
           this.wrapper.parentNode.removeChild(this.wrapper);
         }
-      }
+      }*/
 
       // remove references
       this.dynamicStyle = null;
       this._onButtonClick = null;
 
       this.element = null;
-      this.wrapper = null;
+      //this.wrapper = null;
       this.options = null;
     };
 
@@ -608,14 +608,14 @@
         cont = document.body;
       }
 
-      if (opts.useWrapper) {
-        var fullHtml = opts.wrapper.replace('{children}', markup);
-        this.wrapper = dom.buildDom(fullHtml);
-        this.element = this.wrapper.firstChild;
-      } else {
+      //if (opts.useWrapper) {
+      //  var fullHtml = opts.wrapper.replace('{children}', markup);
+      //  this.wrapper = dom.buildDom(fullHtml);
+      //  this.element = this.wrapper.firstChild;
+      //} else {
         this.element = dom.buildDom(markup);
-        this.wrapper = cont;
-      }
+      //  this.wrapper = cont;
+      //}
 
       // hide it before adding to DOM
       this.element.style.display = 'none';
@@ -626,13 +626,13 @@
       dom.addEventListener(this.element, 'click', this._onButtonClick);
 
       // prepend element to container
-      if (opts.useWrapper) {
+      //if (opts.useWrapper) {
         // add wrapper to cont (which is body)
-        dom.prependElem(cont, this.wrapper);
-      } else {
+      //  dom.prependElem(cont, this.wrapper);
+      //} else {
         // add element to wrapper
         dom.prependElem(cont, this.element);
-      }
+      //}
     }
 
     function handleButtonClick (event) {

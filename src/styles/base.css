@@ -5,33 +5,48 @@
 
 /* the wrapper is a div element that completely fills the window screen space */
 /*  - popup (.cc-window) can be positioned anywhere on the page using the wrapper */
-.cc-wrapper {
-  position: absolute;
+/*.cc-wrapper {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 0; /* enforce that the wrapper is always behind other on screen elements */
+  z-index: 0; / * enforce that the wrapper is always behind other on screen elements * /
 
-  font-size: 16px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
+  font-size: 16px; / * by setting the base fon't here, we can size the rest of the popup using CSS `em` * /
 
   overflow: hidden;
-}
+}*/
 
 /* the popup window */
 .cc-window {
+  position: fixed;
+  z-index: 5000;
+  overflow: hidden;
+
+  font-size: 16px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
   font-family: 'Helvetica Neue Light', 'HelveticaNeue-Light', 'Helvetica Neue', Calibri, Helvetica, Arial, sans-serif;
-  position: absolute;
+
   padding: 2em;
-  font-size: 1em;
   max-width: 24em; /* 1em == 15px therefore 24em == 360px */
   box-sizing: border-box;
 }
 
+.box {
+  width: 100px;
+  height: 100px;
+  background-color: red
+}
+.fixed {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+}
+
 .cc-window.cc-banner {
+  padding: 1em;
   width: 100%;
   max-width: 100%;
-  padding: 1em;
 }
 
 .cc-header {font-weight: bold;}
