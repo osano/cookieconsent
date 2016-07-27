@@ -30,17 +30,8 @@
   padding: 2em;
   max-width: 24em; /* 1em == 15px therefore 24em == 360px */
   box-sizing: border-box;
-}
 
-.box {
-  width: 100px;
-  height: 100px;
-  background-color: red
-}
-.fixed {
-  position: fixed;
-  bottom: 1em;
-  right: 1em;
+  line-height: 1.2em;
 }
 
 .cc-window.cc-banner {

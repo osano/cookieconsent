@@ -64,6 +64,20 @@
         background: none !important;
         padding: 0 !important;
       }
+      #cookie-window-area {
+        position:absolute;
+        height: 83%;
+        width: 76%;
+        left: 12%;
+        top: 5%;
+      }
+      .tab-content {
+        position: relative;
+      }
+      .cc-window {
+        position: absolute;
+        font-size: 6px;
+      }
     </style>
     <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js?ver=1.9.1'></script>
     <link rel='https://api.w.org/' href='http://labo.acclaim.pl/insites-cookie-consent/wp-json/' />
@@ -445,6 +459,7 @@
                 <h2 class="look__title">What it will look like</h2><!-- /.look__title -->
 
                 <div class="tab-content">
+                  <div id="cookie-window-area"></div>
                   <div class="tab-pane fade in active" id="desktop-view" role="tabpanel">
                     <img src="http://labo.acclaim.pl/insites-cookie-consent/wp-content/themes/insites-cookie-consent/images/img__desktop-view.png" class="look__device-image look__device-image--laptop" alt="Desktop view" />
                   </div><!-- /#desktop-view.tab-pane fade -->
@@ -576,6 +591,8 @@
 
           // chooses between basic-banner and basic-floating depending on the position selected
           theme: /^banner\-/.test(input.layouts) ? 'basic-banner' : 'all-floating',
+
+          container: document.getElementById('cookie-window-area'),
         };
 
         if (Object.keys(content).length) {
