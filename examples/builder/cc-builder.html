@@ -33,7 +33,7 @@
     <link rel="stylesheet" type="text/css" href="http://labo.acclaim.pl/insites-cookie-consent/wp-content/themes/insites-cookie-consent/style.css">
     <link rel="pingback" href="http://labo.acclaim.pl/insites-cookie-consent/xmlrpc.php" >
 
-        
+
     <!-- This site is optimized with the Yoast SEO plugin v3.4 - https://yoast.com/wordpress/plugins/seo/ -->
     <link rel="canonical" href="http://labo.acclaim.pl/insites-cookie-consent/download/" />
     <meta property="og:locale" content="en_GB" />
@@ -64,12 +64,12 @@
         background: none !important;
         padding: 0 !important;
       }
+
+
+
+
       #cookie-window-area {
         position:absolute;
-        height: 83%;
-        width: 76%;
-        left: 12%;
-        top: 5%;
       }
       .tab-content {
         position: relative;
@@ -82,7 +82,7 @@
     <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js?ver=1.9.1'></script>
     <link rel='https://api.w.org/' href='http://labo.acclaim.pl/insites-cookie-consent/wp-json/' />
     <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://labo.acclaim.pl/insites-cookie-consent/xmlrpc.php?rsd" />
-    <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://labo.acclaim.pl/insites-cookie-consent/wp-includes/wlwmanifest.xml" /> 
+    <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://labo.acclaim.pl/insites-cookie-consent/wp-includes/wlwmanifest.xml" />
     <meta name="generator" content="WordPress 4.5.3" />
     <link rel='shortlink' href='http://labo.acclaim.pl/insites-cookie-consent/?p=4' />
     <link rel="alternate" type="application/json+oembed" href="http://labo.acclaim.pl/insites-cookie-consent/wp-json/oembed/1.0/embed?url=http%3A%2F%2Flabo.acclaim.pl%2Finsites-cookie-consent%2Fdownload%2F" />
@@ -546,12 +546,23 @@
     <script src="../../src/cookieconsent.js"></script>
     <script>
 
+      var navItems = document.querySelector('.nav-tabs');
+      var container = document.getElementById('cookie-window-area');
+
+      navItems.onclick = function (e) {
+        positionCookieWrapper(e.target.hash, container);
+      };
+
+      positionCookieWrapper('#desktop-view', container);
+
+      // -----------------------------------------------------------------
+
       var form = document.getElementById('cookie-consent-configurator');
 
       form.onchange = function () {
         update();
       };
-      
+
       update();
 
       // -----------------------------------------------------------------
@@ -640,6 +651,22 @@
         var div = document.createElement('div');
         div.appendChild(text);
         return div.innerHTML;
+      }
+
+      function positionCookieWrapper(hash, cont) {
+        var s = cont.style;
+        if (hash == '#desktop-view') {
+          s.height = '83%';
+          s.width = '76%';
+          s.left = '12%';
+          s.top = '5%';
+        }
+        if (hash == '#mobile-view') {
+          s.height = '75.3%';
+          s.width = '37.99%';
+          s.left = '31.1%';
+          s.top = '12.5%';
+        }
       }
 
     </script>
