@@ -394,10 +394,10 @@
                         </div><!-- /.row -->
                         <div class="row">
                           <div class="col-sm-6">
-                            <input type="text" placeholder="# Banner colour" />
+                            <input type="text" name="background-color" placeholder="# Banner colour" />
                           </div><!-- /.col-sm-6 -->
                           <div class="col-sm-6">
-                            <input type="text" placeholder="# Button colour" />
+                            <input type="text" name="button-color" placeholder="# Button colour" />
                           </div><!-- /.col-sm-6 -->
                         </div><!-- /.row -->
                       </div><!-- /.step-content -->
@@ -616,11 +616,38 @@
           container: document.getElementById('cookie-window-area'),
         };
 
+        debugger;
+
+        if (input.colour.background || input.colour.button) {
+          var styleName = 'myCustomStyle';
+          var buttonContrast = getContrast(input.colour.button.substr(1));
+          var backgroundContrast = getContrast(input.colour.background.substr(1));
+          var customColour = {
+            background: input.colour.background,
+            text: backgroundContrast,
+            link: backgroundContrast,
+            buttonBackground: input.colour.button,
+            buttonText: buttonContrast,
+            buttonBorder: input.colour.button
+          };
+          options.palettes = {};
+          options.palettes[styleName] = customColour;
+          options.palette = styleName;
+        }
+
         if (Object.keys(content).length) {
           options.content = content;
         }
 
         return options;
+      }
+
+      function getContrast(hexcolor){
+        var r = parseInt(hexcolor.substr(0,2),16);
+        var g = parseInt(hexcolor.substr(2,2),16);
+        var b = parseInt(hexcolor.substr(4,2),16);
+        var yiq = ((r*299)+(g*587)+(b*114))/1000;
+        return (yiq >= 128) ? 'black' : 'white';
       }
 
       function getInputs (elem) {
@@ -634,6 +661,10 @@
             //message: elem.querySelector('[name="text-message"]').value,
             //deny: elem.querySelector('[name="text-deny"]').value,
             //dismiss: elem.querySelector('[name="text-dismiss"]').value,
+          },
+          colour: {
+            background: elem.querySelector('[name="background-color"]').value,
+            button: elem.querySelector('[name="button-color"]').value,
           },
           layouts: elem.querySelectorAll('[name="choose-layout"]:checked').item(0).value,
           palette: elem.querySelectorAll('[name="emotion"]:checked').item(0).value,
