@@ -46,21 +46,7 @@
 <script src="build/cookieconsent.min.js"></script>
 <script>
 
-  // We are gonna have multiple popups on the page (to display many variations).
-
-  // Normany, each window exists within a wrapper element. We can either create the first popup element and use it's wrapper
-  // over and over again OR we can create the wrapper once at the beginning, and continuously recycle it for each popup
-
-  var $wrapper = cookieconsent.Popup.getNewWrapper();
-
-  var defaultOptions = {
-    // Make it so each popup always uses the $wrapper container
-    container: $wrapper,
-
-    // The app automatically prepends the popup to a wrapper (because most cases want the wrapper by default)
-    // This tells the app not to prepend the wrapper, so it prepends the popup window instead
-    useWrapper: false
-  };
+  var defaultOptions = {};
 
   var popupInstances = [
     cookieconsent.factory(defaultOptions),
@@ -88,9 +74,6 @@
   $palette.onchange = function (e) { update() };
 
   update();
-
-  document.body.insertBefore($wrapper, document.body.firstChild);
-
 
 
   function getInputs () {
