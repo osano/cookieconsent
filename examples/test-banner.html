@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="../">
+
+  <title>Developer Testing</title>
+
+  <link href="examples/style.css" rel="stylesheet">
+  <link href="build/cookieconsent.min.css" rel="stylesheet">
+
+  <style>
+    /* these exist only to display more than 2 banners on a page */
+    .cc-top1{top: 5em;}
+    .cc-bottom1{bottom: 5em;}
+  </style>
+
+<body role="document">
+
+  <div class="example-window">
+    <h1>Testing banner popups</h1>
+    <p>Look at all the layouts on screen and see if any look wrong</p>
+
+    <select id="theme" class="selectbox"></select>
+    <select id="palette" class="selectbox"></select>
+
+    <br><br>
+
+    <button onclick="javascript: window.location = 'examples/test-floating.html';">Next test</button>
+  </div>
+
+
+<script src="examples/script.js"></script>
+<script src="build/cookieconsent.min.js"></script>
+<script>
+
+  (function (C, U) {
+
+    var defaultOptions = {};
+
+    var userOptions = {
+      palette: C.Popup.getPalettes(),
+      theme: C.Popup.getThemes().filter(function(cur){return /\-banner$/.test(cur)}),
+    };
+
+    var popupInstances = [
+      C.factory(defaultOptions),
+      C.factory(defaultOptions),
+      C.factory(defaultOptions),
+      C.factory(defaultOptions),
+    ];
+
+    var elems = U.createInputs(Object.keys(userOptions));
+
+    var updater = U.createUpdater(elems, draw);
+
+    U.createSelects(elems, userOptions, U.formatSelectOptionsFromArray.bind(null, U.pretty));
+    
+    updater();
+
+    function draw(inputs) {
+      var opts = getOptions(inputs);
+
+      popupInstances[0].initialise(Object.assign({}, defaultOptions, opts, {type: 'dismiss', position: 'banner-top'})).open();
+      popupInstances[1].initialise(Object.assign({}, defaultOptions, opts, {type: 'info',    position: 'banner-top1'})).open();
+      popupInstances[2].initialise(Object.assign({}, defaultOptions, opts, {type: 'opt-in',  position: 'banner-bottom1'})).open();
+      popupInstances[3].initialise(Object.assign({}, defaultOptions, opts, {type: 'opt-out', position: 'banner-bottom'})).open();
+    }
+
+    function getOptions (inputs) {
+      return {
+        theme: inputs.theme,
+        palette: inputs.palette,
+      }
+    }
+
+  }(window.cookieconsent, window.cookieconsent_example_util));
+
+</script>

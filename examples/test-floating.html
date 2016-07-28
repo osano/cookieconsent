@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="../">
+
+  <title>Developer Testing</title>
+
+  <link href="examples/style.css" rel="stylesheet">
+  <link href="build/cookieconsent.min.css" rel="stylesheet">
+
+  <style>
+    /* custom these css for 'cc-theme-custom-floating' */
+
+    .cc-theme-custom-floating .cc-cookie-image {
+      position: absolute;
+      bottom: 1em;
+      right: 1em;
+      opacity:.8;
+      filter: invert(1);
+      -webkit-filter: invert(1);
+    }
+    .cc-theme-custom-floating .cc-cookie-image:hover {
+      opacity:1;
+    }
+
+    .cc-theme-custom-floating>.cc-link {
+      margin: 0;
+    }
+  </style>
+
+<body role="document">
+
+  <div class="example-window">
+    <h1>Testing floating popups</h1>
+    <p>Look at all the layouts on screen and see if any look wrong</p>
+
+    <select id="theme" class="selectbox"></select>
+    <select id="palette" class="selectbox"></select>
+
+    <br><br>
+
+    <button onclick="javascript: window.location = 'examples/test-banner.html';">Next test</button>
+  </div>
+
+
+<script src="examples/script.js"></script>
+<script src="build/cookieconsent.min.js"></script>
+<script>
+
+  (function (C, U) {
+
+    var defaultOptions = {};
+
+    var userOptions = {
+      palette: C.Popup.getPalettes(),
+      theme: C.Popup.getThemes().filter(function(cur){return /\-floating$/.test(cur)}).concat(['custom-floating']),
+    };
+
+    var popupInstances = [
+      C.factory(defaultOptions),
+      C.factory(defaultOptions),
+      C.factory(defaultOptions),
+      C.factory(defaultOptions),
+    ];
+
+    var elems = U.createInputs(Object.keys(userOptions));
+
+    var updater = U.createUpdater(elems, draw);
+
+    U.createSelects(elems, userOptions, U.formatSelectOptionsFromArray.bind(null, U.pretty));
+    
+    updater();
+
+    function draw(inputs) {
+      var opts = getOptions(inputs);
+
+      popupInstances[0].initialise(Object.assign({}, defaultOptions, opts, {type: 'dismiss', position: 'top-left'})).open();
+      popupInstances[1].initialise(Object.assign({}, defaultOptions, opts, {type: 'info',    position: 'top-right'})).open();
+      popupInstances[2].initialise(Object.assign({}, defaultOptions, opts, {type: 'opt-in',  position: 'bottom-left'})).open();
+      popupInstances[3].initialise(Object.assign({}, defaultOptions, opts, {type: 'opt-out', position: 'bottom-right'})).open();
+    }
+
+    function getOptions (inputs) {
+      return {
+        theme: inputs.theme,
+        palette: inputs.palette,
+
+        // although these config options will go to all the instances of cookie windows,
+        // it only matters to the windows which have themes which uses these elements
+        content: {
+          cookieImage: 'http://plainicon.com/dboard/userprod/2921_4eb4c/prod_thumb/plainicon.com-64226-256px-fa8.png',
+        },
+        elements: {
+          cookieImage: '<img class="cc-cookie-image" src="{children}" width="32px"/>',
+        },
+        themes: {
+          'custom-floating': '{header}{message}{link}{close}{cookieImage}',
+        },
+      }
+    }
+
+  }(window.cookieconsent, window.cookieconsent_example_util));
+
+</script>

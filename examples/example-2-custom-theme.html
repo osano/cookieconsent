@@ -20,17 +20,13 @@
 <script src="build/cookieconsent.min.js"></script>
 <script>
 
-  var options = {
+  cookieconsent.factory({
     palettes: {
       'blah': {background:'pink', text: 'green', link: 'blue', buttonBackground: 'orange', buttonText: 'black', buttonBorder: 'orange'},
     },
 
     type: 'info',
     palette: 'blah',
-  };
-
-  var popup = cookieconsent.factory(options);
-
-  popup.open();
+  }).open();
 
 </script>

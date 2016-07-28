@@ -29,82 +29,53 @@
     <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Next Example</button>
   </div>
 
+<script src="examples/script.js"></script>
 <script src="build/cookieconsent.min.js"></script>
 <script>
 
-  var cwin = cookieconsent.Popup;
+  (function (C, U) {
 
-  var _theme = document.getElementById('theme');
-  var _palet = document.getElementById('palette');
-  var _posit = document.getElementById('position');
-  var _compl = document.getElementById('compliance');
-
-  _theme.onchange = function (e) { update() };
-  _palet.onchange = function (e) { update() };
-  _posit.onchange = function (e) { update() };
-  _compl.onchange = function (e) { update() };
-
-  fillSelect(_theme, formatOptions(cwin.getThemes()));
-  fillSelect(_palet, formatOptions(cwin.getPalettes()));
-  fillSelect(_compl, formatOptions(cwin.getCompliances()));
-  fillSelect(_posit, formatOptions(['banner-top', 'top-left', 'top-right', 'banner-bottom', 'bottom-left', 'bottom-right']));
-
-  function getInputs() {
-    return {
-      theme: _theme[_theme.selectedIndex].value,
-      palette: _palet[_palet.selectedIndex].value,
-      position: _posit[_posit.selectedIndex].value,
-      compliance: _compl[_compl.selectedIndex].value,
-    }
-  }
-
-  function getOptions(inputs) {
-    return {
-      theme: inputs.theme,
-      type: inputs.compliance,
-      palette: inputs.palette,
-      position: inputs.position,
+    // get the list of options for our select boxes
+    var userOptions = {
+      theme      : C.Popup.getThemes(),
+      palette    : C.Popup.getPalettes(),
+      compliance : C.Popup.getCompliances(),
+      position   : ['banner-top', 'top-left', 'top-right', 'banner-bottom', 'bottom-left', 'bottom-right'],
     };
-  }
 
-  function draw(options) {
-    var name = '__cookieconsent_popup';
-    if (!window[name]) {
-      window[name] = cookieconsent.factory(options);
-    } else {
-      window[name].initialise(options);
-    }
-    window[name].open();
-  }
+    // create an object of elements indexed by their name i.e. `elems.theme` or `elems.palette`
+    var elems = U.createInputs(Object.keys(userOptions));
 
-  function fillSelect (select, options) {
-    var html = '';
-    for (var prop in options) {
-      var val = options[prop];
-      if (typeof val == 'string') {
-        html += '<option value="' + prop + '">' + val + '</option>'
+    // fill the select box elements with the user options. use the `pretty` function to format each one
+    U.createSelects(elems, userOptions, U.formatSelectOptionsFromArray.bind(null, U.pretty));
+
+    // add an 'onchange' event to each element which calls `draw`
+    var updater = U.createUpdater(elems, draw.bind(null, '__cookieconsent_popup'))
+
+    updater(); // trigger the first update
+    elems.palette.focus(); // focus the first input
+
+
+
+    function draw (name, inputs) {
+      var options = getOptions(inputs);
+      if (!window[name]) {
+        window[name] = C.factory(options);
+      } else {
+        window[name].initialise(options);
       }
+      window[name].open();
     }
-    select.innerHTML = html;
-  }
 
-  function formatOptions (arr) {
-    var opts = {}
-    arr.forEach(function (val) {
-      opts[val] = pretty(val);
-    })
-    return opts;
-  }
+    function getOptions(inputs) {
+      return {
+        type: inputs.compliance,
+        theme: inputs.theme,
+        palette: inputs.palette,
+        position: inputs.position,
+      };
+    }
 
-  function pretty (str) {
-    return str[0].toUpperCase() + str.slice(1).replace(/\-/g, ' ');
-  }
-
-  function update() {
-    draw(getOptions(getInputs()));
-  };
-
-  update();
-  _palet.focus();
+  }(window.cookieconsent, window.cookieconsent_example_util));
 
 </script>
