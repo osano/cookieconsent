@@ -18,6 +18,7 @@ var cssBuildFiles = [
   './src/styles/classes.css',
   './src/styles/animation.css',
   './src/styles/media.css',
+  './src/styles/mobile.css',
 
   // all theme files
   './src/styles/themes/*.css',
