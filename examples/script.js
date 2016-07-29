@@ -96,15 +96,23 @@ window['cookieconsent_example_util'] = {
     return html + '</table>';
   },
 
-  positionContent: function (content, elem, pos, marginSize) {
-    var parts = pos.split('-', 2);
-    var height = elem.clientHeight + marginSize; // 10 is margin size
+  positionContent: function (content, popup, position) {
+    var parts = position.split('-', 2);
+    var total = window.innerHeight;
+    var height = popup.clientHeight;
 
     if (parts[0] == 'top' || parts[1] == 'top') {
+      height += popup.offsetTop;
       content.style.margin = height + 'px 0 0 0';
-    }
-    if (parts[0] == 'bottom' || parts[1] == 'bottom') {
+      content.style.height = (total - height) + 'px';
+    } else if (parts[0] == 'bottom' || parts[1] == 'bottom') {
+      var offsetBottom = total - (popup.offsetTop + height);
+      height += offsetBottom;
       content.style.margin = '0 0 ' + height + 'px 0';
+      content.style.height = (total - height) + 'px';
+    } else {
+      content.style.margin = '0';
+      content.style.height = 'auto';
     }
   }
 };
