@@ -45,7 +45,6 @@
 .cc-banner .cc-message {
   display: inline-block;
   margin: 0;
-  line-height: 2.7em;
 }
 
 .cc-banner .cc-btn {
@@ -67,4 +66,17 @@
 /* for opt-out, deny is the primary button */
 .cc-banner.cc-type-opt-out .cc-deny {
   margin-right: 10px;
+}
+
+/********************** Misc **********************/
+
+.cc-banner {
+  display: flex;
+}
+
+.col-1 {
+  flex: 6.5;
+}
+.col-2 {
+  flex: 3.5;
 }

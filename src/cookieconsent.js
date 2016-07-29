@@ -298,7 +298,7 @@
         'link-floating': '{message}{link}{compliance}',
         'centered-floating': '{message}{link}{compliance}',
 
-        'basic-banner': '{message}{compliance}',
+        'basic-banner': '<div class="col-1">{message}</div><div class="col-2">{compliance}</div>',
       },
 
       // define custom color palettes here
