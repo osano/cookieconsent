@@ -1,65 +1,79 @@
 
 body, html {
-  position: relative;
-
   margin: 0;
-  height: 100%;
+  padding: 0;
 
-  font-size: 20px;
   font-family: "proxima-nova", sans-serif;
+  font-size: 20px;
 
   background-color: #282828;
 }
 
+
 .example-window {
-  padding: 3em;
-  width: 30em;
-  color: #e9e9e9;
-
-  position: absolute;
-  top: 50%;
-  left: 50%;
-
-  transform: translate(-50%, -50%);
-
-  border-radius: 1em;
   text-align: center;
+  color: #e9e9e9;
 }
-
 .example-window h1 {
   margin: 0 0 .5em 0;
 }
 .example-window p {
   margin: 0 0 1em 0;
 }
-
 .example-window button {
   margin: 0;
   padding: .5em;
   font-size: 1em;
 }
-
 .example-window .btn-group {
   margin: 0 0 1em 0;
 }
+
+
+.selectbox {
+  text-align: center;
+  font-size: inherit;
+  color: #555;
+  max-width: 20em;
+  padding: .2em .4em;
+  border-radius: .5em;
+  border: 1px solid #AAA;
+}
+.selectbox:focus {
+  outline: none;
+  border-color: #51a7e8;
+  box-shadow: inset 0 0 1em .2em rgba(81, 167, 232, 0.5);
+}
+
+
+.form-input {
+  display: inline-block;
+  margin: 0 0 .5em 0;
+}
+
 
 #cookie-widget {
   border: 3px dashed black;
   padding: 0 20px;
 }
 
-.selectbox {
-  font-size: inherit;
-  color: #555;
-  margin: 10px;
-  max-width: 300px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px solid #AAA;
-}
 
-.selectbox:focus {
-  outline: none;
-  border-color: #51a7e8;
-  box-shadow: inset 0 0 10px 3px rgba(81, 167, 232, 0.5);
-}
+/* iPhone 6 */
+@media only screen 
+and (min-device-width : 375px) 
+and (max-device-width : 667px) {}
+
+/* iPhone 6 plus */
+@media only screen 
+and (min-device-width : 414px) 
+and (max-device-width : 736px) {}
+
+/* iPhone 5 & 5S */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 568px) {}
+
+/* iPhone 2G - 4S */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {}

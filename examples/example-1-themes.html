@@ -16,19 +16,29 @@
     <h1>Standard themes</h1>
     <p>Pick a standard layout and a colour scheme. Or build your own</p>
 
-    <label>Palette</label>
-    <select id="palette" class="selectbox"></select>
+    <div class="form-input">
+      <label>Palette</label>
+      <select id="palette" class="selectbox"></select>
+    </div>
 
-    <label>Theme</label>
-    <select id="theme" class="selectbox"></select>
+    <div class="form-input">
+      <label>Theme</label>
+      <select id="theme" class="selectbox"></select>
+    </div>
     
-    <label>Position</label>
-    <select id="position" class="selectbox"></select>
+    <div class="form-input">
+      <label>Position</label>
+      <select id="position" class="selectbox"></select>
+    </div>
     
-    <label>Compliance</label>
-    <select id="compliance" class="selectbox"></select>
+    <div class="form-input">
+      <label>Compliance</label>
+      <select id="compliance" class="selectbox"></select>
+    </div>
 
-    <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Next Example</button>
+    <div class="btn-group">
+      <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Next Example</button>
+    </div>
   </div>
 
 <script src="examples/script.js"></script>
@@ -44,6 +54,8 @@
       compliance : C.Popup.getCompliances(),
       position   : ['banner-top', 'top-left', 'top-right', 'banner-bottom', 'bottom-left', 'bottom-right'],
     };
+
+    var $content = document.querySelector('.example-window');
 
     // create an object of elements indexed by their name i.e. `elems.theme` or `elems.palette`
     var elems = U.createInputs(Object.keys(userOptions));
@@ -61,12 +73,15 @@
 
     function draw (name, inputs) {
       var options = getOptions(inputs);
+
       if (!window[name]) {
         window[name] = C.factory(options);
       } else {
         window[name].initialise(options);
       }
+
       window[name].open();
+      U.positionContent($content, window[name].element, options.position, 40);
     }
 
     function getOptions(inputs) {

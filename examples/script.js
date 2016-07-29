@@ -95,4 +95,16 @@ window['cookieconsent_example_util'] = {
     }
     return html + '</table>';
   },
+
+  positionContent: function (content, elem, pos, marginSize) {
+    var parts = pos.split('-', 2);
+    var height = elem.clientHeight + marginSize; // 10 is margin size
+
+    if (parts[0] == 'top' || parts[1] == 'top') {
+      content.style.margin = height + 'px 0 0 0';
+    }
+    if (parts[0] == 'bottom' || parts[1] == 'bottom') {
+      content.style.margin = '0 0 ' + height + 'px 0';
+    }
+  }
 };
