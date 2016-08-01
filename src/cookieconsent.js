@@ -561,7 +561,7 @@
       var theme = opts.themes[opts.theme];
 
       if (!theme) {
-        theme = opts.themes['mono-floating'];
+        theme = opts.themes['basic-block'];
       }
 
       return util.interpolateString(theme, function(match) {

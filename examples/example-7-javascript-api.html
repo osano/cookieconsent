@@ -12,32 +12,36 @@
 
 <body role="document">
 
-  <div class="example-window" role="main">
-    <h1>Javascript API</h1>
-    <p>Fire JavaScript events to see what happens.</p>
+  <div class="center-outer fit">
+    <div class="center-inner">
+      <div class="example-window" role="main">
+        <h1>Javascript API</h1>
+        <p>Fire JavaScript events to see what happens.</p>
 
-    <div id="message"></div>
+        <div id="message"></div>
 
-    <div class="btn-group">
-      <button type="button" class="btn" id="btn-getCookie">Get Cookie</button>
-      <button type="button" class="btn" id="btn-clearCookie">Clear Cookie</button>
-      <button type="button" class="btn" id="btn-dismissCookie">Dismissed</button>
-      <button type="button" class="btn" id="btn-allowCookie">Allowed</button>
-      <button type="button" class="btn" id="btn-denyCookie">Denied</button>
+        <div class="btn-group">
+          <button type="button" class="btn" id="btn-getCookie">Get Cookie</button>
+          <button type="button" class="btn" id="btn-clearCookie">Clear Cookie</button>
+          <button type="button" class="btn" id="btn-dismissCookie">Dismissed</button>
+          <button type="button" class="btn" id="btn-allowCookie">Allowed</button>
+          <button type="button" class="btn" id="btn-denyCookie">Denied</button>
+        </div>
+        
+        <div class="btn-group">
+          <button type="button" class="btn" id="btn-initialise">Initialise</button>
+          <button type="button" class="btn" id="btn-open">Open</button>
+          <button type="button" class="btn" id="btn-close">Close</button>
+          <button type="button" class="btn" id="btn-destroy">Destroy</button>
+          <button type="button" class="btn" id="btn-status">Status</button>
+        </div>
+
+        <button onclick="javascript: window.location = './examples/example-1-themes.html';">Next Example</button>
+      </div>
     </div>
-    
-    <div class="btn-group">
-      <button type="button" class="btn" id="btn-initialise">Initialise</button>
-      <button type="button" class="btn" id="btn-open">Open</button>
-      <button type="button" class="btn" id="btn-close">Close</button>
-      <button type="button" class="btn" id="btn-destroy">Destroy</button>
-      <button type="button" class="btn" id="btn-status">Status</button>
-    </div>
-
-    <button onclick="javascript: window.location = './examples/example-1-themes.html';">Next Example</button>
   </div>
 
-<script src="build/cookieconsent.min.js"></script>
+<script src="src/cookieconsent.js"></script>
 <script>
 
   var m = document.getElementById('message');

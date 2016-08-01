@@ -7,6 +7,8 @@ body, html {
   font-size: 20px;
 
   background-color: #282828;
+
+  height: 100%;
 }
 
 
@@ -35,11 +37,6 @@ body, html {
   display: inline-block;
   width: 6em;
 }
-.example-window .selectbox {
-  display: inline-block;
-  width: 8em;
-}
-
 
 .selectbox {
   text-align: center;
@@ -55,7 +52,6 @@ body, html {
   border-color: #51a7e8;
   box-shadow: inset 0 0 1em .2em rgba(81, 167, 232, 0.5);
 }
-
 
 .form-input {
   display: inline-block;

@@ -9,6 +9,10 @@
 
   <link href="examples/style.css" rel="stylesheet">
   <link href="build/cookieconsent.min.css" rel="stylesheet">
+  <style>
+    .popup-selector {position: relative; top: -5px; left: -20px;}
+    .example-window .selectbox {display: inline-block; width: 8em;}
+  </style>
 
 <body role="document">
 
@@ -18,24 +22,26 @@
         <h1>Standard themes</h1>
         <p>Pick a standard layout and a colour scheme. Or build your own</p>
 
-        <div class="form-input">
-          <label>Palette</label>
-          <select id="palette" class="selectbox"></select>
-        </div>
+        <div class="popup-selector">
+          <div class="form-input">
+            <label>Palette</label>
+            <select id="palette" class="selectbox"></select>
+          </div>
 
-        <div class="form-input">
-          <label>Theme</label>
-          <select id="theme" class="selectbox"></select>
-        </div>
-        
-        <div class="form-input">
-          <label>Position</label>
-          <select id="position" class="selectbox"></select>
-        </div>
-        
-        <div class="form-input">
-          <label>Compliance</label>
-          <select id="compliance" class="selectbox"></select>
+          <div class="form-input">
+            <label>Theme</label>
+            <select id="theme" class="selectbox"></select>
+          </div>
+          
+          <div class="form-input">
+            <label>Position</label>
+            <select id="position" class="selectbox"></select>
+          </div>
+          
+          <div class="form-input">
+            <label>Compliance</label>
+            <select id="compliance" class="selectbox"></select>
+          </div>
         </div>
 
         <div class="btn-group">
