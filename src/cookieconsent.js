@@ -411,7 +411,6 @@
       this._onButtonClick = null;
 
       this.element = null;
-      //this.wrapper = null;
       this.options = null;
     };
 
@@ -514,11 +513,11 @@
       var pos = opts.position.split('-', 2); // top, bottom, left, right
 
       var classes = [
-        'cc-' + pos[0],
-        'cc-' + pos[1],
+        // top, bottom, left, right, banner, etc
+        'cc-' + pos[0], 'cc-' + pos[1],
 
-        'cc-type-' + opts.type,
-        'cc-theme-' + opts.theme
+        'cc-type-' + opts.type,   // add the compliance type
+        'cc-theme-' + opts.theme, // add the theme layout
       ];
 
       // we only add extra styles if `pallete` has been set to a valid value
@@ -575,8 +574,6 @@
 
       this.element = dom.buildDom(markup);
 
-
-
       // hide it before adding to DOM
       this.element.style.display = 'none';
 
@@ -585,8 +582,10 @@
 
       dom.addEventListener(this.element, 'click', this._onButtonClick);
 
-      // prepend element to container
-      dom.prependElem(validCont ? cont : document.body, this.element);
+      if (opts.autoattach) {
+        // prepend element to container
+        dom.prependElem(validCont ? cont : document.body, this.element);
+      }
     }
 
     function handleButtonClick (event) {

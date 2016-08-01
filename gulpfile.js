@@ -13,12 +13,10 @@ var jsBuildFiles = [
 ];
 var cssBuildFiles = [
   // defined explicitly so they are combined in order
+  './src/styles/animation.css',
   './src/styles/base.css',
   './src/styles/layout.css',
-  './src/styles/classes.css',
-  './src/styles/animation.css',
   './src/styles/media.css',
-  './src/styles/mobile.css',
 
   // all theme files
   './src/styles/themes/*.css',

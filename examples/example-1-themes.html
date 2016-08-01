@@ -10,7 +10,7 @@
   <link href="examples/style.css" rel="stylesheet">
   <link href="build/cookieconsent.min.css" rel="stylesheet">
 
-<body role="document" style="display:none">
+<body role="document">
 
   <div class="center-outer fit">
     <div class="center-inner">
@@ -84,10 +84,6 @@
 
       window[name].open();
       U.positionContent($content, window[name].element, options.position);
-
-      if (document.body.style.display == 'none') {
-        document.body.style.display = '';
-      }
     }
 
     function getOptions(inputs) {
