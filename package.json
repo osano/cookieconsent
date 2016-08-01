@@ -3,6 +3,13 @@
   "version": "1.0.10",
   "description": "Silktide's cookie consent tool.",
   "main": "cookieconsent.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "postinstall": "gulp build"
+  },
+  "dependencies": {
+    "yargs": "^3.9.1"
+  },
   "devDependencies": {
     "del": "^2.0.2",
     "gulp": "^3.9.0",
@@ -13,16 +20,10 @@
     "run-sequence": "^1.1.4"
   },
   "homepage": "http://silktide.com/tools/cookieconsent",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/silktide/cookieconsent2.git"
   },
   "author": "Silktide Ltd.",
-  "license": "MIT",
-  "dependencies": {
-    "yargs": "^3.9.1"
-  }
+  "license": "MIT"
 }
