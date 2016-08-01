@@ -112,7 +112,7 @@
     },
 
     interpolateString: function (str, callback) {
-      var marker = /{([a-z][a-z0-9\-_]*)}/ig;
+      var marker = /{{([a-z][a-z0-9\-_]*)}}/ig;
       return str.replace(marker, function (matches) {
         return callback(arguments[1]) || '';
       })
@@ -232,29 +232,23 @@
 
     var defaultOptions = {
       enabled: true,
-
       container: null, // optional (expecting a HTML element)
-
-      // {classes} is where additional classes get added
-      // {children} is where the inner html is set
-      //wrapper: '<div class="cc-wrapper">{children}</div>',
-      window: '<div class="cc-window {classes}">{children}</div>',
-
-      // defaults to the current domain
-      cookie: { path: '/', domain: 'localhost', expiryDays: 365 },
 
       // some callback hooks which are called at certain points in the app
       onAllowCookies: function() {},    // called the FIRST time cookies are accepted
       onDenyCookies: function() {},     // called the FIRST time cookies are denied
       onComplete: function(status) {},  // called on init if the app can imply consent, or directly after the above hooks
 
-      // simple whitelist/blacklist for pages.
-      // you can specify pages using a string '/index.html'           (matches '/index.html' exactly)
-      // OR by specifying a regular expression /\/page_[\d]+\.html/   (matched '/page_1.html' and '/page_2.html' etc)
+      // simple whitelist/blacklist for pages. specify page by:
+      //   - using a string : '/index.html'                     (matches '/index.html' exactly) OR
+      //   - using RegExp   : /\/page_[\d]+\.html/              (matched '/page_1.html' and '/page_2.html' etc)
       whitelistPage: [],
       blacklistPage: [],
 
-      // this is where you set the content of each element
+      // defaults to the current domain
+      cookie: { path: '/', domain: 'localhost', expiryDays: 365 },
+
+      // each item defines the inner text for the element that it references
       content: {
         header: 'Cookies used on the website',
         message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies. Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies. ',
@@ -263,75 +257,51 @@
         allow: 'Allow',
         deny: 'Deny',
         close: '&#x274c;',
-
-        // extensions
-        customButton: 'Continue',
       },
 
-      // this is the HTML for the elements above.
-      // {children} will be replaced with the equivalent 'content' above
-      elements: {
-        header: '<span class="cc-header">{children}</span>',
-        message: '<span class="cc-message">{children}</span>',
-        dismiss: '<a class="cc-btn cc-dismiss">{children}</a>',
-        link: '<a href="/" class="cc-link">{children}</a>',
-        allow: '<a class="cc-btn cc-allow">{children}</a>',
-        deny: '<a class="cc-btn cc-deny">{children}</a>',
-        close: '<span class="cc-close">{children}</span>',
+      // The placeholders {{classes}} and {{children}} both get replaced during initialisation:
+      //  - {{classes}} is where additional classes get added
+      //  - {{children}} is where the HTML children are placed
+      window: '<div class="cc-window {{classes}}">{{children}}</div>',
 
-        // extensions
-        customButton: '<span class="cc-btn cc-middle customButton"><img height="20" src="https://cdn0.iconfinder.com/data/icons/typicons-2/24/tick-128.png"><span>{children}</span></span>',
+      // this is the HTML for the elements above. {{children}} will be replaced with the equivalent 'content' above
+      elements: {
+        header: '<span class="cc-header">{{children}}</span>',
+        message: '<span class="cc-message">{{children}}</span>',
+        dismiss: '<a class="cc-btn cc-dismiss">{{children}}</a>',
+        link: '<a href="/" class="cc-link">{{children}}</a>',
+        allow: '<a class="cc-btn cc-allow">{{children}}</a>',
+        deny: '<a class="cc-btn cc-deny">{{children}}</a>',
+        close: '<span class="cc-close">{{children}}</span>',
       },
 
       // define types of compliance here
       compliance: {
-        'dismiss': '<div class="cc-inline">{dismiss}</div>',
-        'info': '<div class="cc-inline">{dismiss}{link}</div>',
-        'opt-in': '<div class="cc-inline cc-highlight">{allow}{deny}</div>',
-        'opt-out': '<div class="cc-inline cc-highlight">{deny}{allow}</div>',
+        'dismiss': '<div class="cc-compliance">{{dismiss}}</div>',
+        'info': '<div class="cc-compliance">{{dismiss}}{{link}}</div>',
+        'opt-in': '<div class="cc-compliance cc-highlight">{{allow}}{{deny}}</div>',
+        'opt-out': '<div class="cc-compliance cc-highlight">{{deny}}{{allow}}</div>',
       },
 
       // define layout themes here
       themes: {
-        'all-floating': '{header}{message}{compliance}{close}',
-        'mono-floating': '{message}{compliance}',
-        'link-floating': '{message}{link}{compliance}',
-        'centered-floating': '{message}{link}{compliance}',
+        'all-floating': '{{header}}{{message}}{{compliance}}{{close}}',
+        'mono-floating': '{{message}}{{compliance}}',
+        'link-floating': '{{message}}{{link}}{{compliance}}',
+        'centered-floating': '{{message}}{{link}}{{compliance}}',
 
-        // in the case of the banner, {compliance} must be first because it floats right
-        'basic-banner': '{compliance}{message}',
+        // in the case of the banner, {{compliance} must be first because it floats right
+        'basic-banner': '{{compliance}}{{message}}',
       },
 
       // define custom color palettes here
       palettes: {
-        /*'': {
-          popup: {background: '', link: '', text: ''},
-          button: {background: '', border: '', text: ''},
-          highlight: {background: '', border: '', text: ''},
-        },*/
+        'white': {popup: {background: '#fafafa', text: '#000', link: '#888'}, button: {background: 'transparent', border: '#86b4ea', text: '#86b4ea'}},
+        'blue' : {popup: {background: '#4a90e2', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}},
+        'red'  : {popup: {background: '#d34040', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}, highlight: {background: '#ffffff', border: '#ffffff', text: '#d34040'}},
+        'black': {popup: {background: '#000000', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'}, highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000000'}},
 
-        'white': {
-          popup: {background: '#fafafa', text: '#000', link: '#888'},
-          button: {background: 'transparent', border: '#86b4ea', text: '#86b4ea'},
-        },
-
-        'blue': {
-          popup: {background: '#4a90e2', text: '#fff', link: '#fff'},
-          button: {background: 'transparent', border: '#fff', text: '#fff'},
-        },
-
-        'red': {
-          popup: {background: '#d34040', text: '#fff', link: '#fff'},
-          button: {background: 'transparent', border: '#fff', text: '#fff'},
-          highlight: {background: '#fff', border: '#fff', text: '#d34040'},
-        },
-
-        'black': {
-          popup: {background: '#000', text: '#fff', link: '#fff'},
-          button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'},
-          highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000'},
-        },
-
+        // OLD STYLES, probably shouldn't exist within the tool, but be extra's
         //'black-orange': {background:'#252c33', text: '#fff', link: '#fff', buttonBackground: '#fa6956', buttonText: '#fff', buttonBorder: '#fa6956'},
         //'green-green': {background:'#4ea8af', text: '#fff', link: '#fff', buttonBackground: '#91e23e', buttonText: '#fff', buttonBorder: '#91e23e'},
         //'blue-grey': {background:'#205072', text: '#fff', link: '#fff', buttonBackground: '#b7bbc0', buttonText: '#000', buttonBorder: '#b7bbc0'},
@@ -351,14 +321,17 @@
       palette: '',                     // refers to `palettes`
 
       // If this is defined, then it is used as the inner html instead of `themes`. This allows for ultimate customisation.
-      // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click handlers.
-      // You can use other pre-existing classes too. See the cookieconsent.css file
+      // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
+      // handlers. You can use other pre-existing classes too. See `src/styles` folder.
       overrideHTML: null,
 
-      // cookie consent appends its self to `container`. this decides whether to append to wrapper or the element.
-      // (the wrapper is sometimes not needed when integrating with existing apps, or when instanciating many windows).
-      // if this is false, the user can get a new wrapper element at any time (independently from CookiePopup) by calling `cc.getWrapper`
-      useWrapper: true,
+      // By default the created HTML is automatically appended to the container (which defaults to <body>). Set this to false to
+      // prevent this behaviour. You must attach the `element` yourself, which is a public property of the popup instance.
+      // 
+      //     var instance = cookieconsent.factory(options);
+      //     document.body.appendChild(instance.element);
+      //
+      autoattach: true,
     };
 
     function CookiePopup () {
@@ -368,10 +341,6 @@
     CookiePopup.getThemes = function () { return Object.keys(defaultOptions.themes) };
     CookiePopup.getPalettes = function () { return Object.keys(defaultOptions.palettes) };
     CookiePopup.getCompliances = function () { return Object.keys(defaultOptions.compliance) };
-
-    //CookiePopup.getNewWrapper = function () {
-    //  return dom.buildDom(defaultOptions.wrapper.replace('{children}', ''));
-    //};
 
     CookiePopup.prototype.initialise = function (options) {
       if (this.options) {
@@ -403,8 +372,8 @@
 
       // the full markup either contains the wrapper or it does not (for multiple instances)
       var cookiePopup = this.options.window
-        .replace('{classes}', getPopupClasses.call(this).join(' '))
-        .replace('{children}', getPopupInnerMarkup.call(this));
+        .replace('{{classes}}', getPopupClasses.call(this).join(' '))
+        .replace('{{children}}', getPopupInnerMarkup.call(this));
 
       appendMarkup.call(this, cookiePopup);
 
@@ -436,14 +405,6 @@
         }
         cc.customStyles[opts.palette] = null;
       }
-
-      /*if (this.wrapper && this.wrapper.parentNode) {
-        // caller could have passed a custom wrapper, therefor we
-        // must make sure that it is empty before we remove it!
-        if (!this.wrapper.children.length) {
-          this.wrapper.parentNode.removeChild(this.wrapper);
-        }
-      }*/
 
       // remove references
       this.dynamicStyle = null;

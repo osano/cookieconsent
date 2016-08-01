@@ -24,7 +24,7 @@
   left: 0; right: 0; bottom: 0;
 }
 
-.cc-inline>* {
+.cc-compliance>* {
   display: inline-block;
   vertical-align: middle;
 }

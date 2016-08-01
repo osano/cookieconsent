@@ -16,7 +16,7 @@
   width: auto;
 }
 
-.cc-type-info .cc-inline .cc-link {
+.cc-type-info .cc-compliance .cc-link {
   margin: .9em;
 }
 
@@ -51,7 +51,7 @@
   width: auto;
 }
 
-.cc-banner .cc-inline {
+.cc-banner .cc-compliance {
   display: inline-block;
   float: right;
 }
@@ -77,6 +77,6 @@
 .cc-banner .cc-message {
   overflow: hidden;/* Make this div take up the rest of the horizontal space, and no more */
 }
-.cc-banner .cc-inline {
+.cc-banner .cc-compliance {
   float: right;/* Make this div as wide as its contents */
 }
