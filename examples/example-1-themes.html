@@ -10,7 +10,7 @@
   <link href="examples/style.css" rel="stylesheet">
   <link href="build/cookieconsent.min.css" rel="stylesheet">
 
-<body role="document">
+<body role="document" style="display:none">
 
   <div class="center-outer fit">
     <div class="center-inner">
@@ -46,7 +46,7 @@
   </div>
 
 <script src="examples/script.js"></script>
-<script src="build/cookieconsent.min.js"></script>
+<script src="src/cookieconsent.js"></script>
 <script>
 
   (function (C, U) {
@@ -73,8 +73,6 @@
     updater(); // trigger the first update
     elems.palette.focus(); // focus the first input
 
-
-
     function draw (name, inputs) {
       var options = getOptions(inputs);
 
@@ -86,6 +84,10 @@
 
       window[name].open();
       U.positionContent($content, window[name].element, options.position);
+
+      if (document.body.style.display == 'none') {
+        document.body.style.display = '';
+      }
     }
 
     function getOptions(inputs) {

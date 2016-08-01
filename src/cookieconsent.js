@@ -285,8 +285,8 @@
 
       // define types of compliance here
       compliance: {
-        'dismiss': '<div class="cc-inline">{dismiss}</div>',
-        'info': '<div class="cc-inline">{dismiss}{link}</div>',
+        'dismiss': '<div class="cc-inline cc-no-highlight">{dismiss}</div>',
+        'info': '<div class="cc-inline cc-no-highlight">{dismiss}{link}</div>',
         'opt-in': '<div class="cc-inline">{allow}{deny}</div>',
         'opt-out': '<div class="cc-inline">{deny}{allow}</div>',
       },
@@ -304,10 +304,35 @@
 
       // define custom color palettes here
       palettes: {
-        'red': {background:'#d34040', text: '#fff', link: '#fff', buttonBackground: 'transparent', buttonText: '#fff', buttonBorder: '#fff'},
-        'blue': {background:'#4a90e2', text: '#fff', link: '#fff', buttonBackground: 'transparent', buttonText: '#fff', buttonBorder: '#fff'},
-        'black': {background:'#000', text: '#fff', link: '#fff', buttonBackground: '#f8e71c', buttonText: '#000', buttonBorder: '#f8e71c'},
-        'white': {background:'#fafafa', text: '#000', link: '#888', buttonBackground: 'transparent', buttonText: '#86b4ea', buttonBorder: '#86b4ea'},
+        /*'': {
+          popup: {background: '', text: '', link: ''},
+          primary: {background: '', border: '', text: ''},
+          secondary: {background: '', border: '', text: ''},
+        },*/
+
+        'white': {
+          popup: {background: '#fafafa', text: '#000', link: '#888'},
+          primaryBtn: {background: 'transparent', border: '#86b4ea', text: '#86b4ea'},
+          secondaryBtn: {background: 'transparent', border: '#86b4ea', text: '#86b4ea'},
+        },
+
+        'black': {
+          popup: {background: '#000', text: '#fff', link: '#fff'},
+          primaryBtn: {background: '#f8e71c', border: '#f8e71c', text: '#000'},
+          secondaryBtn: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'},
+        },
+
+        'red': {
+          popup: {background: '#d34040', text: '#fff', link: '#fff'},
+          primaryBtn: {background: '#fff', border: '#fff', text: '#d34040'},
+          secondaryBtn: {background: 'transparent', border: '#fff', text: '#fff'},
+        },
+
+        'blue': {
+          popup: {background: '#4a90e2', text: '#fff', link: '#fff'},
+          primaryBtn: {background: '#fff', border: '#fff', text: '#d34040'},
+          secondaryBtn: {background: 'transparent', border: '#fff', text: '#fff'},
+        },
 
         'black-orange': {background:'#252c33', text: '#fff', link: '#fff', buttonBackground: '#fa6956', buttonText: '#fff', buttonBorder: '#fa6956'},
         'green-green': {background:'#4ea8af', text: '#fff', link: '#fff', buttonBackground: '#91e23e', buttonText: '#fff', buttonBorder: '#91e23e'},
@@ -376,11 +401,6 @@
       }
       if (arrayContainsMatches(this.options.whitelistPage, location.pathname)) {
         this.options.enabled = true;
-      }
-
-      // if this should be disabled, stop initialisation
-      if (!this.options.enabled) {
-        return;
       }
 
       // the full markup either contains the wrapper or it does not (for multiple instances)
@@ -505,35 +525,29 @@
       cookie.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
     };
 
+    // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
     function checkCallbackHooks () {
-      var st = cc.status;
       var complete = this.options.onComplete;
 
-      if (window.navigator) {
-        if (!navigator.cookieEnabled) {
-          complete(st.deny);
-          return true;
-        }
-        if (navigator.CookiesOK) {
-          complete(st.allow);
-          return true;
-        }
-      }
-
-      if (window.CookiesOK) {
-        complete(st.allow);
+      if (!window.navigator.cookieEnabled) {
+        complete(cc.status.deny);
         return true;
       }
 
-      switch (cookie.readCookie(cc.cookieName)) {
-        case st.deny: complete(st.deny); break;
-        case st.allow: complete(st.allow); break;
-        case st.dismiss: complete(st.dismiss); break;
-        default:
-          this.clearStatus();
-          return false;
+      if (window.CookiesOK || window.navigator.CookiesOK) {
+        complete(cc.status.allow);
+        return true;
       }
-      return true;
+
+      var allowed = Object.keys(cc.status);
+      var answer = cookie.readCookie(cc.cookieName);
+      var match = allowed.indexOf(answer) >= 0;
+
+      if (match) {
+        complete(answer);
+      }
+      return match;
+
     }
 
     function getPopupClasses () {
@@ -554,11 +568,6 @@
       // if we override the pallete, add the class that enables this
       if (didAttach) {
         classes.push('cc-color-override-' + opts.palette);
-      }
-
-      // add class to container classes so we can specify css for IE8 only
-      if (navigator.appVersion.indexOf('MSIE 8') > -1) {
-        classes.push('cc-ie8');
       }
 
       return classes;
@@ -605,18 +614,9 @@
       var cont = opts.container;
       var validCont = (cont && cont.nodeType === 1);
 
-      if (!validCont) {
-        cont = document.body;
-      }
+      this.element = dom.buildDom(markup);
 
-      //if (opts.useWrapper) {
-      //  var fullHtml = opts.wrapper.replace('{children}', markup);
-      //  this.wrapper = dom.buildDom(fullHtml);
-      //  this.element = this.wrapper.firstChild;
-      //} else {
-        this.element = dom.buildDom(markup);
-      //  this.wrapper = cont;
-      //}
+
 
       // hide it before adding to DOM
       this.element.style.display = 'none';
@@ -627,13 +627,7 @@
       dom.addEventListener(this.element, 'click', this._onButtonClick);
 
       // prepend element to container
-      //if (opts.useWrapper) {
-        // add wrapper to cont (which is body)
-      //  dom.prependElem(cont, this.wrapper);
-      //} else {
-        // add element to wrapper
-        dom.prependElem(cont, this.element);
-      //}
+      dom.prependElem(validCont ? cont : document.body, this.element);
     }
 
     function handleButtonClick (event) {
@@ -653,23 +647,39 @@
       }
     }
 
+    // I might change this function to use inline styles. I originally chose a stylesheet because I could select many elements with a
+    // single rule (something that happened a lot), the apps has changed slightly now though, so inline styles might be more applicable.
     function attachCustomPalette () {
       var colorStyles = {};
-      var pName = this.options.palette;
-      var pOpts = pName && this.options.palettes && this.options.palettes[pName];
+      var name = this.options.palette;
+      var p = name && this.options.palettes && this.options.palettes[name];
+      var addBtn = function(styles, selector, obj) {
+        styles[selector] = ['color: '+obj.text, 'border-color: '+obj.border, 'background-color: '+obj.background];
+      };
 
-      if (pOpts) {
-        var prefix = '.cc-color-override-' + pName;
+      if (p) {
+        var prefix = '.cc-color-override-' + name;
+
+        if (p.popup) {
+          colorStyles[prefix + ' .cc-link'] = ['color: '+p.popup.link];
+          colorStyles[prefix + '.cc-window'] = ['color: '+p.popup.text, 'background-color: '+p.popup.background];
+        }
+
+        if (p.primaryBtn) {
+          // only selects the first elem IF a second exists (won't be applied for the dismiss button)
+          addBtn(colorStyles, prefix + ' :not(.cc-no-highlight) .cc-btn:first-child', p.primaryBtn);
+        }
+
+        if (p.secondaryBtn) {
+          // only selects the second element if it exists
+          addBtn(colorStyles, prefix + ' .cc-btn:nth-child(2)', p.secondaryBtn);
+        }
 
         // this will be interpretted as CSS. the key is the selector, and each array element is a rule
-        colorStyles[prefix + '.cc-window'] = ['color: '+pOpts.text, 'background-color: '+pOpts.background];
-        colorStyles[prefix + ' .cc-link'] = ['color: '+pOpts.link];
-        colorStyles[prefix + ' .cc-btn'] = ['color: '+pOpts.buttonText, 'border-color: '+pOpts.buttonBorder, 'background-color: '+pOpts.buttonBackground];
-
-        if (!cc.customStyles[pName]) {
+        if (!cc.customStyles[name]) {
           var newStyle = dom.createStyle();
           // custom style doesn't exist, so we create it
-          cc.customStyles[pName] = {
+          cc.customStyles[name] = {
             references: 1,
             element: newStyle,
           };
@@ -682,11 +692,12 @@
           }
         } else {
           // custom style already exists, so increment the reference count
-          ++cc.customStyles[pName].references;
+          ++cc.customStyles[name].references;
         }
       }
+
       // returns true if a custom style is chosen
-      return !!pOpts;
+      return !!p;
     }
 
     function arrayContainsMatches (array, search) {
