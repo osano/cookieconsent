@@ -43,7 +43,6 @@
 /**************************************** BANNER ****************************************/
 
 .cc-banner .cc-message {
-  display: inline-block;
   margin: 0;
 }
 
@@ -70,13 +69,14 @@
 
 /********************** Misc **********************/
 
+/* Makes #outer contain its floated children */
 .cc-banner {
-  display: flex;
+  overflow: hidden;
+  width: 100%;
 }
-
-.col-1 {
-  flex: 6.5;
+.cc-banner .cc-message {
+  overflow: hidden;/* Make this div take up the rest of the horizontal space, and no more */
 }
-.col-2 {
-  flex: 3.5;
+.cc-banner .cc-inline {
+  float: right;/* Make this div as wide as its contents */
 }

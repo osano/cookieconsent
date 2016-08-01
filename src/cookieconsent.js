@@ -257,7 +257,7 @@
       // this is where you set the content of each element
       content: {
         header: 'Cookies used on the website',
-        message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
+        message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies. Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies. ',
         dismiss: 'Close and don\'t show again',
         link: 'Learn more',
         allow: 'Allow',
@@ -298,7 +298,8 @@
         'link-floating': '{message}{link}{compliance}',
         'centered-floating': '{message}{link}{compliance}',
 
-        'basic-banner': '<div class="col-1">{message}</div><div class="col-2">{compliance}</div>',
+        // in the case of the banner, {compliance} must be first because it floats right
+        'basic-banner': '{compliance}{message}',
       },
 
       // define custom color palettes here
