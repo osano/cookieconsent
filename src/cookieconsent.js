@@ -285,10 +285,10 @@
 
       // define types of compliance here
       compliance: {
-        'dismiss': '<div class="cc-inline cc-no-highlight">{dismiss}</div>',
-        'info': '<div class="cc-inline cc-no-highlight">{dismiss}{link}</div>',
-        'opt-in': '<div class="cc-inline">{allow}{deny}</div>',
-        'opt-out': '<div class="cc-inline">{deny}{allow}</div>',
+        'dismiss': '<div class="cc-inline">{dismiss}</div>',
+        'info': '<div class="cc-inline">{dismiss}{link}</div>',
+        'opt-in': '<div class="cc-inline cc-highlight">{allow}{deny}</div>',
+        'opt-out': '<div class="cc-inline cc-highlight">{deny}{allow}</div>',
       },
 
       // define layout themes here
@@ -305,41 +305,39 @@
       // define custom color palettes here
       palettes: {
         /*'': {
-          popup: {background: '', text: '', link: ''},
-          primary: {background: '', border: '', text: ''},
-          secondary: {background: '', border: '', text: ''},
+          popup: {background: '', link: '', text: ''},
+          button: {background: '', border: '', text: ''},
+          highlight: {background: '', border: '', text: ''},
         },*/
 
         'white': {
           popup: {background: '#fafafa', text: '#000', link: '#888'},
-          primaryBtn: {background: 'transparent', border: '#86b4ea', text: '#86b4ea'},
-          secondaryBtn: {background: 'transparent', border: '#86b4ea', text: '#86b4ea'},
-        },
-
-        'black': {
-          popup: {background: '#000', text: '#fff', link: '#fff'},
-          primaryBtn: {background: '#f8e71c', border: '#f8e71c', text: '#000'},
-          secondaryBtn: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'},
-        },
-
-        'red': {
-          popup: {background: '#d34040', text: '#fff', link: '#fff'},
-          primaryBtn: {background: '#fff', border: '#fff', text: '#d34040'},
-          secondaryBtn: {background: 'transparent', border: '#fff', text: '#fff'},
+          button: {background: 'transparent', border: '#86b4ea', text: '#86b4ea'},
         },
 
         'blue': {
           popup: {background: '#4a90e2', text: '#fff', link: '#fff'},
-          primaryBtn: {background: '#fff', border: '#fff', text: '#d34040'},
-          secondaryBtn: {background: 'transparent', border: '#fff', text: '#fff'},
+          button: {background: 'transparent', border: '#fff', text: '#fff'},
         },
 
-        'black-orange': {background:'#252c33', text: '#fff', link: '#fff', buttonBackground: '#fa6956', buttonText: '#fff', buttonBorder: '#fa6956'},
-        'green-green': {background:'#4ea8af', text: '#fff', link: '#fff', buttonBackground: '#91e23e', buttonText: '#fff', buttonBorder: '#91e23e'},
-        'blue-grey': {background:'#205072', text: '#fff', link: '#fff', buttonBackground: '#b7bbc0', buttonText: '#000', buttonBorder: '#b7bbc0'},
-        'grey-black': {background:'#b7bbc0', text: '#fff', link: '#fff', buttonBackground: '#252c33', buttonText: '#fff', buttonBorder: '#252c33'},
-        'red-white': {background:'#fa5656', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
-        'purple-white': {background:'#956cb9', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
+        'red': {
+          popup: {background: '#d34040', text: '#fff', link: '#fff'},
+          button: {background: 'transparent', border: '#fff', text: '#fff'},
+          highlight: {background: '#fff', border: '#fff', text: '#d34040'},
+        },
+
+        'black': {
+          popup: {background: '#000', text: '#fff', link: '#fff'},
+          button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'},
+          highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000'},
+        },
+
+        //'black-orange': {background:'#252c33', text: '#fff', link: '#fff', buttonBackground: '#fa6956', buttonText: '#fff', buttonBorder: '#fa6956'},
+        //'green-green': {background:'#4ea8af', text: '#fff', link: '#fff', buttonBackground: '#91e23e', buttonText: '#fff', buttonBorder: '#91e23e'},
+        //'blue-grey': {background:'#205072', text: '#fff', link: '#fff', buttonBackground: '#b7bbc0', buttonText: '#000', buttonBorder: '#b7bbc0'},
+        //'grey-black': {background:'#b7bbc0', text: '#fff', link: '#fff', buttonBackground: '#252c33', buttonText: '#fff', buttonBorder: '#252c33'},
+        //'red-white': {background:'#fa5656', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
+        //'purple-white': {background:'#956cb9', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
       },
 
       // this refers to the popup windows position. we currently support:
@@ -665,14 +663,13 @@
           colorStyles[prefix + '.cc-window'] = ['color: '+p.popup.text, 'background-color: '+p.popup.background];
         }
 
-        if (p.primaryBtn) {
-          // only selects the first elem IF a second exists (won't be applied for the dismiss button)
-          addBtn(colorStyles, prefix + ' :not(.cc-no-highlight) .cc-btn:first-child', p.primaryBtn);
+        if (p.button) {
+          addBtn(colorStyles, prefix + ' .cc-btn', p.button);
         }
 
-        if (p.secondaryBtn) {
+        if (p.highlight) {
           // only selects the second element if it exists
-          addBtn(colorStyles, prefix + ' .cc-btn:nth-child(2)', p.secondaryBtn);
+          addBtn(colorStyles, prefix + ' .cc-highlight .cc-btn:first-child', p.highlight);
         }
 
         // this will be interpretted as CSS. the key is the selector, and each array element is a rule
