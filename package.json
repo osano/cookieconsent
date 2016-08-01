@@ -8,16 +8,14 @@
     "postinstall": "gulp build"
   },
   "dependencies": {
-    "yargs": "^3.9.1"
-  },
-  "devDependencies": {
     "del": "^2.0.2",
     "gulp": "^3.9.0",
     "gulp-rename": "^1.2.0",
     "gulp-replace": "^0.5.4",
     "gulp-sass": "^2.3.2",
     "gulp-uglify": "^1.1.0",
-    "run-sequence": "^1.1.4"
+    "run-sequence": "^1.1.4",
+    "yargs": "^3.9.1"
   },
   "homepage": "http://silktide.com/tools/cookieconsent",
   "repository": {
