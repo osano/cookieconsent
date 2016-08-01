@@ -251,7 +251,7 @@
       // each item defines the inner text for the element that it references
       content: {
         header: 'Cookies used on the website',
-        message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies. Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies. ',
+        message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
         dismiss: 'Close and don\'t show again',
         link: 'Learn more',
         allow: 'Allow',
@@ -303,13 +303,31 @@
         'red'  : {popup: {background: '#d34040', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}, highlight: {background: '#ffffff', border: '#ffffff', text: '#d34040'}},
         'black': {popup: {background: '#000000', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'}, highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000000'}},
 
-        // OLD STYLES, probably shouldn't exist within the tool, but be extra's
-        //'black-orange': {background:'#252c33', text: '#fff', link: '#fff', buttonBackground: '#fa6956', buttonText: '#fff', buttonBorder: '#fa6956'},
-        //'green-green': {background:'#4ea8af', text: '#fff', link: '#fff', buttonBackground: '#91e23e', buttonText: '#fff', buttonBorder: '#91e23e'},
-        //'blue-grey': {background:'#205072', text: '#fff', link: '#fff', buttonBackground: '#b7bbc0', buttonText: '#000', buttonBorder: '#b7bbc0'},
-        //'grey-black': {background:'#b7bbc0', text: '#fff', link: '#fff', buttonBackground: '#252c33', buttonText: '#fff', buttonBorder: '#252c33'},
-        //'red-white': {background:'#fa5656', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
-        //'purple-white': {background:'#956cb9', text: '#fff', link: '#fff', buttonBackground: '#fff', buttonText: '#000', buttonBorder: '#fff'},
+
+        'black-orange': {
+          popup: {background: '#252c33', text: '#fff', link: '#fff'},
+          button: {background: '#fa6956', border: '#fa6956', text: '#fff'},
+        },
+        'green-green': {
+          popup: {background: '#4ea8af', text: '#fff', link: '#fff'},
+          button: {background: '#91e23e', border: '#91e23e', text: '#fff'},
+        },
+        'blue-grey': {
+          popup: {background: '#205072', text: '#fff', link: '#fff'},
+          button: {background: '#b7bbc0', border: '#b7bbc0', text: '#fff'},
+        },
+        'grey-black': {
+          popup: {background: '#b7bbc0', text: '#fff', link: '#fff'},
+          button: {background: '#252c33', border: '#252c33', text: '#fff'},
+        },
+        'red-white': {
+          popup: {background: '#fa5656', text: '#fff', link: '#fff'},
+          button: {background: '#ffffff', border: '#ffffff', text: '#fff'},
+        },
+        'purple-white': {
+          popup: {background: '#956cb9', text: '#fff', link: '#fff'},
+          button: {background: '#ffffff', border: '#ffffff', text: '#fff'},
+        },
       },
 
       // this refers to the popup windows position. we currently support:
