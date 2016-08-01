@@ -53,10 +53,10 @@
 
     // get the list of options for our select boxes
     var userOptions = {
-      theme      : ['basic-banner'].concat(C.Popup.getThemes()),
+      theme      : C.Popup.getThemes(),
       palette    : C.Popup.getPalettes(),
       compliance : C.Popup.getCompliances(),
-      position   : ['banner-top', 'top-left', 'top-right', 'banner-bottom', 'bottom-left', 'bottom-right'],
+      position   : ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'banner-top', 'banner-bottom'],
     };
 
     var $content = document.querySelector('.center-outer');

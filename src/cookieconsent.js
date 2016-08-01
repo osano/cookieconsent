@@ -285,14 +285,16 @@
 
       // define layout themes here
       themes: {
-        'all-floating': '{{header}}{{message}}{{compliance}}{{close}}',
-        'mono-floating': '{{message}}{{compliance}}',
-        'link-floating': '{{message}}{{link}}{{compliance}}',
-        'centered-floating': '{{message}}{{link}}{{compliance}}',
+        // the 'block' layout tend to be for square floating popups
+        'basic-block': '{{message}}{{compliance}}',
+        'centered-block': '{{message}}{{link}}{{compliance}}',
 
-        // in the case of the banner, {{compliance} must be first because it floats right
-        'basic-banner': '{{compliance}}{{message}}',
+        // the 'inline' layouts tend to be for the banner popups (the {{compliance}} must be first because it floats right)
+        'basic-inline': '{{compliance}}{{message}}',
       },
+
+      showClose: false,
+      showHeader: false,
 
       // define custom color palettes here
       palettes: {
