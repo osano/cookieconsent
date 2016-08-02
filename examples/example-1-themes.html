@@ -60,25 +60,28 @@
     $selector.onclick = function (e) {
       var targ = e.target, item;
 
-      // This click event could have been called for any of the child elements.
-      // Out of these child elements, we want to find the closest LI element (the direct UL decendant).
+      // if the target is the container, exit
+      if (targ.isSameNode($selector)) return;
+
+      // from this point, only the child elements of $selector will get through.
+      // out of these child elements, we want to find the closest direct decendant <li>
       while (targ.tagName != 'LI' && targ.parentNode) {
         targ = targ.parentNode;
       }
 
-      // if target is a direct child of $selector
-      if (targ.parentNode.isSameNode($selector)) {
-        var idx = Array.prototype.indexOf.call($selector.children, targ);
+      if (!targ.parentNode.isSameNode($selector)) return;
 
-        if (idx != E.currentOpen) {
-          if (E.currentOpen >= 0)
-            E.instances[E.currentOpen].close();
+      // from this point, 'targ' will be a direct decendant of $selector
+      var idx = Array.prototype.indexOf.call($selector.children, targ);
 
-          if (idx >= 0)
-            E.instances[idx].open();
+      if (idx != E.currentOpen) {
+        if (E.currentOpen >= 0)
+          E.instances[E.currentOpen].close();
 
-          E.currentOpen = idx;
-        }
+        if (idx >= 0)
+          E.instances[idx].open();
+
+        E.currentOpen = idx;
       }
     };
 
