@@ -326,7 +326,7 @@
         },
         'purple-white': {
           popup: {background: '#956cb9', text: '#fff', link: '#fff'},
-          button: {background: '#ffffff', border: '#ffffff', text: '#fff'},
+          button: {background: '#ffffff', border: '#ffffff', text: '#000'},
         },
       },
 

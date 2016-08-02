@@ -14,6 +14,21 @@
     .example-window .selectbox {display: inline-block; width: 8em;}
   </style>
 
+  <script>
+    window.cookieconsent_examples = {
+      currentOpen: -1,
+      instances: [],
+      options: {
+        'Red Banner Top': {type: 'info', theme: 'basic-inline', palette: 'red', position: 'banner-top'},
+        'White Banner Top': {type: 'opt-out', theme: 'basic-inline', palette: 'white', position: 'banner-top'},
+        'Black Banner Bottom': {type: 'opt-in', theme: 'basic-inline', palette: 'black', position: 'banner-bottom'},
+        'Blue Floating Top Left': {type: 'info', theme: 'basic-block', palette: 'blue', position: 'top-left'},
+        'Black Floating Top Right': {type: 'opt-out', theme: 'basic-block', palette: 'black-orange', position: 'top-right'},
+        'Purple Floating Bottom Right': {type: 'opt-in', theme: 'basic-block', palette: 'purple-white', position: 'bottom-right'},
+      }
+    };
+  </script>
+
 <body role="document">
 
   <div class="center-outer fit">
@@ -22,27 +37,7 @@
         <h1>Standard themes</h1>
         <p>Pick a standard layout and a colour scheme. Or build your own</p>
 
-        <div class="popup-selector">
-          <div class="form-input">
-            <label>Palette</label>
-            <select id="palette" class="selectbox"></select>
-          </div>
-
-          <div class="form-input">
-            <label>Theme</label>
-            <select id="theme" class="selectbox"></select>
-          </div>
-          
-          <div class="form-input">
-            <label>Position</label>
-            <select id="position" class="selectbox"></select>
-          </div>
-          
-          <div class="form-input">
-            <label>Compliance</label>
-            <select id="compliance" class="selectbox"></select>
-          </div>
-        </div>
+        <ul class="example-selector"></ul>
 
         <div class="btn-group">
           <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Next Example</button>
@@ -55,52 +50,42 @@
 <script src="src/cookieconsent.js"></script>
 <script>
 
-  (function (C, U) {
+  (function (C, E) {
 
-    // get the list of options for our select boxes
-    var userOptions = {
-      theme      : C.Popup.getThemes(),
-      palette    : C.Popup.getPalettes(),
-      compliance : C.Popup.getCompliances(),
-      position   : ['top-left', 'top-right', 'bottom-left', 'bottom-right', 'banner-top', 'banner-bottom'],
-    };
+    var examples = Object.keys(E.options);
+    var $selector = document.querySelector('.example-selector');
 
-    var $content = document.querySelector('.center-outer');
+    $selector.innerHTML = '<li class="container"><span class="inner">' + Object.keys(E.options).join('</span></li><li class="container"><span class="inner">') + '</span></li>';
 
-    // create an object of elements indexed by their name i.e. `elems.theme` or `elems.palette`
-    var elems = U.createInputs(Object.keys(userOptions));
+    $selector.onclick = function (e) {
+      var targ = e.target, item;
 
-    // fill the select box elements with the user options. use the `pretty` function to format each one
-    U.createSelects(elems, userOptions, U.formatSelectOptionsFromArray.bind(null, U.pretty));
-
-    // add an 'onchange' event to each element which calls `draw`
-    var updater = U.createUpdater(elems, draw.bind(null, '__cookieconsent_popup'))
-
-    updater(); // trigger the first update
-    elems.palette.focus(); // focus the first input
-
-    function draw (name, inputs) {
-      var options = getOptions(inputs);
-
-      if (!window[name]) {
-        window[name] = C.factory(options);
-      } else {
-        window[name].initialise(options);
+      // This click event could have been called for any of the child elements.
+      // Out of these child elements, we want to find the closest LI element (the direct UL decendant).
+      while (targ.tagName != 'LI' && targ.parentNode) {
+        targ = targ.parentNode;
       }
 
-      window[name].open();
-      U.positionContent($content, window[name].element, options.position);
+      // if target is a direct child of $selector
+      if (targ.parentNode.isSameNode($selector)) {
+        var idx = Array.prototype.indexOf.call($selector.children, targ);
+
+        if (idx != E.currentOpen) {
+          if (E.currentOpen >= 0)
+            E.instances[E.currentOpen].close();
+
+          if (idx >= 0)
+            E.instances[idx].open();
+
+          E.currentOpen = idx;
+        }
+      }
+    };
+
+    for (var i = 0, l = examples.length; i < l; ++i) {
+      E.instances[i] = C.factory(E.options[examples[i]]);
     }
 
-    function getOptions(inputs) {
-      return {
-        type: inputs.compliance,
-        theme: inputs.theme,
-        palette: inputs.palette,
-        position: inputs.position,
-      };
-    }
-
-  }(window.cookieconsent, window.cookieconsent_example_util));
+  }(window.cookieconsent, window.cookieconsent_examples));
 
 </script>

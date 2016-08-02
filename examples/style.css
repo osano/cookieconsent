@@ -11,7 +11,6 @@ body, html {
   height: 100%;
 }
 
-
 .example-window {
   text-align: center;
   color: #e9e9e9;
@@ -29,13 +28,30 @@ body, html {
   padding: .5em;
   font-size: 1em;
 }
-.example-window .btn-group {
-  margin: 0 0 1em 0;
-}
 .example-window label {
   text-align: right;
   display: inline-block;
   width: 6em;
+}
+
+.example-selector {
+  list-style: none;
+  padding: 0;
+}
+
+.example-selector>li {
+  display: inline-block;
+  height: 6em;
+  width: 6em;
+  border: 1px solid #fff;
+  text-align: center;
+  cursor: pointer;
+  margin: 1em;
+  overflow: hidden;
+}
+
+.example-selector>li:hover {
+  box-shadow: inset 0 0 40px 9px #222;
 }
 
 .selectbox {
@@ -52,16 +68,11 @@ body, html {
   border-color: #51a7e8;
   box-shadow: inset 0 0 1em .2em rgba(81, 167, 232, 0.5);
 }
-
-.form-input {
+.button:before {
+  content: '';
   display: inline-block;
-  margin: 0 0 .5em 0;
-}
-
-
-#cookie-widget {
-  border: 3px dashed black;
-  padding: 0 20px;
+  vertical-align: middle;
+  height: 100%;
 }
 
 
@@ -76,6 +87,20 @@ body, html {
   display:table-cell;
   vertical-align:middle;
   text-align: center;
+}
+
+
+.container:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.inner {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 3px 5px;
 }
 
 
