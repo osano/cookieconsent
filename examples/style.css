@@ -54,6 +54,19 @@ body, html {
   box-shadow: inset 0 0 40px 9px #222;
 }
 
+.example-selector>li:before {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.example-selector>li>span {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 3px 5px;
+}
+
 .selectbox {
   text-align: center;
   font-size: inherit;
@@ -87,20 +100,6 @@ body, html {
   display:table-cell;
   vertical-align:middle;
   text-align: center;
-}
-
-
-.container:before {
-  content: "";
-  display: inline-block;
-  vertical-align: middle;
-  height: 100%;
-}
-
-.inner {
-  display: inline-block;
-  vertical-align: middle;
-  padding: 3px 5px;
 }
 
 

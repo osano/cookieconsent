@@ -24,10 +24,6 @@
 
   // helper libraries
   var util = {
-    isArray: function (obj) {
-      return Object.prototype.toString.call(obj) == '[object Array]';
-    },
-
     isObject: function (obj) {
       return Object.prototype.toString.call(obj) == '[object Object]';
     },
@@ -59,7 +55,7 @@
             }
           }
         }
-      } else if (this.isArray(arr)) {
+      } else if (Array.isArray(arr)) {
         for (var i = 0, l = arr.length; i < l; ++i) {
           if (false === callback.call(context, arr[i], i, arr)) {
             break;
@@ -89,10 +85,10 @@
     },
 
     clone: function (obj) {
-      var c = util.isArray(obj) ? [] : {};
+      var c = Array.isArray(obj) ? [] : {};
 
       util.each(obj, function(prop, i) {
-        if (util.isObject(prop) || util.isArray(prop)) {
+        if (util.isObject(prop) || Array.isArray(prop)) {
           c[i] = this.clone(prop);
         } else {
           c[i] = prop;
