@@ -24,36 +24,6 @@
 
   // helper libraries
   var util = {
-    isObject: function (obj) {
-      return Object.prototype.toString.call(obj) == '[object Object]';
-    },
-
-    each: function (arr, callback, /* optional */ context) {
-      if (this.isObject(arr)) {
-        for (var key in arr) {
-          if (arr.hasOwnProperty(key)) {
-            if (false === callback.call(context, arr[key], key, arr)) {
-              break;
-            }
-          }
-        }
-      } else if (Array.isArray(arr)) {
-        for (var i = 0, l = arr.length; i < l; ++i) {
-          if (false === callback.call(context, arr[i], i, arr)) {
-            break;
-          }
-        }
-      }
-    },
-
-    map: function (iterable, callback, /* optional */ context) {
-      var ret = util.isObject(iterable) ? {} : [];
-      this.each(iterable, function (c, i) {
-        ret[i] = callback.call(this, c, i, iterable);
-      }, context);
-      return ret;
-    },
-
     trim: function (str) {
       return str.replace(/^\s+|\s+$/g, '');
     },
@@ -71,22 +41,6 @@
     },
   };
   var dom = {
-    addEventListener: function (el, event, eventListener) {
-      if (el.addEventListener) {
-        el.addEventListener(event, eventListener);
-      } else if (el.attachEvent) {
-        el.attachEvent('on' + event, eventListener);
-      }
-    },
-
-    removeEventListener: function (el, event, eventListener) {
-      if (el.removeEventListener) {
-        el.removeEventListener(event, eventListener);
-      } else if (el.detachEvent) {
-        el.detachEvent('on' + event, eventListener);
-      }
-    },
-
     buildDom: function (htmlStr) {
       var container = document.createElement('div');
       container.innerHTML = htmlStr;
@@ -95,14 +49,13 @@
       return elem;
     },
 
-    hasClass: function (element, className) {
-      var safeClassName = util.escapeRegExp(className);
-      var regex = new RegExp('(?:\\s|^)' + safeClassName + '(?:\\s|$)');
-      return regex.test(element.className);
+    hasClass: function (element, selector) {
+      return element.nodeType === 1 &&
+          (" " + element.className + " ").replace(/[\n\t]/g, " ").indexOf(" " + selector + " ") >= 0;
     },
 
     matchClass: function (element, regExp) {
-      var regex = new RegExp('(?:\\s|^)' + regExp + '(?:\\s|$)');
+      var regex = new RegExp('\b' + regExp + '\b');
       var matches = element.className.match(regex);
       return (matches && matches[1]) || false;
     },
@@ -179,6 +132,9 @@
         undefined : parts.pop().split(';').shift();
     },
   };
+
+  // array of valid regexp escaped statuses
+  var __allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
 
   cc.Popup = (function () {
 
@@ -324,7 +280,7 @@
       this.options = Object.assign({}, defaultOptions);
 
       // merge in user options
-      if (util.isObject(options)) {
+      if (Object.prototype.toString.call(options) == '[object Object]') {
         Object.assign(this.options, options);
       }
 
@@ -363,7 +319,7 @@
       var customStyle = opts.palette && cc.customStyles[opts.palette];
 
       if (this._onButtonClick && this.element) {
-        dom.removeEventListener(this.element, 'click', this._onButtonClick);
+        this.element.removeEventListener('click', this._onButtonClick);
       }
 
       if (this.element && this.element.parentNode) {
@@ -508,8 +464,8 @@
       var interpolated = {};
       var opts = this.options;
 
-      util.map(opts.elements, function (elementStr, prop) {
-        interpolated[prop] = util.interpolateString(elementStr, function (name) {
+      Object.keys(opts.elements).forEach(function (prop) {
+        interpolated[prop] = util.interpolateString(opts.elements[prop], function (name) {
           // we only deal with "children"
           if (name == 'children') {
             var contentStr = opts.content[prop];
@@ -553,7 +509,7 @@
       // save ref to the function handle so we can unbind it later
       this._onButtonClick = handleButtonClick.bind(this);
 
-      dom.addEventListener(this.element, 'click', this._onButtonClick);
+      this.element.addEventListener('click', this._onButtonClick);
 
       if (opts.autoattach) {
         // prepend element to container
@@ -564,8 +520,7 @@
     function handleButtonClick (event) {
       var targ = event.target;
       if (dom.hasClass(targ, 'cc-btn')) {
-        var allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
-        var match = dom.matchClass(targ, 'cc-(' + allowedStatuses.join('|') + ')')
+        var match = dom.matchClass(targ, 'cc-(' + __allowedStatuses.join('|') + ')')
 
         if (match) {
           this.setStatus(match);
@@ -658,11 +613,11 @@
           if (window.pageYOffset > Math.floor(scrollRange)) {
             setStatus(cc.status.dismiss);
 
-            dom.removeEventListener(window, 'scroll', onWindowScroll);
+            window.removeEventListener('scroll', onWindowScroll);
           }
         };
 
-        dom.addEventListener(window, 'scroll', onWindowScroll);
+        window.addEventListener('scroll', onWindowScroll);
       }
     }
 
@@ -945,7 +900,7 @@
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
-      if (Object.prototype.toString.call(requestHeaders) === '[object Array]') {
+      if (Array.isArray(requestHeaders)) {
         for (var i = 0, l = requestHeaders.length; i < l; ++i) {
           var split = requestHeaders[i].split(':', 2)
           xhr.setRequestHeader(util.trim(split[0]), util.trim(split[1]));
