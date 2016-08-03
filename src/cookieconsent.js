@@ -22,15 +22,15 @@
   // contains the custom <style> tags
   cc.customStyles = {};
 
-  // helper libraries
   var util = {
-    trim: function (str) {
-      return str.replace(/^\s+|\s+$/g, '');
-    },
-
     // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
     escapeRegExp: function (str) {
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    },
+
+    hasClass: function (element, selector) {
+      return element.nodeType === 1 &&
+          (" " + element.className + " ").replace(/[\n\t]/g, " ").indexOf(" " + selector + " ") >= 0;
     },
 
     interpolateString: function (str, callback) {
@@ -40,23 +40,14 @@
       })
     },
 
-    hasClass: function (element, selector) {
-      return element.nodeType === 1 &&
-          (" " + element.className + " ").replace(/[\n\t]/g, " ").indexOf(" " + selector + " ") >= 0;
-    },
-  };
-  var dom = {
     createStyle: function (attrs) {
       var style = document.createElement('style');
-
       for (var prop in attrs) {
         style.setAttribute(prop, attrs[prop]);
       }
 
       style.appendChild(document.createTextNode('')); // webkit hack
-
       document.head.appendChild(style);
-
       return style.sheet;
     },
 
@@ -68,8 +59,14 @@
         sheet.addRule(selector, rules, index);
       }
     },
-  };
-  var cookie = {
+
+    readCookie: function (name) {
+      var value = '; ' + document.cookie;
+      var parts = value.split('; ' + name + '=');
+      return parts.length != 2 ?
+        undefined : parts.pop().split(';').shift();
+    },
+
     setCookie: function (name, value, expiryDays, domain, path) {
       expiryDays = expiryDays || 365;
 
@@ -87,13 +84,6 @@
       }
 
       document.cookie = cookie.join(';');
-    },
-
-    readCookie: function (name) {
-      var value = '; ' + document.cookie;
-      var parts = value.split('; ' + name + '=');
-      return parts.length != 2 ?
-        undefined : parts.pop().split(';').shift();
     },
   };
 
@@ -354,13 +344,13 @@
 
     CookiePopup.prototype.setStatus = function (status) {
       var opts = this.options;
-      var value = cookie.readCookie(cc.cookieName);
+      var value = util.readCookie(cc.cookieName);
       var chosenBefore = Object.keys(cc.status).indexOf(value) >= 0;
       var c = opts.cookie;
 
       // if `status` is valid
       if (Object.keys(cc.status).indexOf(status) >= 0) {
-        cookie.setCookie(cc.cookieName, status, c.expiryDays, c.domain, c.path);
+        util.setCookie(cc.cookieName, status, c.expiryDays, c.domain, c.path);
 
         this.options.onStatusChange(status, chosenBefore);
       } else {
@@ -369,11 +359,11 @@
     };
 
     CookiePopup.prototype.getStatus = function () {
-      return cookie.readCookie(cc.cookieName)
+      return util.readCookie(cc.cookieName)
     };
 
     CookiePopup.prototype.clearStatus = function () {
-      cookie.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
+      util.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
     };
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
@@ -391,7 +381,7 @@
       }
 
       var allowed = Object.keys(cc.status);
-      var answer = cookie.readCookie(cc.cookieName);
+      var answer = util.readCookie(cc.cookieName);
       var match = allowed.indexOf(answer) >= 0;
 
       if (match) {
@@ -535,7 +525,7 @@
 
         // this will be interpretted as CSS. the key is the selector, and each array element is a rule
         if (!cc.customStyles[name]) {
-          var newStyle = dom.createStyle();
+          var newStyle = util.createStyle();
           // custom style doesn't exist, so we create it
           cc.customStyles[name] = {
             references: 1,
@@ -546,7 +536,7 @@
           // actually add the rules
           for (var prop in colorStyles) {
             var ruleBody = colorStyles[prop].join(';');
-            dom.addCSSRule(newStyle, prop, ruleBody, ruleIndex++);
+            util.addCSSRule(newStyle, prop, ruleBody, ruleIndex++);
           }
         } else {
           // custom style already exists, so increment the reference count
@@ -876,7 +866,7 @@
       if (Array.isArray(requestHeaders)) {
         for (var i = 0, l = requestHeaders.length; i < l; ++i) {
           var split = requestHeaders[i].split(':', 2)
-          xhr.setRequestHeader(util.trim(split[0]), util.trim(split[1]));
+          xhr.setRequestHeader(split[0].replace(/^\s+|\s+$/g, ''), split[1].replace(/^\s+|\s+$/g, ''));
         }
       }
 
@@ -916,6 +906,7 @@
     }, failure);
   };
 
+  // only open if the user hasn't answered
   cc.autoOpen = function (options) {
     var popup = cc.factory(options);
 
@@ -927,6 +918,10 @@
     return popup;
   };
 
+  // export utils (no point in hiding them, so we may as well expose them)
+  cc.utils = util;
+
+  // prevent this code from being run twice
   cc.hasInitialised = true;
 
   window.cookieconsent = cc;
