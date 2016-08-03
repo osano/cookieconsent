@@ -85,6 +85,19 @@
 
       document.cookie = cookie.join(';');
     },
+
+    deepExtend: function(dest, src) {
+      for (var prop in src) {
+        var v = src[prop];
+        if (typeof v === "object" && v !== null ) {
+          dest[prop] = dest[prop] || {};
+          this.deepExtend(dest[prop], v);
+        } else {
+          dest[prop] = v;
+        }
+      }
+      return dest;
+    },
   };
 
   // array of valid regexp escaped statuses
@@ -184,7 +197,7 @@
         },
         'red-white': {
           popup: {background: '#fa5656', text: '#fff', link: '#fff'},
-          button: {background: '#ffffff', border: '#ffffff', text: '#fff'},
+          button: {background: '#ffffff', border: '#ffffff', text: '#000'},
         },
         'purple-white': {
           popup: {background: '#956cb9', text: '#fff', link: '#fff'},
@@ -235,7 +248,7 @@
 
       // merge in user options
       if (Object.prototype.toString.call(options) == '[object Object]') {
-        Object.assign(this.options, options);
+        util.deepExtend(this.options, options);
       }
 
       // returns true if `onComplete` was called

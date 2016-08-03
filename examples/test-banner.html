@@ -18,16 +18,20 @@
 
 <body role="document">
 
-  <div class="example-window">
-    <h1>Testing banner popups</h1>
-    <p>Look at all the layouts on screen and see if any look wrong</p>
+  <div class="center-outer fit">
+    <div class="center-inner">
+      <div class="example-window">
+        <h1>Testing banner popups</h1>
+        <p>Look at all the layouts on screen and see if any look wrong</p>
 
-    <select id="theme" class="selectbox"></select>
-    <select id="palette" class="selectbox"></select>
+        <select id="theme" class="selectbox"></select>
+        <select id="palette" class="selectbox"></select>
 
-    <br><br>
+        <br><br>
 
-    <button onclick="javascript: window.location = 'examples/test-floating.html';">Next test</button>
+        <button onclick="javascript: window.location = 'examples/test-floating.html';">Next test</button>
+      </div>
+    </div>
   </div>
 
 
@@ -41,7 +45,7 @@
 
     var userOptions = {
       palette: C.Popup.getPalettes(),
-      theme: C.Popup.getThemes().filter(function(cur){return /\-banner$/.test(cur)}),
+      theme: C.Popup.getThemes().filter(function(cur){return /\-inline$/.test(cur)}),
     };
 
     var popupInstances = [
