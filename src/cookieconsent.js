@@ -313,17 +313,22 @@
      * Returns true if thecookie popup window is visible
      */
     CookiePopup.prototype.isOpen = function () {
-      return this.element && (cc.hasTransition ? !util.hasClass(this.element, 'cc-invisible') : this.element.style.display == '');
+      return this.element && this.element.style.display == '';
     };
 
     CookiePopup.prototype.open = function (callback) {
       var el = this.element;
       if (!this.isOpen() && el) {
         if (cc.hasTransition) {
-          var regex = new RegExp('\\b' + util.escapeRegExp('cc-invisible') + '\\b');
-          el.className = el.className.replace(regex, '');
-        } else {
-          el.style.display = '';
+          el.className += ' cc-invisible';
+        }
+        el.style.display = '';
+        if (cc.hasTransition) {
+          // need to give `display = ''` time to take effect
+          setTimeout(function(){
+            var regex = new RegExp('\\b' + util.escapeRegExp('cc-invisible') + '\\b');
+            el.className = el.className.replace(regex, '');
+          }, 20);
         }
         this.options.onPopupOpen();
       }
@@ -335,8 +340,13 @@
       if (this.isOpen() && el) {
         if (cc.hasTransition) {
           el.className += ' cc-invisible';
+          setTimeout(function(){
+            el.style.display = 'none';
+            // need to remove the class, but the animation won't take effect because the display is none
+            var regex = new RegExp('\\b' + util.escapeRegExp('cc-invisible') + '\\b');
+            el.className = el.className.replace(regex, '');
+          }, 500)
         } else {
-          el.style.display = 'none';
         }
         this.options.onPopupClose();
       }
@@ -404,9 +414,9 @@
         'cc-theme-' + opts.theme, // add the theme layout
       ];
 
-      if (cc.hasTransition) {
-        classes.push('cc-invisible');
-      }
+      //if (cc.hasTransition) {
+      //  classes.push('cc-invisible');
+      //}
 
       // we only add extra styles if `pallete` has been set to a valid value
       var didAttach = attachCustomPalette.call(this);
@@ -465,9 +475,9 @@
       var el = div.children[0];
 
       // hide it behasTransitionfore adding to DOM
-      if (!cc.hasTransition) {
+      //if (!cc.hasTransition) {
         el.style.display = 'none';
-      }
+      //}
 
       // save ref to the function handle so we can unbind it later
       this._onButtonClick = handleButtonClick.bind(this);

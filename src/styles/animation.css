@@ -2,11 +2,11 @@
 .cc-window {
   opacity: 1;
   
-  -webkit-transition: opacity .6s ease;
-  -moz-transition: opacity .6s ease;
-  -ms-transition: opacity .6s ease;
-  -o-transition: opacity .6s ease;
-  transition: opacity .6s ease;
+  -webkit-transition: opacity .5s ease;
+  -moz-transition: opacity .5s ease;
+  -ms-transition: opacity .5s ease;
+  -o-transition: opacity .5s ease;
+  transition: opacity .5s ease;
 }
 
 .cc-window.cc-invisible {
