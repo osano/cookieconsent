@@ -1,72 +1,6 @@
 
 window['cookieconsent_example_util'] = {
 
-  // creates an object of elements.
-  createInputs: function (inputs) {
-    var elems = {};
-    inputs.forEach(function (c, i, a) {
-      elems[c] = document.getElementById(c);
-    });
-    return elems;
-  },
-
-  // creates and returns a funtion that is called every `onchange` event.
-  // calling the returned function triggers the passed function `draw`.
-  createUpdater: function (elems, draw) {
-    var getInputs = this.getInputs.bind(this);
-    var updater = function () {
-      draw(getInputs(elems));
-    };
-    for (var prop in elems) {
-      elems[prop].onchange = function () { updater() };
-    }
-    return updater;
-  },
-
-  // maps an object of elements into an object of the elements values
-  getInputs: function (elems) {
-    return this.mapObject(elems, function (c) {
-      if (c.tagName != 'SELECT') {
-        return c.value;
-      }
-      return c.selectedIndex >= 0 ? c[c.selectedIndex].value : undefined;
-    })
-  },
-
-  // repeatedly uses `fillSelect` for corresponding keys in `inputs` and `opts`.
-  // `optionsFormat` must be a function that accepts an array of values and returns an object of those values.
-  //                 (the object keys are used as option values, and the object values are used as the option labels)
-  createSelects: function (inputs, opts, optionsFormat) {
-    for (var prop in inputs) {
-      this.fillSelect(inputs[prop], optionsFormat(opts[prop]), opts[prop][0]);
-    }
-  },
-
-  // fill a select element with options (html can be configured using `cb`)
-  fillSelect: function (select, options, selected, cb) {
-    var html = '';
-    if (typeof cb != 'function') {
-      cb = this.getSimpleOption;
-    }
-    for (var prop in options) {
-      html += cb(options[prop], prop, prop == selected);
-    }
-    select.innerHTML = html;
-  },
-
-  // takes an array of values and uses them as keys and provides a callback to generate a new value from the key
-  formatSelectOptionsFromArray: function (cb, opts) {
-    var obj = {};
-    opts.forEach(function (c) {
-      obj[c] = cb.apply(null, arguments);
-    });
-    return obj;
-  },
-
-  pretty: function (str) {
-    return str[0].toUpperCase() + str.slice(1).replace(/\-/g, ' ');
-  },
-
   yn: function (bool) {
     return bool ? 'yes' : 'no';
   },
@@ -81,6 +15,18 @@ window['cookieconsent_example_util'] = {
       newObj[key] = cb(obj[key], key, obj);
     });
     return newObj;
+  },
+
+  // fill a select element with options (html can be configured using `cb`)
+  fillSelect: function (select, options, selected, cb) {
+    var html = '';
+    if (typeof cb != 'function') {
+      cb = this.getSimpleOption;
+    }
+    for (var prop in options) {
+      html += cb(options[prop], prop, prop == selected);
+    }
+    select.innerHTML = html;
   },
 
   tabularObject: function (obj, formatVal, formatKey) {
@@ -114,5 +60,52 @@ window['cookieconsent_example_util'] = {
       content.style.margin = '0';
       content.style.height = 'auto';
     }
-  }
+  },
+
+  initialisePopupSelector: function (options) {
+    var examples = Object.keys(options.popups);
+    var itemOpen = '<li><span>';
+    var itemClose = '</span></li>';
+    var state = {currentOpen: -1, instances: []};
+
+    options.selector.innerHTML = itemOpen + Object.keys(options.popups).join(itemClose+itemOpen) + itemClose;
+
+    options.selector.onclick = function (e) {
+      var targ = e.target, item;
+
+      // if the target is the container, exit
+      if (targ.isSameNode(options.selector)) return;
+
+      // from this point, only the child elements of opts.selector will get through.
+      // out of these child elements, we want to find the closest direct decendant <li>
+      while (targ.tagName != 'LI' && targ.parentNode) {
+        targ = targ.parentNode;
+      }
+
+      if (!targ.parentNode.isSameNode(options.selector)) return;
+
+      // from this point, 'targ' will be a direct decendant of opts.selector
+      var idx = Array.prototype.indexOf.call(options.selector.children, targ);
+
+      if (idx != state.currentOpen) {
+        if (state.currentOpen >= 0)
+          state.instances[state.currentOpen].close();
+
+        if (idx >= 0)
+          state.instances[idx].open();
+
+        state.currentOpen = idx;
+      }
+    };
+
+    for (var i = 0, l = examples.length; i < l; ++i) {
+      var opts = options.popups[examples[i]];
+      opts.onPopupOpen = function () {
+        state.currentOpen = -1;
+      };
+      state.instances[i] = options.cookieconsent.factory(options.popups[examples[i]]);
+    }
+
+    return state;
+  },
 };

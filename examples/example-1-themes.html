@@ -14,21 +14,6 @@
     .example-window .selectbox {display: inline-block; width: 8em;}
   </style>
 
-  <script>
-    window.cookieconsent_examples = {
-      currentOpen: -1,
-      instances: [],
-      options: {
-        'Red Banner Top': {type: 'info', theme: 'basic-inline', palette: 'red', position: 'banner-top'},
-        'White Banner Top': {type: 'opt-out', theme: 'basic-inline', palette: 'white', position: 'banner-top'},
-        'Black Banner Bottom': {type: 'opt-in', theme: 'basic-inline', palette: 'black', position: 'banner-bottom'},
-        'Blue Floating Top Left': {type: 'info', theme: 'basic-block', palette: 'blue', position: 'top-left'},
-        'Black Floating Top Right': {type: 'opt-out', theme: 'basic-block', palette: 'black-orange', position: 'top-right'},
-        'Purple Floating Bottom Right': {type: 'opt-in', theme: 'basic-block', palette: 'purple-white', position: 'bottom-right'},
-      }
-    };
-  </script>
-
 <body role="document">
 
   <div class="center-outer fit">
@@ -50,52 +35,19 @@
 <script src="build/cookieconsent.min.js"></script>
 <script>
 
-  (function (C, E) {
-
-    var examples = Object.keys(E.options);
-    var $selector = document.querySelector('.example-selector');
-
-    var itemOpen = '<li><span>';
-    var itemClose = '</span></li>';
-
-    $selector.innerHTML = itemOpen + Object.keys(E.options).join(itemClose+itemOpen) + itemClose;
-
-    $selector.onclick = function (e) {
-      var targ = e.target, item;
-
-      // if the target is the container, exit
-      if (targ.isSameNode($selector)) return;
-
-      // from this point, only the child elements of $selector will get through.
-      // out of these child elements, we want to find the closest direct decendant <li>
-      while (targ.tagName != 'LI' && targ.parentNode) {
-        targ = targ.parentNode;
-      }
-
-      if (!targ.parentNode.isSameNode($selector)) return;
-
-      // from this point, 'targ' will be a direct decendant of $selector
-      var idx = Array.prototype.indexOf.call($selector.children, targ);
-
-      if (idx != E.currentOpen) {
-        if (E.currentOpen >= 0)
-          E.instances[E.currentOpen].close();
-
-        if (idx >= 0)
-          E.instances[idx].open();
-
-        E.currentOpen = idx;
-      }
-    };
-
-    for (var i = 0, l = examples.length; i < l; ++i) {
-      var opts = E.options[examples[i]];
-      opts.onClose = function () {
-        E.currentOpen = -1;
-      };
-      E.instances[i] = C.factory(E.options[examples[i]]);
-    }
-
-  }(window.cookieconsent, window.cookieconsent_examples));
+  (function (C, U) {
+    var pageState = U.initialisePopupSelector({
+      cookieconsent: C,
+      selector: document.querySelector('.example-selector'),
+      popups: {
+        'Red Banner Top': {type: 'info', theme: 'basic-inline', palette: 'red', position: 'banner-top'},
+        'White Banner Top': {type: 'opt-out', theme: 'basic-inline', palette: 'white', position: 'banner-top'},
+        'Black Banner Bottom': {type: 'opt-in', theme: 'basic-inline', palette: 'black', position: 'banner-bottom'},
+        'Blue Floating Top Left': {type: 'info', theme: 'basic-block', palette: 'blue', position: 'top-left'},
+        'Black Floating Top Right': {type: 'opt-out', theme: 'basic-block', palette: 'black-orange', position: 'top-right'},
+        'Purple Floating Bottom Right': {type: 'opt-in', theme: 'basic-block', palette: 'purple-white', position: 'bottom-right'},
+      },
+    });
+  } (window.cookieconsent, window.cookieconsent_example_util));
 
 </script>

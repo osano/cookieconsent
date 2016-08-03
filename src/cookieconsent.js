@@ -313,28 +313,15 @@
      * Returns true if thecookie popup window is visible
      */
     CookiePopup.prototype.isOpen = function () {
-      return this.element && this.element.style.display === '' && !util.hasClass(this.element, 'cc-fadeout');
+      return this.element && (cc.hasTransition ? !util.hasClass(this.element, 'cc-invisible') : this.element.style.display == '');
     };
 
     CookiePopup.prototype.open = function (callback) {
       var el = this.element;
       if (!this.isOpen() && el) {
-        if (cc.hasTransition && el.style.display == '') {
-          var regex = new RegExp('\\b' + util.escapeRegExp('cc-fadeout') + '\\b');
+        if (cc.hasTransition) {
+          var regex = new RegExp('\\b' + util.escapeRegExp('cc-invisible') + '\\b');
           el.className = el.className.replace(regex, '');
-
-          // Sometimes the popup is hidden with '.cc-fadeout' (which uses visibility: hidden).
-          // The "open" animation will only run if the element is hidden (using display: none) before showing it, otherwise the animation won't run.
-
-          // So we can either set 'display: none' after we close the popup OR directly before we open it.
-          // It would make more sense to do it after "close" however that means relying on "transitionend", which isn't exactly cross-browser 'reliable'
-          el.style.display = 'none';
-
-          // We must "show" the popup in a timeout. This is to give the browser chance to update and draw the DOM.
-          // If we don't do this, the animation won't run. If the delay period is < 20ms, the animation won't run.
-          setTimeout(function () {
-            el.style.display = '';
-          }, 20);
         } else {
           el.style.display = '';
         }
@@ -344,13 +331,14 @@
     };
 
     CookiePopup.prototype.close = function (callback) {
-      if (this.isOpen()) {
+      var el = this.element;
+      if (this.isOpen() && el) {
         if (cc.hasTransition) {
-          this.element.className += ' cc-fadeout';
+          el.className += ' cc-invisible';
         } else {
-          this.element.style.display = 'none';
+          el.style.display = 'none';
         }
-        this.options.onClose();
+        this.options.onPopupClose();
       }
       return this;
     };
@@ -416,6 +404,10 @@
         'cc-theme-' + opts.theme, // add the theme layout
       ];
 
+      if (cc.hasTransition) {
+        classes.push('cc-invisible');
+      }
+
       // we only add extra styles if `pallete` has been set to a valid value
       var didAttach = attachCustomPalette.call(this);
 
@@ -472,8 +464,10 @@
 
       var el = div.children[0];
 
-      // hide it before adding to DOM
-      el.style.display = 'none';
+      // hide it behasTransitionfore adding to DOM
+      if (!cc.hasTransition) {
+        el.style.display = 'none';
+      }
 
       // save ref to the function handle so we can unbind it later
       this._onButtonClick = handleButtonClick.bind(this);
