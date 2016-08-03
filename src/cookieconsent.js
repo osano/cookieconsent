@@ -28,24 +28,6 @@
       return Object.prototype.toString.call(obj) == '[object Object]';
     },
 
-    bind: function (func, context /* , args */ ) {
-      var args = Array.prototype.slice.call(arguments, 2);
-      return function () {
-        return func.apply(context, args.concat.apply(args, arguments));
-      };
-    },
-
-    contains: function (iterable, value) {
-      var found = false;
-      this.each(iterable, function (cur, idx, arr) {
-        if (cur == value) {
-          found = true;
-          return false; // break;
-        }
-      });
-      return found;
-    },
-
     each: function (arr, callback, /* optional */ context) {
       if (this.isObject(arr)) {
         for (var key in arr) {
@@ -439,7 +421,8 @@
 
     CookiePopup.prototype.open = function (callback) {
       if (!this.isOpen() && this.element) {
-        if (cc.hasTransition && this.element.style.display == '') {
+        var style = this.element.style;
+        if (cc.hasTransition && style.display == '') {
           dom.removeClass(this.element, 'cc-fadeout');
 
           // Sometimes the popup is hidden with '.cc-fadeout' (which uses visibility: hidden).
@@ -447,15 +430,15 @@
 
           // So we can either set 'display: none' after we close the popup OR directly before we open it.
           // It would make more sense to do it after "close" however that means relying on "transitionend", which isn't exactly cross-browser 'reliable'
-          this.element.style.display = 'none';
+          style.display = 'none';
 
           // We must "show" the popup in a timeout. This is to give the browser chance to update and draw the DOM.
           // If we don't do this, the animation won't run. If the delay period is < 20ms, the animation won't run.
-          setTimeout(util.bind(function(){
-            this.element.style.display = '';
-          }, this), 20);
+          setTimeout(function () {
+            style.display = '';
+          }, 20);
         } else {
-          this.element.style.display = '';
+          style.display = '';
         }
       }
       return this;
@@ -475,11 +458,11 @@
     CookiePopup.prototype.setStatus = function (status) {
       var opts = this.options;
       var value = cookie.readCookie(cc.cookieName);
-      var chosenBefore = util.contains(cc.status, value);
+      var chosenBefore = Object.keys(cc.status).indexOf(value) >= 0;
       var c = opts.cookie;
 
       // if `status` is valid
-      if (util.contains(cc.status, status)) {
+      if (Object.keys(cc.status).indexOf(status) >= 0) {
         cookie.setCookie(cc.cookieName, status, c.expiryDays, c.domain, c.path);
 
         if (!chosenBefore) {
@@ -861,10 +844,8 @@
         return;
       }
 
-      var self = this;
-
       // runs service[idx] and triggers the callback on complete
-      runService(service, util.bind(runNextServiceOnError, self));
+      runService(service, runNextServiceOnError.bind(this));
     }
 
     // requires a `service` object that defines at least a `url` and `callback`
@@ -1037,7 +1018,7 @@
     var popup = cc.factory(options);
 
     var status = popup.getStatus();
-    if (!util.contains(cc.status, status) && popup.options.enabled) {
+    if (Object.keys(cc.status).indexOf(status) < 0 && popup.options.enabled) {
       popup.open();
     }
 
