@@ -24,9 +24,8 @@
 
         <ul class="example-selector"></ul>
 
-        <div class="btn-group">
-          <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Next Example</button>
-        </div>
+        <button onclick="javascript: window.location = './examples/example-6-location.html';">Prev</button>
+        <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Next</button>
       </div>
     </div>
   </div>
@@ -36,7 +35,7 @@
 <script>
 
   (function (C, U) {
-    var pageState = U.initialisePopupSelector({
+    pageState = U.initialisePopupSelector({
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {

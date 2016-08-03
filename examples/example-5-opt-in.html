@@ -18,17 +18,27 @@
         <h1>Opt-in demo</h1>
         <p>Here we ask users for permission to use cookies. Unless they say so, no cookies will be used.</p>
 
-        <button onclick="javascript: window.location = './examples/example-6-location.html';">Next Example</button>
+        <ul class="example-selector"></ul>
+
+        <button onclick="javascript: window.location = './examples/example-4-opt-out.html';">Prev</button>
+        <button onclick="javascript: window.location = './examples/example-6-location.html';">Next</button>
       </div>
     </div>
   </div>
 
-<script src="src/cookieconsent.js"></script>
+<script src="examples/script.js"></script>
+<script src="build/cookieconsent.min.js"></script>
 <script>
 
-  cookieconsent.factory({
-    type: 'opt-in',
-    palette: 'blue',
-  }).open();
+  (function (C, U) {
+    pageState = U.initialisePopupSelector({
+      cookieconsent: C,
+      selector: document.querySelector('.example-selector'),
+      popups: {
+        'Opt-in Blue': {type: 'opt-in', palette: 'blue'},
+      },
+    });
+  } (window.cookieconsent, window.cookieconsent_example_util));
 
 </script>
+

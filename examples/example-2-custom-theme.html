@@ -5,37 +5,53 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Appearance - Custom CSS Themes</title>
+  <title>Appearance - Standard Themes</title>
 
   <link href="examples/style.css" rel="stylesheet">
   <link href="build/cookieconsent.min.css" rel="stylesheet">
+  <style>
+    .popup-selector {position: relative; top: -5px; left: -20px;}
+    .example-window .selectbox {display: inline-block; width: 8em;}
+  </style>
 
 <body role="document">
 
   <div class="center-outer fit">
     <div class="center-inner">
       <div class="example-window" role="main">
-        <h1>Custom CSS</h1>
-        <p>Here every part of Cookie Consent has been overridden with custom CSS. View source to see.</p>
+        <h1>Standard themes</h1>
+        <p>Pick a standard layout and a colour scheme. Or build your own</p>
 
-        <button onclick="javascript: window.location = './examples/example-3-informational.html';">Next Example</button>
+        <ul class="example-selector"></ul>
+
+        <button onclick="javascript: window.location = './examples/example-1-themes.html';">Prev</button>
+        <button onclick="javascript: window.location = './examples/example-3-informational.html';">Next</button>
       </div>
     </div>
   </div>
 
-<script src="src/cookieconsent.js"></script>
+<script src="examples/script.js"></script>
+<script src="build/cookieconsent.min.js"></script>
 <script>
 
-  cookieconsent.factory({
-    palettes: {
-      blah: {
-        popup: {background: 'pink', text: 'green', link: 'blue'},
-        button: {background: 'orange', border: 'orange', text: 'green'},
-      },
-    },
+  (function (C, U) {
+    pageState = U.initialisePopupSelector({
+      cookieconsent: C,
+      selector: document.querySelector('.example-selector'),
+      popups: {
+        'Custom Floating': {
+          palettes: {
+            blah: {
+              popup: {background: 'pink', text: 'green', link: 'blue'},
+              button: {background: 'orange', border: 'orange', text: 'green'},
+            },
+          },
 
-    type: 'info',
-    palette: 'blah',
-  }).open()
+          type: 'info',
+          palette: 'blah',
+        },
+      },
+    });
+  } (window.cookieconsent, window.cookieconsent_example_util));
 
 </script>

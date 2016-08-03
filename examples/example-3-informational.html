@@ -18,17 +18,26 @@
         <h1>Informational demo</h1>
         <p>Here we tell users that we use cookies, and let them dismiss the message.</p>
 
-        <button onclick="javascript: window.location = './examples/example-4-opt-out.html';">Next Example</button>
+        <ul class="example-selector"></ul>
+
+        <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Prev</button>
+        <button onclick="javascript: window.location = './examples/example-4-opt-out.html';">Next</button>
       </div>
     </div>
   </div>
 
-<script src="src/cookieconsent.js"></script>
+<script src="examples/script.js"></script>
+<script src="build/cookieconsent.min.js"></script>
 <script>
 
-  cookieconsent.factory({
-    type: 'info',
-    palette: 'blue',
-  }).open();
+  (function (C, U) {
+    pageState = U.initialisePopupSelector({
+      cookieconsent: C,
+      selector: document.querySelector('.example-selector'),
+      popups: {
+        'Info Blue': {type: 'info', palette: 'blue'},
+      },
+    });
+  } (window.cookieconsent, window.cookieconsent_example_util));
 
 </script>
