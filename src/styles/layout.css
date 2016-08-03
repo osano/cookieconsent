@@ -56,7 +56,6 @@
   float: right;
 }
 
-
 /* for opt-in, allow is the primary button */
 .cc-banner.cc-type-opt-in .cc-allow {
   margin-right: 1em;
@@ -69,16 +68,16 @@
 
 /********************** Misc **********************/
 
-/* Makes #outer contain its floated children */
+/* makes banner contain its floated children */
 .cc-banner {
   overflow: hidden;
   width: 100%;
 }
 .cc-banner .cc-message {
-  overflow: hidden;/* Make this div take up the rest of the horizontal space, and no more */
+  overflow: hidden; /* make this div take up the rest of the horizontal space, and no more */
 }
 .cc-banner .cc-compliance {
-  float: right;/* Make this div as wide as its contents */
+  float: right; /* make this div as wide as its contents */
 }
 
 /********************** labels **********************/
