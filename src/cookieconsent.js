@@ -46,14 +46,6 @@
     },
   };
   var dom = {
-    buildDom: function (htmlStr) {
-      var container = document.createElement('div');
-      container.innerHTML = htmlStr;
-      var elem = container.children[0];
-      container = null;
-      return elem;
-    },
-
     createStyle: function (attrs) {
       var style = document.createElement('style');
 
@@ -74,14 +66,6 @@
       }
       else if('addRule' in sheet) {
         sheet.addRule(selector, rules, index);
-      }
-    },
-
-    prependElem: function (container, element) {
-      if (!container.firstChild) {
-        container.appendChild(element);
-      } else {
-        container.insertBefore(element, container.firstChild)
       }
     },
   };
@@ -478,23 +462,30 @@
 
     function appendMarkup (markup) {
       var opts = this.options;
-      var cont = opts.container;
-      var validCont = (cont && cont.nodeType === 1);
+      var div = document.createElement('div');
+      var cont = (opts.container && opts.container.nodeType === 1) ? opts.container : document.body;
 
-      this.element = dom.buildDom(markup);
+      div.innerHTML = markup;
+
+      var el = div.children[0];
 
       // hide it before adding to DOM
-      this.element.style.display = 'none';
+      el.style.display = 'none';
 
       // save ref to the function handle so we can unbind it later
       this._onButtonClick = handleButtonClick.bind(this);
 
-      this.element.addEventListener('click', this._onButtonClick);
+      el.addEventListener('click', this._onButtonClick);
 
       if (opts.autoattach) {
-        // prepend element to container
-        dom.prependElem(validCont ? cont : document.body, this.element);
+        if (!cont.firstChild) {
+          cont.appendChild(el);
+        } else {
+          cont.insertBefore(el, cont.firstChild)
+        }
       }
+
+      this.element = el;
     }
 
     function handleButtonClick (event) {
