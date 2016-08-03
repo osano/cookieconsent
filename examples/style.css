@@ -11,6 +11,8 @@ body, html {
   height: 100%;
 }
 
+/******************** example window ********************/
+
 .example-window {
   text-align: center;
   color: #e9e9e9;
@@ -33,6 +35,8 @@ body, html {
   display: inline-block;
   width: 6em;
 }
+
+/******************** example selector ********************/
 
 .example-selector {
   list-style: none;
@@ -67,6 +71,8 @@ body, html {
   padding: 3px 5px;
 }
 
+/******************** selectbox ********************/
+
 .selectbox {
   text-align: center;
   font-size: inherit;
@@ -81,18 +87,9 @@ body, html {
   border-color: #51a7e8;
   box-shadow: inset 0 0 1em .2em rgba(81, 167, 232, 0.5);
 }
-.button:before {
-  content: '';
-  display: inline-block;
-  vertical-align: middle;
-  height: 100%;
-}
 
+/******************** classes ********************/
 
-.fit {
-  width: 100%;
-  height: 100%;
-}
 .center-outer {
   display: table;
 }
@@ -101,7 +98,12 @@ body, html {
   vertical-align:middle;
   text-align: center;
 }
+.fit {
+  width: 100%;
+  height: 100%;
+}
 
+/******************** media ********************/
 
 /* iPhone 6 */
 @media only screen 

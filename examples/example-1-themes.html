@@ -55,7 +55,10 @@
     var examples = Object.keys(E.options);
     var $selector = document.querySelector('.example-selector');
 
-    $selector.innerHTML = '<li><span>' + Object.keys(E.options).join('</span></li><li><span>') + '</span></li>';
+    var itemOpen = '<li><span>';
+    var itemClose = '</span></li>';
+
+    $selector.innerHTML = itemOpen + Object.keys(E.options).join(itemClose+itemOpen) + itemClose;
 
     $selector.onclick = function (e) {
       var targ = e.target, item;
