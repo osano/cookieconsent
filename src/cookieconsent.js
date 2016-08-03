@@ -54,32 +54,6 @@
       return ret;
     },
 
-    merge: function (obj1, obj2) {
-      if (!obj1) return;
-
-      this.each(obj2, function (val, key) {
-        if (this.isObject(val) && this.isObject(obj1[key])) {
-          this.merge(obj1[key], val);
-        } else {
-          obj1[key] = val;
-        }
-      }, this);
-    },
-
-    clone: function (obj) {
-      var c = Array.isArray(obj) ? [] : {};
-
-      util.each(obj, function(prop, i) {
-        if (util.isObject(prop) || Array.isArray(prop)) {
-          c[i] = this.clone(prop);
-        } else {
-          c[i] = prop;
-        }
-      }, this);
-
-      return c;
-    },
-
     trim: function (str) {
       return str.replace(/^\s+|\s+$/g, '');
     },
@@ -347,11 +321,11 @@
       }
 
       // set options back to default options
-      this.options = util.clone(defaultOptions);
+      this.options = Object.assign({}, defaultOptions);
 
       // merge in user options
       if (util.isObject(options)) {
-        util.merge(this.options, options);
+        Object.assign(this.options, options);
       }
 
       // returns true if `onComplete` was called
