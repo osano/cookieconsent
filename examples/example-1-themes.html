@@ -86,6 +86,10 @@
     };
 
     for (var i = 0, l = examples.length; i < l; ++i) {
+      var opts = E.options[examples[i]];
+      opts.onClose = function () {
+        E.currentOpen = -1;
+      };
       E.instances[i] = C.factory(E.options[examples[i]]);
     }
 

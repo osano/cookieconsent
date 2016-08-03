@@ -39,6 +39,11 @@
         return callback(arguments[1]) || '';
       })
     },
+
+    hasClass: function (element, selector) {
+      return element.nodeType === 1 &&
+          (" " + element.className + " ").replace(/[\n\t]/g, " ").indexOf(" " + selector + " ") >= 0;
+    },
   };
   var dom = {
     buildDom: function (htmlStr) {
@@ -47,31 +52,6 @@
       var elem = container.children[0];
       container = null;
       return elem;
-    },
-
-    hasClass: function (element, selector) {
-      return element.nodeType === 1 &&
-          (" " + element.className + " ").replace(/[\n\t]/g, " ").indexOf(" " + selector + " ") >= 0;
-    },
-
-    matchClass: function (element, regExp) {
-      var regex = new RegExp('\b' + regExp + '\b');
-      var matches = element.className.match(regex);
-      return (matches && matches[1]) || false;
-    },
-
-    addClass: function (element, className) {
-      if (!this.hasClass(element, className)) {
-        element.className += ' ' + className;
-      }
-    },
-
-    removeClass: function (element, className) {
-      if (this.hasClass(element, className)) {
-        var safeClassName = util.escapeRegExp(className);
-        var regex = new RegExp('(\\s|^)' + safeClassName + '(\\s|$)');
-        element.className = element.className.replace(regex, '');
-      }
     },
 
     createStyle: function (attrs) {
@@ -143,9 +123,9 @@
       container: null, // optional (expecting a HTML element)
 
       // some callback hooks which are called at certain points in the app
-      onAllowCookies: function() {},    // called the FIRST time cookies are accepted
-      onDenyCookies: function() {},     // called the FIRST time cookies are denied
-      onComplete: function(status) {},  // called on init if the app can imply consent, or directly after the above hooks
+      onPopupOpen: function() {},
+      onPopupClose: function() {},
+      onStatusChange: function(status) {},
 
       // simple whitelist/blacklist for pages. specify page by:
       //   - using a string : '/index.html'                     (matches '/index.html' exactly) OR
@@ -346,30 +326,32 @@
      * Returns true if thecookie popup window is visible
      */
     CookiePopup.prototype.isOpen = function () {
-      return this.element && this.element.style.display === '' && !dom.hasClass(this.element, 'cc-fadeout');
+      return this.element && this.element.style.display === '' && !util.hasClass(this.element, 'cc-fadeout');
     };
 
     CookiePopup.prototype.open = function (callback) {
-      if (!this.isOpen() && this.element) {
-        var style = this.element.style;
-        if (cc.hasTransition && style.display == '') {
-          dom.removeClass(this.element, 'cc-fadeout');
+      var el = this.element;
+      if (!this.isOpen() && el) {
+        if (cc.hasTransition && el.style.display == '') {
+          var regex = new RegExp('\\b' + util.escapeRegExp('cc-fadeout') + '\\b');
+          el.className = el.className.replace(regex, '');
 
           // Sometimes the popup is hidden with '.cc-fadeout' (which uses visibility: hidden).
           // The "open" animation will only run if the element is hidden (using display: none) before showing it, otherwise the animation won't run.
 
           // So we can either set 'display: none' after we close the popup OR directly before we open it.
           // It would make more sense to do it after "close" however that means relying on "transitionend", which isn't exactly cross-browser 'reliable'
-          style.display = 'none';
+          el.style.display = 'none';
 
           // We must "show" the popup in a timeout. This is to give the browser chance to update and draw the DOM.
           // If we don't do this, the animation won't run. If the delay period is < 20ms, the animation won't run.
           setTimeout(function () {
-            style.display = '';
+            el.style.display = '';
           }, 20);
         } else {
-          style.display = '';
+          el.style.display = '';
         }
+        this.options.onPopupOpen();
       }
       return this;
     };
@@ -377,10 +359,11 @@
     CookiePopup.prototype.close = function (callback) {
       if (this.isOpen()) {
         if (cc.hasTransition) {
-          dom.addClass(this.element, 'cc-fadeout');
+          this.element.className += ' cc-fadeout';
         } else {
           this.element.style.display = 'none';
         }
+        this.options.onClose();
       }
       return this;
     };
@@ -395,10 +378,7 @@
       if (Object.keys(cc.status).indexOf(status) >= 0) {
         cookie.setCookie(cc.cookieName, status, c.expiryDays, c.domain, c.path);
 
-        if (!chosenBefore) {
-          status == cc.status.deny ? this.options.onDenyCookies() : this.options.onAllowCookies();
-          this.options.onComplete(status);
-        }
+        this.options.onStatusChange(status, chosenBefore);
       } else {
         this.clearStatus();
       }
@@ -414,7 +394,7 @@
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
     function checkCallbackHooks () {
-      var complete = this.options.onComplete;
+      var complete = this.options.onStatusChange;
 
       if (!window.navigator.cookieEnabled) {
         complete(cc.status.deny);
@@ -519,15 +499,17 @@
 
     function handleButtonClick (event) {
       var targ = event.target;
-      if (dom.hasClass(targ, 'cc-btn')) {
-        var match = dom.matchClass(targ, 'cc-(' + __allowedStatuses.join('|') + ')')
+      if (util.hasClass(targ, 'cc-btn')) {
+
+        var matches = targ.className.match(new RegExp("\\bcc-(" + __allowedStatuses.join('|') + ")\\b"));
+        var match = (matches && matches[1]) || false;
 
         if (match) {
           this.setStatus(match);
           this.close();
         }
       }
-      if (dom.hasClass(targ, 'cc-close')) {
+      if (util.hasClass(targ, 'cc-close')) {
         this.setStatus(cc.status.dismiss);
         this.close();
       }
