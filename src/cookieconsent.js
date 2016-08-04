@@ -165,11 +165,8 @@
         'centered-block': '{{message}}{{link}}{{compliance}}',
 
         // the 'inline' layouts tend to be for the banner popups (the {{compliance}} must be first because it floats right)
-        'basic-inline': '{{compliance}}{{message}}',
+        'basic-inline': '{{message}}{{compliance}}',
       },
-
-      showClose: false,
-      showHeader: false,
 
       // define custom color palettes here
       palettes: {
@@ -214,6 +211,7 @@
       type: 'dismiss',                 // refers to `compliance`
       theme: 'mono-floating',          // refers to `themes`
       palette: '',                     // refers to `palettes`
+      layout: 'floating',              // 'floating' or 'banner'
 
       // If this is defined, then it is used as the inner html instead of `themes`. This allows for ultimate customisation.
       // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
@@ -404,19 +402,22 @@
 
     function getPopupClasses () {
       var opts = this.options;
-      var pos = opts.position.split('-', 2); // top, bottom, left, right
+      var positions = opts.position.split('-'); // top, bottom, left, right
 
       var classes = [
         // top, bottom, left, right, banner, etc
-        'cc-' + pos[0], 'cc-' + pos[1],
+        //'cc-' + pos[0], 'cc-' + pos[1],
 
         'cc-type-' + opts.type,   // add the compliance type
         'cc-theme-' + opts.theme, // add the theme layout
       ];
 
-      //if (cc.hasTransition) {
-      //  classes.push('cc-invisible');
-      //}
+      // top, left, right, bottom
+      positions.forEach(function (cur) {
+        classes.push('cc-' + cur);
+      });
+
+      classes.push('cc-' + opts.layout);
 
       // we only add extra styles if `pallete` has been set to a valid value
       var didAttach = attachCustomPalette.call(this);

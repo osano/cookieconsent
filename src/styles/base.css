@@ -1,79 +1,73 @@
-/* Base style  */
-/*  - the popups base theme is black text on a white background without a border */
-/*  - the popups position is defined by the plugins configuration */
-/*  - the popups colour scheme is defined by the plugins configuration and `themes` */
-
-/* the wrapper is a div element that completely fills the window screen space */
-/*  - popup (.cc-window) can be positioned anywhere on the page using the wrapper */
-/*.cc-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0; / * enforce that the wrapper is always behind other on screen elements * /
-
-  font-size: 16px; / * by setting the base fon't here, we can size the rest of the popup using CSS `em` * /
-
-  overflow: hidden;
-}*/
 
 /* the popup window */
 .cc-window {
   position: fixed;
-  z-index: 5000;
   overflow: hidden;
+  box-sizing: border-box; /* exclude padding when dealing with width */
 
-  font-size: 16px; /* by setting the base fon't here, we can size the rest of the popup using CSS `em` */
-  font-family: 'Helvetica Neue Light', 'HelveticaNeue-Light', 'Helvetica Neue', Calibri, Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Calibri, Arial, sans-serif;
+  font-size: 16px; /* by setting the base font here, we can size the rest of the popup using CSS `em` */
 
-  padding: 2em;
-  max-width: 24em; /* 1em == 15px therefore 24em == 360px */
-  box-sizing: border-box;
-
+  /* the following are random unjustified styles - just because - should probably be removed */
+  z-index: 5000;
   line-height: 1.2em;
+
+  display: flex;
+  flex-wrap: nowrap;
 }
 
+/* 2 basic types of window - floating / banner */
+.cc-window.cc-floating {
+  padding: 2em;
+  max-width: 24em; /* 1em == 16px therefore 24em == 384px */
+  flex-direction: column;
+}
 .cc-window.cc-banner {
   padding: 1em;
   width: 100%;
-  max-width: 100%;
+  flex-direction: row;
 }
 
-.cc-header {font-weight: bold;}
-.cc-message {font-size: .9em;}
 
-.cc-btn, .cc-link, .cc-close {cursor: pointer;}
+/* clickable things */
+.cc-btn, .cc-link, .cc-close {
+  cursor: pointer;
+}
 
-/* element styles */
+
+/* popup components */
+.cc-message {
+  font-size: 1em;
+}
+
+
 .cc-link {
   opacity: .8;
   font-size: .8em;
   display: inline-block;
   text-decoration: underline;
 }
-
+.cc-link:hover {
+  opacity: 1;
+}
 .cc-link:active, .cc-link:visited {
   color: initial;
 }
 
-.cc-link:hover {
-  opacity: 1;
-}
 
 .cc-btn {
+  display: block;
   padding: .5em;
   font-size: 1em;
   font-weight: bold;
   border-width: 2px;
   border-style: solid;
   text-align: center;
-  box-sizing: border-box;
 }
-
 .cc-btn:hover {
   text-decoration: underline;
 }
+
 
 .cc-close {
   display: block;
@@ -88,7 +82,6 @@
   /*  - setting the line height normalises the height */
   line-height: .75;
 }
-
 .cc-close:hover {
   opacity: 1;
 }

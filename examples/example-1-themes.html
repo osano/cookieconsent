@@ -31,7 +31,7 @@
   </div>
 
 <script src="examples/script.js"></script>
-<script src="src/cookieconsent.js"></script>
+<script src="build/cookieconsent.min.js"></script>
 <script>
 
   (function (C, U) {
@@ -39,12 +39,12 @@
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {
-        'Red Banner Top': {type: 'info', theme: 'basic-inline', palette: 'red', position: 'banner-top'},
-        'White Banner Top': {type: 'opt-out', theme: 'basic-inline', palette: 'white', position: 'banner-top'},
-        'Black Banner Bottom': {type: 'opt-in', theme: 'basic-inline', palette: 'black', position: 'banner-bottom'},
-        'Blue Floating Top Left': {type: 'info', theme: 'basic-block', palette: 'blue', position: 'top-left'},
-        'Black Floating Top Right': {type: 'opt-out', theme: 'basic-block', palette: 'black-orange', position: 'top-right'},
-        'Purple Floating Bottom Right': {type: 'opt-in', theme: 'basic-block', palette: 'purple-white', position: 'bottom-right'},
+        'Red Banner Top': {type: 'info', theme: 'basic-inline', palette: 'red', position: 'top', layout: 'banner'},
+        'White Banner Top': {type: 'opt-out', theme: 'basic-inline', palette: 'white', position: 'top', layout: 'banner'},
+        'Black Banner Bottom': {type: 'opt-in', theme: 'basic-inline', palette: 'black', position: 'bottom', layout: 'banner'},
+        'Blue Floating Top Left': {type: 'info', theme: 'basic-block', palette: 'blue', position: 'top-left', layout: 'floating'},
+        'Black Floating Top Right': {type: 'opt-out', theme: 'basic-block', palette: 'black-orange', position: 'top-right', layout: 'floating'},
+        'Purple Floating Bottom Right': {type: 'opt-in', theme: 'basic-block', palette: 'purple-white', position: 'bottom-right', layout: 'floating'},
       },
     });
   } (window.cookieconsent, window.cookieconsent_example_util));
