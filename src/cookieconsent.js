@@ -179,7 +179,6 @@
         'red'  : {popup: {background: '#d34040', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}, highlight: {background: '#ffffff', border: '#ffffff', text: '#d34040'}},
         'black': {popup: {background: '#000000', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'}, highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000000'}},
 
-
         'black-orange': {
           popup: {background: '#252c33', text: '#fff', link: '#fff'},
           button: {background: '#fa6956', border: '#fa6956', text: '#fff'},
@@ -217,10 +216,9 @@
       palette: '',                     // refers to `palettes`
       layout: 'floating',              // 'floating' or 'banner'
 
-      // If this is defined, then it is used as the inner html instead of `themes`. This allows for ultimate customisation.
-      // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
-      // handlers. You can use other pre-existing classes too. See `src/styles` folder.
-      overrideHTML: null,
+      // Some countries REQUIRE that a user can change their mind. You can configure this yourself.
+      // Most of the time this should be false, but the `cookieconsent.law` can change this to `true` if it detects that it should
+      revokable: true,
 
       // By default the created HTML is automatically appended to the container (which defaults to <body>). Set this to false to
       // prevent this behaviour. You must attach the `element` yourself, which is a public property of the popup instance.
@@ -229,6 +227,11 @@
       //     document.body.appendChild(instance.element);
       //
       autoattach: true,
+
+      // If this is defined, then it is used as the inner html instead of `themes`. This allows for ultimate customisation.
+      // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
+      // handlers. You can use other pre-existing classes too. See `src/styles` folder.
+      overrideHTML: null,
     };
 
     function CookiePopup () {
@@ -272,7 +275,7 @@
         .replace('{{classes}}', getPopupClasses.call(this).join(' '))
         .replace('{{children}}', getPopupInnerMarkup.call(this));
 
-      appendMarkup.call(this, cookiePopup);
+      this.element = appendMarkup.call(this, cookiePopup);
 
       // uses `dismissOnScroll` and `dismissOnTimeout`
       applyAutoDismiss.call(this);
@@ -309,6 +312,7 @@
 
       this.element = null;
       this.options = null;
+      this.revokeBtn = null;
     };
 
     /**
@@ -329,18 +333,22 @@
           // need to give `display = ''` time to take effect
           setTimeout(function(){
             var regex = new RegExp('\\b' + util.escapeRegExp('cc-invisible') + '\\b');
-            el.className = el.className.replace(regex, '');debugger;
+            el.className = el.className.replace(regex, '');
 
             var btn = el.querySelector('.cc-btn:first-child');
             btn.focus();
           }, 20);
+        }
+        // hide revoke button
+        if (this.options.revokable) {
+          this.toggleRevokeButton();
         }
         this.options.onPopupOpen();
       }
       return this;
     };
 
-    CookiePopup.prototype.close = function (callback) {
+    CookiePopup.prototype.close = function (showRevoke) {
       var el = this.element;
       if (this.isOpen() && el) {
         if (cc.hasTransition) {
@@ -352,10 +360,35 @@
             el.className = el.className.replace(regex, '');
           }, 500)
         } else {
+          el.style.display = 'none';
+        }
+        if (showRevoke && this.options.revokable) {
+          this.toggleRevokeButton(true);
         }
         this.options.onPopupClose();
       }
       return this;
+    };
+
+    CookiePopup.prototype.createRevokeButton = function () {
+      var div = document.createElement('div');
+
+      div.innerHTML = btn;
+      return div.children[0];
+    };
+
+    CookiePopup.prototype.toggleRevokeButton = function (show) {
+      if (!this.revokeBtn) {
+        var classes = getPositionClasses.call(this);
+        var name = this.options.palette;
+        var p = name && this.options.palettes && this.options.palettes[name];
+        if (name) {
+          classes.push('cc-color-override-' + name)
+        }
+        var btn = '<div class="cc-revoke ' + classes.join(' ') + '">Cookie Policy</div>';
+        this.revokeBtn = appendMarkup.call(this, btn);
+      }
+      this.revokeBtn.style.display = show ? '' : 'none';
     };
 
     CookiePopup.prototype.setStatus = function (status) {
@@ -407,24 +440,28 @@
 
     }
 
-    function getPopupClasses () {
-      var opts = this.options;
-      var positions = opts.position.split('-'); // top, bottom, left, right
-
-      var classes = [
-        // top, bottom, left, right, banner, etc
-        //'cc-' + pos[0], 'cc-' + pos[1],
-
-        'cc-type-' + opts.type,   // add the compliance type
-        'cc-theme-' + opts.theme, // add the theme layout
-      ];
+    function getPositionClasses () {
+      var positions = this.options.position.split('-'); // top, bottom, left, right
+      var classes = [];
 
       // top, left, right, bottom
       positions.forEach(function (cur) {
         classes.push('cc-' + cur);
       });
 
-      classes.push('cc-' + opts.layout);
+      return classes;
+    }
+
+    function getPopupClasses () {
+      var opts = this.options;
+
+      var classes = [
+        'cc-' + opts.layout,      // floating or banner
+        'cc-type-' + opts.type,   // add the compliance type
+        'cc-theme-' + opts.theme, // add the theme layout
+      ];
+
+      classes.push.apply(classes, getPositionClasses.call(this));
 
       // we only add extra styles if `pallete` has been set to a valid value
       var didAttach = attachCustomPalette.call(this);
@@ -482,10 +519,7 @@
 
       var el = div.children[0];
 
-      // hide it behasTransitionfore adding to DOM
-      //if (!cc.hasTransition) {
-        el.style.display = 'none';
-      //}
+      el.style.display = 'none';
 
       // save ref to the function handle so we can unbind it later
       this._onButtonClick = handleButtonClick.bind(this);
@@ -500,7 +534,7 @@
         }
       }
 
-      this.element = el;
+      return el;
     }
 
     function handleButtonClick (event) {
@@ -512,14 +546,19 @@
 
         if (match) {
           this.setStatus(match);
-          this.close();
+          this.close(true);
         }
       }
       if (util.hasClass(targ, 'cc-close')) {
         this.setStatus(cc.status.dismiss);
-        this.close();
+        this.close(true);
+      }
+      if (util.hasClass(targ, 'cc-revoke')) {
+        this.clearStatus();
+        this.open();
       }
     }
+
 
     // I might change this function to use inline styles. I originally chose a stylesheet because I could select many elements with a
     // single rule (something that happened a lot), the apps has changed slightly now though, so inline styles might be more applicable.
@@ -527,20 +566,25 @@
       var colorStyles = {};
       var name = this.options.palette;
       var p = name && this.options.palettes && this.options.palettes[name];
+      var prefix = '.cc-color-override-' + name;
       var addBtn = function(styles, selector, obj) {
         styles[selector] = ['color: '+obj.text, 'border-color: '+obj.border, 'background-color: '+obj.background];
       };
 
       if (p) {
-        var prefix = '.cc-color-override-' + name;
-
         if (p.popup) {
-          colorStyles[prefix + ' .cc-link'] = ['color: '+p.popup.link];
           colorStyles[prefix + '.cc-window'] = ['color: '+p.popup.text, 'background-color: '+p.popup.background];
+
+          colorStyles[prefix + '.cc-revoke'] = ['color: '+p.popup.text, 'background-color: '+p.popup.background];
+
+          colorStyles[prefix + ' .cc-link'] = ['color: '+p.popup.link];
         }
 
         if (p.button) {
           addBtn(colorStyles, prefix + ' .cc-btn', p.button);
+          var colour = p.button.background == 'transparent' ? p.button.border : p.button.background;
+          colorStyles[prefix + ' .cc-btn:focus'] = ['outline: 1px solid ' + colour];
+          colorStyles[prefix + ' .cc-link:focus'] = ['outline: 1px solid ' + colour];
         }
 
         if (p.highlight) {

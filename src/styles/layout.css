@@ -5,6 +5,11 @@
   margin-right: 1em;
 }
 
+.cc-revoke.cc-top {top:0; left: 3em; border-bottom-left-radius:.5em;border-bottom-right-radius:.5em;}
+.cc-revoke.cc-bottom {bottom:0; left: 3em; border-top-left-radius:.5em;border-top-right-radius:.5em;}
+.cc-revoke.cc-left{left: 3em; right: unset;}
+.cc-revoke.cc-right{right: 3em; left: unset;}
+
 /**************************************** FLOATING ****************************************/
 
 /* these classes position the floating element */
@@ -21,7 +26,15 @@
   margin-bottom: 1em;
 }
 
+.cc-window.cc-floating .cc-compliance {
+  flex: 1;
+}
+
 /**************************************** BANNER ****************************************/
+
+.cc-window.cc-banner {
+  align-items: center;
+}
 
 .cc-banner.cc-top {
   left: 0; right: 0; top: 0;
