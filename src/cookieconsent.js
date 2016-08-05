@@ -277,6 +277,12 @@
         .replace('{{classes}}', getPopupClasses.call(this).join(' '))
         .replace('{{children}}', getPopupInnerMarkup.call(this));
 
+      // if user passes html, use it instead
+      var customHTML = this.options.overrideHTML;
+      if (typeof customHTML == 'string' && customHTML.length) {
+        cookiePopup = customHTML;
+      }
+
       this.element = appendMarkup.call(this, cookiePopup);
 
       // uses `dismissOnScroll` and `dismissOnTimeout`
