@@ -123,6 +123,11 @@
       // defaults to the current domain
       cookie: { path: '/', domain: 'localhost', expiryDays: 365 },
 
+      // The placeholders {{classes}} and {{children}} both get replaced during initialisation:
+      //  - {{classes}} is where additional classes get added
+      //  - {{children}} is where the HTML children are placed
+      window: '<div role="dialog" aria-label="cookieconsent" aria-describedby="cookieconsent:desc" class="cc-window {{classes}}">{{children}}</div>',
+
       // each item defines the inner text for the element that it references
       content: {
         header: 'Cookies used on the website',
@@ -134,20 +139,19 @@
         close: '&#x274c;',
       },
 
-      // The placeholders {{classes}} and {{children}} both get replaced during initialisation:
-      //  - {{classes}} is where additional classes get added
-      //  - {{children}} is where the HTML children are placed
-      window: '<div class="cc-window {{classes}}">{{children}}</div>',
-
-      // this is the HTML for the elements above. {{children}} will be replaced with the equivalent 'content' above
+      // This is the HTML for the elements above. The string {{children}} will be replaced with the equivalent text above.
+      // You can remove "{{children}}" and write the content directly inside the HTML if you want.
+      //
+      //  - ARIA rules suggest to ensure ciontrols are tabbable (so the browser can find the first control),
+      //    and to set the focus to the first interactive control (http://w3c.github.io/aria-in-html/)
       elements: {
         header: '<span class="cc-header">{{children}}</span>',
-        message: '<span class="cc-message">{{children}}</span>',
-        dismiss: '<a class="cc-btn cc-dismiss">{{children}}</a>',
-        link: '<a href="/" class="cc-link">{{children}}</a>',
-        allow: '<a class="cc-btn cc-allow">{{children}}</a>',
-        deny: '<a class="cc-btn cc-deny">{{children}}</a>',
-        close: '<span class="cc-close">{{children}}</span>',
+        message: '<span id="cookieconsent:desc" class="cc-message">{{children}}</span>',
+        dismiss: '<a aria-label="dismiss cookie message" tabindex="0" class="cc-btn cc-dismiss">{{children}}</a>',
+        allow: '<a aria-label="allow cookies" tabindex="0" class="cc-btn cc-allow">{{children}}</a>',
+        deny: '<a aria-label="deny cookies" tabindex="0" class="cc-btn cc-deny">{{children}}</a>',
+        link: '<a aria-label="learn more about cookies" tabindex="0" class="cc-link" href="/">{{children}}</a>',
+        close: '<span aria-label="dismiss cookie message" tabindex="0" class="cc-close">{{children}}</span>',
       },
 
       // define types of compliance here
@@ -325,7 +329,10 @@
           // need to give `display = ''` time to take effect
           setTimeout(function(){
             var regex = new RegExp('\\b' + util.escapeRegExp('cc-invisible') + '\\b');
-            el.className = el.className.replace(regex, '');
+            el.className = el.className.replace(regex, '');debugger;
+
+            var btn = el.querySelector('.cc-btn:first-child');
+            btn.focus();
           }, 20);
         }
         this.options.onPopupOpen();
