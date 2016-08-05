@@ -152,7 +152,7 @@
       // This is the HTML for the elements above. The string {{children}} will be replaced with the equivalent text above.
       // You can remove "{{children}}" and write the content directly inside the HTML if you want.
       //
-      //  - ARIA rules suggest to ensure ciontrols are tabbable (so the browser can find the first control),
+      //  - ARIA rules suggest to ensure controls are tabbable (so the browser can find the first control),
       //    and to set the focus to the first interactive control (http://w3c.github.io/aria-in-html/)
       elements: {
         header: '<span class="cc-header">{{children}}</span>',
@@ -175,44 +175,16 @@
       // define layout themes here
       themes: {
         // the 'block' layout tend to be for square floating popups
-        'basic-block': '{{message}}{{compliance}}',
-        'centered-block': '{{message}}{{link}}{{compliance}}',
-
-        // the 'inline' layouts tend to be for the banner popups (the {{compliance}} must be first because it floats right)
-        'basic-inline': '{{message}}{{compliance}}',
+        'basic': '{{message}}{{compliance}}',
+        'link': '{{message}}{{link}}{{compliance}}',
       },
 
       // define custom color palettes here
       palettes: {
         'white': {popup: {background: '#fafafa', text: '#000', link: '#888'}, button: {background: 'transparent', border: '#86b4ea', text: '#86b4ea'}},
+        'black': {popup: {background: '#000000', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'}, highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000000'}},
         'blue' : {popup: {background: '#4a90e2', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}},
         'red'  : {popup: {background: '#d34040', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}, highlight: {background: '#ffffff', border: '#ffffff', text: '#d34040'}},
-        'black': {popup: {background: '#000000', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'}, highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000000'}},
-
-        'black-orange': {
-          popup: {background: '#252c33', text: '#fff', link: '#fff'},
-          button: {background: '#fa6956', border: '#fa6956', text: '#fff'},
-        },
-        'green-green': {
-          popup: {background: '#4ea8af', text: '#fff', link: '#fff'},
-          button: {background: '#91e23e', border: '#91e23e', text: '#fff'},
-        },
-        'blue-grey': {
-          popup: {background: '#205072', text: '#fff', link: '#fff'},
-          button: {background: '#b7bbc0', border: '#b7bbc0', text: '#fff'},
-        },
-        'grey-black': {
-          popup: {background: '#b7bbc0', text: '#fff', link: '#fff'},
-          button: {background: '#252c33', border: '#252c33', text: '#fff'},
-        },
-        'red-white': {
-          popup: {background: '#fa5656', text: '#fff', link: '#fff'},
-          button: {background: '#ffffff', border: '#ffffff', text: '#000'},
-        },
-        'purple-white': {
-          popup: {background: '#956cb9', text: '#fff', link: '#fff'},
-          button: {background: '#ffffff', border: '#ffffff', text: '#000'},
-        },
       },
 
       // this refers to the popup windows position. we currently support:
@@ -222,9 +194,9 @@
 
       // select your type of popup here
       type: 'dismiss',                 // refers to `compliance`
-      theme: 'mono-floating',          // refers to `themes`
+      theme: 'basic',                  // refers to `themes`
       palette: '',                     // refers to `palettes`
-      layout: 'floating',              // 'floating' or 'banner'
+      layout: 'floating',              // 'floating' or 'banner' (adds a class `cc-floating` or `cc-banner` which helps when styling)
 
       // Some countries REQUIRE that a user can change their mind. You can configure this yourself.
       // Most of the time this should be false, but the `cookieconsent.law` can change this to `true` if it detects that it should
@@ -510,7 +482,7 @@
       var theme = opts.themes[opts.theme];
 
       if (!theme) {
-        theme = opts.themes['basic-block'];
+        theme = opts.themes.basic;
       }
 
       return util.interpolateString(theme, function(match) {

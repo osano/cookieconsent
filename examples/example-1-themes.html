@@ -39,12 +39,13 @@
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {
-        'Red Banner Top': {type: 'info', theme: 'basic-inline', palette: 'red', position: 'top', layout: 'banner'},
-        'White Banner Top': {type: 'opt-out', theme: 'basic-inline', palette: 'white', position: 'top', layout: 'banner'},
-        'Black Banner Bottom': {type: 'opt-in', theme: 'basic-inline', palette: 'black', position: 'bottom', layout: 'banner'},
-        'Blue Floating Top Left': {type: 'info', theme: 'basic-block', palette: 'blue', position: 'top-left', layout: 'floating'},
-        'Black Floating Top Right': {type: 'opt-out', theme: 'basic-block', palette: 'black-orange', position: 'top-right', layout: 'floating'},
-        'Purple Floating Bottom Right': {type: 'opt-in', theme: 'basic-block', palette: 'purple-white', position: 'bottom-right', layout: 'floating'},
+        'Red Banner Top': {type: 'info', theme: 'basic', palette: 'red', position: 'top', layout: 'banner'},
+        'White Banner Top': {type: 'opt-out', theme: 'basic', palette: 'white', position: 'top', layout: 'banner'},
+        'Black Banner Bottom': {type: 'opt-in', theme: 'basic', palette: 'black', position: 'bottom', layout: 'banner'},
+
+        'Blue Floating Top Left': {type: 'info', theme: 'basic', palette: 'blue', position: 'top-left', layout: 'floating'},
+        'Black Floating Top Right': {type: 'opt-out', theme: 'basic', position: 'top-right', layout: 'floating', palette: 'black-orange', palettes: {'black-orange': {popup: {background: '#252c33', text: '#fff', link: '#fff'}, button: {background: '#fa6956', border: '#fa6956', text: '#fff'}}}},
+        'Purple Floating Bottom Right': {type: 'opt-in', theme: 'basic', position: 'bottom-right', layout: 'floating', palette: 'purple', palettes: {'purple': {popup: {background: '#956cb9', text: '#fff', link: '#fff'}, button: {background: '#ffffff', border: '#ffffff', text:'#000000'}}}},
       },
     });
   } (window.cookieconsent, window.cookieconsent_example_util));
