@@ -107,7 +107,17 @@
 
     var defaultOptions = {
       enabled: true,
-      container: null, // optional (expecting a HTML element)
+
+      // optional (expecting a HTML element)
+      container: null,
+
+      // By default the created HTML is automatically appended to the container (which defaults to <body>). Set this to false to
+      // prevent this behaviour. You must attach the `element` yourself, which is a public property of the popup instance.
+      // 
+      //     var instance = cookieconsent.factory(options);
+      //     document.body.appendChild(instance.element);
+      //
+      autoattach: true,
 
       // some callback hooks which are called at certain points in the app
       onPopupOpen: function() {},
@@ -219,14 +229,6 @@
       // Some countries REQUIRE that a user can change their mind. You can configure this yourself.
       // Most of the time this should be false, but the `cookieconsent.law` can change this to `true` if it detects that it should
       revokable: true,
-
-      // By default the created HTML is automatically appended to the container (which defaults to <body>). Set this to false to
-      // prevent this behaviour. You must attach the `element` yourself, which is a public property of the popup instance.
-      // 
-      //     var instance = cookieconsent.factory(options);
-      //     document.body.appendChild(instance.element);
-      //
-      autoattach: true,
 
       // If this is defined, then it is used as the inner html instead of `themes`. This allows for ultimate customisation.
       // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
@@ -559,7 +561,6 @@
       }
     }
 
-
     // I might change this function to use inline styles. I originally chose a stylesheet because I could select many elements with a
     // single rule (something that happened a lot), the apps has changed slightly now though, so inline styles might be more applicable.
     function attachCustomPalette () {
@@ -583,8 +584,7 @@
         if (p.button) {
           addBtn(colorStyles, prefix + ' .cc-btn', p.button);
           var colour = p.button.background == 'transparent' ? p.button.border : p.button.background;
-          colorStyles[prefix + ' .cc-btn:focus'] = ['outline: 1px solid ' + colour];
-          colorStyles[prefix + ' .cc-link:focus'] = ['outline: 1px solid ' + colour];
+          colorStyles[prefix + ' .cc-btn:focus, ' + prefix + ' .cc-link:focus'] = ['outline: 1px solid ' + colour];
         }
 
         if (p.highlight) {

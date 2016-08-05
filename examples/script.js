@@ -120,7 +120,7 @@ window['cookieconsent_example_util'] = {
     var examples = Object.keys(options.popups);
     var itemOpen = '<li><span>';
     var itemClose = '</span></li>';
-    var state = {currentOpen: -1, instances: []};
+    var instances = [];
 
     options.selector.innerHTML = itemOpen + Object.keys(options.popups).join(itemClose+itemOpen) + itemClose;
 
@@ -141,25 +141,24 @@ window['cookieconsent_example_util'] = {
       // from this point, 'targ' will be a direct decendant of opts.selector
       var idx = Array.prototype.indexOf.call(options.selector.children, targ);
 
-      if (idx != state.currentOpen) {
-        if (state.currentOpen >= 0)
-          state.instances[state.currentOpen].close();
-
-        if (idx >= 0)
-          state.instances[idx].open();
-
-        state.currentOpen = idx;
+      if (idx >= 0) {
+        // We could remember the popup thats currently open, but it gets complicated when we consider
+        // the revoke button. Therefore, simply close them all regardless (makes life easier)
+        instances.forEach(function (popup) {
+          if (popup.isOpen()) {
+            popup.close()
+          }
+          popup.toggleRevokeButton();
+        });
+        instances[idx].open();
       }
     };
 
     for (var i = 0, l = examples.length; i < l; ++i) {
       var opts = options.popups[examples[i]];
-      opts.onPopupClose = function () {
-        state.currentOpen = -1;
-      };
-      state.instances[i] = options.cookieconsent.factory(options.popups[examples[i]]);
+      instances[i] = options.cookieconsent.factory(options.popups[examples[i]]);
     }
 
-    return state;
+    return instances;
   },
 };
