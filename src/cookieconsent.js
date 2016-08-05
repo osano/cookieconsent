@@ -133,11 +133,6 @@
       // defaults to the current domain
       cookie: { path: '/', domain: 'localhost', expiryDays: 365 },
 
-      // The placeholders {{classes}} and {{children}} both get replaced during initialisation:
-      //  - {{classes}} is where additional classes get added
-      //  - {{children}} is where the HTML children are placed
-      window: '<div role="dialog" aria-label="cookieconsent" aria-describedby="cookieconsent:desc" class="cc-window {{classes}}">{{children}}</div>',
-
       // each item defines the inner text for the element that it references
       content: {
         header: 'Cookies used on the website',
@@ -148,6 +143,11 @@
         deny: 'Deny',
         close: '&#x274c;',
       },
+
+      // The placeholders {{classes}} and {{children}} both get replaced during initialisation:
+      //  - {{classes}} is where additional classes get added
+      //  - {{children}} is where the HTML children are placed
+      window: '<div role="dialog" aria-label="cookieconsent" aria-describedby="cookieconsent:desc" class="cc-window {{classes}}">{{children}}</div>',
 
       // This is the HTML for the elements above. The string {{children}} will be replaced with the equivalent text above.
       // You can remove "{{children}}" and write the content directly inside the HTML if you want.
@@ -306,6 +306,10 @@
       var el = this.element;
       if (!this.isOpen() && el) {
         if (cc.hasTransition) {
+          if (this.closingTimeout) {
+            clearTimeout(this.closingTimeout);
+            afterClose.call(this, el);
+          }
           el.className += ' cc-invisible';
         }
         el.style.display = '';
@@ -333,12 +337,7 @@
       if (this.isOpen() && el) {
         if (cc.hasTransition) {
           el.className += ' cc-invisible';
-          setTimeout(function(){
-            el.style.display = 'none';
-            // need to remove the class, but the animation won't take effect because the display is none
-            var regex = new RegExp('\\b' + util.escapeRegExp('cc-invisible') + '\\b');
-            el.className = el.className.replace(regex, '');
-          }, 500)
+          this.closingTimeout = setTimeout(afterClose.bind(this, el), 500)
         } else {
           el.style.display = 'none';
         }
@@ -349,6 +348,14 @@
       }
       return this;
     };
+
+    function afterClose (el) {
+      this.closingTimeout = null;
+      el.style.display = 'none';
+      // need to remove the class, but the animation won't take effect because the display is none
+      var regex = new RegExp('\\b' + util.escapeRegExp('cc-invisible') + '\\b');
+      el.className = el.className.replace(regex, '');
+    }
 
     CookiePopup.prototype.createRevokeButton = function () {
       var div = document.createElement('div');
