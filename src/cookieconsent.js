@@ -70,6 +70,40 @@
       }
     },
 
+    debounce: function (fn, delay) {
+      var timer = null;
+      return function () {
+        var context = this, args = arguments;
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          fn.apply(context, args);
+        }, delay);
+      };
+    },
+
+    throttle: function (fn, threshhold, scope) {
+      threshhold || (threshhold = 250);
+      var last,
+          deferTimer;
+      return function () {
+        var context = scope || this;
+
+        var now = +new Date,
+            args = arguments;
+        if (last && now < last + threshhold) {
+          // hold on to it
+          clearTimeout(deferTimer);
+          deferTimer = setTimeout(function () {
+            last = now;
+            fn.apply(context, args);
+          }, threshhold);
+        } else {
+          last = now;
+          fn.apply(context, args);
+        }
+      };
+    },
+
     readCookie: function (name) {
       var value = '; ' + document.cookie;
       var parts = value.split('; ' + name + '=');
@@ -286,24 +320,25 @@
       var btn = this.revokeBtn;
       if (this.options.animateRevokable) {
         var wait = false;
-        var onMouseMove = function (evt) {
+        var onMouseMove = util.throttle(function (evt) {
           var active = false;
-          if (!wait) {
-            wait = true;
+          var minY = 20;
+          var maxY = (window.innerHeight - 20);
 
-            var minY = 10;
-            var maxY = (window.innerHeight - 10);
+          if (util.hasClass(btn, 'cc-top') && evt.pageY < minY) active = true;
+          if (util.hasClass(btn, 'cc-bottom') && evt.pageY > maxY) active = true;
 
-            if (util.hasClass(btn, 'cc-top') && evt.pageY < minY) active = true;
-            if (util.hasClass(btn, 'cc-bottom') && evt.pageY > maxY) active = true;
-
-            util[active?'addClass':'removeClass'](btn, 'cc-active');
-
-            setTimeout(function () {
-              wait = false;
-            }, 200);
+          if (active) {
+            if (!util.hasClass(btn, 'cc-active')) {
+              util.addClass(btn, 'cc-active');
+            }
+          } else {
+            if (util.hasClass(btn, 'cc-active')) {
+              util.removeClass(btn, 'cc-active');
+            }
           }
-        };
+
+        }, 200);
 
         window.addEventListener('mousemove', onMouseMove);
       }
@@ -698,6 +733,10 @@
 
         window.addEventListener('scroll', onWindowScroll);
       }
+    }
+
+    function initRevokeButton () {
+
     }
 
     return CookiePopup

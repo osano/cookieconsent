@@ -14,15 +14,25 @@
 }
 
 /* only animate ifhas class 'cc-animate' */
+.cc-animate.cc-revoke {
+  -webkit-transition: transform 1s ease;
+  -moz-transition: transform 1s ease;
+  -ms-transition: transform 1s ease;
+  -o-transition: transform 1s ease;
+  transition: transform 1s ease;
+}
 .cc-animate.cc-revoke.cc-top {
-  transform: translateY(-3em);
+  transform: translateY(-2em);
 }
 .cc-animate.cc-revoke.cc-bottom {
-  transform: translateY(3em);
+  transform: translateY(2em);
 }
 .cc-animate.cc-revoke.cc-active.cc-top {
   transform: translateY(0);
 }
 .cc-animate.cc-revoke.cc-active.cc-bottom {
+  transform: translateY(0);
+}
+.cc-revoke:hover {
   transform: translateY(0);
 }
