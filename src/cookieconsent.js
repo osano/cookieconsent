@@ -29,8 +29,18 @@
     },
 
     hasClass: function (element, selector) {
+      var s = ' ';
       return element.nodeType === 1 &&
-          (" " + element.className + " ").replace(/[\n\t]/g, " ").indexOf(" " + selector + " ") >= 0;
+          (s + element.className + s).replace(/[\n\t]/g, s).indexOf(s + selector + s) >= 0;
+    },
+
+    addClass: function (element, className) {
+      element.className += ' ' + className;
+    },
+
+    removeClass: function (element, className) {
+      var regex = new RegExp('\\b' + util.escapeRegExp(className) + '\\b');
+      element.className = element.className.replace(regex, '');
     },
 
     interpolateString: function (str, callback) {
@@ -304,25 +314,15 @@
 
     CookiePopup.prototype.open = function (callback) {
       var el = this.element;
-      if (!this.isOpen() && el) {
-        if (cc.hasTransition) {
-          if (this.closingTimeout) {
-            clearTimeout(this.closingTimeout);
-            afterClose.call(this, el);
-          }
-          el.className += ' cc-invisible';
-        }
-        el.style.display = '';
-        if (cc.hasTransition) {
-          // need to give `display = ''` time to take effect
-          setTimeout(function(){
-            var regex = new RegExp('\\b' + util.escapeRegExp('cc-invisible') + '\\b');
-            el.className = el.className.replace(regex, '');
 
-            var btn = el.querySelector('.cc-btn:first-child');
-            btn.focus();
-          }, 20);
+      if (!this.isOpen() && el) {
+
+        if (cc.hasTransition) {
+          this.fadeIn();
+        } else {
+          el.style.display = '';
         }
+
         // hide revoke button
         if (this.options.revokable) {
           this.toggleRevokeButton();
@@ -334,34 +334,62 @@
 
     CookiePopup.prototype.close = function (showRevoke) {
       var el = this.element;
+
       if (this.isOpen() && el) {
+
         if (cc.hasTransition) {
-          el.className += ' cc-invisible';
-          this.closingTimeout = setTimeout(afterClose.bind(this, el), 500)
+          this.fadeOut();
         } else {
           el.style.display = 'none';
         }
+
         if (showRevoke && this.options.revokable) {
           this.toggleRevokeButton(true);
         }
+
         this.options.onPopupClose();
       }
       return this;
     };
 
-    function afterClose (el) {
-      this.closingTimeout = null;
-      el.style.display = 'none';
-      // need to remove the class, but the animation won't take effect because the display is none
-      var regex = new RegExp('\\b' + util.escapeRegExp('cc-invisible') + '\\b');
-      el.className = el.className.replace(regex, '');
-    }
+    CookiePopup.prototype.fadeIn = function () {
+      var el = this.element;
 
-    CookiePopup.prototype.createRevokeButton = function () {
-      var div = document.createElement('div');
+      if (!cc.hasTransition)
+        return;
 
-      div.innerHTML = btn;
-      return div.children[0];
+      if (this.closingTimeout) {
+        clearTimeout(this.closingTimeout);
+        afterFadeOut.bind(this, el)
+      }
+
+      if (util.hasClass(el, 'cc-invisible')) {
+        el.style.display = '';
+
+        this.openingTimeout = setTimeout(afterFadeIn.bind(this, el), 5);
+      }
+
+      return this;
+    };
+
+    CookiePopup.prototype.fadeOut = function () {
+      var el = this.element;
+
+      if (!cc.hasTransition)
+        return;
+
+      if (this.openingTimeout) {
+        clearTimeout(this.openingTimeout);
+        afterFadeIn.bind(this, el);
+      }
+
+      if (!util.hasClass(el, 'cc-invisible')) {
+        util.addClass(el, 'cc-invisible');
+
+        this.closingTimeout = setTimeout(afterFadeOut.bind(this, el), 500)
+      }
+
+      return this;
     };
 
     CookiePopup.prototype.toggleRevokeButton = function (show) {
@@ -402,6 +430,16 @@
       util.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
     };
 
+    function afterFadeIn (el) {
+      this.openingTimeout =  null;
+      util.removeClass(el, 'cc-invisible');
+    }
+
+    function afterFadeOut (el) {
+      this.closingTimeout = null;
+      el.style.display = 'none';
+    }
+
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
     function checkCallbackHooks () {
       var complete = this.options.onStatusChange;
@@ -424,7 +462,6 @@
         complete(answer);
       }
       return match;
-
     }
 
     function getPositionClasses () {
@@ -507,6 +544,7 @@
       var el = div.children[0];
 
       el.style.display = 'none';
+      util.addClass(el, 'cc-invisible');
 
       // save ref to the function handle so we can unbind it later
       this._onButtonClick = handleButtonClick.bind(this);
@@ -541,6 +579,7 @@
         this.close(true);
       }
       if (util.hasClass(targ, 'cc-revoke')) {
+        this.options.onRevokeChoice(this.getStatus());
         this.clearStatus();
         this.open();
       }
