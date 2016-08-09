@@ -240,13 +240,14 @@
       // select your type of popup here
       type: 'dismiss',                 // refers to `compliance`
       theme: 'basic',                  // refers to `themes`
-      palette: '',                     // refers to `palettes`
       layout: 'floating',              // 'floating' or 'banner' (adds a class `cc-floating` or `cc-banner` which helps when styling)
+      palette: '',                     // refers to `palettes`
 
       // Some countries REQUIRE that a user can change their mind. You can configure this yourself.
       // Most of the time this should be false, but the `cookieconsent.law` can change this to `true` if it detects that it should
       revokable: true,
 
+      // if true, the revokable button will tranlate in and out
       animateRevokable: true,
 
       // If this is defined, then it is used as the inner html instead of `themes`. This allows for ultimate customisation.
@@ -261,8 +262,7 @@
 
     CookiePopup.prototype.initialise = function (options) {
       if (this.options) {
-        // already rendered
-        this.destroy();
+        this.destroy(); // already rendered
       }
 
       // set options back to default options
@@ -303,45 +303,7 @@
       // uses `dismissOnScroll` and `dismissOnTimeout`
       applyAutoDismiss.call(this);
 
-      if (this.options.revokable) {
-        var classes = getPositionClasses.call(this);
-        var name = this.options.palette;
-        var p = name && this.options.palettes && this.options.palettes[name];
-        if (name) {
-          if (this.options.animateRevokable) {
-            classes.push('cc-animate');
-          }
-          classes.push('cc-color-override-' + name)
-        }
-        var btn = '<div class="cc-revoke ' + classes.join(' ') + '">Cookie Policy</div>';
-        this.revokeBtn = appendMarkup.call(this, btn);
-      }
-
-      var btn = this.revokeBtn;
-      if (this.options.animateRevokable) {
-        var wait = false;
-        var onMouseMove = util.throttle(function (evt) {
-          var active = false;
-          var minY = 20;
-          var maxY = (window.innerHeight - 20);
-
-          if (util.hasClass(btn, 'cc-top') && evt.clientY < minY) active = true;
-          if (util.hasClass(btn, 'cc-bottom') && evt.clientY > maxY) active = true;
-
-          if (active) {
-            if (!util.hasClass(btn, 'cc-active')) {
-              util.addClass(btn, 'cc-active');
-            }
-          } else {
-            if (util.hasClass(btn, 'cc-active')) {
-              util.removeClass(btn, 'cc-active');
-            }
-          }
-
-        }, 200);
-
-        window.addEventListener('mousemove', onMouseMove);
-      }
+      applyRevokeButton.call(this);
 
       return this;
     };
@@ -386,6 +348,9 @@
     };
 
     CookiePopup.prototype.open = function (callback) {
+      if (!this.options.enabled)
+        return this;
+
       if (!this.isOpen()) {
         if (cc.hasTransition) {
           this.fadeIn();
@@ -402,6 +367,9 @@
     };
 
     CookiePopup.prototype.close = function (showRevoke) {
+      if (!this.options.enabled)
+        return this;
+
       if (this.isOpen()) {
         if (cc.hasTransition) {
           this.fadeOut();
@@ -433,8 +401,6 @@
 
         this.openingTimeout = setTimeout(afterFadeIn.bind(this, el), 5);
       }
-
-      return this;
     };
 
     CookiePopup.prototype.fadeOut = function () {
@@ -453,8 +419,6 @@
 
         this.closingTimeout = setTimeout(afterFadeOut.bind(this, el), 500)
       }
-
-      return this;
     };
 
     CookiePopup.prototype.toggleRevokeButton = function (show) {
@@ -732,6 +696,47 @@
         };
 
         window.addEventListener('scroll', onWindowScroll);
+      }
+    }
+
+    function applyRevokeButton () {
+      if (this.options.revokable) {
+        var classes = getPositionClasses.call(this);
+        var name = this.options.palette;
+        var p = name && this.options.palettes && this.options.palettes[name];
+        if (name) {
+          if (this.options.animateRevokable) {
+            classes.push('cc-animate');
+          }
+          classes.push('cc-color-override-' + name)
+        }
+        var btn = '<div class="cc-revoke ' + classes.join(' ') + '">Cookie Policy</div>';
+        this.revokeBtn = appendMarkup.call(this, btn);
+      }
+
+      var btn = this.revokeBtn;
+      if (this.options.animateRevokable) {
+        var wait = false;
+        var onMouseMove = util.throttle(function (evt) {
+          var active = false;
+          var minY = 20;
+          var maxY = (window.innerHeight - 20);
+
+          if (util.hasClass(btn, 'cc-top') && evt.clientY < minY) active = true;
+          if (util.hasClass(btn, 'cc-bottom') && evt.clientY > maxY) active = true;
+
+          if (active) {
+            if (!util.hasClass(btn, 'cc-active')) {
+              util.addClass(btn, 'cc-active');
+            }
+          } else {
+            if (util.hasClass(btn, 'cc-active')) {
+              util.removeClass(btn, 'cc-active');
+            }
+          }
+        }, 200);
+
+        window.addEventListener('mousemove', onMouseMove);
       }
     }
 

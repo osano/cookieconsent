@@ -60,9 +60,11 @@
       // applyLaw takes the "preffered" options and changes them slightly to match the countries law
       var options = C.law.applyLaw(getOptions(inputs), code);
 
+
       if (!window[name]) {
         window[name] = cookieconsent.factory(options);
       } else {
+        window[name].clearStatus();
         window[name].initialise(options);
       }
       window[name].open();
