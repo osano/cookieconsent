@@ -5,6 +5,7 @@ var minifyJS = require('gulp-uglify');
 var minifyCSS = require('gulp-minify-css');
 var deleteDirs = require('del');
 var runSequence = require('run-sequence');
+var autoprefixer = require('gulp-autoprefixer');
 
 
 var buildFolder = './build';
@@ -28,21 +29,18 @@ gulp.task('cleanup:begin', function () {
 });
 
 gulp.task('minify:js', function () {
-  return _minify({
-    in: jsBuildFiles,
-    out: 'cookieconsent.min.js',
-    dest: buildFolder,
-    minifyFunc: minifyJS
-  });
+  return gulp.src(jsBuildFiles)            // get files
+    .pipe(minifyJS())                      // minify them
+    .pipe(concat('cookieconsent.min.js'))  // combine them
+    .pipe(gulp.dest(buildFolder));          // save under a new name
 });
 
 gulp.task('minify:css', function () {
-  return _minify({
-    in: cssBuildFiles,
-    out: 'cookieconsent.min.css',
-    dest: buildFolder,
-    minifyFunc: minifyCSS
-  });
+  return gulp.src(cssBuildFiles)            // get files
+    .pipe(autoprefixer({browsers: ['IE 10', 'last 2 versions']}))
+    .pipe(minifyCSS())                      // minify them
+    .pipe(concat('cookieconsent.min.css'))  // combine them
+    .pipe(gulp.dest(buildFolder));          // save under a new name
 });
 
 gulp.task('build', function(callback) {
@@ -54,8 +52,4 @@ gulp.task('watch', function() {
 });
 
 function _minify(opts) {
-  return gulp.src(opts.in)       // get files
-    .pipe(opts.minifyFunc())     // minify them
-    .pipe(concat(opts.out))      // combine them
-    .pipe(gulp.dest(opts.dest)); // save under a new name
 }

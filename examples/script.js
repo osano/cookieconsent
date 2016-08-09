@@ -128,7 +128,7 @@ window['cookieconsent_example_util'] = {
       var targ = e.target, item;
 
       // if the target is the container, exit
-      if (targ.isSameNode(options.selector)) return;
+      if (targ.isEqualNode(options.selector)) return;
 
       // from this point, only the child elements of opts.selector will get through.
       // out of these child elements, we want to find the closest direct decendant <li>
@@ -136,7 +136,7 @@ window['cookieconsent_example_util'] = {
         targ = targ.parentNode;
       }
 
-      if (!targ.parentNode.isSameNode(options.selector)) return;
+      if (!targ.parentNode.isEqualNode(options.selector)) return;
 
       // from this point, 'targ' will be a direct decendant of opts.selector
       var idx = Array.prototype.indexOf.call(options.selector.children, targ);
@@ -150,6 +150,7 @@ window['cookieconsent_example_util'] = {
           }
           popup.toggleRevokeButton();
         });
+
         instances[idx].open();
       }
     };

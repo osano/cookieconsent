@@ -266,7 +266,7 @@
       }
 
       // set options back to default options
-      this.options = Object.assign({}, defaultOptions);
+      util.deepExtend(this.options = {}, defaultOptions);
 
       // merge in user options
       if (Object.prototype.toString.call(options) == '[object Object]') {
@@ -325,8 +325,8 @@
           var minY = 20;
           var maxY = (window.innerHeight - 20);
 
-          if (util.hasClass(btn, 'cc-top') && evt.pageY < minY) active = true;
-          if (util.hasClass(btn, 'cc-bottom') && evt.pageY > maxY) active = true;
+          if (util.hasClass(btn, 'cc-top') && evt.clientY < minY) active = true;
+          if (util.hasClass(btn, 'cc-bottom') && evt.clientY > maxY) active = true;
 
           if (active) {
             if (!util.hasClass(btn, 'cc-active')) {
@@ -1061,7 +1061,7 @@
     }, failure);
   };
 
-  // only open if the user hasn't answered
+  // only open if the user hasnt answered
   cc.autoOpen = function (options) {
     var popup = cc.factory(options);
 
