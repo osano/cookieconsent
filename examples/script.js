@@ -142,6 +142,8 @@ window['cookieconsent_example_util'] = {
       var idx = Array.prototype.indexOf.call(options.selector.children, targ);
 
       if (idx >= 0) {
+        instances[idx].clearStatus();
+
         // We could remember the popup thats currently open, but it gets complicated when we consider
         // the revoke button. Therefore, simply close them all regardless (makes life easier)
         instances.forEach(function (popup) {

@@ -344,7 +344,7 @@
      * Returns true if thecookie popup window is visible
      */
     CookiePopup.prototype.isOpen = function () {
-      return this.element && this.element.style.display == '';
+      return this.element && this.element.style.display == '' && (cc.hasTransition ? !util.hasClass(this.element, 'cc-invisible') : true);
     };
 
     CookiePopup.prototype.open = function (callback) {
@@ -564,7 +564,7 @@
 
       el.style.display = 'none';
 
-      if (util.hasClass(el, 'cc-window')) {
+      if (util.hasClass(el, 'cc-window') && cc.hasTransition) {
         util.addClass(el, 'cc-invisible');
       }
 
