@@ -3,25 +3,6 @@
   // stop from running again, if accidently included more than once.
   if (cc.hasInitialised) return;
 
-  // name of cookie to be set when dismissed
-  cc.cookieName = 'cookieconsent_status';
-
-  // valid cookie values
-  cc.status = {deny: 'deny', allow: 'allow', dismiss: 'dismiss'};
-
-  // is true if the browser supports css transitions
-  cc.hasTransition = (function () {
-    var style = document.documentElement.style;
-    var trans = ['t','OT','msT','MozT','KhtmlT','WebkitT'];
-    for (var i = 0, l = trans.length; i < l; ++i) {
-      if (trans[i]+'ransition' in style) return true;
-    }
-    return false;
-  }());
-
-  // contains the custom <style> tags
-  cc.customStyles = {};
-
   var util = {
     // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
     escapeRegExp: function (str) {
@@ -50,61 +31,7 @@
       })
     },
 
-    createStyle: function (attrs) {
-      var style = document.createElement('style');
-      for (var prop in attrs) {
-        style.setAttribute(prop, attrs[prop]);
-      }
-
-      style.appendChild(document.createTextNode('')); // webkit hack
-      document.head.appendChild(style);
-      return style.sheet;
-    },
-
-    addCSSRule: function(sheet, selector, rules, index) {
-      if ('insertRule' in sheet) {
-        sheet.insertRule(selector + '{' + rules + '}', index);
-      }
-      else if('addRule' in sheet) {
-        sheet.addRule(selector, rules, index);
-      }
-    },
-
-    debounce: function (fn, delay) {
-      var timer = null;
-      return function () {
-        var context = this, args = arguments;
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-          fn.apply(context, args);
-        }, delay);
-      };
-    },
-
-    throttle: function (fn, threshhold, scope) {
-      threshhold || (threshhold = 250);
-      var last,
-          deferTimer;
-      return function () {
-        var context = scope || this;
-
-        var now = +new Date,
-            args = arguments;
-        if (last && now < last + threshhold) {
-          // hold on to it
-          clearTimeout(deferTimer);
-          deferTimer = setTimeout(function () {
-            last = now;
-            fn.apply(context, args);
-          }, threshhold);
-        } else {
-          last = now;
-          fn.apply(context, args);
-        }
-      };
-    },
-
-    readCookie: function (name) {
+    getCookie: function (name) {
       var value = '; ' + document.cookie;
       var parts = value.split('; ' + name + '=');
       return parts.length != 2 ?
@@ -112,10 +39,8 @@
     },
 
     setCookie: function (name, value, expiryDays, domain, path) {
-      expiryDays = expiryDays || 365;
-
       var exdate = new Date();
-      exdate.setDate(exdate.getDate() + expiryDays);
+      exdate.setDate(exdate.getDate() + (expiryDays || 365));
 
       var cookie = [
         name + '=' + value,
@@ -126,14 +51,14 @@
       if (domain) {
         cookie.push('domain=' + domain);
       }
-
       document.cookie = cookie.join(';');
     },
 
+    // only used for extending the initial options
     deepExtend: function(dest, src) {
       for (var prop in src) {
         var v = src[prop];
-        if (typeof v === "object" && v !== null ) {
+        if (typeof v === 'object' && v !== null) {
           dest[prop] = dest[prop] || {};
           this.deepExtend(dest[prop], v);
         } else {
@@ -142,57 +67,104 @@
       }
       return dest;
     },
+
+    // only used for throttling the 'mousemove' event (used for animating the revoke button when `animateRevokable` is true)
+    throttle: function (callback, limit) {
+      var wait = false;
+      return function () {
+        if (!wait) {
+          callback.apply(this, arguments);
+          wait = true;
+          setTimeout(function () {
+            wait = false;
+          }, limit);
+        }
+      }
+    },
+
+    // only used for hashing json objects (used for hash mapping palette objects, used when custom colours are passed through javascript)
+    hash: function (str) {
+      var hash = 0, i, chr, len;
+      if (str.length === 0) return hash;
+      for (i = 0, len = str.length; i < len; i++) {
+        chr   = str.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0;
+      }
+      return hash;
+    },
   };
+
+  // valid cookie values
+  cc.status = {deny: 'deny', allow: 'allow', dismiss: 'dismiss'};
+
+  // is true if the browser supports css transitions
+  cc.hasTransition = (function () {
+    var style = document.documentElement.style;
+    var trans = ['t','OT','msT','MozT','KhtmlT','WebkitT'];
+    for (var i = 0, l = trans.length; i < l; ++i) {
+      if (trans[i]+'ransition' in style) return true;
+    }
+    return false;
+  }());
+  cc.transitionEnd = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
 
   // array of valid regexp escaped statuses
   var __allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
 
+  // contains references to the custom <style> tags
+  cc.customStyles = {};
+
   cc.Popup = (function () {
 
     var defaultOptions = {
+
+      // defaults cookie options - it is RECOMMENDED to set these values to correspond with your server
+      cookie: {
+        // This is the name of this cookie - you can ignore this
+        name: 'cookieconsent_status',
+
+        // This is the url path that the cookie 'name' belongs to. The cookie can only be read at this location
+        path: '/',
+
+        // This is the domain that the cookie 'name' belongs to. The cookie can only be read on this domain.
+        //  - Guide to cookie domains - http://erik.io/blog/2014/03/04/definitive-guide-to-cookie-domains/
+        domain: '',
+
+        // The cookies expire date, specified in days (specify -1 for no expiry)
+        expiryDays: 365,
+      },
+
+      // if false, this prevents the popup from showing (useful for giving to control to another piece of code)
       enabled: true,
 
-      // optional (expecting a HTML element)
+      // optional (expecting a HTML element) if passed, the popup is appended to this element. default is `document.body`
       container: null,
 
-      // By default the created HTML is automatically appended to the container (which defaults to <body>). Set this to false to
-      // prevent this behaviour. You must attach the `element` yourself, which is a public property of the popup instance.
+      // By default the created HTML is automatically appended to the container (which defaults to <body>). You can prevent this behaviour
+      // by setting this to false, but if you do, you must attach the `element` yourself, which is a public property of the popup instance:
       // 
       //     var instance = cookieconsent.factory(options);
       //     document.body.appendChild(instance.element);
       //
       autoattach: true,
 
-      // some callback hooks which are called at certain points in the app
+      // these callback hooks are called at certain points in the program execution
       onPopupOpen: function() {},
       onPopupClose: function() {},
       onStatusChange: function(status) {},
       onRevokeChoice: function(oldStatus) {},
-
-      // simple whitelist/blacklist for pages. specify page by:
-      //   - using a string : '/index.html'                     (matches '/index.html' exactly) OR
-      //   - using RegExp   : /\/page_[\d]+\.html/              (matched '/page_1.html' and '/page_2.html' etc)
-      whitelistPage: [],
-      blacklistPage: [],
-
-      // defaults to the current domain
-      cookie: {path: '/', domain: 'localhost', expiryDays: 365},
 
       // each item defines the inner text for the element that it references
       content: {
         header: 'Cookies used on the website',
         message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
         dismiss: 'Close and don\'t show again',
-        link: 'Learn more',
         allow: 'Allow',
         deny: 'Deny',
+        link: 'Learn more',
         close: '&#x274c;',
       },
-
-      // The placeholders {{classes}} and {{children}} both get replaced during initialisation:
-      //  - {{classes}} is where additional classes get added
-      //  - {{children}} is where the HTML children are placed
-      window: '<div role="dialog" aria-label="cookieconsent" aria-describedby="cookieconsent:desc" class="cc-window {{classes}}">{{children}}</div>',
 
       // This is the HTML for the elements above. The string {{children}} will be replaced with the equivalent text above.
       // You can remove "{{children}}" and write the content directly inside the HTML if you want.
@@ -207,9 +179,22 @@
         deny: '<a aria-label="deny cookies" tabindex="0" class="cc-btn cc-deny">{{children}}</a>',
         link: '<a aria-label="learn more about cookies" tabindex="0" class="cc-link" href="/">{{children}}</a>',
         close: '<span aria-label="dismiss cookie message" tabindex="0" class="cc-close">{{children}}</span>',
+
+        //compliance: compliance is also an element, but it is generated by the application, depending on `type` below
       },
 
-      // define types of compliance here
+      // 'floating' or 'banner' (adds a class `cc-floating` or `cc-banner` which helps when styling)
+      layout: 'floating',
+
+      // this refers to the popup windows position. we currently support:
+      //  layout == 'banner'      (top, bottom)
+      //  layout == 'floating'    (top-left, top-right, bottom-left, bottom-right)
+      position: 'bottom-right',
+
+      // select your type of popup here
+      type: 'dismiss', // refers to `compliance` (in other words, the buttons that are displayed)
+
+      // define types of 'compliance' here
       compliance: {
         'dismiss': '<div class="cc-compliance">{{dismiss}}</div>',
         'info': '<div class="cc-compliance">{{dismiss}}{{link}}</div>',
@@ -217,31 +202,26 @@
         'opt-out': '<div class="cc-compliance cc-highlight">{{deny}}{{allow}}</div>',
       },
 
+      theme: 'basic', // refers to `themes` below. A theme defines how the elements are ordered
+
       // define layout themes here
       themes: {
         // the 'block' layout tend to be for square floating popups
         'basic': '{{message}}{{compliance}}',
-        'link': '{{message}}{{link}}{{compliance}}',
+        'basic-link': '{{message}}{{link}}{{compliance}}',
+
+        // add a custom theme here, then add some new css with the class '.cc-theme-my-cool-theme'
+        //'my-cool-theme': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
       },
 
-      // define custom color palettes here
-      palettes: {
-        'white': {popup: {background: '#fafafa', text: '#000', link: '#888'}, button: {background: 'transparent', border: '#86b4ea', text: '#86b4ea'}},
-        'black': {popup: {background: '#000000', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'}, highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000000'}},
-        'blue' : {popup: {background: '#4a90e2', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}},
-        'red'  : {popup: {background: '#d34040', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}, highlight: {background: '#ffffff', border: '#ffffff', text: '#d34040'}},
-      },
+      // The placeholders {{classes}} and {{children}} both get replaced during initialisation:
+      //  - {{classes}} is where additional classes get added
+      //  - {{children}} is where the HTML children are placed
+      window: '<div role="dialog" aria-label="cookieconsent" aria-describedby="cookieconsent:desc" class="cc-window {{classes}}">{{children}}</div>',
 
-      // this refers to the popup windows position. we currently support:
-      //  - top-left  top-right  bottom-left  bottom-right                 (for floating themes)
-      //  - banner-top  banner-bottom                                      (for banner themes)
-      position: 'bottom-right',
-
-      // select your type of popup here
-      type: 'dismiss',                 // refers to `compliance`
-      theme: 'basic',                  // refers to `themes`
-      layout: 'floating',              // 'floating' or 'banner' (adds a class `cc-floating` or `cc-banner` which helps when styling)
-      palette: '',                     // refers to `palettes`
+      // This is the html for the revoke button. This only shows up after the user has selected their level of consent
+      // It can be enabled of disabled using the `revokable` option
+      revokeBtn: '<div class="cc-revoke {{classes}}">Cookie Policy</div>',
 
       // Some countries REQUIRE that a user can change their mind. You can configure this yourself.
       // Most of the time this should be false, but the `cookieconsent.law` can change this to `true` if it detects that it should
@@ -249,6 +229,21 @@
 
       // if true, the revokable button will tranlate in and out
       animateRevokable: true,
+
+      // if you want custom colours, pass them in here. this object should look like this
+      //   {
+      //     popup: {background: '#000000', text: '#fff', link: '#fff'},
+      //     button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'},
+      //     highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000000'},
+      //   }
+      // `highlight` is optional and extends `button`. if it exists, it will apply to the first button
+      palette: null,
+
+      // simple whitelist/blacklist for pages. specify page by:
+      //   - using a string : '/index.html'           (matches '/index.html' exactly) OR
+      //   - using RegExp   : /\/page_[\d]+\.html/    (matched '/page_1.html' and '/page_2.html' etc)
+      whitelistPage: [],
+      blacklistPage: [],
 
       // If this is defined, then it is used as the inner html instead of `themes`. This allows for ultimate customisation.
       // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
@@ -269,7 +264,7 @@
       util.deepExtend(this.options = {}, defaultOptions);
 
       // merge in user options
-      if (Object.prototype.toString.call(options) == '[object Object]') {
+      if (typeof options === 'object' && options !== null) {
         util.deepExtend(this.options, options);
       }
 
@@ -308,43 +303,39 @@
       return this;
     };
 
-    /**
-     * Removes element from the DOM, and nullifies properties
-     */
     CookiePopup.prototype.destroy = function () {
-      var opts = this.options;
-      var customStyle = opts.palette && cc.customStyles[opts.palette];
+      if (this.onButtonClick && this.element) {
+        this.element.removeEventListener('click', this.onButtonClick);
+        this.onButtonClick = null;
+      }
 
-      if (this._onButtonClick && this.element) {
-        this.element.removeEventListener('click', this._onButtonClick);
+      if (this.dismissTimeout) {
+        clearTimeout(this.dismissTimeout);
+        this.dismissTimeout = null;
+      }
+
+      if (this.onWindowScroll) {
+        window.removeEventListener('scroll', this.onWindowScroll);
+        this.onWindowScroll = null;
+      }
+
+      if (this.onMouseMove) {
+        window.removeEventListener('mousemove', this.onMouseMove);
+        this.onMouseMove = null;
       }
 
       if (this.element && this.element.parentNode) {
         this.element.parentNode.removeChild(this.element);
       }
-
-      if (customStyle && !--customStyle.references) {
-        var styleNode = customStyle.element.ownerNode;
-        if (styleNode && styleNode.parentNode) {
-          styleNode.parentNode.removeChild(styleNode);
-        }
-        cc.customStyles[opts.palette] = null;
-      }
-
-      // remove references
-      this.dynamicStyle = null;
-      this._onButtonClick = null;
-
       this.element = null;
-      this.options = null;
-      this.revokeBtn = null;
-    };
 
-    /**
-     * Returns true if thecookie popup window is visible
-     */
-    CookiePopup.prototype.isOpen = function () {
-      return this.element && this.element.style.display == '' && (cc.hasTransition ? !util.hasClass(this.element, 'cc-invisible') : true);
+      if (this.revokeBtn && this.revokeBtn.parentNode) {
+        this.revokeBtn.parentNode.removeChild(this.revokeBtn);
+      }
+      this.revokeBtn = null;
+
+      removeCustomStyles(this.options.palette);
+      this.options = null;
     };
 
     CookiePopup.prototype.open = function (callback) {
@@ -391,9 +382,11 @@
       if (!cc.hasTransition)
         return;
 
-      if (this.closingTimeout) {
-        clearTimeout(this.closingTimeout);
-        afterFadeOut.bind(this, el)
+      // this should always be called AFTER fadeOut (which is governed by the 'transitionend' event).
+      // 'transitionend' isn't all that reliable, so, if we try and fadeIn before 'transitionend' has
+      // has a chance to run, then we run it ourselves
+      if (this.afterTransition) {
+        afterFadeOut.call(this, el)
       }
 
       if (util.hasClass(el, 'cc-invisible')) {
@@ -415,10 +408,15 @@
       }
 
       if (!util.hasClass(el, 'cc-invisible')) {
-        util.addClass(el, 'cc-invisible');
+        this.afterTransition = afterFadeOut.bind(this, el);
+        el.addEventListener('transitionend', this.afterTransition);
 
-        this.closingTimeout = setTimeout(afterFadeOut.bind(this, el), 500)
+        util.addClass(el, 'cc-invisible');
       }
+    };
+
+    CookiePopup.prototype.isOpen = function () {
+      return this.element && this.element.style.display == '' && (cc.hasTransition ? !util.hasClass(this.element, 'cc-invisible') : true);
     };
 
     CookiePopup.prototype.toggleRevokeButton = function (show) {
@@ -426,14 +424,13 @@
     };
 
     CookiePopup.prototype.setStatus = function (status) {
-      var opts = this.options;
-      var value = util.readCookie(cc.cookieName);
+      var c = this.options.cookie;
+      var value = util.getCookie(c.name);
       var chosenBefore = Object.keys(cc.status).indexOf(value) >= 0;
-      var c = opts.cookie;
 
       // if `status` is valid
       if (Object.keys(cc.status).indexOf(status) >= 0) {
-        util.setCookie(cc.cookieName, status, c.expiryDays, c.domain, c.path);
+        util.setCookie(c.name, status, c.expiryDays, c.domain, c.path);
 
         this.options.onStatusChange(status, chosenBefore);
       } else {
@@ -442,21 +439,28 @@
     };
 
     CookiePopup.prototype.getStatus = function () {
-      return util.readCookie(cc.cookieName)
+      return util.getCookie(this.options.cookie.name);
     };
 
     CookiePopup.prototype.clearStatus = function () {
-      util.setCookie(cc.cookieName, '', -1, this.options.domain, this.options.path);
+      var c = this.options.cookie;
+      util.setCookie(c.name, '', -1, c.domain, c.path);
     };
 
+    // This needs to be called after 'fadeIn'. This is the code that actually causes the fadeIn to work
+    // There is a good reason why it's called in a timeout. Read 'fadeIn';
     function afterFadeIn (el) {
       this.openingTimeout =  null;
       util.removeClass(el, 'cc-invisible');
     }
 
+    // This is called on 'transitionend' (only on the transition of the fadeOut). That's because after we've faded out, we need to
+    // set the display to 'none' (so there aren't annoying invisible popups all over the page). If for whenever reason this function
+    // is not called (lack of support), the open/close mechanism will still work.
     function afterFadeOut (el) {
-      this.closingTimeout = null;
-      el.style.display = 'none'; // after close and before open, display should be none
+      el.style.display = 'none'; // after close and before open, the display should be none
+      el.removeEventListener('transitionend', this.afterTransition);
+      this.afterTransition = null;
     }
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
@@ -474,7 +478,7 @@
       }
 
       var allowed = Object.keys(cc.status);
-      var answer = util.readCookie(cc.cookieName);
+      var answer = this.getStatus();
       var match = allowed.indexOf(answer) >= 0;
 
       if (match) {
@@ -497,7 +501,6 @@
 
     function getPopupClasses () {
       var opts = this.options;
-
       var classes = [
         'cc-' + opts.layout,      // floating or banner
         'cc-type-' + opts.type,   // add the compliance type
@@ -506,12 +509,12 @@
 
       classes.push.apply(classes, getPositionClasses.call(this));
 
-      // we only add extra styles if `pallete` has been set to a valid value
-      var didAttach = attachCustomPalette.call(this);
+      // we only add extra styles if `palette` has been set to a valid value
+      var didAttach = attachCustomPalette.call(this, this.options.palette);
 
-      // if we override the pallete, add the class that enables this
-      if (didAttach) {
-        classes.push('cc-color-override-' + opts.palette);
+      // if we override the palette, add the class that enables this
+      if (this.customStyleSelector) {
+        classes.push(this.customStyleSelector);
       }
 
       return classes;
@@ -569,9 +572,9 @@
       }
 
       // save ref to the function handle so we can unbind it later
-      this._onButtonClick = handleButtonClick.bind(this);
+      this.onButtonClick = handleButtonClick.bind(this);
 
-      el.addEventListener('click', this._onButtonClick);
+      el.addEventListener('click', this.onButtonClick);
 
       if (opts.autoattach) {
         if (!cont.firstChild) {
@@ -609,58 +612,81 @@
 
     // I might change this function to use inline styles. I originally chose a stylesheet because I could select many elements with a
     // single rule (something that happened a lot), the apps has changed slightly now though, so inline styles might be more applicable.
-    function attachCustomPalette () {
-      var colorStyles = {};
-      var name = this.options.palette;
-      var p = name && this.options.palettes && this.options.palettes[name];
-      var prefix = '.cc-color-override-' + name;
-      var addBtn = function(styles, selector, obj) {
-        styles[selector] = ['color: '+obj.text, 'border-color: '+obj.border, 'background-color: '+obj.background];
-      };
+    function attachCustomPalette (palette) {
+      var hash = util.hash(JSON.stringify(palette));
+      var selector = 'cc-color-override-' + hash;
+      var isValid = typeof palette == 'object' && palette !== null;
 
-      if (p) {
-        if (p.popup) {
-          colorStyles[prefix + '.cc-window'] = ['color: '+p.popup.text, 'background-color: '+p.popup.background];
+      this.customStyleSelector = isValid ? selector : null;
 
-          colorStyles[prefix + '.cc-revoke'] = ['color: '+p.popup.text, 'background-color: '+p.popup.background];
+      if (isValid) {
+        addCustomStyle(hash, palette, '.'+selector);
+      }
+      return isValid;
+    }
 
-          colorStyles[prefix + ' .cc-link'] = ['color: '+p.popup.link];
-        }
-
-        if (p.button) {
-          addBtn(colorStyles, prefix + ' .cc-btn', p.button);
-          var colour = p.button.background == 'transparent' ? p.button.border : p.button.background;
-          colorStyles[prefix + ' .cc-btn:focus, ' + prefix + ' .cc-link:focus'] = ['outline: 1px solid ' + colour];
-        }
-
-        if (p.highlight) {
-          // only selects the second element if it exists
-          addBtn(colorStyles, prefix + ' .cc-highlight .cc-btn:first-child', p.highlight);
-        }
-
-        // this will be interpretted as CSS. the key is the selector, and each array element is a rule
-        if (!cc.customStyles[name]) {
-          var newStyle = util.createStyle();
-          // custom style doesn't exist, so we create it
-          cc.customStyles[name] = {
-            references: 1,
-            element: newStyle,
-          };
-
-          var ruleIndex = 0;
-          // actually add the rules
-          for (var prop in colorStyles) {
-            var ruleBody = colorStyles[prop].join(';');
-            util.addCSSRule(newStyle, prop, ruleBody, ruleIndex++);
-          }
-        } else {
-          // custom style already exists, so increment the reference count
-          ++cc.customStyles[name].references;
-        }
+    function addCustomStyle (hash, palette, prefix) {
+      // only add this if a style like it doesn't exist
+      if (cc.customStyles[hash]) {
+        // custom style already exists, so increment the reference count
+        ++cc.customStyles[hash].references;
+        return;
       }
 
-      // returns true if a custom style is chosen
-      return !!p;
+      var colorStyles = {};
+      var popup = palette.popup;
+      var button = palette.button;
+      var highlight = palette.highlight;
+
+      if (popup) {
+        colorStyles[prefix + '.cc-window'] = ['color: '+popup.text, 'background-color: '+popup.background];
+        colorStyles[prefix + '.cc-revoke'] = ['color: '+popup.text, 'background-color: '+popup.background];
+        colorStyles[prefix + ' .cc-link'] = ['color: '+popup.link];
+      }
+
+      if (button) {
+        var colour = button.background == 'transparent' ? button.border : button.background;
+        colorStyles[prefix + ' .cc-btn'] = [
+          'color: '+button.text,
+          'border-color: '+button.border,
+          'background-color: '+button.background,
+        ];
+        colorStyles[prefix + ' .cc-btn:focus, ' + prefix + ' .cc-link:focus'] = ['outline: 1px solid ' + colour];
+      }
+
+      if (highlight) {
+        colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = [
+          'color: '+highlight.text,
+          'border-color: '+highlight.border,
+          'background-color: '+highlight.background,
+        ];
+      }
+
+      // this will be interpretted as CSS. the key is the selector, and each array element is a rule
+      var style = document.createElement('style');
+      document.head.appendChild(style);
+
+      // custom style doesn't exist, so we create it
+      cc.customStyles[hash] = {references: 1, element: style.sheet};
+
+      var ruleIndex = -1;
+      for (var prop in colorStyles) {
+        style.sheet.insertRule(prop + '{' + colorStyles[prop].join(';') + '}', ++ruleIndex);
+      }
+    }
+
+    function removeCustomStyle (palette) {
+      if (typeof palette == 'object' && palette !== null) {
+        var hash = util.hash(JSON.stringify(palette));
+        var customStyle = cc.customStyles[hash];
+        if (customStyle && !--customStyle.references) {
+          var styleNode = customStyle.element.ownerNode;
+          if (styleNode && styleNode.parentNode) {
+            styleNode.parentNode.removeChild(styleNode);
+          }
+          cc.customStyles[hash] = null;
+        }
+      }
     }
 
     function arrayContainsMatches (array, search) {
@@ -680,7 +706,7 @@
 
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number' && delay >= 0) {
-        window.setTimeout(function () {
+        this.dismissTimeout = window.setTimeout(function () {
           setStatus(cc.status.dismiss);
         }, Math.floor(delay));
       }
@@ -692,9 +718,11 @@
             setStatus(cc.status.dismiss);
 
             window.removeEventListener('scroll', onWindowScroll);
+            this.onWindowScroll = null;
           }
         };
 
+        this.onWindowScroll = onWindowScroll;
         window.addEventListener('scroll', onWindowScroll);
       }
     }
@@ -702,16 +730,14 @@
     function applyRevokeButton () {
       if (this.options.revokable) {
         var classes = getPositionClasses.call(this);
-        var name = this.options.palette;
-        var p = name && this.options.palettes && this.options.palettes[name];
-        if (name) {
-          if (this.options.animateRevokable) {
-            classes.push('cc-animate');
-          }
-          classes.push('cc-color-override-' + name)
+        if (this.options.animateRevokable) {
+          classes.push('cc-animate');
         }
-        var btn = '<div class="cc-revoke ' + classes.join(' ') + '">Cookie Policy</div>';
-        this.revokeBtn = appendMarkup.call(this, btn);
+        if (this.customStyleSelector) {
+          classes.push(this.customStyleSelector)
+        }
+        var revokeBtn = this.options.revokeBtn.replace('{{classes}}', classes.join(' '));
+        this.revokeBtn = appendMarkup.call(this, revokeBtn);
       }
 
       var btn = this.revokeBtn;
@@ -736,12 +762,9 @@
           }
         }, 200);
 
+        this.onMouseMove = onMouseMove;
         window.addEventListener('mousemove', onMouseMove);
       }
-    }
-
-    function initRevokeButton () {
-
     }
 
     return CookiePopup
