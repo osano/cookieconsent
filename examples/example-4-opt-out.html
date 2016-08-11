@@ -35,7 +35,13 @@
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {
-        'Opt-out Blue': {type: 'opt-out', palette: 'blue'},
+        'Opt-out Blue': {
+          type: 'opt-out',
+          palette: {
+            popup: {background: '#4a90e2', text: '#fff', link: '#fff'},
+            button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}
+          },
+        },
       },
     });
   } (window.cookieconsent, window.cookieconsent_example_util));

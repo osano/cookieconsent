@@ -76,8 +76,10 @@
     function getOptions(input) {
       return {
         type: 'dismiss',
-        palette: 'blue',
-        theme: 'mono-floating',
+        palette: {
+          popup: {background: '#4a90e2', text: '#fff', link: '#fff'},
+          button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}
+        },
       }
     }
 

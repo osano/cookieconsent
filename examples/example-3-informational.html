@@ -35,7 +35,13 @@
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {
-        'Info Blue': {type: 'info', palette: 'blue'},
+        'Info Blue': {
+          type: 'info',
+          palette: {
+            popup: {background: '#4a90e2', text: '#fff', link: '#fff'},
+            button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}
+          },
+        },
       },
     });
   } (window.cookieconsent, window.cookieconsent_example_util));

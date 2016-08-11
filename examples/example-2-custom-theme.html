@@ -40,15 +40,11 @@
       selector: document.querySelector('.example-selector'),
       popups: {
         'Custom Floating': {
-          palettes: {
-            blah: {
-              popup: {background: 'pink', text: 'green', link: 'blue'},
-              button: {background: 'orange', border: 'orange', text: 'green'},
-            },
-          },
-
           type: 'info',
-          palette: 'blah',
+          palette: {
+            popup: {background: 'pink', text: 'green', link: 'blue'},
+            button: {background: 'orange', border: 'orange', text: 'green'},
+          },
         },
       },
     });

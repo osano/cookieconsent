@@ -334,7 +334,7 @@
       }
       this.revokeBtn = null;
 
-      removeCustomStyles(this.options.palette);
+      removeCustomStyle(this.options.palette);
       this.options = null;
     };
 
