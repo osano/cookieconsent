@@ -56,15 +56,16 @@
 
 .cc-btn {
   display: block;
-  padding: .5em;
-  font-size: 1em;
+  padding: .4em;
+  font-size: 0.9em;
   font-weight: bold;
   border-width: 2px;
   border-style: solid;
   text-align: center;
+  white-space: nowrap;
 }
 .cc-btn:hover {
-  text-decoration: none;
+  //text-decoration: underline;
 }
 
 

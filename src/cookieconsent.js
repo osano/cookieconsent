@@ -183,10 +183,10 @@
       // each item defines the inner text for the element that it references
       content: {
         header: 'Cookies used on the website',
-        message: 'Our website uses cookies to make your browsing experience better. By using our site you agree to our use of cookies.',
+        message: 'Our website uses cookies to make your browsing experience better.',
         dismiss: 'Close and don\'t show again',
-        allow: 'Allow',
-        deny: 'Deny',
+        allow: 'Allow cookies',
+        deny: 'Refuse cookies',
         link: 'Learn more',
         href: 'http://cookiesandyou.com',
         close: '&#x274c;',
@@ -224,8 +224,8 @@
       compliance: {
         'dismiss': '<div class="cc-compliance">{{dismiss}}</div>',
         'info': '<div class="cc-compliance">{{dismiss}}{{link}}</div>',
-        'opt-in': '<div class="cc-compliance cc-highlight">{{allow}}{{deny}}</div>',
-        'opt-out': '<div class="cc-compliance cc-highlight">{{deny}}{{allow}}</div>',
+        'opt-in': '<div class="cc-compliance cc-highlight">{{allow}}{{dismiss}}</div>',
+        'opt-out': '<div class="cc-compliance cc-highlight">{{deny}}{{dismiss}}</div>',
       },
 
       theme: 'basic', // refers to `themes` below. A theme defines how the elements are ordered
@@ -666,6 +666,7 @@
       var button = palette.button;
       var highlight = palette.highlight;
 
+      // needs background colour, text and link will be set to black/white if not specified
       if (popup) {
         var background = popup.background; 
         var text = popup.text ? popup.text : util.getContrast(background);
@@ -675,16 +676,11 @@
         colorStyles[prefix + ' .cc-link'] = ['color: '+link];
       }
 
+      // needs background colour, text will be set to black/white and border to background colour if not specified
       if (button) {
         var background = button.background; 
         var text = button.text ? button.text : util.getContrast(background);
-        if(background == 'transparent') {
-          var border = popup.border ? popup.border : text;
-          var focus = border;
-        } else {
-          var border = popup.border ? popup.border : background;
-          var focus = background;
-        }
+        var border = popup.border ? popup.border : 'transparent';
 
         colorStyles[prefix + ' .cc-btn'] = [
           'color: '+text,
@@ -694,8 +690,6 @@
         colorStyles[prefix + ' .cc-btn:hover'] = [
           'background-color: ' + util.getLuminance(background),
         ]
-
-        colorStyles[prefix + ' .cc-btn:focus, ' + prefix + ' .cc-link:focus'] = ['outline: 1px solid ' + focus];
       }
 
       if (highlight) {
