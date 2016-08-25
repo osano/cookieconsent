@@ -93,6 +93,30 @@
       }
       return hash;
     },
+
+    // used to get text colors if not set
+    getContrast: function (hexcolor){
+      hex = hexcolor.substr(1);
+      var r = parseInt(hex.substr(0,2),16);
+      var g = parseInt(hex.substr(2,2),16);
+      var b = parseInt(hex.substr(4,2),16);
+      var yiq = ((r*299)+(g*587)+(b*114))/1000;
+      return (yiq >= 128) ? '#000' : '#fff';
+    },
+
+    // used to change color on highlight
+    getLuminance: function(hexcolor) {
+      hex = hexcolor.substr(1);
+      lum = 0.2;
+      var rgb = "#", c, i;
+      for (i = 0; i < 3; i++) {
+        c = parseInt(hex.substr(i*2,2), 16);
+        c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
+        rgb += ("00"+c).substr(c.length);
+      }
+      return rgb;
+    }
+
   };
 
   // valid cookie values
@@ -629,6 +653,7 @@
     }
 
     function addCustomStyle (hash, palette, prefix) {
+
       // only add this if a style like it doesn't exist
       if (cc.customStyles[hash]) {
         // custom style already exists, so increment the reference count
@@ -642,19 +667,35 @@
       var highlight = palette.highlight;
 
       if (popup) {
-        colorStyles[prefix + '.cc-window'] = ['color: '+popup.text, 'background-color: '+popup.background];
-        colorStyles[prefix + '.cc-revoke'] = ['color: '+popup.text, 'background-color: '+popup.background];
-        colorStyles[prefix + ' .cc-link'] = ['color: '+popup.link];
+        var background = popup.background; 
+        var text = popup.text ? popup.text : util.getContrast(background);
+        var link = popup.link ? popup.link : text;
+        colorStyles[prefix + '.cc-window'] = ['color: '+text, 'background-color: '+background];
+        colorStyles[prefix + '.cc-revoke'] = ['color: '+text, 'background-color: '+background];
+        colorStyles[prefix + ' .cc-link'] = ['color: '+link];
       }
 
       if (button) {
-        var colour = button.background == 'transparent' ? button.border : button.background;
+        var background = button.background; 
+        var text = button.text ? button.text : util.getContrast(background);
+        if(background == 'transparent') {
+          var border = popup.border ? popup.border : text;
+          var focus = border;
+        } else {
+          var border = popup.border ? popup.border : background;
+          var focus = background;
+        }
+
         colorStyles[prefix + ' .cc-btn'] = [
-          'color: '+button.text,
-          'border-color: '+button.border,
-          'background-color: '+button.background,
+          'color: '+text,
+          'border-color: '+border,
+          'background-color: '+background,
         ];
-        colorStyles[prefix + ' .cc-btn:focus, ' + prefix + ' .cc-link:focus'] = ['outline: 1px solid ' + colour];
+        colorStyles[prefix + ' .cc-btn:hover'] = [
+          'background-color: ' + util.getLuminance(background),
+        ]
+
+        colorStyles[prefix + ' .cc-btn:focus, ' + prefix + ' .cc-link:focus'] = ['outline: 1px solid ' + focus];
       }
 
       if (highlight) {
