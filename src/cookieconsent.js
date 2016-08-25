@@ -188,7 +188,7 @@
         allow: 'Allow',
         deny: 'Deny',
         link: 'Learn more',
-        href: '/policy.html',
+        href: 'http://cookiesandyou.com',
         close: '&#x274c;',
       },
 
