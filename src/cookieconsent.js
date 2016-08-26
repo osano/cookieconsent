@@ -210,7 +210,7 @@
       //    and to set the focus to the first interactive control (http://w3c.github.io/aria-in-html/)
       elements: {
         header: '<span class="cc-header">{{header}}</span>&nbsp;',
-        message: '<span id="cookieconsent:desc" class="cc-message">{{message}}</span>',
+        message: '<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" tabindex="0" class="cc-link" href="{{href}}">{{link}}</a></span>',
         dismiss: '<a aria-label="dismiss cookie message" tabindex="0" class="cc-btn cc-dismiss">{{dismiss}}</a>',
         allow: '<a aria-label="allow cookies" tabindex="0" class="cc-btn cc-allow">{{allow}}</a>',
         deny: '<a aria-label="deny cookies" tabindex="0" class="cc-btn cc-deny">{{deny}}</a>',
@@ -231,19 +231,19 @@
 
       // define types of 'compliance' here. '{{value}}' strings in here are linked to `elements`
       compliance: {
-        'info': '<div class="cc-compliance">{{link}}{{dismiss}}</div>',
-        'opt-in': '{{link}}<div class="cc-compliance cc-highlight">{{allow}}{{dismiss}}</div>',
-        'opt-out': '{{link}}<div class="cc-compliance cc-highlight">{{deny}}{{dismiss}}</div>',
+        'info': '<div class="cc-compliance">{{dismiss}}</div>',
+        'opt-in': '<div class="cc-compliance cc-highlight">{{dismiss}}{{allow}}</div>',
+        'opt-out': '<div class="cc-compliance cc-highlight">{{deny}}{{dismiss}}</div>',
       },
 
       //default layout
-      layout: 'basic-header',
+      layout: 'basic',
 
       // define layout layouts here
       layouts: {
         // the 'block' layout tend to be for square floating popups
         'basic': '{{message}}{{compliance}}',
-        'basic-close': '{{message}}{{compliance}}{{close}}',
+        'basic-close': '{{message}}{{link}}{{compliance}}{{close}}',
         'basic-header': '{{header}}{{message}}{{compliance}}',
 
         // add a custom layout here, then add some new css with the class '.cc-layout-my-cool-layout'
@@ -691,6 +691,16 @@
         colorStyles[prefix + '.cc-window'] = ['color: '+text, 'background-color: '+background];
         colorStyles[prefix + '.cc-revoke'] = ['color: '+text, 'background-color: '+background];
         colorStyles[prefix + ' .cc-link'] = ['color: '+link];
+
+        if (highlight) {
+          colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = [
+            'color: '+highlight.text,
+            'border-color: '+highlight.border,
+            'background-color: '+highlight.background,
+          ];
+        } else { 
+          colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = ['color: '+text];
+        }
       }
 
       // needs background colour, text will be set to black/white and border to transparent if not specified
@@ -707,14 +717,6 @@
         colorStyles[prefix + ' .cc-btn:hover'] = [
           'background-color: ' + util.getLuminance(background),
         ]
-      }
-
-      if (highlight) {
-        colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = [
-          'color: '+highlight.text,
-          'border-color: '+highlight.border,
-          'background-color: '+highlight.background,
-        ];
       }
 
       // this will be interpretted as CSS. the key is the selector, and each array element is a rule

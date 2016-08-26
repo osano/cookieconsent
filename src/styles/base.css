@@ -46,11 +46,9 @@
 
 .cc-link {
   opacity: .8;
-  font-size: .8em;
   display: inline-block;
   padding: .2em;
   text-decoration: underline;
-  margin-right: 1em;
 }
 .cc-link:hover {
   opacity: 1;
@@ -70,8 +68,10 @@
   text-align: center;
   white-space: nowrap;
 }
-.cc-btn:hover {
-  //text-decoration: underline;
+
+.cc-highlight .cc-btn:first-child {
+  background-color: transparent;
+  border-color: transparent;
 }
 
 
