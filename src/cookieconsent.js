@@ -679,11 +679,11 @@
         colorStyles[prefix + ' .cc-link'] = ['color: '+link];
       }
 
-      // needs background colour, text will be set to black/white and border to background colour if not specified
+      // needs background colour, text will be set to black/white and border to transparent if not specified
       if (button) {
         var background = button.background; 
         var text = button.text ? button.text : util.getContrast(background);
-        var border = popup.border ? popup.border : 'transparent';
+        var border = button.border ? button.border : 'transparent';
 
         colorStyles[prefix + ' .cc-btn'] = [
           'color: '+text,
