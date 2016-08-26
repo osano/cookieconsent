@@ -552,12 +552,8 @@
 
       Object.keys(opts.elements).forEach(function (prop) {
         interpolated[prop] = util.interpolateString(opts.elements[prop], function (name) {
-          // we only deal with "children"
           var str = opts.content[name];
-          if (name && typeof str == 'string' && str.length) {
-            var contentStr = opts.content[prop];
-            return opts.content[prop] || '';
-          }
+          return (name && typeof str == 'string' && str.length) ? str : '';
         })
       });
 
