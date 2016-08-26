@@ -280,6 +280,7 @@
       //     highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000000'},
       //   }
       // `highlight` is optional and extends `button`. if it exists, it will apply to the first button
+      // only background needs to be defined for every element. if not set, other colors can be calculated from it
       palette: null,
 
       // simple whitelist/blacklist for pages. specify page by:
@@ -684,40 +685,54 @@
       var highlight = palette.highlight;
 
       // needs background colour, text and link will be set to black/white if not specified
-      if (popup) {
-        var background = popup.background; 
-        var text = popup.text ? popup.text : util.getContrast(background);
-        var link = popup.link ? popup.link : text;
-        colorStyles[prefix + '.cc-window'] = ['color: '+text, 'background-color: '+background];
-        colorStyles[prefix + '.cc-revoke'] = ['color: '+text, 'background-color: '+background];
-        colorStyles[prefix + ' .cc-link'] = ['color: '+link];
-
-        if (highlight) {
-          colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = [
-            'color: '+highlight.text,
-            'border-color: '+highlight.border,
-            'background-color: '+highlight.background,
-          ];
-        } else { 
-          colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = ['color: '+text];
-        }
-      }
-
-      // needs background colour, text will be set to black/white and border to transparent if not specified
-      if (button) {
-        var background = button.background; 
-        var text = button.text ? button.text : util.getContrast(background);
-        var border = button.border ? button.border : 'transparent';
-
-        colorStyles[prefix + ' .cc-btn'] = [
-          'color: '+text,
-          'border-color: '+border,
-          'background-color: '+background,
+      if (popup) { 
+        // assumes popup.background is set
+        popup.text = popup.text ? popup.text : util.getContrast(popup.background);
+        popup.link = popup.link ? popup.link : popup.text;
+        colorStyles[prefix + '.cc-window'] = [
+          'color: '+popup.text, 
+          'background-color: '+popup.background
         ];
-        colorStyles[prefix + ' .cc-btn:hover'] = [
-          'background-color: ' + util.getLuminance(background),
-        ]
+        colorStyles[prefix + '.cc-revoke'] = [
+          'color: '+popup.text, 
+          'background-color: '+popup.background
+        ];
+        colorStyles[prefix + ' .cc-link'] = [
+          'color: '+popup.link
+          ];
+
+        if (button) {
+          // assumes button.background is set
+          button.text = button.text ? button.text : util.getContrast(button.background);
+          button.border = button.border ? button.border : 'transparent';
+          colorStyles[prefix + ' .cc-btn'] = [
+            'color: '+button.text, 
+            'border-color: '+button.border, 
+            'background-color: '+button.background
+          ];
+          colorStyles[prefix + ' .cc-btn:hover'] = [
+            'background-color: ' + util.getLuminance(button.background)
+          ];
+
+          if (highlight) {
+            //assumes highlight.background is set
+            highlight.text = highlight.text ? highlight.text : util.getContrast(highlight.background);
+            highlight.border = highlight.border ? highlight.border : 'transparent';
+            colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = [
+              'color: '+highlight.text, 
+              'border-color: '+highlight.border, 
+              'background-color: '+highlight.background
+            ];
+          } else { 
+            // sets highlight text color to popup text. background and border are transparent by default.
+            colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = [
+              'color: '+popup.text
+            ];
+          }
+        }
+
       }
+
 
       // this will be interpretted as CSS. the key is the selector, and each array element is a rule
       var style = document.createElement('style');
