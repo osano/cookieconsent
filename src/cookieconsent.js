@@ -190,15 +190,18 @@
 
       // each item defines the inner text for the element that it references
       content: {
-        header: 'Cookies used on the website',
+        header: 'Cookies used on the website!',
         message: 'Our website uses cookies to make your browsing experience better.',
         dismiss: 'Close and don\'t show again',
         allow: 'Allow cookies',
-        deny: 'Refuse cookies',
+        deny: 'Decline',
         link: 'Learn more',
         href: 'http://cookiesandyou.com',
         close: '&#x274c;',
       },
+
+      // 
+      showlink: true,
 
       // This is the HTML for the elements above. The string {{header}} will be replaced with the equivalent text below.
       // You can remove "{{header}}" and write the content directly inside the HTML if you want.
@@ -206,7 +209,7 @@
       //  - ARIA rules suggest to ensure controls are tabbable (so the browser can find the first control),
       //    and to set the focus to the first interactive control (http://w3c.github.io/aria-in-html/)
       elements: {
-        header: '<span class="cc-header">{{header}}</span>',
+        header: '<span class="cc-header">{{header}}</span>&nbsp;',
         message: '<span id="cookieconsent:desc" class="cc-message">{{message}}</span>',
         dismiss: '<a aria-label="dismiss cookie message" tabindex="0" class="cc-btn cc-dismiss">{{dismiss}}</a>',
         allow: '<a aria-label="allow cookies" tabindex="0" class="cc-btn cc-allow">{{allow}}</a>',
@@ -228,23 +231,31 @@
 
       // define types of 'compliance' here. '{{value}}' strings in here are linked to `elements`
       compliance: {
-        'dismiss': '<div class="cc-compliance">{{dismiss}}</div>',
-        'info': '<div class="cc-compliance">{{dismiss}}{{link}}</div>',
-        'opt-in': '<div class="cc-compliance cc-highlight">{{allow}}{{dismiss}}</div>',
-        'opt-out': '<div class="cc-compliance cc-highlight">{{deny}}{{dismiss}}</div>',
+        'info': '<div class="cc-compliance">{{link}}{{dismiss}}</div>',
+        'opt-in': '{{link}}<div class="cc-compliance cc-highlight">{{allow}}{{dismiss}}</div>',
+        'opt-out': '{{link}}<div class="cc-compliance cc-highlight">{{deny}}{{dismiss}}</div>',
       },
 
-      layout: 'basic', // refers to `layouts` below. A layout defines how the elements are ordered
+      //default layout
+      layout: 'basic-header',
 
       // define layout layouts here
       layouts: {
         // the 'block' layout tend to be for square floating popups
         'basic': '{{message}}{{compliance}}',
-        'basic-link': '{{message}}{{link}}{{compliance}}',
+        'basic-close': '{{message}}{{compliance}}{{close}}',
+        'basic-header': '{{header}}{{message}}{{compliance}}',
 
         // add a custom layout here, then add some new css with the class '.cc-layout-my-cool-layout'
         //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
       },
+
+      // Available styles
+      //    -classic
+      //    -edgeless
+      //    -rounded
+      // use your own style name and use .cc-style-STYLENAME class in CSS to edit .
+      windowstyle: 'classic',
 
       // The placeholders {{classes}} and {{children}} both get replaced during initialisation:
       //  - {{classes}} is where additional classes get added
@@ -277,7 +288,7 @@
       whitelistPage: [],
       blacklistPage: [],
 
-      // If this is defined, then it is used as the inner html instead of `layouts`. This allows for ultimate customisation.
+      // If this is defined, then it is used as the inner html instead of layout. This allows for ultimate customisation.
       // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
       // handlers. You can use other pre-existing classes too. See `src/styles` folder.
       overrideHTML: null,
@@ -537,7 +548,7 @@
       var classes = [
         'cc-' + positionStyle,      // floating or banner
         'cc-type-' + opts.type,   // add the compliance type
-        'cc-layout-' + opts.layout, // add the layout layout
+        'cc-windowstyle-' + opts.windowstyle, // add the windwowstyle class
       ];
 
       classes.push.apply(classes, getPositionClasses.call(this));
@@ -556,6 +567,9 @@
     function getPopupInnerMarkup () {
       var interpolated = {};
       var opts = this.options;
+
+      //removes link if showlink is false
+      if(opts.showlink == 'false') opts.elements.link = '';
 
       Object.keys(opts.elements).forEach(function (prop) {
         interpolated[prop] = util.interpolateString(opts.elements[prop], function (name) {

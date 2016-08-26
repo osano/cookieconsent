@@ -34,6 +34,11 @@
   text-decoration: underline;
 }
 
+.cc-header {
+  font-size: 18px;
+  font-weight: bold;
+}
+
 /* clickable things */
 .cc-btn, .cc-link, .cc-close, .cc-revoke {
   cursor: pointer;
