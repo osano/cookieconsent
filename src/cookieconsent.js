@@ -124,6 +124,17 @@
         rgb += ("00"+c).substr(c.length);
       }
       return rgb;
+    },
+
+    getDirectory: function() {
+      sc = document.getElementsByTagName("script");
+
+      for(i = 0; i < sc.length; i++)
+      {
+        s = sc.item(i);
+        if(s.src && s.src.match(/cookieconsent.min.js$/))
+        { return s.src.slice(0,-20); }
+      }
     }
 
   };
@@ -182,6 +193,9 @@
       //     document.body.appendChild(instance.element);
       //
       autoattach: true,
+
+      // Change if stylesheet is not in the same folder as javasscript
+      stylesheet: util.getDirectory()+'cookieconsent.min.css',
 
       // these callback hooks are called at certain points in the program execution
       onPopupOpen: function() {},
@@ -1148,7 +1162,9 @@
   }());
 
   cc.factory = function (options) {
-    return new cc.Popup(options);
+    popup = new cc.Popup(options);
+    cc.loadStyles(popup.options.stylesheet);
+    return popup;
   };
 
   cc.initialise = function (options) {
@@ -1175,9 +1191,16 @@
     if (Object.keys(cc.status).indexOf(status) < 0 && popup.options.enabled) {
       popup.open();
     }
-
     return popup;
   };
+
+  cc.loadStyles = function(stylesheet){
+    var link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.type = "text/css";
+    link.href = stylesheet;
+    document.getElementsByTagName("head")[0].appendChild(link);
+  }
 
   // export utils (no point in hiding them, so we may as well expose them)
   cc.utils = util;
