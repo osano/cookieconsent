@@ -18,6 +18,7 @@ var cssBuildFiles = [
   './src/styles/base.css',
   './src/styles/layout.css',
   './src/styles/media.css',
+  './src/styles/windowstyles.css',
 
   // all theme files
   './src/styles/themes/*.css',

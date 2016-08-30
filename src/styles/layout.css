@@ -1,7 +1,7 @@
 /* This file should contain CSS that modifies the popup layout. */
 /* By layout, we mean the physical position of the elements on the popup window, and the margin / padding around those elements. */
 
-.cc-type-info .cc-dismiss {
+.cc-banner.cc-type-info .cc-dismiss {
   margin-right: 1em;
 }
 

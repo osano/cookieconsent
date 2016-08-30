@@ -1,0 +1,49 @@
+/* Edgeless */
+
+.cc-windowstyle-edgeless.cc-window {
+  padding: 0;
+}
+
+.cc-floating.cc-windowstyle-edgeless .cc-message {
+  margin: 2em;
+  margin-bottom: 1em;
+}
+
+.cc-floating.cc-windowstyle-edgeless .cc-btn {
+	padding: .6em .8em;
+}
+
+.cc-banner.cc-windowstyle-edgeless .cc-btn {
+	margin: 0;
+	padding: .8em 1.5em;
+    height: 100%;
+}
+
+.cc-banner.cc-windowstyle-edgeless .cc-message {
+	margin-left: 1em;
+}
+
+.cc-floating.cc-windowstyle-edgeless .cc-btn +.cc-btn {
+  margin-left: 0;
+}
+
+/* Rounded */
+
+.cc-floating.cc-windowstyle-rounded {
+	padding: 1.5em;
+	border-radius: 10px;
+	text-align: center;
+}
+
+.cc-floating.cc-type-info.cc-windowstyle-rounded .cc-compliance {
+	display: inline;
+	flex: none;
+}
+
+.cc-windowstyle-rounded .cc-btn {
+	border-radius: 8px;
+}
+
+.cc-floating.cc-type-info.cc-windowstyle-rounded .cc-btn {
+    display: inline-block;
+}

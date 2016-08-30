@@ -7,6 +7,7 @@
 
   font-family: Helvetica, Calibri, Arial, sans-serif;
   font-size: 16px; /* by setting the base font here, we can size the rest of the popup using CSS `em` */
+  line-height: 24px;
 
   display: flex;
   flex-wrap: nowrap;
@@ -60,7 +61,7 @@
 
 .cc-btn {
   display: block;
-  padding: .4em;
+  padding: .4em .8em;
   font-size: 0.9em;
   font-weight: bold;
   border-width: 2px;
@@ -72,6 +73,11 @@
 .cc-highlight .cc-btn:first-child {
   background-color: transparent;
   border-color: transparent;
+}
+
+.cc-highlight .cc-btn:first-child:hover {
+  background-color: transparent;
+  text-decoration: underline;
 }
 
 
