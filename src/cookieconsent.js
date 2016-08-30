@@ -200,7 +200,8 @@
         close: '&#x274c;',
       },
 
-      // 
+      // used to disable link on existing layouts
+      // replaces element messagelink with message and removes content of link
       showlink: true,
 
       // This is the HTML for the elements above. The string {{header}} will be replaced with the equivalent text below.
@@ -210,7 +211,8 @@
       //    and to set the focus to the first interactive control (http://w3c.github.io/aria-in-html/)
       elements: {
         header: '<span class="cc-header">{{header}}</span>&nbsp;',
-        message: '<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" tabindex="0" class="cc-link" href="{{href}}">{{link}}</a></span>',
+        message: '<span id="cookieconsent:desc" class="cc-message">{{message}}</span>',
+        messagelink: '<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" tabindex="0" class="cc-link" href="{{href}}">{{link}}</a></span>',
         dismiss: '<a aria-label="dismiss cookie message" tabindex="0" class="cc-btn cc-dismiss">{{dismiss}}</a>',
         allow: '<a aria-label="allow cookies" tabindex="0" class="cc-btn cc-allow">{{allow}}</a>',
         deny: '<a aria-label="deny cookies" tabindex="0" class="cc-btn cc-deny">{{deny}}</a>',
@@ -242,9 +244,9 @@
       // define layout layouts here
       layouts: {
         // the 'block' layout tend to be for square floating popups
-        'basic': '{{message}}{{compliance}}',
-        'basic-close': '{{message}}{{link}}{{compliance}}{{close}}',
-        'basic-header': '{{header}}{{message}}{{compliance}}',
+        'basic': '{{messagelink}}{{compliance}}',
+        'basic-close': '{{messagelink}}{{compliance}}{{close}}',
+        'basic-header': '{{header}}{{message}}{{link}}{{compliance}}',
 
         // add a custom layout here, then add some new css with the class '.cc-layout-my-cool-layout'
         //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
@@ -570,7 +572,10 @@
       var opts = this.options;
 
       //removes link if showlink is false
-      if(opts.showlink == 'false') opts.elements.link = '';
+      if(opts.showlink == 'false') { 
+        opts.elements.link = '';
+        opts.elements.messagelink = opts.elements.message;
+      }
 
       Object.keys(opts.elements).forEach(function (prop) {
         interpolated[prop] = util.interpolateString(opts.elements[prop], function (name) {
