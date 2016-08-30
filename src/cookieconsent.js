@@ -115,6 +115,7 @@
     // used to change color on highlight
     getLuminance: function(hex) {
       hex = util.validateHex(hex);
+      if (hex=='000000') return '#222'; //for black buttons
       lum = 0.2;
       var rgb = "#", c, i;
       for (i = 0; i < 3; i++) {
