@@ -289,6 +289,19 @@
       // if true, the revokable button will tranlate in and out
       animateRevokable: true,
 
+      // Make this false if you want to disable all regional overrides for settings.
+      // If true, options can differ by country, depending on their cookie law.
+      // does not affect hiding the concent window for countries that do no have cooki law.
+      regionalLaw: true,
+
+
+      // set value as scroll range to enable
+      dismissOnScroll: false,
+
+      // set value as time in milliseconds to autodismiss after set time
+      dismissOnTimeout: false,
+
+
       // if you want custom colours, pass them in here. this object should look like this
       //   {
       //     popup: {background: '#000000', text: '#fff', link: '#fff'},
@@ -918,8 +931,7 @@
   cc.law = (function () {
 
     var hasLaw = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'HR', 'CY', 'LV', 'LT', 'PT', 'NL'];
-    var explicit = ['HR', 'CY', 'LV', 'LT', 'PT', 'DE'];
-    var revokable = ['DK', 'CZ', 'FR', 'BG', 'IT', 'LU', 'EE', 'DE', 'NL'];
+    var revokable = ['HR', 'CY', 'LV', 'LT', 'PT', 'DE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'LU', 'EE', 'DE', 'NL'];
     var explicitAction = ['ES'];
 
     return {
@@ -941,20 +953,18 @@
           options.enabled = false;
         }
 
-        if (country.explicit) {
-          // we must provide a way to deny consent
-          options.type = 'opt-in';
-        }
+        if(options.regionalLaw == 'true') {
+          if (country.revokable) {
+            // we must provide an option to revoke consent at a later time
+            options.revokable = true;
+          }
 
-        if (country.revokable) {
-          // we must provide an option to revoke consent at a later time
-          options.revokable = true;
-        }
+          if (country.explicitAction) {
+            // user must explicitly click the consent button
+            options.dismissOnScroll = false;
+            options.dismissOnTimeout = false;
+          }
 
-        if (country.explicitAction) {
-          // user must explicitly click the consent button
-          options.dismissOnScroll = false;
-          options.dismissOnTimeout = false;
         }
 
         return options;
