@@ -1,7 +1,7 @@
 {
-  "name": "cookieconsent2",
-  "version": "1.0.10",
-  "description": "Silktide's cookie consent tool.",
+  "name": "cookieconsent",
+  "version": "2.0.0",
+  "description": "Insites' cookie consent tool.",
   "main": "cookieconsent.js",
   "devDependencies": {
     "del": "^2.0.2",
@@ -12,13 +12,13 @@
     "gulp-uglify": "^1.1.0",
     "run-sequence": "^1.1.4"
   },
-  "homepage": "http://silktide.com/tools/cookieconsent",
+  "homepage": "http://cookieconsent.insites.com/",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/silktide/cookieconsent2.git"
+    "url": "https://github.com/insites/cookieconsent.git"
   },
   "author": "Silktide Ltd.",
   "license": "MIT",

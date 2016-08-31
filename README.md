@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/silktide/cookieconsent2.svg)](https://travis-ci.org/silktide/cookieconsent2)
+[![Build Status](https://travis-ci.org/insites/cookieconsent.svg)](https://travis-ci.org/insites/cookieconsent)
 
 ## What is Cookie Consent? 
 
@@ -8,11 +8,11 @@ It is designed to help you comply with the hideous EU Cookie Law and not make yo
 
 ## Installation
 
-The easiest way to get up and running is to use our [wizard](http://silktide.com/tools/cookie-consent/download/). 
+The easiest way to get up and running is to use our [wizard](https://cookieconsent.insites.com/download/). 
 
 ## Documentation 
 
-See our [full documentation](http://silktide.com/tools/cookie-consent/docs/).
+See our [full documentation](https://cookieconsent.insites.com/documentation/).
 
 ## Contributing
 
