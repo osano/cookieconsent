@@ -320,6 +320,10 @@
         this.destroy(); // already rendered
       }
 
+      this.waitingForStylesheet = false; // set to true if we have made a request for a stylesheet, and it has not returned
+      this.openAfterStylesheet = false; // set to true if we tried to `open` to popup whilst `waitingForStylesheet`
+      this.requestedTheme = null; // this is the <link> tag containing the coookie popup style, we save it so we can delete it later
+
       // set options back to default options
       util.deepExtend(this.options = {}, defaultOptions);
 
@@ -343,7 +347,16 @@
       }
 
       // load stylesheet
-      loadStyles(this.options.stylesheet);
+      if (this.options.stylesheet) {
+        this.waitingForStylesheet = true;
+        this.requestedTheme = loadStyles.call(this, this.options.stylesheet, function (success) {
+          this.waitingForStylesheet = false;
+          if (this.openAfterStylesheet) {
+            this.openAfterStylesheet = false;
+            this.open();
+          }
+        });
+      }
 
       // the full markup either contains the wrapper or it does not (for multiple instances)
       var cookiePopup = this.options.window
@@ -398,6 +411,14 @@
       }
       this.revokeBtn = null;
 
+      if (this.requestedTheme) {
+        var styleNode = this.requestedTheme.ownerNode;
+        if (styleNode && styleNode.parentNode) {
+          styleNode.parentNode.removeChild(styleNode);
+        }
+      }
+      this.requestedTheme = null;
+
       removeCustomStyle(this.options.palette);
       this.options = null;
     };
@@ -405,6 +426,13 @@
     CookiePopup.prototype.open = function (callback) {
       if (!this.options.enabled)
         return this;
+
+      // if we try and open the popup, and it's style hasn't loaded, set a flag to open it later
+      if (this.waitingForStylesheet) {
+        // setting this to true means that this function will be automatically called when the stylesheet returns
+        this.openAfterStylesheet = true;
+        return;
+      }
 
       if (!this.isOpen()) {
         if (cc.hasTransition) {
@@ -865,12 +893,23 @@
       }
     }
 
-    function loadStyles(stylesheet){
+    function loadStyles(stylesheet, complete){
+      var self = this;
       var link = document.createElement("link");
+      var createCallback = function (success) {
+        return function () {
+          complete.apply(self, [success].concat(arguments));
+        };
+      };
       link.rel = "stylesheet";
       link.type = "text/css";
       link.href = stylesheet;
-      link.onload = document.getElementsByTagName("head")[0].appendChild(link);
+      link.onload = createCallback(true);
+      link.onerror = createCallback(false);
+
+      document.head.appendChild(link);
+
+      return link;
     }
 
     return CookiePopup
