@@ -271,6 +271,7 @@
       //    -edgeless
       //    -classic
       // use your own style name and use .cc-style-STYLENAME class in CSS to edit .
+      // Note: style "wire" is used for the configurator, but has no CSS styles of it's own, only palette is used.
       windowstyle: 'block',
 
       // The placeholders {{classes}} and {{children}} both get replaced during initialisation:
@@ -359,7 +360,8 @@
         this.options.enabled = true;
       }
 
-      // load stylesheet
+
+       // load stylesheet
       if (this.options.stylesheet) {
         this.waitingForStylesheet = true;
         this.requestedTheme = loadStyles.call(this, this.options.stylesheet, function (success) {
@@ -877,32 +879,32 @@
         }
         var revokeBtn = this.options.revokeBtn.replace('{{classes}}', classes.join(' '));
         this.revokeBtn = appendMarkup.call(this, revokeBtn);
-      }
 
-      var btn = this.revokeBtn;
-      if (this.options.animateRevokable) {
-        var wait = false;
-        var onMouseMove = util.throttle(function (evt) {
-          var active = false;
-          var minY = 20;
-          var maxY = (window.innerHeight - 20);
+        var btn = this.revokeBtn;
+        if (this.options.animateRevokable) {
+          var wait = false;
+          var onMouseMove = util.throttle(function (evt) {
+            var active = false;
+            var minY = 20;
+            var maxY = (window.innerHeight - 20);
 
-          if (util.hasClass(btn, 'cc-top') && evt.clientY < minY) active = true;
-          if (util.hasClass(btn, 'cc-bottom') && evt.clientY > maxY) active = true;
+            if (util.hasClass(btn, 'cc-top') && evt.clientY < minY) active = true;
+            if (util.hasClass(btn, 'cc-bottom') && evt.clientY > maxY) active = true;
 
-          if (active) {
-            if (!util.hasClass(btn, 'cc-active')) {
-              util.addClass(btn, 'cc-active');
+            if (active) {
+              if (!util.hasClass(btn, 'cc-active')) {
+                util.addClass(btn, 'cc-active');
+              }
+            } else {
+              if (util.hasClass(btn, 'cc-active')) {
+                util.removeClass(btn, 'cc-active');
+              }
             }
-          } else {
-            if (util.hasClass(btn, 'cc-active')) {
-              util.removeClass(btn, 'cc-active');
-            }
-          }
-        }, 200);
+          }, 200);
 
-        this.onMouseMove = onMouseMove;
-        window.addEventListener('mousemove', onMouseMove);
+          this.onMouseMove = onMouseMove;
+          window.addEventListener('mousemove', onMouseMove);
+        }
       }
     }
 
