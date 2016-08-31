@@ -75,7 +75,7 @@
 
     function getOptions(input) {
       return {
-        type: 'dismiss',
+        type: 'info',
         palette: {
           popup: {background: '#4a90e2', text: '#fff', link: '#fff'},
           button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}
@@ -92,7 +92,6 @@
       }
 
       return U.tabularObject({
-        'does require opt-in?': U.yn(countryOpts.explicit),
         'does require revert?': U.yn(countryOpts.revokable),
         'does require action?': U.yn(countryOpts.explicitAction),
       });

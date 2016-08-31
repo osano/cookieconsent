@@ -939,7 +939,6 @@
       get: function (countryCode) {
         return {
           hasLaw: hasLaw.indexOf(countryCode) >= 0,
-          explicit: explicit.indexOf(countryCode) >= 0,
           revokable: revokable.indexOf(countryCode) >= 0,
           explicitAction: explicitAction.indexOf(countryCode) >= 0,
         };
