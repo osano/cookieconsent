@@ -240,7 +240,7 @@
       //  banner positions: top, bottom
       //  floating positions: top-left, top-right, bottom-left, bottom-right
       //  adds a class `cc-floating` or `cc-banner` which helps when styling
-      position: 'bottom-right',
+      position: 'bottom',
 
       // select your type of popup here
       type: 'info', // refers to `compliance` (in other words, the buttons that are displayed)
@@ -284,7 +284,7 @@
 
       // Some countries REQUIRE that a user can change their mind. You can configure this yourself.
       // Most of the time this should be false, but the `cookieconsent.law` can change this to `true` if it detects that it should
-      revokable: true,
+      revokable: false,
 
       // if true, the revokable button will tranlate in and out
       animateRevokable: true,
@@ -823,6 +823,9 @@
     }
 
     function applyRevokeButton () {
+      // revokable is true if advanced compliance is selected
+      if(this.options.type != 'info') this.options.revokable = true;
+
       if (this.options.revokable) {
         var classes = getPositionClasses.call(this);
         if (this.options.animateRevokable) {
