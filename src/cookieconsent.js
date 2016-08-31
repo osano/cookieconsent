@@ -126,11 +126,10 @@
       return rgb;
     },
 
+    // getting the directory of javascript file
     getDirectory: function() {
       sc = document.getElementsByTagName("script");
-
-      for(i = 0; i < sc.length; i++)
-      {
+      for(i = 0; i < sc.length; i++) {
         s = sc.item(i);
         if(s.src && s.src.match(/cookieconsent.min.js$/))
         { return s.src.slice(0,-20); }
@@ -343,6 +342,9 @@
         this.options.enabled = true;
       }
 
+      // load stylesheet
+      loadStyles(this.options.stylesheet);
+
       // the full markup either contains the wrapper or it does not (for multiple instances)
       var cookiePopup = this.options.window
         .replace('{{classes}}', getPopupClasses.call(this).join(' '))
@@ -360,6 +362,7 @@
       applyAutoDismiss.call(this);
 
       applyRevokeButton.call(this);
+
 
       return this;
     };
@@ -717,7 +720,7 @@
           'color: '+popup.text, 
           'background-color: '+popup.background
         ];
-        colorStyles[prefix + ' .cc-link'] = [
+        colorStyles[prefix + ' .cc-link,' + prefix + ' .cc-link:active,' + prefix + ' .cc-link:visited'   ] = [
           'color: '+popup.link
           ];
 
@@ -857,6 +860,14 @@
         this.onMouseMove = onMouseMove;
         window.addEventListener('mousemove', onMouseMove);
       }
+    }
+
+    function loadStyles(stylesheet){
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      link.href = stylesheet;
+      link.onload = document.getElementsByTagName("head")[0].appendChild(link);
     }
 
     return CookiePopup
@@ -1163,7 +1174,6 @@
 
   cc.factory = function (options) {
     popup = new cc.Popup(options);
-    cc.loadStyles(popup.options.stylesheet);
     return popup;
   };
 
@@ -1193,14 +1203,6 @@
     }
     return popup;
   };
-
-  cc.loadStyles = function(stylesheet){
-    var link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.type = "text/css";
-    link.href = stylesheet;
-    document.getElementsByTagName("head")[0].appendChild(link);
-  }
 
   // export utils (no point in hiding them, so we may as well expose them)
   cc.utils = util;
