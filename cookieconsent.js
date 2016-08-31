@@ -1,5 +1,5 @@
 (function () {
-  // Stop from running again, if accidently included more than once.
+  // Stop from running again, if accidentally included more than once.
   if (window.hasCookieConsent) return;
   window.hasCookieConsent = true;
 
