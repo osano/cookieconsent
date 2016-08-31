@@ -267,11 +267,11 @@
       },
 
       // Available styles
-      //    -classic
+      //    -block (default, no extra classes)
       //    -edgeless
-      //    -rounded
+      //    -classic
       // use your own style name and use .cc-style-STYLENAME class in CSS to edit .
-      windowstyle: 'classic',
+      windowstyle: 'block',
 
       // The placeholders {{classes}} and {{children}} both get replaced during initialisation:
       //  - {{classes}} is where additional classes get added

@@ -6,7 +6,7 @@
 
 .cc-floating.cc-windowstyle-edgeless .cc-message {
   margin: 2em;
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
 }
 
 .cc-banner.cc-windowstyle-edgeless .cc-btn {
@@ -23,23 +23,23 @@
   margin-left: 0;
 }
 
-/* Rounded */
+/* Classic */
 
-.cc-floating.cc-windowstyle-rounded {
+.cc-floating.cc-windowstyle-classic {
 	padding: 1.2em;
-	border-radius: 10px;
+	border-radius: 5px;
 	text-align: center;
 }
 
-.cc-floating.cc-type-info.cc-windowstyle-rounded .cc-compliance {
+.cc-floating.cc-type-info.cc-windowstyle-classic .cc-compliance {
 	display: inline;
 	flex: none;
 }
 
-.cc-windowstyle-rounded .cc-btn {
-	border-radius: 8px;
+.cc-windowstyle-classic .cc-btn {
+	border-radius: 5px;
 }
 
-.cc-floating.cc-type-info.cc-windowstyle-rounded .cc-btn {
+.cc-floating.cc-type-info.cc-windowstyle-classic .cc-btn {
     display: inline-block;
 }
