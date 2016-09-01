@@ -60,7 +60,6 @@
 
 
 .cc-btn {
-  min-width: 150px;
   display: block;
   padding: .4em .8em;
   font-size: 0.9em;
@@ -69,6 +68,10 @@
   border-style: solid;
   text-align: center;
   white-space: nowrap;
+}
+
+.cc-banner .cc-btn:last-child {
+  min-width: 140px;
 }
 
 .cc-highlight .cc-btn:first-child {

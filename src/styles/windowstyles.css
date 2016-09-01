@@ -39,6 +39,9 @@
 .cc-windowstyle-classic .cc-btn {
 	border-radius: 5px;
 }
+.cc-windowstyle-classic .cc-btn:last-child {
+    min-width: 140px;
+}
 
 .cc-floating.cc-type-info.cc-windowstyle-classic .cc-btn {
     display: inline-block;
