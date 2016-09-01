@@ -132,8 +132,9 @@
       for(i = 0; i < sc.length; i++) {
         s = sc.item(i);
         if(s.src && s.src.match(/cookieconsent.min.js$/))
-        { return s.src.slice(0,-20); }
+        { return s.src.slice(0,-'cookieconsent.min.js'.length); }
       }
+      return '';
     },
 
     isMobile: function() {
@@ -270,6 +271,9 @@
         // add a custom layout here, then add some new css with the class '.cc-layout-my-cool-layout'
         //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
       },
+
+      // Enables fade-in/out and pushdown animations
+      transitions: true,
 
       // Available styles
       //    -block (default, no extra classes)
@@ -455,7 +459,7 @@
       }
 
       if (!this.isOpen()) {
-        if (cc.hasTransition) {
+        if (hasTransition.call(this)) {
           this.fadeIn();
         } else {
           this.element.style.display = '';
@@ -468,8 +472,8 @@
       }
 
       // add push down for body when top banner type
-      if(this.options.position == 'top') pushDown(this.element.offsetHeight);
-      else pushDown(0);
+      if(this.options.position == 'top') pushDown.call(this, this.element.offsetHeight);
+      else pushDown.call(this, 0);
       
       return this;
     };
@@ -479,7 +483,7 @@
         return this;
 
       if (this.isOpen()) {
-        if (cc.hasTransition) {
+        if (hasTransition.call(this)) {
           this.fadeOut();
         } else {
           this.element.style.display = 'none';
@@ -490,14 +494,14 @@
         }
         this.options.onPopupClose();
       }
-      pushDown(0);
+      pushDown.call(this, 0);
       return this;
     };
 
     CookiePopup.prototype.fadeIn = function () {
       var el = this.element;
 
-      if (!cc.hasTransition)
+      if (!hasTransition.call(this))
         return;
 
       // this should always be called AFTER fadeOut (which is governed by the 'transitionend' event).
@@ -517,7 +521,7 @@
     CookiePopup.prototype.fadeOut = function () {
       var el = this.element;
 
-      if (!cc.hasTransition)
+      if (!hasTransition.call(this))
         return;
 
       if (this.openingTimeout) {
@@ -534,7 +538,7 @@
     };
 
     CookiePopup.prototype.isOpen = function () {
-      return this.element && this.element.style.display == '' && (cc.hasTransition ? !util.hasClass(this.element, 'cc-invisible') : true);
+      return this.element && this.element.style.display == '' && (hasTransition.call(this) ? !util.hasClass(this.element, 'cc-invisible') : true);
     };
 
     CookiePopup.prototype.toggleRevokeButton = function (show) {
@@ -689,7 +693,7 @@
 
       el.style.display = 'none';
 
-      if (util.hasClass(el, 'cc-window') && cc.hasTransition) {
+      if (util.hasClass(el, 'cc-window') && hasTransition.call(this)) {
         util.addClass(el, 'cc-invisible');
       }
 
@@ -944,14 +948,21 @@
       var navbar = document.getElementsByClassName("navbar-fixed-top")[0]; //for bootstrap fixed navbar
       if(height!=0) {
         if(document.getElementById("wpadminbar")) height = height - 32;  // WP admin bar
-        body.style.transition = 'all .4s';
-        navbar.style.transition = 'all .4s';
+        if(hasTransition.call(this)) {
+          body.style.transition = 'all .4s linear .5s';
+          navbar.style.transition = 'all .4s linear .5s';
+        }
       } else {
         body.style.transition = 'none';
         navbar.style.transition = 'none';
       }
       body.style.marginTop = height+'px';
       navbar.style.marginTop = height+'px';
+    }
+
+    function hasTransition() {
+      if (this.options) return this.options.transitions && cc.hasTransition;
+      return cc.hasTransition;
     }
 
     return CookiePopup
