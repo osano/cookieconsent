@@ -134,6 +134,11 @@
         if(s.src && s.src.match(/cookieconsent.min.js$/))
         { return s.src.slice(0,-20); }
       }
+    },
+
+    isMobile: function() {
+      if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) return true;
+      return false;
     }
 
   };
@@ -461,6 +466,11 @@
         }
         this.options.onPopupOpen();
       }
+
+      // add push down for body when top banner type
+      if(this.options.position == 'top') pushDown(this.element.offsetHeight);
+      else pushDown(0);
+      
       return this;
     };
 
@@ -480,6 +490,7 @@
         }
         this.options.onPopupClose();
       }
+      pushDown(0);
       return this;
     };
 
@@ -799,7 +810,6 @@
 
       }
 
-
       // this will be interpretted as CSS. the key is the selector, and each array element is a rule
       var style = document.createElement('style');
       document.head.appendChild(style);
@@ -868,6 +878,8 @@
     function applyRevokeButton () {
       // revokable is true if advanced compliance is selected
       if(this.options.type != 'info') this.options.revokable = true;
+      // animateRevokable false for mobile devices
+      if(util.isMobile()) this.options.animateRevokable = false;
 
       if (this.options.revokable) {
         var classes = getPositionClasses.call(this);
@@ -925,6 +937,22 @@
       document.head.appendChild(link);
 
       return link;
+    }
+
+    function pushDown(height) {
+      var body = document.getElementsByTagName("body")[0]; 
+      var navbar = document.getElementsByClassName("navbar-fixed-top")[0]; //for bootstrap fixed navbar
+
+      body.style.marginTop = height+'px';
+      navbar.style.marginTop = height+'px';
+
+      if(height!=0) {
+        body.style.transition = 'all .4s';
+        navbar.style.transition = 'all .4s';
+      } else {
+        body.style.transition = 'none';
+        navbar.style.transition = 'none';
+      }
     }
 
     return CookiePopup
