@@ -23,7 +23,7 @@
   flex-direction: column;
 }
 .cc-window.cc-banner {
-  padding: 1em;
+  padding: 1em 1.8em;
   width: 100%;
   flex-direction:  row;
 }
