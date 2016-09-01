@@ -542,8 +542,8 @@
     };
 
     CookiePopup.prototype.toggleRevokeButton = function (show) {
-      this.revokeBtn.style.display = show ? '' : 'none';
-    };
+      if (this.revokeBtn) this.revokeBtn.style.display = show ? '' : 'none';
+    }; 
 
     CookiePopup.prototype.setStatus = function (status) {
       var c = this.options.cookie;
@@ -950,14 +950,14 @@
         if(document.getElementById("wpadminbar")) height = height - 32;  // WP admin bar
         if(hasTransition.call(this)) {
           body.style.transition = 'all .4s linear .5s';
-          navbar.style.transition = 'all .4s linear .5s';
+          if(navbar) navbar.style.transition = 'all .4s linear .5s';
         }
       } else {
         body.style.transition = 'none';
-        navbar.style.transition = 'none';
+        if(navbar) navbar.style.transition = 'none';
       }
       body.style.marginTop = height+'px';
-      navbar.style.marginTop = height+'px';
+      if(navbar) navbar.style.marginTop = height+'px';
     }
 
     function hasTransition() {
