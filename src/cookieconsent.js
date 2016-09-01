@@ -210,8 +210,8 @@
       // each item defines the inner text for the element that it references
       content: {
         header: 'Cookies used on the website!',
-        message: 'Our website uses cookies to make your browsing experience better.',
-        dismiss: 'Close and don\'t show again',
+        message: 'This website uses cookies to ensure you get the best experience on our website.',
+        dismiss: 'Got it!',
         allow: 'Allow cookies',
         deny: 'Decline',
         link: 'Learn more',

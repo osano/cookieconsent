@@ -28,10 +28,10 @@
 .cc-floating.cc-windowstyle-classic {
 	padding: 1.2em;
 	border-radius: 5px;
-	text-align: center;
 }
 
 .cc-floating.cc-type-info.cc-windowstyle-classic .cc-compliance {
+	text-align: center;
 	display: inline;
 	flex: none;
 }

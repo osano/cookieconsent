@@ -60,6 +60,7 @@
 
 
 .cc-btn {
+  min-width: 150px;
   display: block;
   padding: .4em .8em;
   font-size: 0.9em;
