@@ -942,17 +942,16 @@
     function pushDown(height) {
       var body = document.getElementsByTagName("body")[0]; 
       var navbar = document.getElementsByClassName("navbar-fixed-top")[0]; //for bootstrap fixed navbar
-
-      body.style.marginTop = height+'px';
-      navbar.style.marginTop = height+'px';
-
       if(height!=0) {
+        if(document.getElementById("wpadminbar")) height = height - 32;  // WP admin bar
         body.style.transition = 'all .4s';
         navbar.style.transition = 'all .4s';
       } else {
         body.style.transition = 'none';
         navbar.style.transition = 'none';
       }
+      body.style.marginTop = height+'px';
+      navbar.style.marginTop = height+'px';
     }
 
     return CookiePopup
