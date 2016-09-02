@@ -26,7 +26,11 @@
     color: red;
   }
   .cc-btn {
-    background: blue;
+    background: #0000ff;
+    background: -moz-radial-gradient(center, ellipse cover, #0000ff 0%, #99007c 100%);
+    background: -webkit-radial-gradient(center, ellipse cover, #0000ff 0%,#99007c 100%);
+    background: radial-gradient(ellipse at center, #0000ff 0%,#99007c 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0000ff', endColorstr='#99007c',GradientType=1 );
     padding: 58px 0;
     color: red;
     border: 4px dotted red;
@@ -34,6 +38,12 @@
     -webkit-animation:spin 4s linear infinite;
     -moz-animation:spin 4s linear infinite;
     animation:spin 4s linear infinite;
+  }
+  .cc-btn:hover {
+    background: #99007c;
+     -webkit-animation: none;
+    -moz-animation:none;
+    animation:none;
   }
   @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
   @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
