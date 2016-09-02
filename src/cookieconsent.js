@@ -272,6 +272,9 @@
         //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
       },
 
+      // enable pushdown for body when banner top is use
+      pushdown: true,
+
       // Enables fade-in/out and pushdown animations
       transitions: true,
 
@@ -944,6 +947,7 @@
     }
 
     function pushDown(height) {
+      if(!this.options.pushdown) return;
       var body = document.getElementsByTagName("body")[0]; 
       var navbar = document.getElementsByClassName("navbar-fixed-top")[0]; //for bootstrap fixed navbar
       if(height!=0) {
