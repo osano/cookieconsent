@@ -134,13 +134,22 @@ window['cookieconsent_example_util'] = {
         });
 
         instances[idx].open();
+
       }
     };
-    
+
     for (var i = 0, l = examples.length; i < l; ++i) {
+      options.popups[examples[i]].onPopupOpen = function(options) {
+        return function(){
+          document.getElementById('options').innerHTML = JSON.stringify(options, null, 2);
+          document.getElementById('options').style.display = 'block';
+        };
+      } (options.popups[examples[i]]);
       instances[i] = options.cookieconsent.factory(options.popups[examples[i]]);
     }
 
     return instances;
   },
 };
+
+

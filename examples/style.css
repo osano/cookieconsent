@@ -11,12 +11,20 @@ body, html {
   height: 100%;
 }
 
+pre {
+  display: none;
+  font-size: 10px;
+  text-align: left;
+  background: black;
+  padding: 20px;
+}
+
 /******************** example window ********************/
 
 .example-window {
   text-align: center;
   color: #e9e9e9;
-  max-width: 30em;
+  max-width: 40em;
   display:inline-block;
 }
 .example-window h1 {
