@@ -307,6 +307,8 @@
       // does not affect hiding the concent window for countries that do no have cooki law.
       regionalLaw: true,
 
+      // Add two digit country code to override location services
+      countryCode: null,
 
       // set value as scroll range to enable
       dismissOnScroll: false,
@@ -403,6 +405,7 @@
 
       applyRevokeButton.call(this);
 
+      //cc.getCountryOptions(this.options);
 
       return this;
     };
@@ -974,8 +977,8 @@
 
   cc.law = (function () {
 
-    var hasLaw = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'HR', 'CY', 'LV', 'LT', 'PT', 'NL'];
-    var revokable = ['HR', 'CY', 'LV', 'LT', 'PT', 'DE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'LU', 'EE', 'DE', 'NL'];
+    var hasLaw = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'HR', 'CY', 'LV', 'LT', 'PT', 'NL', 'DE', 'EE', 'LU'];
+    var revokable = ['HR', 'CY', 'LV', 'LT', 'PT', 'DE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'LU', 'EE', 'DE', 'NL', 'ES'];
     var explicitAction = ['ES'];
 
     return {
@@ -996,7 +999,7 @@
           options.enabled = false;
         }
 
-        if(options.regionalLaw == 'true') {
+        if(options.regionalLaw == true) {
           if (country.revokable) {
             // we must provide an option to revoke consent at a later time
             options.revokable = true;
@@ -1009,7 +1012,6 @@
           }
 
         }
-
         return options;
       }
     };
@@ -1272,20 +1274,15 @@
     return popup;
   };
 
-  cc.initialise = function (options) {
-    this.getCountryOptions(options, function (result) {
-      cc.popup.init(result);
-      cc.popup.open();
-    }, function (error) {
-      cc.popup.init(options);
-      cc.popup.open();
-    });
-  };
-
   cc.getCountryOptions = function (options, success, failure) {
-    cc.locate.init(function (result) {
-      success(cc.law.applyLaw(options, result.code));
-    }, failure);
+    if(options.countryCode) { 
+      cc.law.applyLaw(options, options.countryCode);
+    }
+    else {
+      cc.locate.init(function (result) {
+        success(cc.law.applyLaw(options, result.code));
+      }, failure);
+    }
   };
 
   // only open if the user hasnt answered
