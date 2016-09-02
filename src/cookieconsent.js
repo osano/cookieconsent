@@ -405,7 +405,7 @@
 
       applyRevokeButton.call(this);
 
-      //cc.getCountryOptions(this.options);
+      cc.getCountryOptions(this.options);
 
       return this;
     };
@@ -1274,14 +1274,14 @@
     return popup;
   };
 
-  cc.getCountryOptions = function (options, success, failure) {
+  cc.getCountryOptions = function (options) {
     if(options.countryCode) { 
       cc.law.applyLaw(options, options.countryCode);
     }
     else {
       cc.locate.init(function (result) {
-        success(cc.law.applyLaw(options, result.code));
-      }, failure);
+        cc.law.applyLaw(options, result.code);
+      });
     }
   };
 
