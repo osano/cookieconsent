@@ -400,12 +400,12 @@
 
       this.element = appendMarkup.call(this, cookiePopup);
 
+      cc.getCountryOptions(this.options);
+
       // uses `dismissOnScroll` and `dismissOnTimeout`
       applyAutoDismiss.call(this);
 
       applyRevokeButton.call(this);
-
-      cc.getCountryOptions(this.options);
 
       return this;
     };
