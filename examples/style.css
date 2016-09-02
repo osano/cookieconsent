@@ -17,6 +17,8 @@ pre {
   text-align: left;
   background: black;
   padding: 20px;
+  max-height: 300px;
+  overflow: auto;
 }
 
 /******************** example window ********************/

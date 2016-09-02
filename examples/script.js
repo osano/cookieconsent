@@ -141,8 +141,11 @@ window['cookieconsent_example_util'] = {
     for (var i = 0, l = examples.length; i < l; ++i) {
       options.popups[examples[i]].onPopupOpen = function(options) {
         return function(){
-          document.getElementById('options').innerHTML = JSON.stringify(options, null, 2);
-          document.getElementById('options').style.display = 'block';
+          var codediv = document.getElementById('options');
+          if(codediv) {
+            codediv.innerHTML = JSON.stringify(options, null, 2);
+            codediv.style.display = 'block';
+          }
         };
       } (options.popups[examples[i]]);
       instances[i] = options.cookieconsent.factory(options.popups[examples[i]]);
