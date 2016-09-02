@@ -9,7 +9,7 @@
   <title>Appearance - Standard Themes</title>
 
   <link href="examples/style.css" rel="stylesheet">
-  <link href="build/cookieconsent.min.css" rel="stylesheet">
+
   <style>
     .popup-selector {position: relative; top: -5px; left: -20px;}
     .example-window .selectbox {display: inline-block; width: 8em;}
@@ -37,12 +37,17 @@
 
   (function (C, U) {
 
-    var paletteRed = {popup: {background: '#d34040', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}, highlight: {background: '#ffffff', border: '#ffffff', text: '#d34040'}};
-    var paletteBlue = {popup: {background: '#4a90e2', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#ffffff', text: '#ffffff'}};
-    var paletteWhite = {popup: {background: '#fafafa', text: '#000', link: '#888'}, button: {background: 'transparent', border: '#86b4ea', text: '#86b4ea'}};
-    var paletteBlack = {popup: {background: '#000000', text: '#fff', link: '#fff'}, button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'}, highlight: {background: '#f8e71c', border: '#f8e71c', text: '#000000'}};
-    var palettePurple = {popup: {background: '#956cb9', text: '#fff', link: '#fff'}, button: {background: '#ffffff', border: '#ffffff', text:'#000000'}};
-    var paletteBlackOrange = {popup: {background: '#252c33', text: '#fff', link: '#fff'}, button: {background: '#fa6956', border: '#fa6956', text: '#fff'}};
+    var palettes = {
+        classic: {popup: {background: '#000'}, button: {background: '#f1d600'}},
+        subtle: {popup: {background: "#eaf7f7", text:"#5c7291"}, button:{background: "#56cbdb", text:"#ffffff"}},
+        designer: {popup: {background: '#252e39'}, button: {background: '#14a7d0'}},
+        white: {popup: {background: "#fff"},button:{background: "#700"}},
+        console: {popup: {background: '#000', text: '#0f0'}, button: {background: '#0f0'}},
+        pretty: {popup: {background: '#3937a3'},button: {background: '#e62576'}},
+        passion: { popup: {background:"#64386b",text:"#ffcdfd"},button: {background:"#f8a8ff",text:"#3f0045"}},
+        tango: {popup: {background: "#e07d44", text: '#3d3d3d'},button: {background: "#e8cfc1", text: '#3d3d3d'}},
+        forest: {popup: {background: "#08701f"},button: {background: "#ffffff", "text":"#08701f"}}
+    };
 
     cookiePopups = U.initialisePopupSelector({
       cookieconsent: C,
@@ -50,39 +55,45 @@
       popups: {
         'Red Banner Top': {
           type: 'info',
-          layout: 'banner',
           position: 'top',
-          palette: paletteRed,
+          palette: palettes.classic,
+          transitions: false
         },
         'White Banner Top': {
           type: 'opt-out',
-          layout: 'banner',
           position: 'top',
-          palette: paletteWhite,
+          palette: palettes.subtle,
+          transitions: false
         },
         'Black Banner Bottom': {
           type: 'opt-in',
-          layout: 'banner',
           position: 'bottom',
-          palette: paletteBlack,
+          palette: palettes.designer,
         },
         'Blue Floating Top Left': {
           type: 'info',
-          layout: 'floating',
           position: 'top-left',
-          palette: paletteBlue,
+          palette: palettes.white,
         },
         'Black Floating Top Right': {
           type: 'opt-out',
-          layout: 'floating',
           position: 'top-right',
-          palette: paletteBlackOrange,
+          palette: palettes.console,
         },
         'Purple Floating Bottom Right': {
           type: 'opt-in',
-          layout: 'floating',
           position: 'bottom-right',
-          palette: palettePurple,
+          palette: palettes.pretty,
+        },
+        'Purple Floating Bottom': {
+          type: 'opt-out',
+          position: 'bottom',
+          palette: palettes.passion,
+        },
+        'Purple Right': {
+          type: 'info',
+          position: 'bottom',
+          palette: palettes.tango,
         },
       },
     });
