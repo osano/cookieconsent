@@ -21,6 +21,8 @@ pre {
   overflow: auto;
 }
 
+#console {max-height: 100px;}
+
 /******************** example window ********************/
 
 .example-window {
