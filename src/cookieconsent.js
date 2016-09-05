@@ -479,7 +479,6 @@
 
       // add push down for body when top banner type
       if(this.options.position == 'top') pushDown.call(this, this.element.offsetHeight);
-      else pushDown.call(this, 0);
       
       return this;
     };
@@ -500,7 +499,7 @@
         }
         this.options.onPopupClose();
       }
-      pushDown.call(this, 0);
+      if(this.options.position == 'top') pushDown.call(this, 0);
       return this;
     };
 
