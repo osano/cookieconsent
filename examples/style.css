@@ -21,7 +21,21 @@ pre {
   overflow: auto;
 }
 
+a, a:visited {
+color: #fff;
+}
+
+/**************** javascript API examples ****************/
+
 #console {max-height: 100px;}
+.btn-group {
+margin-bottom: 10px;
+
+}
+.btn {
+  padding: 2px 8px!important;
+  border-radius: 5px;
+}
 
 /******************** example window ********************/
 

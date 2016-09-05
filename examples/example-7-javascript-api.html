@@ -21,6 +21,7 @@
         Popup: 
           <button type="button" class="btn" id="btn-open">Open</button>
           <button type="button" class="btn" id="btn-close">Close</button>
+          <button type="button" class="btn" id="btn-destroy">Destroy</button>
         </div>
 
         <div class="btn-group">
@@ -40,20 +41,10 @@
   </div>
 
 <script src="build/cookieconsent.min.js"></script>
+<script src="examples/script.js"></script>
 <script>
 
   var h = document.getElementById('console');
-
-  function timeStamp() {
-    var now = new Date();
-    var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
-    for ( var i = 1; i < 3; i++ ) {
-      if ( time[i] < 10 ) {
-        time[i] = "0" + time[i];
-      }
-    }
-    return '['+time.join(":")+'] ';
-  }
 
   var p = cookieconsent.factory({
     type: 'opt-out',
@@ -90,16 +81,19 @@
   document.getElementById('btn-revokeChoice').onclick = function (e) {
     p.options.onRevokeChoice();
     p.clearStatus();
-    p.open();
   };
 
   document.getElementById('btn-open').onclick = function (e) {
     p.open();
   };
   
-  
   document.getElementById('btn-close').onclick = function (e) {
     p.close();
+  };
+
+  document.getElementById('btn-destroy').onclick = function (e) {
+    p.destroy();
+    h.innerHTML += timeStamp() + 'Cookieconsent popup is destoryed and cannot be opened again.';
   };
 
 
