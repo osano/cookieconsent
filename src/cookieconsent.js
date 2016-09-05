@@ -206,7 +206,7 @@
       onPopupOpen: function() {},
       onPopupClose: function() {},
       onStatusChange: function(status) {},
-      onRevokeChoice: function(oldStatus) {},
+      onRevokeChoice: function() {},
 
       // each item defines the inner text for the element that it references
       content: {
@@ -736,7 +736,7 @@
         this.close(true);
       }
       if (util.hasClass(targ, 'cc-revoke')) {
-        this.options.onRevokeChoice(this.getStatus());
+        this.options.onRevokeChoice();
         this.clearStatus();
         this.open();
       }
