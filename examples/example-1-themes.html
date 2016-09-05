@@ -41,7 +41,6 @@
         console: {popup: {background: '#000', text: '#0f0'}, button: {background: '#0f0'}},
         pretty: {popup: {background: '#3937a3'},button: {background: '#e62576'}},
         passion: { popup: {background:"#64386b",text:"#ffcdfd"},button: {background:"#f8a8ff",text:"#3f0045"}},
-        tango: {popup: {background: "#e07d44", text: '#3d3d3d'},button: {background: "#e8cfc1", text: '#3d3d3d'}},
         forest: {popup: {background: "#08701f"},button: {background: "#ffffff", "text":"#08701f"}}
     };
 
@@ -49,29 +48,29 @@
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {
-        'Red Banner Top': {
+        'Black and Yellow Banner Top': {
           type: 'info',
           position: 'top',
           palette: palettes.classic,
           pushdown: false
         },
-        'White Banner Top': {
+        'Light Green Banner Top': {
           type: 'opt-out',
           position: 'top',
           palette: palettes.subtle,
           pushdown: false
         },
-        'Black Banner Bottom': {
+        'Formal Blue Banner Bottom': {
           type: 'opt-in',
           position: 'bottom',
           palette: palettes.designer,
         },
-        'Blue Floating Top Left': {
+        'White and Red Floating Top Left': {
           type: 'info',
           position: 'top-left',
           palette: palettes.white,
         },
-        'Black Floating Top Right': {
+        'Console Floating Top Right': {
           type: 'opt-out',
           position: 'top-right',
           palette: palettes.console,
@@ -81,15 +80,15 @@
           position: 'bottom-right',
           palette: palettes.pretty,
         },
-        'Purple Floating Bottom': {
+        'Light Purple Floating Bottom': {
           type: 'opt-out',
           position: 'bottom',
           palette: palettes.passion,
         },
-        'Purple Right': {
+        'Forest Green Banner Bottom': {
           type: 'info',
           position: 'bottom',
-          palette: palettes.tango,
+          palette: palettes.forest,
         },
       },
     });
