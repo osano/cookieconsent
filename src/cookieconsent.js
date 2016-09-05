@@ -976,9 +976,9 @@
 
   cc.law = (function () {
 
-    var hasLaw = ['BE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'SE', 'HU', 'RO', 'SK', 'SI', 'IE', 'PL', 'GB', 'FI', 'LU', 'ES', 'HR', 'CY', 'LV', 'LT', 'PT', 'NL', 'DE', 'EE', 'LU'];
-    var revokable = ['HR', 'CY', 'LV', 'LT', 'PT', 'DE', 'DK', 'CZ', 'FR', 'BG', 'IT', 'LU', 'EE', 'DE', 'NL', 'ES'];
-    var explicitAction = ['ES'];
+    var hasLaw = ['AT', 'BE', 'BG', 'HR', 'CZ', 'CY', 'DK', 'EE', 'FI', 'FR', 'DE', 'EL', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'SK', 'SI', 'ES', 'SE', 'GB', 'UK'];
+    var revokable = ['HR', 'CY', 'DK', 'EE', 'FR', 'DE', 'LV', 'LT', 'NL', 'PT', 'ES'];
+    var explicitAction = ['HR', 'IT', 'ES'];
 
     return {
 
