@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/silktide/cookieconsent2.svg)](https://travis-ci.org/silktide/cookieconsent2)
+[![Build Status](https://travis-ci.org/insites/cookieconsent.svg)](https://travis-ci.org/silktide/cookieconsent2)
 
 ## What is Cookie Consent? 
 
