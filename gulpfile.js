@@ -6,6 +6,8 @@ var minifyCSS = require('gulp-minify-css');
 var deleteDirs = require('del');
 var runSequence = require('run-sequence');
 var autoprefixer = require('gulp-autoprefixer');
+var bump = require('gulp-bump');
+var yargs = require('yargs');
 
 
 var buildFolder = './build';
@@ -44,8 +46,22 @@ gulp.task('minify:css', function () {
     .pipe(gulp.dest(buildFolder));          // save under a new name
 });
 
+gulp.task('bump', function(callback) {
+  gulp.src(['./bower.json', './package.json'])
+      .pipe(bump({'version': yargs.argv.tag}))
+      .pipe(gulp.dest('./'))
+});
+
 gulp.task('build', function(callback) {
   return runSequence('cleanup:begin', 'minify:js', 'minify:css', callback);
+});
+
+gulp.task('build:release', function(callback) {
+  if (yargs.argv.tag===undefined) {
+    throw "A version number (e.g. 3.0.1) is required to build a release of cookieconsent"
+  }
+
+  return runSequence('build', 'bump')
 });
 
 gulp.task('watch', function() {

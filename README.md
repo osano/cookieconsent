@@ -10,6 +10,16 @@ It is designed to help you comply with the hideous EU Cookie Law and not make yo
 
 The easiest way to get up and running is to use our [wizard](https://cookieconsent.insites.com/download/). 
 
+You can also install this project through npm
+```
+npm install cookieconsent
+```
+
+Or through bower
+```
+bower install cookieconsent
+```
+
 ## Documentation 
 
 See our [full documentation](https://cookieconsent.insites.com/documentation/).
