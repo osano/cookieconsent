@@ -2,34 +2,48 @@
 body, html {
   margin: 0;
   padding: 0;
-
   font-family: "proxima-nova", sans-serif;
   font-size: 20px;
-
-  background-color: #282828;
-
+  background-color: #424242;
   height: 100%;
 }
 
+body.example2 {background-color: #420242;}
+
+body.example3 {background-color: #262f3a;}
+
+body.example4 {background-color: #302300;}
+
+body.example5 {background-color: #284228;}
+
+body.example6 {background-color: #300900;}
+
+body.example7 {background-color: #282856;}
+
 pre {
-  display: none;
   font-size: 10px;
   text-align: left;
   background: black;
   padding: 20px;
   max-height: 300px;
+  width: 60%;
+  margin: 0 20% 30px 20%;
   overflow: auto;
 }
 
 a, a:visited {
-color: #fff;
+  color: #fff;
 }
 
 /**************** javascript API examples ****************/
 
-#console {max-height: 100px;}
+#console {
+  max-height: 100px;
+  width:100%;
+  margin: 0 0 30px 0;
+}
 .btn-group {
-margin-bottom: 10px;
+  margin-bottom: 10px;
 
 }
 .btn {
@@ -102,16 +116,8 @@ margin-bottom: 10px;
 .selectbox {
   text-align: center;
   font-size: inherit;
-  color: #555;
   max-width: 20em;
   padding: .2em .4em;
-  border-radius: .5em;
-  border: 1px solid #AAA;
-}
-.selectbox:focus {
-  outline: none;
-  border-color: #51a7e8;
-  box-shadow: inset 0 0 1em .2em rgba(81, 167, 232, 0.5);
 }
 
 /******************** classes ********************/

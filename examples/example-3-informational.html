@@ -9,7 +9,7 @@
 
   <link href="examples/style.css" rel="stylesheet">
 
-<body role="document">
+<body class="example3" role="document">
 
   <div class="center-outer fit">
     <div class="center-inner">
@@ -19,7 +19,8 @@
 
         <ul class="example-selector"></ul>
 
-        <code><pre id="options"></pre></code>
+        Options
+        <pre id="options">/* Click on the button to display a cookie consent pop-ip. */</pre>
 
         <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Prev</button>
         <button onclick="javascript: window.location = './examples/example-4-opt-out.html';">Next</button>
@@ -36,9 +37,9 @@
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {
-        'Info Formal Blue': {
+        'Info Blue': {
           type: 'info',
-          palette: {"popup": {"background": '#252e39'},"button": {"background": '#14a7d0'}},
+          "palette":{"popup":{"background":"#383b75"},"button":{"background":"#f1d600"}}
         },
       },
     });

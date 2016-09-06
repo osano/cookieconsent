@@ -144,7 +144,6 @@ window['cookieconsent_example_util'] = {
           var codediv = document.getElementById('options');
           if(codediv) {
             codediv.innerHTML = JSON.stringify(options, null, 2);
-            codediv.style.display = 'block';
           }
         };
       } (options.popups[examples[i]]);

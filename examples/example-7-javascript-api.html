@@ -9,7 +9,7 @@
 
   <link href="examples/style.css" rel="stylesheet">
 
-<body role="document">
+<body class="example7" role="document">
 
   <div class="center-outer fit">
     <div class="center-inner">
@@ -31,8 +31,10 @@
           <button type="button" class="btn" id="btn-denyCookie">Denied</button>
           <button type="button" class="btn" id="btn-revokeChoice">Revoke choice</button>
         </div>
+        <br />
 
-        <pre id="console" style="display:block;"></pre>
+        Console
+        <pre id="console"></pre>
 
         <button onclick="javascript: window.location = './examples/example-6-location.html';">Prev</button>
         <button onclick="javascript: window.location = './examples/example-1-themes.html';">Next</button>
@@ -48,7 +50,7 @@
 
   var p = cookieconsent.factory({
     type: 'opt-out',
-    palette: {"popup": {"background": '#252e39'},"button": {"background": '#14a7d0'}},
+    palette: {"popup":{"background":"#eaf7f7","text":"#5c7291"},"button":{"background":"#56cbdb","text":"#ffffff"}},
     onPopupOpen: function() {
       h.innerHTML += timeStamp() + 'Hook "onPopupOpen" called.<br />';
     },
@@ -68,19 +70,23 @@
 
   document.getElementById('btn-dismissCookie').onclick = function (e) {
     p.setStatus(cookieconsent.status.dismiss);
+    p.close();
   };
 
   document.getElementById('btn-allowCookie').onclick = function (e) {
     p.setStatus(cookieconsent.status.allow);
+    p.close();
   };
 
   document.getElementById('btn-denyCookie').onclick = function (e) {
     p.setStatus(cookieconsent.status.deny);
+    p.close();
   };
 
   document.getElementById('btn-revokeChoice').onclick = function (e) {
     p.options.onRevokeChoice();
     p.clearStatus();
+    p.open();
   };
 
   document.getElementById('btn-open').onclick = function (e) {
