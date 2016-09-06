@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Compliance - Informational</title>
+  <title>Demo 3 - Informational</title>
 
   <link href="examples/style.css" rel="stylesheet">
 
@@ -14,16 +14,15 @@
   <div class="center-outer fit">
     <div class="center-inner">
       <div class="example-window" role="main">
-        <h1>Informational demo</h1>
-        <p>Here we tell users that we use cookies, and let them dismiss the message.</p>
+        <h1><span>Demo 3</span> Informational</h1>
+        <p>
+          An <em>informational</em> notice simply tells users that we use cookies, and lets them dismiss the message.
+          It's the simplest solution, and most sites should use this.</p>
 
         <ul class="example-selector"></ul>
 
-        Options
-        <pre id="options">/* Click on the button to display a cookie consent pop-ip. */</pre>
-
-        <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Prev</button>
-        <button onclick="javascript: window.location = './examples/example-4-opt-out.html';">Next</button>
+        <a href="examples/example-2-custom-theme.html" class="btn">&laquo; Prev Demo</a>
+        <a href="examples/example-4-opt-out.html" class="btn">Next Demo &raquo;</a>
       </div>
     </div>
   </div>
@@ -37,7 +36,7 @@
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {
-        'Info Blue': {
+        'Click me!': {
           type: 'info',
           "palette":{"popup":{"background":"#383b75"},"button":{"background":"#f1d600"}}
         },

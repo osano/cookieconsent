@@ -14,7 +14,10 @@ body.example2 {
   background: radial-gradient(ellipse at center, #5f4f59 0%, #2d1d2b 100%);
 }
 
-body.example3 {background-color: #262f3a;}
+body.example3 {
+  background: #3f5f59;
+  background: radial-gradient(ellipse at center, #3f5f59 0%, #1d1d2b 100%);
+}
 
 body.example4 {background-color: #302300;}
 
@@ -35,8 +38,17 @@ pre {
   overflow: auto;
 }
 
+p {
+  line-height: 1.4em;
+}
+
 a, a:visited {
   color: #fff;
+}
+
+em {
+  opacity: 0.7;
+  font-style: normal;
 }
 
 h1 span {
