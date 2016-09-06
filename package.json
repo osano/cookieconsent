@@ -1,6 +1,6 @@
 {
   "name": "cookieconsent",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Insites' cookie consent tool.",
   "main": "cookieconsent.js",
   "devDependencies": {
@@ -12,7 +12,10 @@
     "gulp-minify-css": "^1.2.4",
     "gulp-autoprefixer": "^3.1.0",
     "run-sequence": "^1.1.4",
-    "autoprefixer": "^6.4.0"
+    "autoprefixer": "^6.4.0",
+    "gulp-bump": "^2.4.0",
+    "gulp-concat": "^2.6.0",
+    "yargs": "^5.0.0"
   },
   "homepage": "http://cookieconsent.insites.com/",
   "scripts": {
@@ -23,8 +26,5 @@
     "url": "https://github.com/insites/cookieconsent.git"
   },
   "author": "Silktide Ltd.",
-  "license": "MIT",
-  "dependencies": {
-    "gulp-concat": "^2.6.0"
-  }
+  "license": "MIT"
 }
