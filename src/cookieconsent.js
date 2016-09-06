@@ -116,7 +116,7 @@
     getLuminance: function(hex) {
       hex = util.validateHex(hex);
       if (hex=='000000') return '#222'; //for black buttons
-      lum = 0.2;
+      var lum = 0.2;
       var rgb = "#", c, i;
       for (i = 0; i < 3; i++) {
         c = parseInt(hex.substr(i*2,2), 16);
@@ -128,7 +128,7 @@
 
     // getting the directory of javascript file
     getDirectory: function() {
-      sc = document.getElementsByTagName("script");
+      var sc = document.getElementsByTagName("script"), s, i;
       for(i = 0; i < sc.length; i++) {
         s = sc.item(i);
         if(s.src && s.src.match(/cookieconsent.min.js$/))
