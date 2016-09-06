@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Appearance - Standard Themes</title>
+  <title>Demo 2 - Custom CSS</title>
 
   <link href="examples/style.css" rel="stylesheet">
 
@@ -18,7 +18,8 @@
   .cc-message {
     width: auto;
     background: white;
-    padding: 6px 76px 6px 16px;
+    padding: 20px 76px 20px 16px;
+    border-radius: 10px;
     margin-right: -70px;
     margin-left: 20%;
   }
@@ -53,20 +54,13 @@
   <div class="center-outer fit">
     <div class="center-inner">
       <div class="example-window" role="main">
-        <h1>Custom CSS</h1>
-        <p>Here every part of Cookie Consent has been overridden with custom CSS.</p>
+        <h1><span>Demo 2</span> Custom CSS</h1>
+        <p>See every part of Cookie Consent overridden with custom CSS.</p>
 
         <ul class="example-selector"></ul>
 
-        <pre> /* Use these classes in your CSS */
-  .cc-window {}
-  .cc-message {}
-  .cc-link {}
-  .cc-compliance {}
-  .cc-btn {}</pre>
-
-        <button onclick="javascript: window.location = './examples/example-1-themes.html';">Prev</button>
-        <button onclick="javascript: window.location = './examples/example-3-informational.html';">Next</button>
+        <a href="examples/example-1-themes.html" class="btn">&laquo; Prev Demo</a>
+        <a href="examples/example-3-informational.html" class="btn">Next Demo &raquo;</a>
       </div>
     </div>
   </div>
@@ -80,7 +74,7 @@
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {
-        'Custom lollipop': {},
+        'Click me!': {},
       },
     });
   } (window.cookieconsent, window.cookieconsent_example_util));

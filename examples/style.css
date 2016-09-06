@@ -5,16 +5,14 @@ body, html {
   font-family: "proxima-nova", sans-serif;
   font-size: 20px;
   height: 100%;
-
-  background: #4f4f59;
-  background: -moz-radial-gradient(center, ellipse cover,  #4f4f59 0%, #1d1d2b 100%); /* FF3.6-15 */
-  background: -webkit-radial-gradient(center, ellipse cover,  #4f4f59 0%,#1d1d2b 100%); /* Chrome10-25,Safari5.1-6 */
-  background: radial-gradient(ellipse at center,  #3f4f79 0%,#1d1d2b 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4f4f59', endColorstr='#1d1d2b',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-
+  background: #3f4f79;
+  background: radial-gradient(ellipse at center, #3f4f79 0%, #1d1d2b 100%);
 }
 
-body.example2 {background-color: #420242;}
+body.example2 {
+  background: #5f4f59;
+  background: radial-gradient(ellipse at center, #5f4f59 0%, #2d1d2b 100%);
+}
 
 body.example3 {background-color: #262f3a;}
 
@@ -39,6 +37,11 @@ pre {
 
 a, a:visited {
   color: #fff;
+}
+
+h1 span {
+  font-weight: lighter;
+  opacity: 0.6;
 }
 
 /**************** JavaScript API examples ****************/
@@ -154,6 +157,12 @@ a, a:visited {
 .fit {
   width: 100%;
   height: 100%;
+}
+
+/******************** Code ********************/
+
+#options {
+  display: none;
 }
 
 /******************** Media ********************/
