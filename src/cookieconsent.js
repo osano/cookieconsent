@@ -82,7 +82,7 @@
       }
     },
 
-    // only used for hashing json objects (used for hash mapping palette objects, used when custom colours are passed through javascript)
+    // only used for hashing json objects (used for hash mapping palette objects, used when custom colours are passed through JavaScript)
     hash: function (str) {
       var hash = 0, i, chr, len;
       if (str.length === 0) return hash;
@@ -126,7 +126,7 @@
       return rgb;
     },
 
-    // getting the directory of javascript file
+    // getting the directory of JavaScript file
     getDirectory: function() {
       var sc = document.getElementsByTagName("script"), s, i;
       for(i = 0; i < sc.length; i++) {
@@ -1058,7 +1058,7 @@
           // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
           // make an additional AJAX call. Therefore we provide a `done` callback that can be called asynchronously
           url: 'http://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
-          isScript: true, // this service responds with a javascript file, so it must be run as a script
+          isScript: true, // this service responds with a JavaScript file, so it must be run as a script
           callback: function (done) {
             // if everything went okay then `geoip2` WILL be defined
             if (!window.geoip2) {

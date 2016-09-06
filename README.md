@@ -16,7 +16,7 @@ You can also install this project through [npm](https://www.npmjs.com/):
 npm install cookieconsent
 ```
 
-Or through Bower:
+Or through [Bower](https://bower.io/):
 
 ```sh
 bower install cookieconsent
