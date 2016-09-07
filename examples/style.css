@@ -27,6 +27,35 @@ body.example6 {background-color: #300900;}
 
 body.example7 {background-color: #282856;}
 
+.page-switcher {
+  background: rgba(0, 0, 0, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: all 0.25s;
+  position: fixed;
+  top: 50%;
+  height: 100px;
+  width: 100px;
+  margin-top: -50px;
+  font-size: 40px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-switcher:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.page-switcher-prev {
+  left: 0;
+}
+
+.page-switcher-next {
+  right: 0;
+}
+
 pre {
   font-size: 10px;
   text-align: left;
@@ -63,10 +92,11 @@ h1 span {
   width:100%;
   margin: 0 0 30px 0;
 }
+
 .btn-group {
   margin-bottom: 10px;
-
 }
+
 .btn, .btn:visited {
   display: inline-block;
   background: #FFF;
@@ -77,6 +107,7 @@ h1 span {
   transition: all 0.25s;
   margin: 0 0.25em;
 }
+
 .btn:hover {
   background: #DDD;
   color: #000;
@@ -90,17 +121,21 @@ h1 span {
   max-width: 40em;
   display:inline-block;
 }
+
 .example-window h1 {
   margin: 0 0 .5em 0;
 }
+
 .example-window p {
   margin: 0 0 1em 0;
 }
+
 .example-window button {
   margin: 0;
   padding: .5em;
   font-size: 1em;
 }
+
 .example-window label {
   text-align: right;
   display: inline-block;
@@ -119,7 +154,6 @@ h1 span {
   height: 6em;
   width: 6em;
   color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(0, 0, 0, 0.2);
   text-align: center;
   cursor: pointer;
