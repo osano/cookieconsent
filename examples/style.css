@@ -1,4 +1,3 @@
-
 body, html {
   margin: 0;
   padding: 0;
@@ -27,35 +26,6 @@ body.example6 {background-color: #300900;}
 
 body.example7 {background-color: #282856;}
 
-.page-switcher {
-  background: rgba(0, 0, 0, 0.2);
-  color: rgba(255, 255, 255, 0.5);
-  text-decoration: none;
-  transition: all 0.25s;
-  position: fixed;
-  top: 50%;
-  height: 100px;
-  width: 100px;
-  margin-top: -50px;
-  font-size: 40px;
-  display: flex;
-  align-content: center;
-  align-items: center;
-  justify-content: center;
-}
-
-.page-switcher:hover {
-  background: rgba(0, 0, 0, 0.4);
-}
-
-.page-switcher-prev {
-  left: 0;
-}
-
-.page-switcher-next {
-  right: 0;
-}
-
 pre {
   font-size: 10px;
   text-align: left;
@@ -83,6 +53,45 @@ em {
 h1 span {
   font-weight: lighter;
   opacity: 0.6;
+}
+
+/**************** Page switcher ****************/
+
+.page-switcher {
+  background: rgba(0, 0, 0, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: all 0.25s;
+  position: fixed;
+  top: 50%;
+  height: 100px;
+  width: 100px;
+  margin-top: -50px;
+  font-size: 40px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-switcher:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.page-switcher-prev {
+  left: 0;
+}
+
+.page-switcher-prev:hover {
+  left: -10px;
+}
+
+.page-switcher-next {
+  right: 0;
+}
+
+.page-switcher-next:hover {
+  right: -10px;
 }
 
 /**************** JavaScript API examples ****************/
@@ -119,7 +128,7 @@ h1 span {
   text-align: center;
   color: #e9e9e9;
   max-width: 40em;
-  display:inline-block;
+  display: inline-block;
 }
 
 .example-window h1 {
@@ -211,24 +220,31 @@ h1 span {
   display: none;
 }
 
-/******************** Media ********************/
+/******************** Responsiveness ********************/
 
-/* iPhone 6 */
-@media only screen 
-and (min-device-width : 375px) 
-and (max-device-width : 667px) {}
+@media (min-width : 820px) and (max-width: 1000px) {
+  .example-window {
+    margin: 0 100px;
+  }
+}
 
-/* iPhone 6 plus */
-@media only screen 
-and (min-device-width : 414px) 
-and (max-device-width : 736px) {}
+@media (max-width: 819px) {
+  body {
+    padding: 20px;
+  }
 
-/* iPhone 5 & 5S */
-@media only screen 
-and (min-device-width : 320px) 
-and (max-device-width : 568px) {}
+  .example-window {
+    margin: 0;
+  }
 
-/* iPhone 2G - 4S */
-@media only screen 
-and (min-device-width : 320px) 
-and (max-device-width : 480px) {}
+  .page-switcher {
+    position: inherit;
+    display: inline-block;
+    padding: 10px 10px;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    border-radius: 50%;
+    margin: 20px 0;
+  }
+}
