@@ -18,7 +18,7 @@
         <h1><span>Demo 1</span> Themes</h1>
 
         <p>
-          Try some of <a href="http://cookieconsent.insites.com/">Cookie Consent's</a> delicious themes:
+          See what you can do with some of <a href="http://cookieconsent.insites.com/">Cookie Consent's</a> themes:
         </p>
 
         <ul class="example-selector"></ul>
@@ -36,62 +36,67 @@
   (function (C, U) {
 
     var palettes = {
-        classic: {popup: {background: '#000'}, button: {background: '#f1d600'}},
-        subtle: {popup: {background: "#eaf7f7", text:"#5c7291"}, button:{background: "#56cbdb", text:"#ffffff"}},
-        designer: {popup: {background: '#252e39'}, button: {background: '#14a7d0'}},
-        white: {popup: {background: "#fff"},button:{background: "#700"}},
-        console: {"popup":{"background":"#000","text":"#0f0"},"button":{"background":"transparent","text":"#0f0","border":"#0f0"}},
-        pretty: {popup: {background: '#3937a3'},button: {background: '#e62576'}},
-        passion: { popup: {background:"#64386b",text:"#ffcdfd"},button: {background:"#f8a8ff",text:"#3f0045"}},
-        forest: {popup: {background: "#08701f"},button: {background: "#ffffff", "text":"#08701f"}}
+      honeybee: {"popup": {"background": '#000'},"button": {"background": '#f1d600'}},
+      blurple: {"popup": {"background": '#3937a3'},"button": {"background": '#e62576'}},
+      mono: {"popup":{"background":"#237afc"},"button":{"background": "transparent","border":"#fff","text":"#fff"}},
+      nuclear: {"popup":{"background":"#aa0000","text":"#ffdddd"},"button":{"background":"#ff0000"}},
+      cosmo: {"popup":{"background":"#383b75"},"button":{"background":"#f1d600"}},
+      neon: {"popup":{"background":"#1d8a8a"},"button":{"background":"#62ffaa"}},
+      corporate: {"popup":{"background":"#edeff5","text":"#838391"},"button":{"background":"#4b81e8"}}
     };
 
     cookiePopups = U.initialisePopupSelector({
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {
+        'Mono': {
+          type: 'info',
+          position: 'bottom',
+          palette: palettes.mono,
+        },
         'Honeybee': {
           type: 'info',
           position: 'top',
-          palette: palettes.classic,
+          palette: palettes.honeybee,
           pushdown: false
         },
-        'Light Green': {
+        'Blurple': {
           type: 'opt-out',
-          position: 'top',
-          palette: palettes.subtle,
-          pushdown: false
+          position: 'bottom-left',
+          palette: palettes.blurple,
+          content: {
+            "message": "You can override the text that appears in an alert too.",
+            "dismiss": "Awesome"
+          }
         },
-        'Formal Blue': {
-          type: 'opt-in',
-          position: 'bottom',
-          palette: palettes.designer,
-        },
-        'White and Red Floating Top Left': {
+        'Nuclear': {
           type: 'info',
-          position: 'top-left',
-          palette: palettes.white,
-        },
-        'Console Floating Top Right': {
-          type: 'opt-out',
-          position: 'top-right',
-          palette: palettes.console,
-        },
-        'Purple Floating Bottom Right': {
-          type: 'opt-in',
           position: 'bottom-right',
-          palette: palettes.pretty,
+          windowstyle: "edgeless",
+          palette: palettes.nuclear,
+          content: {
+            "dismiss": "I accept certain doom"
+          }
         },
-        'Light Purple Floating Bottom': {
+        'Cosmo': {
           type: 'opt-out',
           position: 'bottom',
-          palette: palettes.passion,
+          palette: palettes.cosmo,
         },
-        'Forest Green Banner Bottom': {
+        'Neon': {
+          type: 'info',
+          windowstyle: "classic",
+          position: 'bottom-left',
+          palette: palettes.neon,
+        },
+        'Corporate': {
           type: 'info',
           position: 'bottom',
-          palette: palettes.forest,
-        },
+          palette: palettes.corporate,
+          content: {
+            "dismiss": "Dismiss"
+          }
+        }
       },
     });
   } (window.cookieconsent, window.cookieconsent_example_util));
