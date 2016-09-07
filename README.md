@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/insites/cookieconsent.svg)](https://travis-ci.org/insites/cookieconsent)
+# IMPORTANT
+
+We're currently (7th September 2016) currently in the process of releasing version 3.0. The documentation will incomplete and confusing until this is complete.
 
 ## What is Cookie Consent? 
 
