@@ -6,7 +6,7 @@
     "Insites"
   ],
   "description": "Insites' cookie consent plugin v2",
-  "main": "cookieconsent.js",
+  "main": "build/cookieconsent.min.js",
   "keywords": [
     "cookieconsent",
     "cookie",

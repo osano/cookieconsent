@@ -2,7 +2,7 @@
   "name": "cookieconsent",
   "version": "3.0.0",
   "description": "Insites' cookie consent tool.",
-  "main": "cookieconsent.js",
+  "main": "build/cookieconsent.min.js",
   "devDependencies": {
     "del": "^2.0.2",
     "gulp": "^3.9.1",
