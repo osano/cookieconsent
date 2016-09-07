@@ -249,8 +249,12 @@
         '<a class="cc_logo" target="_blank" href="http://silktide.com/cookieconsent">Cookie Consent plugin for the EU cookie law</a>',
         '</div>',
         '</div>'
-      ]
+      ],
+      dismissOnScroll: false, // dismiss when the user scroll down
+      dismissOnScrollRange: 50
     },
+    
+    onScrollY: 0,
 
     init: function () {
       var options = window[OPTIONS_VARIABLE];
@@ -263,6 +267,13 @@
         this.loadTheme(this.render);
       } else {
         this.render();
+      }
+      
+      if(this.options.dismissOnScroll) {
+        window.addEventListener('load', function(){
+          cookieconsent.onScrollY = window.pageYOffset;
+          window.addEventListener('scroll', cookieconsent.onScroll);
+        });
       }
     },
 
@@ -329,10 +340,34 @@
     },
 
     dismiss: function (evt) {
-      evt.preventDefault && evt.preventDefault();
-      evt.returnValue = false;
+      
+      if(evt) {
+        evt.preventDefault && evt.preventDefault();
+        evt.returnValue = false;
+      }
       this.setDismissedCookie();
-      this.container.removeChild(this.element);
+      
+      var op = 1;  // initial opacity
+      var el = this.element;
+      var container = this.container;
+      var timer = setInterval(function () {
+        if (op <= 0.1){
+            clearInterval(timer);
+            el.style.display = 'none';
+            container.removeChild(el);
+        }
+        el.style.opacity = op;
+        el.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+      }, 50);
+
+    },
+    
+    onScroll: function (evt) {
+      if (Math.abs(window.pageYOffset - cookieconsent.onScrollY) > cookieconsent.options.dismissOnScrollRange) {
+        cookieconsent.dismiss(null);
+        window.removeEventListener('scroll', cookieconsent.onScroll);
+      }
     },
 
     setDismissedCookie: function () {
