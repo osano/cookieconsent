@@ -52,6 +52,10 @@ pre {
     overflow: auto;
 }
 
+pre .alert {
+    color: #D00;
+}
+
 p a {
     text-decoration: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);

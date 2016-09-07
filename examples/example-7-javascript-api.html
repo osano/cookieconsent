@@ -56,60 +56,73 @@
   var h = document.getElementById('console');
 
   var log = function(message) {
-    h.innerHTML = timeStamp() + message+"<br>" + h.innerHTML;
+    h.innerHTML += timeStamp() + message+"<br>";
+    h.scrollTop = h.scrollHeight;
   }
 
   var p = cookieconsent.factory({
     type: 'opt-out',
     palette: {"popup":{"background":"#eaf7f7","text":"#5c7291"},"button":{"background":"#56cbdb","text":"#ffffff"}},
     onPopupOpen: function() {
-      log('Hook "onPopupOpen" called.');
+      log('<em>onPopupOpen()</em> called');
     },
     onPopupClose: function() {
-      log('Hook "onPopupClose" called.');
+      log('<em>onPopupClose()</em> called');
     },
     onStatusChange: function(status) {
-      log('Cookie status set as <strong>'+status+'</strong> using <i>setStatus()</i>.');
-      log('Hook "onStatusChange" called with argument <strong>'+status+'</strong>.');
+      log('<em>onStatusChange()</em> called with status <em>'+status+'</em>');
     },
     onRevokeChoice: function() {
-      log('Cookie status removed using <i>clearStatus()</i>.');
-      log('Hook "onRevokeChoice" called.');
+      log('<em>onRevokeChoice()</em> called');
     },
   });
 
   document.getElementById('btn-dismissCookie').onclick = function (e) {
+    log("Calling <em>setStatus(cookieconsent.status.dismiss)</em>");
     p.setStatus(cookieconsent.status.dismiss);
+    log("Calling <em>close()</em>");
     p.close();
   };
 
   document.getElementById('btn-allowCookie').onclick = function (e) {
+    log("Calling <em>setStatus(cookieconsent.status.allow)</em>");
     p.setStatus(cookieconsent.status.allow);
+    log("Calling <em>close()</em>");
     p.close();
   };
 
   document.getElementById('btn-denyCookie').onclick = function (e) {
+    log("Calling <em>setStatus(cookieconsent.status.deny)</em>");
     p.setStatus(cookieconsent.status.deny);
+    log("Calling <em>close()</em>");
     p.close();
   };
 
   document.getElementById('btn-revokeChoice').onclick = function (e) {
+
+    log("Calling <em>revokeChoice()</em>");
+
+    // @todo Add revokeChoice() method to Cookie Consent, replace all of this with that
     p.options.onRevokeChoice();
     p.clearStatus();
     p.open();
+
   };
 
   document.getElementById('btn-open').onclick = function (e) {
+    log("Calling <em>open()</em>");
     p.open();
   };
   
   document.getElementById('btn-close').onclick = function (e) {
+    log("Calling <em>close()</em>");
     p.close();
   };
 
   document.getElementById('btn-destroy').onclick = function (e) {
+    log("Calling <em>destroy()</em>");
     p.destroy();
-    log("Cookie Consent is destroyed and cannot be opened again.");
+    log("<span class='alert'>Cookie Consent has been destroyed and cannot be used again. Reload the page.</span>");
   };
 
 

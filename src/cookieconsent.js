@@ -457,9 +457,9 @@
       if (!this.options.enabled)
         return this;
 
-      // if we try and open the popup, and it's style hasn't loaded, set a flag to open it later
+      // If we try and open the popup, and it's style hasn't loaded, set a flag to open it later
       if (this.waitingForStylesheet) {
-        // setting this to true means that this function will be automatically called when the stylesheet returns
+        // Setting this to true means that this function will be automatically called when the stylesheet returns
         this.openAfterStylesheet = true;
         return;
       }
@@ -477,8 +477,8 @@
         this.options.onPopupOpen();
       }
 
-      // add push down for body when top banner type
-      if(this.options.position == 'top') pushDown.call(this, this.element.offsetHeight);
+      // Add push down for body when top banner type
+      if (this.options.position == 'top') pushDown.call(this, this.element.offsetHeight);
       
       return this;
     };
@@ -499,7 +499,7 @@
         }
         this.options.onPopupClose();
       }
-      if(this.options.position == 'top') pushDown.call(this, 0);
+      if (this.options.position == 'top') pushDown.call(this, 0);
       return this;
     };
 
@@ -509,7 +509,7 @@
       if (!hasTransition.call(this))
         return;
 
-      // this should always be called AFTER fadeOut (which is governed by the 'transitionend' event).
+      // This should always be called AFTER fadeOut (which is governed by the 'transitionend' event).
       // 'transitionend' isn't all that reliable, so, if we try and fadeIn before 'transitionend' has
       // has a chance to run, then we run it ourselves
       if (this.afterTransition) {
