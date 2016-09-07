@@ -82,7 +82,7 @@
       }
     },
 
-    // only used for hashing json objects (used for hash mapping palette objects, used when custom colours are passed through javascript)
+    // only used for hashing json objects (used for hash mapping palette objects, used when custom colours are passed through JavaScript)
     hash: function (str) {
       var hash = 0, i, chr, len;
       if (str.length === 0) return hash;
@@ -126,7 +126,7 @@
       return rgb;
     },
 
-    // getting the directory of javascript file
+    // getting the directory of JavaScript file
     getDirectory: function() {
       var sc = document.getElementsByTagName("script"), s, i;
       for(i = 0; i < sc.length; i++) {
@@ -457,9 +457,9 @@
       if (!this.options.enabled)
         return this;
 
-      // if we try and open the popup, and it's style hasn't loaded, set a flag to open it later
+      // If we try and open the popup, and it's style hasn't loaded, set a flag to open it later
       if (this.waitingForStylesheet) {
-        // setting this to true means that this function will be automatically called when the stylesheet returns
+        // Setting this to true means that this function will be automatically called when the stylesheet returns
         this.openAfterStylesheet = true;
         return;
       }
@@ -477,8 +477,8 @@
         this.options.onPopupOpen();
       }
 
-      // add push down for body when top banner type
-      if(this.options.position == 'top') pushDown.call(this, this.element.offsetHeight);
+      // Add push down for body when top banner type
+      if (this.options.position == 'top') pushDown.call(this, this.element.offsetHeight);
       
       return this;
     };
@@ -499,7 +499,7 @@
         }
         this.options.onPopupClose();
       }
-      if(this.options.position == 'top') pushDown.call(this, 0);
+      if (this.options.position == 'top') pushDown.call(this, 0);
       return this;
     };
 
@@ -509,7 +509,7 @@
       if (!hasTransition.call(this))
         return;
 
-      // this should always be called AFTER fadeOut (which is governed by the 'transitionend' event).
+      // This should always be called AFTER fadeOut (which is governed by the 'transitionend' event).
       // 'transitionend' isn't all that reliable, so, if we try and fadeIn before 'transitionend' has
       // has a chance to run, then we run it ourselves
       if (this.afterTransition) {
@@ -1058,7 +1058,7 @@
           // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
           // make an additional AJAX call. Therefore we provide a `done` callback that can be called asynchronously
           url: 'http://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
-          isScript: true, // this service responds with a javascript file, so it must be run as a script
+          isScript: true, // this service responds with a JavaScript file, so it must be run as a script
           callback: function (done) {
             // if everything went okay then `geoip2` WILL be defined
             if (!window.geoip2) {

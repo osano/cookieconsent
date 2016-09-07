@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Advanced - Location</title>
+  <title>Demo 7 - JavaScript API</title>
 
   <link href="examples/style.css" rel="stylesheet">
 
@@ -14,30 +14,37 @@
   <div class="center-outer fit">
     <div class="center-inner">
       <div class="example-window" role="main">
-        <h1>Javascript API</h1>
-        <p>Fire JavaScript events to see what happens.</p>
+
+        <h1><span>Demo 7</span> JavaScript API</h1>
+
+        <p>
+          Programmers can hook into our <a href="http://cookieconsent.insites.com/documentation/javascript-api/">JavaScript API</a>.
+          Fire events to see what happens:
+        </p>
+
+        <h3>Popup</h3>
 
         <div class="btn-group">
-        Popup: 
           <button type="button" class="btn" id="btn-open">Open</button>
           <button type="button" class="btn" id="btn-close">Close</button>
           <button type="button" class="btn" id="btn-destroy">Destroy</button>
         </div>
 
+        <h3>Set status</h3>
+
         <div class="btn-group">
-        Set status:
           <button type="button" class="btn" id="btn-dismissCookie">Dismissed</button>
           <button type="button" class="btn" id="btn-allowCookie">Allowed</button>
           <button type="button" class="btn" id="btn-denyCookie">Denied</button>
           <button type="button" class="btn" id="btn-revokeChoice">Revoke choice</button>
         </div>
-        <br />
 
-        Console
+        <h3>Console</h3>
+
         <pre id="console"></pre>
 
-        <button onclick="javascript: window.location = './examples/example-6-location.html';">Prev</button>
-        <button onclick="javascript: window.location = './examples/example-1-themes.html';">Next</button>
+        <a href="examples/example-6-location.html" class="page-switcher page-switcher-prev" title="Previous demo">&#9664;</a>
+
       </div>
     </div>
   </div>
@@ -48,58 +55,74 @@
 
   var h = document.getElementById('console');
 
+  var log = function(message) {
+    h.innerHTML += timeStamp() + message+"<br>";
+    h.scrollTop = h.scrollHeight;
+  }
+
   var p = cookieconsent.factory({
     type: 'opt-out',
     palette: {"popup":{"background":"#eaf7f7","text":"#5c7291"},"button":{"background":"#56cbdb","text":"#ffffff"}},
     onPopupOpen: function() {
-      h.innerHTML += timeStamp() + 'Hook "onPopupOpen" called.<br />';
+      log('<em>onPopupOpen()</em> called');
     },
     onPopupClose: function() {
-      h.innerHTML += timeStamp() + 'Hook "onPopupClose" called.<br />';
+      log('<em>onPopupClose()</em> called');
     },
     onStatusChange: function(status) {
-      h.innerHTML += timeStamp() + 'Cookie status set as <strong>'+status+'</strong> using <i>setStatus()</i>.<br />';
-      h.innerHTML += timeStamp() + 'Hook "onStatusChange" called with argument <strong>'+status+'</strong>.<br />';
+      log('<em>onStatusChange()</em> called with status <em>'+status+'</em>');
     },
     onRevokeChoice: function() {
-      h.innerHTML += timeStamp() + 'Cookis status removed using <i>clearStatus()</i>.<br />';
-      h.innerHTML += timeStamp() + 'Hook "onRevokeChoice" called.<br />';
+      log('<em>onRevokeChoice()</em> called');
     },
   });
 
-
   document.getElementById('btn-dismissCookie').onclick = function (e) {
+    log("Calling <em>setStatus(cookieconsent.status.dismiss)</em>");
     p.setStatus(cookieconsent.status.dismiss);
+    log("Calling <em>close()</em>");
     p.close();
   };
 
   document.getElementById('btn-allowCookie').onclick = function (e) {
+    log("Calling <em>setStatus(cookieconsent.status.allow)</em>");
     p.setStatus(cookieconsent.status.allow);
+    log("Calling <em>close()</em>");
     p.close();
   };
 
   document.getElementById('btn-denyCookie').onclick = function (e) {
+    log("Calling <em>setStatus(cookieconsent.status.deny)</em>");
     p.setStatus(cookieconsent.status.deny);
+    log("Calling <em>close()</em>");
     p.close();
   };
 
   document.getElementById('btn-revokeChoice').onclick = function (e) {
+
+    log("Calling <em>revokeChoice()</em>");
+
+    // @todo Add revokeChoice() method to Cookie Consent, replace all of this with that
     p.options.onRevokeChoice();
     p.clearStatus();
     p.open();
+
   };
 
   document.getElementById('btn-open').onclick = function (e) {
+    log("Calling <em>open()</em>");
     p.open();
   };
   
   document.getElementById('btn-close').onclick = function (e) {
+    log("Calling <em>close()</em>");
     p.close();
   };
 
   document.getElementById('btn-destroy').onclick = function (e) {
+    log("Calling <em>destroy()</em>");
     p.destroy();
-    h.innerHTML += timeStamp() + 'Cookieconsent popup is destoryed and cannot be opened again.';
+    log("<span class='alert'>Cookie Consent has been destroyed and cannot be used again. Reload the page.</span>");
   };
 
 

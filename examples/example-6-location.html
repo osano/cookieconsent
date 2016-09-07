@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Advanced - Location</title>
+  <title>Demo 6 - Location</title>
 
   <link href="examples/style.css" rel="stylesheet">
 
@@ -19,18 +19,22 @@
   <div class="center-outer fit">
     <div class="center-inner">
       <div class="example-window" role="main">
-        <h1>Location demo</h1>
-        <p>Choose a country and see how the banner could change</p>
+        <h1><span>Demo 6</span> Location</h1>
+        <p>
+          If you want, <a href="http://cookieconsent.insites.com/">Cookie Consent</a> can automatically adapt to the
+          user's location. Choose a country and see how the law and banner changes:
+        </p>
 
-        <div style="margin: 30px">
+        <div class="form-controls">
           <label>Country</label>
           <select id="location" class="selectbox"></select>
         </div>
 
         <div id="message"></div>
 
-        <button onclick="javascript: window.location = './examples/example-5-opt-in.html';">Prev</button>
-        <button onclick="javascript: window.location = './examples/example-7-javascript-api.html';">Next</button>
+        <a href="examples/example-5-opt-in.html" class="page-switcher page-switcher-prev" title="Previous demo">&#9664;</a>
+        <a href="examples/example-7-javascript-api.html" class="page-switcher page-switcher-next" title="Next demo">&#9654;</a>
+
       </div>
     </div>
   </div>
@@ -39,6 +43,15 @@
 <script src="build/cookieconsent.min.js"></script>
 <script>
   var COUNTRY_CODES = {
+    // Representative group of countries with key differences
+    'US' : 'United States',
+    'UK' : 'United Kingdom',
+    'ES' : 'Spain',
+    'DE' : 'Germany',
+    'BE' : 'Belgium',
+    '' : '-----------------------------',
+
+    // Every other country
     'AF' : 'Afghanistan',
     'AL' : 'Albania',
     'DZ' : 'Algeria',
@@ -56,7 +69,6 @@
     'BD' : 'Bangladesh',
     'BB' : 'Barbados',
     'BY' : 'Belarus',
-    'BE' : 'Belgium',
     'BZ' : 'Belize',
     'BJ' : 'Benin',
     'BT' : 'Bhutan',
@@ -94,9 +106,9 @@
     'EC' : 'Ecuador',
     'EG' : 'Egypt',
     'SV' : 'El Salvador',
+    'EE' : 'Estonia',
     'GQ' : 'Equatorial Guinea',
     'ER' : 'Eritrea',
-    'EE' : 'Estonia',
     'ET' : 'Ethiopia',
     'FJ' : 'Fiji',
     'FI' : 'Finland',
@@ -104,7 +116,6 @@
     'GA' : 'Gabon',
     'GM' : 'Gambia',
     'GE' : 'Georgia',
-    'DE' : 'Germany',
     'GH' : 'Ghana',
     'GR' : 'Greece',
     'GL' : 'Greenland',
@@ -203,7 +214,6 @@
     'SO' : 'Somalia',
     'ZA' : 'South Africa',
     'SS' : 'South Sudan',
-    'ES' : 'Spain',
     'LK' : 'Sri Lanka',
     'SD' : 'Sudan',
     'SR' : 'Suriname',
@@ -227,8 +237,6 @@
     'UG' : 'Uganda',
     'UA' : 'Ukraine',
     'AE' : 'United Arab Emirates',
-    'UK' : 'United Kingdom',
-    'US' : 'United States',
     'UY' : 'Uruguay',
     'UZ' : 'Uzbekistan',
     'VU' : 'Vanuatu',
@@ -250,12 +258,11 @@
     updater(); // trigger the first update
     elems.location.focus(); // focus the first input
 
-
-
     function draw(name, inputs) {
       var code = inputs.location;
+      if (!code) return;
 
-      // applyLaw takes the "preffered" options and changes them slightly to match the countries law
+      // applyLaw takes the "preferred" options and changes them slightly to match the country's law
       var options = getOptions(inputs);
       options.countryCode = code;
 
@@ -281,16 +288,19 @@
     }
 
     function getCountryDetails(code) {
-      // we only get these to show (on screen) how the country behaves 
+      // We only get these to show (on screen) how the country behaves
       var countryOpts = cookieconsent.law.get(code);
 
       if (!countryOpts.hasLaw) {
-        return '"' + COUNTRY_CODES[code] + '" <b>does not</b> have the cookie law!';
+        return U.tabularObject({
+          'Has cookie law?': 'no'
+        });
       }
 
       return U.tabularObject({
+        'Has cookie law?': 'yes',
         'Choice has to be revokable?': U.yn(countryOpts.revokable),
-        'Cannot be autodismissed?': U.yn(countryOpts.explicitAction),
+        'Can be automatically dismissed?': U.yn(!countryOpts.explicitAction),
       });
     }
 
