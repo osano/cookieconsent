@@ -140,6 +140,10 @@
     isMobile: function() {
       if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) return true;
       return false;
+    },
+
+    isPlainObject: function(obj) {
+      return typeof obj === 'object' && obj !== null;
     }
 
   };
@@ -356,7 +360,7 @@
       util.deepExtend(this.options = {}, defaultOptions);
 
       // merge in user options
-      if (typeof options === 'object' && options !== null) {
+      if (util.isPlainObject(options)) {
         util.deepExtend(this.options, options);
       }
 
@@ -399,8 +403,6 @@
       }
 
       this.element = appendMarkup.call(this, cookiePopup);
-
-      cc.getCountryOptions(this.options);
 
       // uses `dismissOnScroll` and `dismissOnTimeout`
       applyAutoDismiss.call(this);
@@ -746,7 +748,7 @@
     function attachCustomPalette (palette) {
       var hash = util.hash(JSON.stringify(palette));
       var selector = 'cc-color-override-' + hash;
-      var isValid = typeof palette == 'object' && palette !== null;
+      var isValid = util.isPlainObject(palette);
 
       this.customStyleSelector = isValid ? selector : null;
 
@@ -833,7 +835,7 @@
     }
 
     function removeCustomStyle (palette) {
-      if (typeof palette == 'object' && palette !== null) {
+      if (util.isPlainObject(palette)) {
         var hash = util.hash(JSON.stringify(palette));
         var customStyle = cc.customStyles[hash];
         if (customStyle && !--customStyle.references) {
@@ -1016,22 +1018,18 @@
     };
   }());
 
-  cc.locate = (function () {
+  cc.Locate = (function () {
 
-    return {
+    // An object containing all the location services we have already set up.
+    // When using a service, it could either return a data structure in plain text (like a JSON object) or an executable script
+    // When the response needs to be executed by the browser, then `isScript` must be set to true, otherwise it won't work.
 
-      // This is the index of the service that is currently being used
-      currentServiceIndex: 0,
-
-      // When using a service, it could either return a data structure in plain text (like a JSON object) or an executable script
-      // When the response needs to be executed by the browser, then `isScript` must be set to true, otherwise it won't work.
-
-      // When the service uses a script, the chances are that you'll have to use the script to make additional requests. In these
-      // cases, the services `callback` property is called with a `done` function. When performing async operations, this must be called
-      // with the data (or Error), and `cookieconsent.locate` will take care of the rest
-
-      locationServices: [
-        {
+    // When the service uses a script, the chances are that you'll have to use the script to make additional requests. In these
+    // cases, the services `callback` property is called with a `done` function. When performing async operations, this must be called
+    // with the data (or Error), and `cookieconsent.locate` will take care of the rest
+    var locationServices = {
+      ipinfo: function (obj) {
+        return {
           // This service responds with JSON, so we simply need to parse it and return the country code
           url: 'http://ipinfo.io',
           headers: ['Accept: application/json'],
@@ -1041,11 +1039,13 @@
               code: json.country
             };
           }
-        },
-        {
+        }
+      },
+      freegeoip: function () {
+        return {
           // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
           // The callback MUST BE `cookieconsent.locate.jsonp(SERVICE_INDEX)` (so cookieconsent.locate.jsonp(1) for this index)
-          url: 'http://freegeoip.net/json/?callback=cookieconsent.locate.jsonp(1)',
+          url: '//freegeoip.net/json/?callback=cookieconsent.locate.jsonp(1)',
           isScript: true, // this is JSONP, therefore we must set it to run as a script
           callback: function (done, response) {
             var json = JSON.parse(response);
@@ -1053,11 +1053,13 @@
               code: json.country_code
             };
           }
-        },
-        {
+        }
+      },
+      maxmind: function () {
+        return {
           // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
           // make an additional AJAX call. Therefore we provide a `done` callback that can be called asynchronously
-          url: 'http://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
+          url: '//js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
           isScript: true, // this service responds with a JavaScript file, so it must be run as a script
           callback: function (done) {
             // if everything went okay then `geoip2` WILL be defined
@@ -1078,53 +1080,93 @@
             // Then we can 'complete' the service by passing data or an error to the `done` callback.
           }
         }
-      ],
+      }
+    }
 
-      // Pass an `onComplete` function which is called asynchronously when a service has returned some data, or when all services have failed.
-      // You can pass additional services that you want to use as `services` (see format of `locationServices`)
-      init: function (onComplete, services) {
-        this.onComplete = onComplete;
+    var defaultOptions = {
+      locationServices: [
+        function(cb) {
+          cb('I failed lol');
+        },
+        {name: 'ipinfo', PUBLIC_KEY: 1},
+        'freegeoip', 'maxmind'
+      ]
+    }
 
-        // if caller provides additional services, use them
-        if (Object.prototype.toString.call(services) == '[object Array]') {
-          this.locationServices = this.locationServices.concat(services);
-        }
+    function Location() {
+      this.init.apply(this, arguments);
+    }
 
-        runServices.call(this);
-      },
-
-      // This is called from the global scope in a script request that is executed as JSONP
-      jsonp: function (idx) {
-        var service = this.locationServices[idx];
-        return function (response) {
-          // it may seem like a waste to stringify it (when we are just going to parse it again) but the service
-          // callbacks are expecting the `responseText` from the service to be a string. At least this way is consistent
-
-          // set the JSONP data key as a value that is unlikely to ever be used.
-          // this property is detected and replaced as the `responseText` of a request in the `onload` callback of a script tag
-          service.__JSONP_DATA = JSON.stringify(response);
-        };
+    Location.prototype.init = function (options, onComplete) {
+      // Set up options
+      util.deepExtend(this.options = {}, defaultOptions);
+      if (util.isPlainObject(options)) {
+        util.deepExtend(this.options, options);
       }
 
-    };
+      this.onComplete = onComplete;
+      this.currentServiceIndex = 0; // the index (in options) of the service we're currently using
+
+      this.runServices();
+    }
+
+    // This is called from the global scope in a script request that is executed as JSONP
+    Location.prototype.jsonp = function (idx) {
+      var service = this.getServiceByIdx(idx);
+      return function (response) {
+        // it may seem like a waste to stringify it (when we are just going to parse it again) but the service
+        // callbacks are expecting the `responseText` from the service to be a string. At least this way is consistent
+
+        // set the JSONP data key as a value that is unlikely to ever be used.
+        // this property is detected and replaced as the `responseText` of a request in the `onload` callback of a script tag
+        service.__JSONP_DATA = JSON.stringify(response);
+      };
+    }
+
+    Location.prototype.getServiceByIdx = function(idx) {
+      // This can either be the name of a default locationService, or a function.
+      var serviceOption = this.options.locationServices[idx];
+
+      // User can provide their own servives as functions.
+      if (typeof serviceOption === 'function') return serviceOption;
+
+      // If it's a string, use one of the locationServices.
+      if (typeof serviceOption === 'string') return locationServices[serviceOption]();
+
+      // If it's an object, assume {name: 'ipinfo', ...otherOptions}
+      // Allows user to pass in API keys etc.
+      if (util.isPlainObject(serviceOption)) {
+        return locationServices[serviceOption.name](serviceOption);
+      }
+    }
+
+    Location.prototype.getCurrentService = function() {
+      var idx = this.currentServiceIndex;
+      return this.getServiceByIdx(idx);
+    }
 
     // This runs the service located at index `currentServiceIndex`.
     // If the service fails, `runNextServiceOnError` will continue trying each service until all fail, or one completes successfully
-    function runServices () {
-      var idx = this.currentServiceIndex;
-      var service = this.locationServices[idx];
+    Location.prototype.runServices = function() {
+      var service = this.getCurrentService();
 
       if (!service) {
         return;
       }
 
       // runs service[idx] and triggers the callback on complete
-      runService(service, runNextServiceOnError.bind(this));
+      this.runService(service, this.runNextServiceOnError.bind(this));
     }
 
     // requires a `service` object that defines at least a `url` and `callback`
-    function runService (service, complete) {
+    Location.prototype.runService = function(service, complete) {
       var self = this;
+
+      // User defined services are just a function that returns a result.
+      if (typeof service === 'function') {
+        service(complete);
+        return;
+      }
 
       // basic check to ensure it resembles a `service`
       if (!service || !service.url || !service.callback) {
@@ -1147,7 +1189,7 @@
         }
 
         // call the service callback with the response text (so it can parse the response)
-        runServiceCallback.call(self, complete, service, responseText);
+        self.runServiceCallback.call(self, complete, service, responseText);
 
       }, service.data, service.headers);
 
@@ -1157,7 +1199,7 @@
     // The service request has run (and possibly has a `responseText`) [no `responseText` if `isScript`]
     // We need to run it's callback which determines if its successful or not
     // `complete` is called on success or failure
-    function runServiceCallback (complete, service, responseText) {
+    Location.prototype.runServiceCallback = function (complete, service, responseText) {
       var self = this;
 
       // the function `service.callback` will either extract a country code from `responseText` and return it (in `result`)
@@ -1166,18 +1208,18 @@
         // if `result` is a valid value, then this function shouldn't really run
         // even if it is called by `service.callback`
         if (!result) {
-          onServiceResult.call(self, complete, asyncResult)
+          self.onServiceResult.call(self, complete, asyncResult)
         }
       }, responseText);
 
       if (result) {
-        onServiceResult.call(this, complete, result);
+        this.onServiceResult.call(this, complete, result);
       }
     }
 
     // This is called with the `result` from `service.callback` regardless of how it provided that result (sync or async).
     // `result` will be whatever is returned from `service.callback`. A service callback should provide an object with data
-    function onServiceResult (complete, result) {
+    Location.prototype.onServiceResult = function (complete, result) {
       // convert result to nodejs style async callback
       if (result instanceof Error || (result && result.error)) {
         complete.call(this, result, null);
@@ -1188,31 +1230,31 @@
 
     // if `err` is set, the next service handler is called
     // if `err` is null, the `onComplete` handler is called with `data`
-    function runNextServiceOnError (err, data) {
+    Location.prototype.runNextServiceOnError = function (err, data) {
+      var service = this.getCurrentService();
       var idx = this.currentServiceIndex;
-      var service = this.locationServices[idx];
 
       if (err) {
         console.log('The service[' + idx + '] (' + service.url + ') responded with the following error', err);
 
         // if another service exists
-        if (this.locationServices[idx + 1]) {
+        if (this.options.locationServices[idx + 1]) {
           // an error occurred, try the next service
           this.currentServiceIndex++;
-          runServices.call(this);
+          this.runServices.call(this);
         } else {
-          completeService.call(this, null, new Error('All services failed'));
+          this.completeService.call(this, null, new Error('All services failed'));
         }
       } else {
-        completeService.call(this, data, null);
+        this.completeService.call(this, data, null);
       }
     }
 
     // calls the `onComplete` callback after resetting the `currentServiceIndex`
-    function completeService (data, error) {
+    Location.prototype.completeService = function (data, error) {
       this.currentServiceIndex = 0;
 
-      this.onComplete(data, error);
+      this.onComplete && this.onComplete(data, error);
     }
 
     function getScript (url, callback) {
@@ -1266,21 +1308,26 @@
     function toError (obj) {
       return new Error('Error [' + (obj.code || 'UNKNOWN') + ']: ' + obj.error);
     }
+
+    return Location;
   }());
 
   cc.factory = function (options) {
+    options = cc.getCountryOptions(options);
     return new cc.Popup(options);
   };
 
+  // Mutates options based on country requirements.
   cc.getCountryOptions = function (options) {
     if(options.countryCode) { 
       cc.law.applyLaw(options, options.countryCode);
-    }
-    else {
-      cc.locate.init(function (result) {
-        cc.law.applyLaw(options, result.code);
-      });
-    }
+      return;
+    } 
+
+    new cc.Locate(options, function (result) {
+      console.log('wot', result);
+      cc.law.applyLaw(options, result.code);
+    });
   };
 
   // only open if the user hasnt answered
