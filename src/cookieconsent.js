@@ -1269,8 +1269,7 @@
   }());
 
   cc.factory = function (options) {
-    popup = new cc.Popup(options);
-    return popup;
+    return new cc.Popup(options);
   };
 
   cc.getCountryOptions = function (options) {
