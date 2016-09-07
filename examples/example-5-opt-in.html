@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Compliance - Opt-in</title>
+  <title>Demo 5 - Opt-in</title>
 
   <link href="examples/style.css" rel="stylesheet">
 
@@ -14,16 +14,18 @@
   <div class="center-outer fit">
     <div class="center-inner">
       <div class="example-window" role="main">
-        <h1>Opt-in demo</h1>
-        <p>Here we ask users for permission to use cookies. Unless they say so, no cookies will be used.</p>
+        <h1><span>Demo 5</span> Opt-in</h1>
+
+        <p>
+          An <em>opt-in</em> notice ask users for permission to use cookies. Unless they say so, no cookies will be used.
+          A small tab allows them to change their mind later.
+        </p>
 
         <ul class="example-selector"></ul>
 
-        Options
-        <pre id="options">/* Click on the button to display a cookie consent pop-ip. */</pre>
+        <a href="examples/example-4-opt-out.html" class="page-switcher page-switcher-prev" title="Previous demo">&#9664;</a>
+        <a href="examples/example-6-location.html" class="page-switcher page-switcher-next" title="Next demo">&#9654;</a>
 
-        <button onclick="javascript: window.location = './examples/example-4-opt-out.html';">Prev</button>
-        <button onclick="javascript: window.location = './examples/example-6-location.html';">Next</button>
       </div>
     </div>
   </div>
@@ -37,9 +39,9 @@
       cookieconsent: C,
       selector: document.querySelector('.example-selector'),
       popups: {
-        'Opt-in Light': {
+        'Try it': {
           type: 'opt-in',
-          palette: {"popup":{"background":"#efefef","text":"#404040"},"button":{"background":"#8ec760","text":"#ffffff"}},
+          "palette":{"popup":{"background":"#383b75"},"button":{"background":"#f1d600"}}
         },
       },
     });
