@@ -1,0 +1,48 @@
+/* Edgeless */
+
+.cc-windowstyle-edgeless.cc-window {
+  padding: 0;
+}
+
+.cc-floating.cc-windowstyle-edgeless .cc-message {
+  margin: 2em;
+  margin-bottom: 1.5em;
+}
+
+.cc-banner.cc-windowstyle-edgeless .cc-btn {
+	margin: 0;
+	padding: .8em 1.8em;
+    height: 100%;
+}
+
+.cc-banner.cc-windowstyle-edgeless .cc-message {
+	margin-left: 1em;
+}
+
+.cc-floating.cc-windowstyle-edgeless .cc-btn +.cc-btn {
+  margin-left: 0;
+}
+
+/* Classic */
+
+.cc-floating.cc-windowstyle-classic {
+	padding: 1.2em;
+	border-radius: 5px;
+}
+
+.cc-floating.cc-type-info.cc-windowstyle-classic .cc-compliance {
+	text-align: center;
+	display: inline;
+	flex: none;
+}
+
+.cc-windowstyle-classic .cc-btn {
+	border-radius: 5px;
+}
+.cc-windowstyle-classic .cc-btn:last-child {
+    min-width: 140px;
+}
+
+.cc-floating.cc-type-info.cc-windowstyle-classic .cc-btn {
+    display: inline-block;
+}

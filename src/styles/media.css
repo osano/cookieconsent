@@ -1,0 +1,46 @@
+
+@media print {
+  .cc-window, .cc-revoke {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .cc-btn {white-space: normal;}
+}
+
+/* dimensions for 'iPhone6 Plus' and lower */
+@media screen and (max-width: 414px) and (orientation: portrait),
+       screen and (max-width: 736px) and (orientation: landscape) {
+  .cc-window.cc-top {top:0;}
+  .cc-window.cc-bottom {bottom:0;}
+  .cc-window.cc-banner,.cc-window.cc-right,.cc-window.cc-left {left:0;right:0;}
+
+  .cc-window.cc-banner {flex-direction: column;}
+  .cc-window.cc-banner .cc-compliance {flex: 1}
+  .cc-window.cc-floating {max-width: none;}
+  .cc-window .cc-message {margin-bottom: 1em}
+  .cc-window.cc-banner {align-items: unset;}
+}
+
+/* iPhone 6 */
+@media only screen 
+and (min-device-width : 375px) 
+and (max-device-width : 667px) {
+}
+
+/* iPhone 6 plus */
+@media only screen 
+and (min-device-width : 414px) 
+and (max-device-width : 736px) {
+}
+
+/* iPhone 5 & 5S */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 568px) {}
+
+/* iPhone 2G - 4S */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {}

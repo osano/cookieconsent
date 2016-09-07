@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="../">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Appearance - Standard Themes</title>
+
+  <link href="examples/style.css" rel="stylesheet">
+
+<body role="document">
+
+  <div class="center-outer fit">
+    <div class="center-inner">
+      <div class="example-window" role="main">
+        <h1>Standard themes</h1>
+        <p>Pick a standard layout and a colour scheme. Or <a href="http://cookieconsent.insites.com/download/" target="_blank">build your own</a></p>
+
+        <ul class="example-selector"></ul>
+
+       Options
+        <pre id="options">/* Click on any button to display a cookie consent pop-ip. */</pre>
+
+        <button onclick="javascript: window.location = './examples/example-7-javascript-api.html';">Prev</button>
+        <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Next</button>
+      </div>
+    </div>
+  </div>
+
+<script src="examples/script.js"></script>
+<script src="build/cookieconsent.min.js"></script>
+<script>
+
+  (function (C, U) {
+
+    var palettes = {
+        classic: {popup: {background: '#000'}, button: {background: '#f1d600'}},
+        subtle: {popup: {background: "#eaf7f7", text:"#5c7291"}, button:{background: "#56cbdb", text:"#ffffff"}},
+        designer: {popup: {background: '#252e39'}, button: {background: '#14a7d0'}},
+        white: {popup: {background: "#fff"},button:{background: "#700"}},
+        console: {"popup":{"background":"#000","text":"#0f0"},"button":{"background":"transparent","text":"#0f0","border":"#0f0"}},
+        pretty: {popup: {background: '#3937a3'},button: {background: '#e62576'}},
+        passion: { popup: {background:"#64386b",text:"#ffcdfd"},button: {background:"#f8a8ff",text:"#3f0045"}},
+        forest: {popup: {background: "#08701f"},button: {background: "#ffffff", "text":"#08701f"}}
+    };
+
+    cookiePopups = U.initialisePopupSelector({
+      cookieconsent: C,
+      selector: document.querySelector('.example-selector'),
+      popups: {
+        'Black and Yellow Banner Top': {
+          type: 'info',
+          position: 'top',
+          palette: palettes.classic,
+          pushdown: false
+        },
+        'Light Green Banner Top': {
+          type: 'opt-out',
+          position: 'top',
+          palette: palettes.subtle,
+          pushdown: false
+        },
+        'Formal Blue Banner Bottom': {
+          type: 'opt-in',
+          position: 'bottom',
+          palette: palettes.designer,
+        },
+        'White and Red Floating Top Left': {
+          type: 'info',
+          position: 'top-left',
+          palette: palettes.white,
+        },
+        'Console Floating Top Right': {
+          type: 'opt-out',
+          position: 'top-right',
+          palette: palettes.console,
+        },
+        'Purple Floating Bottom Right': {
+          type: 'opt-in',
+          position: 'bottom-right',
+          palette: palettes.pretty,
+        },
+        'Light Purple Floating Bottom': {
+          type: 'opt-out',
+          position: 'bottom',
+          palette: palettes.passion,
+        },
+        'Forest Green Banner Bottom': {
+          type: 'info',
+          position: 'bottom',
+          palette: palettes.forest,
+        },
+      },
+    });
+  } (window.cookieconsent, window.cookieconsent_example_util));
+
+</script>

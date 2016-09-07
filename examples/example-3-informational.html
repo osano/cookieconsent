@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="../">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Compliance - Informational</title>
+
+  <link href="examples/style.css" rel="stylesheet">
+
+<body class="example3" role="document">
+
+  <div class="center-outer fit">
+    <div class="center-inner">
+      <div class="example-window" role="main">
+        <h1>Informational demo</h1>
+        <p>Here we tell users that we use cookies, and let them dismiss the message.</p>
+
+        <ul class="example-selector"></ul>
+
+        Options
+        <pre id="options">/* Click on the button to display a cookie consent pop-ip. */</pre>
+
+        <button onclick="javascript: window.location = './examples/example-2-custom-theme.html';">Prev</button>
+        <button onclick="javascript: window.location = './examples/example-4-opt-out.html';">Next</button>
+      </div>
+    </div>
+  </div>
+
+<script src="examples/script.js"></script>
+<script src="build/cookieconsent.min.js"></script>
+<script>
+
+  (function (C, U) {
+    pageState = U.initialisePopupSelector({
+      cookieconsent: C,
+      selector: document.querySelector('.example-selector'),
+      popups: {
+        'Info Blue': {
+          type: 'info',
+          "palette":{"popup":{"background":"#383b75"},"button":{"background":"#f1d600"}}
+        },
+      },
+    });
+  } (window.cookieconsent, window.cookieconsent_example_util));
+
+</script>
