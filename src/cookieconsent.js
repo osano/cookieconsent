@@ -1020,6 +1020,17 @@
 
   cc.Locate = (function () {
 
+    var defaultOptions = {
+      locationServices: [
+        'freegeoip',
+        function(cb) {
+          cb('I failed lol');
+        },
+        {name: 'ipinfo', PUBLIC_KEY: 1},
+        'freegeoip', 'maxmind'
+      ]
+    };
+
     // An object containing all the location services we have already set up.
     // When using a service, it could either return a data structure in plain text (like a JSON object) or an executable script
     // When the response needs to be executed by the browser, then `isScript` must be set to true, otherwise it won't work.
@@ -1044,8 +1055,8 @@
       freegeoip: function () {
         return {
           // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
-          // The callback MUST BE `cookieconsent.locate.jsonp(SERVICE_INDEX)` (so cookieconsent.locate.jsonp(1) for this index)
-          url: '//freegeoip.net/json/?callback=cookieconsent.locate.jsonp(1)',
+          // The callback MUST BE `cookieconsent.locate.jsonp(SERVICE_NAME)` (so cookieconsent.locate.jsonp('freegeoip') for this index)
+          url: '//freegeoip.net/json/?callback={callback}',
           isScript: true, // this is JSONP, therefore we must set it to run as a script
           callback: function (done, response) {
             var json = JSON.parse(response);
@@ -1083,16 +1094,6 @@
       }
     }
 
-    var defaultOptions = {
-      locationServices: [
-        function(cb) {
-          cb('I failed lol');
-        },
-        {name: 'ipinfo', PUBLIC_KEY: 1},
-        'freegeoip', 'maxmind'
-      ]
-    }
-
     function Location() {
       this.init.apply(this, arguments);
     }
@@ -1108,19 +1109,6 @@
       this.currentServiceIndex = 0; // the index (in options) of the service we're currently using
 
       this.runServices();
-    }
-
-    // This is called from the global scope in a script request that is executed as JSONP
-    Location.prototype.jsonp = function (idx) {
-      var service = this.getServiceByIdx(idx);
-      return function (response) {
-        // it may seem like a waste to stringify it (when we are just going to parse it again) but the service
-        // callbacks are expecting the `responseText` from the service to be a string. At least this way is consistent
-
-        // set the JSONP data key as a value that is unlikely to ever be used.
-        // this property is detected and replaced as the `responseText` of a request in the `onload` callback of a script tag
-        service.__JSONP_DATA = JSON.stringify(response);
-      };
     }
 
     Location.prototype.getServiceByIdx = function(idx) {
@@ -1158,6 +1146,19 @@
       this.runService(service, this.runNextServiceOnError.bind(this));
     }
 
+    // Potentially adds a callback to a url for jsonp.
+    Location.prototype.setupUrl = function (service) {
+      return service.url.replace(/\{(.*?)\}/, function (_, param) {
+        if (param === 'callback') {
+          var tempName = 'callback' + Date.now();
+          window[tempName] = function (res) {
+            service.__JSONP_DATA = JSON.stringify(res);
+          }
+          return tempName;
+        }
+      });
+    }
+
     // requires a `service` object that defines at least a `url` and `callback`
     Location.prototype.runService = function(service, complete) {
       var self = this;
@@ -1177,7 +1178,7 @@
       var requestFunction = service.isScript ? getScript : makeAsyncRequest;
 
       // both functions have similar signatures so we can pass the same arguments to both
-      requestFunction(service.url, function (xhr) {
+      requestFunction(this.setupUrl(service), function (xhr) {
         // if `!xhr`, then `getScript` function was used, so there is no response text
         var responseText = xhr ? xhr.responseText : '';
 
@@ -1270,13 +1271,11 @@
         if (!callback.done && (!state || /loaded|complete/.test(state))) {
           callback.done = true;
           callback();
-          s = null;
+          s = s.onreadystatechange = s.onload = null;
         }
       };
 
       document.body.appendChild(s);
-
-      s = null;
     }
 
     function makeAsyncRequest (url, onComplete, postData, requestHeaders) {
