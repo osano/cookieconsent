@@ -1325,7 +1325,6 @@
     } 
 
     new cc.Locate(options, function (result) {
-      console.log('wot', result);
       cc.law.applyLaw(options, result.code);
     });
   };
