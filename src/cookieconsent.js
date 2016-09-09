@@ -1202,29 +1202,20 @@
         if (this.options.locationServices[idx + 1]) {
           // an error occurred, try the next service
           this.currentServiceIndex++;
-          
-          var self = this;
-          var service = this.getCurrentService();
-
-          if (!service) {
-            self.rejectPromise(new Error('Ran out of services to try'));
-            return;
-          }
-
-          self.runService(service, self.runNextServiceOnError.bind(self));
+          this.runService(this.getCurrentService(), this.runNextServiceOnError.bind(this));
         } else {
-          this.completeService.call(this, null, new Error('All services failed'));
+          this.completeService.call(this, this.rejectPromise, new Error('All services failed'));
         }
       } else {
-        this.completeService.call(this, data, null);
+        this.completeService.call(this, this.resolvePromise, data);
       }
     };
 
     // calls the `onComplete` callback after resetting the `currentServiceIndex`
-    Location.prototype.completeService = function (data, error) {
+    Location.prototype.completeService = function (fn, data) {
       this.currentServiceIndex = 0;
 
-      this.resolveProimise && this.resolvePromise(data, error);
+      fn && fn(data);
     };
 
     function getScript (url, callback) {
@@ -1284,7 +1275,7 @@
 
     var defaultOptions = {
       hasLaw: ['AT', 'BE', 'BG', 'HR', 'CZ', 'CY', 'DK', 'EE', 'FI', 'FR', 'DE', 'EL', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'SK', 'SI', 'ES', 'SE', 'GB', 'UK'],
-      revokable: ['HR', 'CY', 'DK', 'EE', 'FR', 'DE', 'LV', 'LT', 'NL', 'PT', 'ES', 'GB'],
+      revokable: ['HR', 'CY', 'DK', 'EE', 'FR', 'DE', 'LV', 'LT', 'NL', 'PT', 'ES'],
       explicitAction: ['HR', 'IT', 'ES'],
     };
 
