@@ -130,10 +130,10 @@ window['cookieconsent_example_util'] = {
           if (popup.isOpen()) {
             popup.close()
           }
-          popup.toggleRevokeButton();
+          popup.toggleRevokeButton(false);
         });
 
-        instances[idx].autoOpen ? instances[idx].autoOpen() : instances[idx].open();
+        instances[idx].open();
       }
     };
 
@@ -146,11 +146,14 @@ window['cookieconsent_example_util'] = {
           }
         };
       } (options.popups[examples[i]]);
-      options.cookieconsent.factory
-        ? instances[i] = options.cookieconsent.factory(options.popups[examples[i]])
-        : options.cookieconsent.initialise(options.popups[examples[i]]).then(function(idx, popup){
-          instances[idx] = popup;
-        }.bind(null, i))
+
+      var myOpts = options.popups[examples[i]];
+
+      myOpts.autoOpen = false;
+
+      options.cookieconsent.initialise(myOpts).then(function(idx, popup){
+        instances[idx] = popup;
+      }.bind(null, i))
     }
 
     return instances;

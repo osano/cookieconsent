@@ -8,6 +8,7 @@
   <title>Demo 6 - Location</title>
 
   <link href="examples/style.css" rel="stylesheet">
+  <link href="build/cookieconsent.min.css" rel="stylesheet">
 
   <style>
     #message {height: 5em}
@@ -40,8 +41,9 @@
   </div>
 
 <script src="examples/script.js"></script>
-<script src="build/cookieconsent.min.js"></script>
+<script src="src/cookieconsent.js"></script>
 <script>
+
   var COUNTRY_CODES = {
     // Representative group of countries with key differences
     'US' : 'United States',
@@ -245,7 +247,7 @@
     'YE' : 'Yemen',
     'ZM' : 'Zambia',
     'ZW' : 'Zimbabwe'
-    };
+  };
 
   (function (C, U) {
 
@@ -260,19 +262,24 @@
 
     function draw(name, inputs) {
       var code = inputs.location;
+
       if (!code) return;
 
       // applyLaw takes the "preferred" options and changes them slightly to match the country's law
       var options = getOptions(inputs);
-      options.countryCode = code;
 
-      if (!window[name]) {
-        window[name] = cookieconsent.factory(options);
-      } else {
+      if (window[name]) {
         window[name].clearStatus();
-        window[name].initialise(options);
+        window[name].destroy();
+        window[name] = null;
       }
-      window[name].open();
+
+      options.law = {countryCode: code};
+
+      cookieconsent.initialise(options).then(function(popup){
+        window[name] = popup;
+        window[name].open();
+      });
 
       // show country options on screen (so user knows how this country affected the settings)
       document.getElementById('message').innerHTML = getCountryDetails(code);
@@ -281,7 +288,6 @@
     function getOptions(input) {
       return {
         type: 'info',
-        revokable: 'false',
         regionalLaw: true,
         palette: {"popup":{"background":"#343c66","text":"#cfcfe8"},"button":{"background":"#f71559"}}
       }
@@ -289,7 +295,8 @@
 
     function getCountryDetails(code) {
       // We only get these to show (on screen) how the country behaves
-      var countryOpts = cookieconsent.law.get(code);
+      var law = new cookieconsent.Law({});
+      var countryOpts = law.get(code);
 
       if (!countryOpts.hasLaw) {
         return U.tabularObject({
