@@ -54,7 +54,7 @@ Code released under the [MIT licence](http://opensource.org/licenses/MIT).
 Cookie Consent v3
 
 + Alex Morley-Finch - JavaScript
-+ Piiu Pitt - JavaScript
++ Piiu Pilt - JavaScript
 + Oliver Emberton (@oliveremberton) - a couple of lines of CSS, maybe
 
 Cookie Consent v2
