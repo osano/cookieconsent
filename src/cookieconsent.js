@@ -20,7 +20,7 @@
     },
 
     removeClass: function (element, className) {
-      var regex = new RegExp('\\b' + util.escapeRegExp(className) + '\\b');
+      var regex = new RegExp('\\b' + this.escapeRegExp(className) + '\\b');
       element.className = element.className.replace(regex, '');
     },
 
@@ -55,17 +55,15 @@
     },
 
     // only used for extending the initial options
-    deepExtend: function(dest, src) {
-      for (var prop in src) {
-        var v = src[prop];
-        if (typeof v === 'object' && v !== null) {
-          dest[prop] = dest[prop] || {};
-          this.deepExtend(dest[prop], v);
+    deepExtend: function(target, source) {
+      for (var prop in source) {
+        if (prop in target && this.isPlainObject(target[prop]) && this.isPlainObject(source[prop])) {
+          this.deepExtend(target[prop], source[prop]);
         } else {
-          dest[prop] = v;
+          target[prop] = source[prop];
         }
       }
-      return dest;
+      return target;
     },
 
     // only used for throttling the 'mousemove' event (used for animating the revoke button when `animateRevokable` is true)
@@ -104,7 +102,7 @@
 
     // used to get text colors if not set
     getContrast: function (hex){
-      hex = util.validateHex(hex);
+      hex = this.validateHex(hex);
       var r = parseInt(hex.substr(0,2),16);
       var g = parseInt(hex.substr(2,2),16);
       var b = parseInt(hex.substr(4,2),16);
@@ -114,7 +112,7 @@
 
     // used to change color on highlight
     getLuminance: function(hex) {
-      hex = util.validateHex(hex);
+      hex = this.validateHex(hex);
       if (hex=='000000') return '#222'; //for black buttons
       var lum = 0.2;
       var rgb = "#", c, i;
@@ -143,9 +141,9 @@
     },
 
     isPlainObject: function(obj) {
-      return typeof obj === 'object' && obj !== null;
-    }
-
+      // The code "typeof obj === 'object' && obj !== null" allows Array objects
+      return typeof obj === 'object' && obj !== null && obj.constructor == Object;
+    },
   };
 
   // valid cookie values
@@ -341,6 +339,8 @@
       // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
       // handlers. You can use other pre-existing classes too. See `src/styles` folder.
       overrideHTML: null,
+
+      autoOpen: true,
     };
 
     function CookiePopup () {
@@ -378,9 +378,8 @@
         this.options.enabled = true;
       }
 
-
-       // load stylesheet
-      if (this.options.stylesheet) {
+      // load stylesheet
+      /*if (this.options.stylesheet) {
         this.waitingForStylesheet = true;
         this.requestedTheme = loadStyles.call(this, this.options.stylesheet, function (success) {
           this.waitingForStylesheet = false;
@@ -389,7 +388,7 @@
             this.open();
           }
         });
-      }
+      }*/
 
       // the full markup either contains the wrapper or it does not (for multiple instances)
       var cookiePopup = this.options.window
@@ -409,7 +408,9 @@
 
       applyRevokeButton.call(this);
 
-      return this;
+      if (this.options.autoOpen) {
+        this.autoOpen();
+      }
     };
 
     CookiePopup.prototype.destroy = function () {
@@ -538,7 +539,7 @@
 
       if (!util.hasClass(el, 'cc-invisible')) {
         this.afterTransition = afterFadeOut.bind(this, el);
-        el.addEventListener('transitionend', this.afterTransition);
+        el.addEventListener(cc.transitionEnd, this.afterTransition);
 
         util.addClass(el, 'cc-invisible');
       }
@@ -550,7 +551,15 @@
 
     CookiePopup.prototype.toggleRevokeButton = function (show) {
       if (this.revokeBtn) this.revokeBtn.style.display = show ? '' : 'none';
-    }; 
+    };
+
+    CookiePopup.prototype.hasConsented = function (options) {
+      return Object.keys(cc.status).indexOf(this.getStatus()) >= 0;
+    };
+
+    CookiePopup.prototype.autoOpen = function (options) {
+      !this.hasConsented() && this.open();
+    };
 
     CookiePopup.prototype.setStatus = function (status) {
       var c = this.options.cookie;
@@ -588,7 +597,7 @@
     // is not called (lack of support), the open/close mechanism will still work.
     function afterFadeOut (el) {
       el.style.display = 'none'; // after close and before open, the display should be none
-      el.removeEventListener('transitionend', this.afterTransition);
+      el.removeEventListener(cc.transitionEnd, this.afterTransition);
       this.afterTransition = null;
     }
 
@@ -976,59 +985,10 @@
     return CookiePopup
   }());
 
-  cc.law = (function () {
-
-    var hasLaw = ['AT', 'BE', 'BG', 'HR', 'CZ', 'CY', 'DK', 'EE', 'FI', 'FR', 'DE', 'EL', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'SK', 'SI', 'ES', 'SE', 'GB', 'UK', 'GB'];
-    var revokable = ['HR', 'CY', 'DK', 'EE', 'FR', 'DE', 'LV', 'LT', 'NL', 'PT', 'ES'];
-    var explicitAction = ['HR', 'IT', 'ES'];
-
-    return {
-
-      get: function (countryCode) {
-        return {
-          hasLaw: hasLaw.indexOf(countryCode) >= 0,
-          revokable: revokable.indexOf(countryCode) >= 0,
-          explicitAction: explicitAction.indexOf(countryCode) >= 0,
-        };
-      },
-
-      applyLaw: function (options, countryCode) {
-        var country = this.get(countryCode);
-
-        if (!country.hasLaw) {
-          // The country has no cookie law
-          options.enabled = false;
-        }
-
-        if(options.regionalLaw == true) {
-          if (country.revokable) {
-            // we must provide an option to revoke consent at a later time
-            options.revokable = true;
-          }
-
-          if (country.explicitAction) {
-            // user must explicitly click the consent button
-            options.dismissOnScroll = false;
-            options.dismissOnTimeout = false;
-          }
-
-        }
-        return options;
-      }
-    };
-  }());
-
-  cc.Locate = (function () {
+  cc.Location = (function () {
 
     var defaultOptions = {
-      locationServices: [
-        'freegeoip',
-        function(cb) {
-          cb('I failed lol');
-        },
-        {name: 'ipinfo', PUBLIC_KEY: 1},
-        'freegeoip', 'maxmind'
-      ]
+      services: ['freegeoip', 'ipinfo', 'maxmind']
     };
 
     // An object containing all the location services we have already set up.
@@ -1092,29 +1052,27 @@
           }
         }
       }
-    }
+    };
 
-    function Location(options, onComplete) {
+    function Location(options) {
       // Set up options
       util.deepExtend(this.options = {}, defaultOptions);
+
       if (util.isPlainObject(options)) {
         util.deepExtend(this.options, options);
       }
 
-      this.onComplete = onComplete;
       this.currentServiceIndex = 0; // the index (in options) of the service we're currently using
-
-      this.runServices();
     }
 
     Location.prototype.getServiceByIdx = function(idx) {
       // This can either be the name of a default locationService, or a function.
-      var serviceOption = this.options.locationServices[idx];
+      var serviceOption = this.options.services[idx];
 
       // User can provide their own servives as functions.
       if (typeof serviceOption === 'function') return serviceOption;
 
-      // If it's a string, use one of the locationServices.
+      // If it's a string, use one of the location services.
       if (typeof serviceOption === 'string') return locationServices[serviceOption]();
 
       // If it's an object, assume {name: 'ipinfo', ...otherOptions}
@@ -1122,25 +1080,31 @@
       if (util.isPlainObject(serviceOption)) {
         return locationServices[serviceOption.name](serviceOption);
       }
-    }
+    };
 
     Location.prototype.getCurrentService = function() {
       var idx = this.currentServiceIndex;
       return this.getServiceByIdx(idx);
-    }
+    };
 
     // This runs the service located at index `currentServiceIndex`.
     // If the service fails, `runNextServiceOnError` will continue trying each service until all fail, or one completes successfully
-    Location.prototype.runServices = function() {
+    Location.prototype.locate = function () {
+      var self = this;
       var service = this.getCurrentService();
 
       if (!service) {
         return;
       }
 
-      // runs service[idx] and triggers the callback on complete
-      this.runService(service, this.runNextServiceOnError.bind(this));
-    }
+      return new Promise(function (resolve, reject) {
+        self.resolvePromise = resolve;
+        self.rejectPromise = reject;
+
+        // runs service[idx] and triggers the callback on complete
+        self.runService(service, self.runNextServiceOnError.bind(self));
+      });
+    };
 
     // Potentially adds a callback to a url for jsonp.
     Location.prototype.setupUrl = function (service) {
@@ -1153,7 +1117,7 @@
           return tempName;
         }
       });
-    }
+    };
 
     // requires a `service` object that defines at least a `url` and `callback`
     Location.prototype.runService = function(service, complete) {
@@ -1191,7 +1155,7 @@
       }, service.data, service.headers);
 
       // `service.data` and `service.headers` are optional (they only count if `!service.isScript` anyway)
-    }
+    };
 
     // The service request has run (and possibly has a `responseText`) [no `responseText` if `isScript`]
     // We need to run it's callback which determines if its successful or not
@@ -1212,7 +1176,7 @@
       if (result) {
         this.onServiceResult.call(this, complete, result);
       }
-    }
+    };
 
     // This is called with the `result` from `service.callback` regardless of how it provided that result (sync or async).
     // `result` will be whatever is returned from `service.callback`. A service callback should provide an object with data
@@ -1223,7 +1187,7 @@
       } else {
         complete.call(this, null, result);
       }
-    }
+    };
 
     // if `err` is set, the next service handler is called
     // if `err` is null, the `onComplete` handler is called with `data`
@@ -1238,21 +1202,30 @@
         if (this.options.locationServices[idx + 1]) {
           // an error occurred, try the next service
           this.currentServiceIndex++;
-          this.runServices.call(this);
+          
+          var self = this;
+          var service = this.getCurrentService();
+
+          if (!service) {
+            self.rejectPromise(new Error('Ran out of services to try'));
+            return;
+          }
+
+          self.runService(service, self.runNextServiceOnError.bind(self));
         } else {
           this.completeService.call(this, null, new Error('All services failed'));
         }
       } else {
         this.completeService.call(this, data, null);
       }
-    }
+    };
 
     // calls the `onComplete` callback after resetting the `currentServiceIndex`
     Location.prototype.completeService = function (data, error) {
       this.currentServiceIndex = 0;
 
-      this.onComplete && this.onComplete(data, error);
-    }
+      this.resolveProimise && this.resolvePromise(data, error);
+    };
 
     function getScript (url, callback) {
       var s = document.createElement('script');
@@ -1307,32 +1280,100 @@
     return Location;
   }());
 
-  cc.factory = function (options) {
-    options = cc.getCountryOptions(options);
-    return new cc.Popup(options);
-  };
+  cc.Law = (function () {
 
-  // Mutates options based on country requirements.
-  cc.getCountryOptions = function (options) {
-    if(options.countryCode) { 
-      cc.law.applyLaw(options, options.countryCode);
-      return;
-    } 
+    var defaultOptions = {
+      hasLaw: ['AT', 'BE', 'BG', 'HR', 'CZ', 'CY', 'DK', 'EE', 'FI', 'FR', 'DE', 'EL', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'SK', 'SI', 'ES', 'SE', 'GB', 'UK'],
+      revokable: ['HR', 'CY', 'DK', 'EE', 'FR', 'DE', 'LV', 'LT', 'NL', 'PT', 'ES', 'GB'],
+      explicitAction: ['HR', 'IT', 'ES'],
+    };
 
-    new cc.Locate(options, function (result) {
-      cc.law.applyLaw(options, result.code);
+    function Law (options) {
+      this.initialise.apply(this, arguments);
+    }
+
+    Law.prototype.initialise = function (options) {
+      // set options back to default options
+      util.deepExtend(this.options = {}, defaultOptions);
+
+      // merge in user options
+      if (util.isPlainObject(options)) {
+        util.deepExtend(this.options, options);
+      }
+    };
+
+    Law.prototype.get = function (countryCode) {
+      var opts = this.options;
+      return {
+        hasLaw: opts.hasLaw.indexOf(countryCode) >= 0,
+        revokable: opts.revokable.indexOf(countryCode) >= 0,
+        explicitAction: opts.explicitAction.indexOf(countryCode) >= 0,
+      };
+    };
+
+    Law.prototype.applyLaw = function (options, countryCode) {
+        var country = this.get(countryCode);
+
+        if (!country.hasLaw) {
+          // The country has no cookie law
+          options.enabled = false;
+        }
+
+        if(options.regionalLaw == true) {
+          if (country.revokable) {
+            // We must provide an option to revoke consent at a later time
+            options.revokable = true;
+          }
+
+          if (country.explicitAction) {
+            // The user must explicitly click the consent button
+            options.dismissOnScroll = false;
+            options.dismissOnTimeout = false;
+          }
+        }
+        return options;
+    };
+
+    return Law;
+  }());
+
+  cc.initialise = function (options) {
+    var law = new cc.Law(options.law);
+    return new Promise(function (resolve, reject) {
+      cc.getCountryCode(
+        options,
+        function (result) {
+
+          // don't need the law or location options anymore
+          delete options.law;
+          delete options.location;
+
+          if (result.code) {
+            options = law.applyLaw(options, result.code);
+          }
+
+          resolve(new cc.Popup(options));
+        },
+        function (err) {
+          reject(err);
+        }
+      );
     });
   };
 
-  // only open if the user hasnt answered
-  cc.autoOpen = function (options) {
-    var popup = cc.factory(options);
-
-    var status = popup.getStatus();
-    if (Object.keys(cc.status).indexOf(status) < 0 && popup.options.enabled) {
-      popup.open();
+  cc.getCountryCode = function (options, cb) {
+    if (options.law && options.law.countryCode) {
+      cb({code: options.law.countryCode});
+      return;
     }
-    return popup;
+    if (options.location) {
+      var locator = new cc.Location(options.location);
+      locator.locate(function (serviceResult) {
+        cb(serviceResult || {});
+      });
+      return;
+    }
+    cb({});
   };
 
   // export utils (no point in hiding them, so we may as well expose them)

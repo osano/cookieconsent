@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="../">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Demo 1 - Themes</title>
+
+  <link href="examples/style.css" rel="stylesheet">
+  <link href="build/cookieconsent.min.css" rel="stylesheet">
+
+<body role="document">
+
+  <div class="center-outer fit">
+    <div class="center-inner">
+      <div class="example-window" role="main">
+
+        <h1><span>Demo 1</span> Themes</h1>
+
+        <p>
+          See what you can do with some of <a href="http://cookieconsent.insites.com/">Cookie Consent's</a> themes:
+        </p>
+
+        <ul class="example-selector"></ul>
+
+        <a href="examples/example-2-custom-theme.html" class="page-switcher page-switcher-next" title="Next demo">&#9654;</a>
+
+      </div>
+    </div>
+  </div>
+
+<script src="examples/script.js"></script>
+<script src="src/cookieconsent.js"></script>
+<script>
+
+  var palettes = {
+    honeybee: {"popup": {"background": '#000'},"button": {"background": '#f1d600'}},
+    blurple: {"popup": {"background": '#3937a3'},"button": {"background": '#e62576'}},
+    mono: {"popup":{"background":"#237afc"},"button":{"background": "transparent","border":"#fff","text":"#fff"}},
+    nuclear: {"popup":{"background":"#aa0000","text":"#ffdddd"},"button":{"background":"#ff0000"}},
+    cosmo: {"popup":{"background":"#383b75"},"button":{"background":"#f1d600"}},
+    neon: {"popup":{"background":"#1d8a8a"},"button":{"background":"#62ffaa"}},
+    corporate: {"popup":{"background":"#edeff5","text":"#838391"},"button":{"background":"#4b81e8"}}
+  };
+
+  var POPUPS = {
+    popup: {
+      type: 'info',
+      position: 'bottom',
+      palette: palettes.mono,
+      regionalLaw: true,
+    },
+    law: {
+      type: 'info',
+      position: 'top',
+      palette: palettes.honeybee,
+      law: {
+        countryCode: 'GB'
+      },
+      regionalLaw: true,
+    },
+    locate: {
+      type: 'opt-out',
+      position: 'bottom-left',
+      palette: palettes.blurple,
+      location: {
+        locationServices: ['maxmind','freegeoip','ipinfo'],
+      },
+      regionalLaw: true,
+    }
+  };
+
+  cookieconsent.initialise(POPUPS.popup);
+
+</script>

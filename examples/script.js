@@ -133,8 +133,7 @@ window['cookieconsent_example_util'] = {
           popup.toggleRevokeButton();
         });
 
-        instances[idx].open();
-
+        instances[idx].autoOpen ? instances[idx].autoOpen() : instances[idx].open();
       }
     };
 
@@ -147,7 +146,11 @@ window['cookieconsent_example_util'] = {
           }
         };
       } (options.popups[examples[i]]);
-      instances[i] = options.cookieconsent.factory(options.popups[examples[i]]);
+      options.cookieconsent.factory
+        ? instances[i] = options.cookieconsent.factory(options.popups[examples[i]])
+        : options.cookieconsent.initialise(options.popups[examples[i]]).then(function(idx, popup){
+          instances[idx] = popup;
+        }.bind(null, i))
     }
 
     return instances;
