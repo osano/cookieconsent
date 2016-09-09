@@ -1094,11 +1094,7 @@
       }
     }
 
-    function Location() {
-      this.init.apply(this, arguments);
-    }
-
-    Location.prototype.init = function (options, onComplete) {
+    function Location(options, onComplete) {
       // Set up options
       util.deepExtend(this.options = {}, defaultOptions);
       if (util.isPlainObject(options)) {
