@@ -5,7 +5,7 @@ We're currently (7th September 2016) currently in the process of releasing versi
 
 ## What is Cookie Consent? 
 
-[Cookie Consent]((https://cookieconsent.insites.com/) is a lightweight JavaScript plugin for alerting users about the use of cookies on your website.
+[Cookie Consent](https://cookieconsent.insites.com/) is a lightweight JavaScript plugin for alerting users about the use of cookies on your website.
 
 It is designed to help you comply with the hideous EU Cookie Law and not make you want to kill yourself in the process. So we made it fast, free, and relatively painless.
 
