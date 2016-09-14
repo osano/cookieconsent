@@ -434,9 +434,6 @@
         }
         this.options.onPopupOpen();
       }
-
-      // Add push down for body when top banner type
-      if (this.options.position == 'top') pushDown.call(this, this.element.offsetHeight);
       
       return this;
     };
@@ -457,7 +454,7 @@
         }
         this.options.onPopupClose();
       }
-      if (this.options.position == 'top') pushDown.call(this, 0);
+
       return this;
     };
 
@@ -893,24 +890,6 @@
           window.addEventListener('mousemove', onMouseMove);
         }
       }
-    }
-
-    function pushDown(height) {
-      if(!this.options.pushdown) return;
-      var body = document.getElementsByTagName("body")[0]; 
-      var navbar = document.getElementsByClassName("navbar-fixed-top")[0]; //for bootstrap fixed navbar
-      if(height!=0) {
-        if(document.getElementById("wpadminbar")) height = height - 32;  // WP admin bar
-        if(hasTransition.call(this)) {
-          body.style.transition = 'all .4s linear .5s';
-          if(navbar) navbar.style.transition = 'all .4s linear .5s';
-        }
-      } else {
-        body.style.transition = 'none';
-        if(navbar) navbar.style.transition = 'none';
-      }
-      body.style.marginTop = height+'px';
-      if(navbar) navbar.style.marginTop = height+'px';
     }
 
     function hasTransition() {
