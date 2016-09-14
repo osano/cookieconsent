@@ -288,9 +288,6 @@
       // does not affect hiding the concent window for countries that do no have cooki law.
       regionalLaw: true,
 
-      // Add two digit country code to override location services
-      countryCode: null,
-
       // set value as scroll range to enable
       dismissOnScroll: false,
 
