@@ -187,7 +187,7 @@
       //     var instance = cookieconsent.factory(options);
       //     document.body.appendChild(instance.element);
       //
-      autoattach: true,
+      autoAttach: true,
 
       // these callback hooks are called at certain points in the program execution
       onPopupOpen: function() {},
@@ -293,7 +293,6 @@
 
       // set value as time in milliseconds to autodismiss after set time
       dismissOnTimeout: false,
-
 
       // if you want custom colours, pass them in here. this object should look like this
       //   {
@@ -660,7 +659,7 @@
 
       el.addEventListener('click', this.onButtonClick);
 
-      if (opts.autoattach) {
+      if (opts.autoAttach) {
         if (!cont.firstChild) {
           cont.appendChild(el);
         } else {
