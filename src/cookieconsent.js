@@ -990,7 +990,7 @@
 
     // This runs the service located at index `currentServiceIndex`.
     // If the service fails, `runNextServiceOnError` will continue trying each service until all fail, or one completes successfully
-    Location.prototype.locate = function () {
+    Location.prototype.locate = function (resolve, reject) {
       var self = this;
       var service = this.getCurrentService();
 
@@ -998,13 +998,10 @@
         return;
       }
 
-      return new Promise(function (resolve, reject) {
-        self.resolvePromise = resolve;
-        self.rejectPromise = reject;
+      self.resolvePromise = resolve;
+      self.rejectPromise = reject;
 
-        // runs service[idx] and triggers the callback on complete
-        self.runService(service, self.runNextServiceOnError.bind(self));
-      });
+      self.runService(service, self.runNextServiceOnError.bind(self));
     };
 
     // Potentially adds a callback to a url for jsonp.
@@ -1229,30 +1226,27 @@
     return Law;
   }());
 
-  cc.initialise = function (options) {
+  // This function initialises the app by combining the use of the Popup, Locator and Law modules
+  // You can string together these three modules yourself however you want, by writing a new function.
+  cc.initialise = function (options, resolve, reject) {
     var law = new cc.Law(options.law);
-    return new Promise(function (resolve, reject) {
-      cc.getCountryCode(
-        options,
-        function (result) {
+    cc.getCountryCode(options, function (result) {
+      // don't need the law or location options anymore
+      delete options.law;
+      delete options.location;
 
-          // don't need the law or location options anymore
-          delete options.law;
-          delete options.location;
+      if (result.code) {
+        options = law.applyLaw(options, result.code);
+      }
 
-          if (result.code) {
-            options = law.applyLaw(options, result.code);
-          }
-
-          resolve(new cc.Popup(options));
-        },
-        function (err) {
-          reject(err);
-        }
-      );
-    });
+      resolve(new cc.Popup(options));
+    }, reject);
   };
 
+  // This function tries to find your current location. It either grabs it from a hardcoded option in
+  // `options.law.countryCode`, or attempts to make a location service request. This function accepts
+  // options (which can configure the `law` and `location` modules) and fires a callback with which
+  // passes an object `{code: countryCode}` as the first argument (which can have undefined properties)
   cc.getCountryCode = function (options, cb) {
     if (options.law && options.law.countryCode) {
       cb({code: options.law.countryCode});
