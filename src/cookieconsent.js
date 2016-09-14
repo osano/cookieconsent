@@ -283,7 +283,7 @@
 
       // used to disable link on existing layouts
       // replaces element messagelink with message and removes content of link
-      showlink: true,
+      showLink: true,
 
       // set value as scroll range to enable
       dismissOnScroll: false,
@@ -606,8 +606,8 @@
       var interpolated = {};
       var opts = this.options;
 
-      //removes link if showlink is false
-      if(opts.showlink == 'false') { 
+      // removes link if showLink is false
+      if(opts.showLink) { 
         opts.elements.link = '';
         opts.elements.messagelink = opts.elements.message;
       }
