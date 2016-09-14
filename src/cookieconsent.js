@@ -259,9 +259,6 @@
         //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
       },
 
-      // enable pushdown for body when banner top is use
-      pushdown: true,
-
       // Available styles
       //    -block (default, no extra classes)
       //    -edgeless
