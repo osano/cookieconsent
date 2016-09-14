@@ -151,9 +151,11 @@ window['cookieconsent_example_util'] = {
 
       myOpts.autoOpen = false;
 
-      options.cookieconsent.initialise(myOpts).then(function(idx, popup){
+      options.cookieconsent.initialise(myOpts, function(idx, popup){
         instances[idx] = popup;
-      }.bind(null, i))
+      }.bind(null, i), function(err) {
+        console.error(err);
+      })
     }
 
     return instances;

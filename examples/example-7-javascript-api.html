@@ -80,8 +80,10 @@
     onRevokeChoice: function() {
       log('<em>onRevokeChoice()</em> called');
     },
-  }).then(function(popup){
+  }, function (popup) {
     p = popup;
+  }, function (err) {
+    console.error(err);
   });
 
   document.getElementById('btn-dismissCookie').onclick = function (e) {

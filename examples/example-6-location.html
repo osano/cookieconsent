@@ -251,16 +251,16 @@
 
   (function (C, U) {
 
+    var popupInst;
     var elems = U.createInputs(['location']);
-
-    var updater = U.createUpdater(elems, draw.bind(null, '__cookieconsent_popup'));
+    var updater = U.createUpdater(elems, draw);
 
     U.fillSelect(elems.location, COUNTRY_CODES, COUNTRY_CODES['AC'])
 
     updater(); // trigger the first update
     elems.location.focus(); // focus the first input
 
-    function draw(name, inputs) {
+    function draw(inputs) {
       var code = inputs.location;
 
       if (!code) return;
@@ -268,17 +268,19 @@
       // applyLaw takes the "preferred" options and changes them slightly to match the country's law
       var options = getOptions(inputs);
 
-      if (window[name]) {
-        window[name].clearStatus();
-        window[name].destroy();
-        window[name] = null;
+      if (popupInst) {
+        popupInst.clearStatus();
+        popupInst.destroy();
+        popupInst = null;
       }
 
       options.law = {countryCode: code};
 
-      cookieconsent.initialise(options).then(function(popup){
-        window[name] = popup;
-        window[name].open();
+      cookieconsent.initialise(options, function (popup) {
+        popupInst = popup;
+        popupInst.open();
+      }, function (err) {
+        console.error(err)
       });
 
       // show country options on screen (so user knows how this country affected the settings)
