@@ -262,9 +262,6 @@
       // enable pushdown for body when banner top is use
       pushdown: true,
 
-      // Enables fade-in/out and pushdown animations
-      transitions: true,
-
       // Available styles
       //    -block (default, no extra classes)
       //    -edgeless
@@ -422,7 +419,7 @@
         return this;
 
       if (!this.isOpen()) {
-        if (hasTransition.call(this)) {
+        if (cc.hasTransition) {
           this.fadeIn();
         } else {
           this.element.style.display = '';
@@ -442,7 +439,7 @@
         return this;
 
       if (this.isOpen()) {
-        if (hasTransition.call(this)) {
+        if (cc.hasTransition) {
           this.fadeOut();
         } else {
           this.element.style.display = 'none';
@@ -460,7 +457,7 @@
     CookiePopup.prototype.fadeIn = function () {
       var el = this.element;
 
-      if (!hasTransition.call(this))
+      if (!cc.hasTransition)
         return;
 
       // This should always be called AFTER fadeOut (which is governed by the 'transitionend' event).
@@ -480,7 +477,7 @@
     CookiePopup.prototype.fadeOut = function () {
       var el = this.element;
 
-      if (!hasTransition.call(this))
+      if (!cc.hasTransition)
         return;
 
       if (this.openingTimeout) {
@@ -497,7 +494,7 @@
     };
 
     CookiePopup.prototype.isOpen = function () {
-      return this.element && this.element.style.display == '' && (hasTransition.call(this) ? !util.hasClass(this.element, 'cc-invisible') : true);
+      return this.element && this.element.style.display == '' && (cc.hasTransition ? !util.hasClass(this.element, 'cc-invisible') : true);
     };
 
     CookiePopup.prototype.toggleRevokeButton = function (show) {
@@ -660,7 +657,7 @@
 
       el.style.display = 'none';
 
-      if (util.hasClass(el, 'cc-window') && hasTransition.call(this)) {
+      if (util.hasClass(el, 'cc-window') && cc.hasTransition) {
         util.addClass(el, 'cc-invisible');
       }
 
@@ -889,11 +886,6 @@
           window.addEventListener('mousemove', onMouseMove);
         }
       }
-    }
-
-    function hasTransition() {
-      if (this.options) return this.options.transitions && cc.hasTransition;
-      return cc.hasTransition;
     }
 
     return CookiePopup
