@@ -124,17 +124,6 @@
       return rgb;
     },
 
-    // getting the directory of JavaScript file
-    getDirectory: function() {
-      var sc = document.getElementsByTagName("script"), s, i;
-      for(i = 0; i < sc.length; i++) {
-        s = sc.item(i);
-        if(s.src && s.src.match(/cookieconsent.min.js$/))
-        { return s.src.slice(0,-'cookieconsent.min.js'.length); }
-      }
-      return '';
-    },
-
     isMobile: function() {
       if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) return true;
       return false;
@@ -200,9 +189,6 @@
       //     document.body.appendChild(instance.element);
       //
       autoattach: true,
-
-      // Change if stylesheet is not in the same folder as javasscript
-      stylesheet: util.getDirectory()+'cookieconsent.min.css',
 
       // these callback hooks are called at certain points in the program execution
       onPopupOpen: function() {},
@@ -352,10 +338,6 @@
         this.destroy(); // already rendered
       }
 
-      this.waitingForStylesheet = false; // set to true if we have made a request for a stylesheet, and it has not returned
-      this.openAfterStylesheet = false; // set to true if we tried to `open` to popup whilst `waitingForStylesheet`
-      this.requestedTheme = null; // this is the <link> tag containing the coookie popup style, we save it so we can delete it later
-
       // set options back to default options
       util.deepExtend(this.options = {}, defaultOptions);
 
@@ -377,18 +359,6 @@
       if (arrayContainsMatches(this.options.whitelistPage, location.pathname)) {
         this.options.enabled = true;
       }
-
-      // load stylesheet
-      /*if (this.options.stylesheet) {
-        this.waitingForStylesheet = true;
-        this.requestedTheme = loadStyles.call(this, this.options.stylesheet, function (success) {
-          this.waitingForStylesheet = false;
-          if (this.openAfterStylesheet) {
-            this.openAfterStylesheet = false;
-            this.open();
-          }
-        });
-      }*/
 
       // the full markup either contains the wrapper or it does not (for multiple instances)
       var cookiePopup = this.options.window
@@ -444,14 +414,6 @@
       }
       this.revokeBtn = null;
 
-      if (this.requestedTheme) {
-        var styleNode = this.requestedTheme.ownerNode;
-        if (styleNode && styleNode.parentNode) {
-          styleNode.parentNode.removeChild(styleNode);
-        }
-      }
-      this.requestedTheme = null;
-
       removeCustomStyle(this.options.palette);
       this.options = null;
     };
@@ -459,13 +421,6 @@
     CookiePopup.prototype.open = function (callback) {
       if (!this.options.enabled)
         return this;
-
-      // If we try and open the popup, and it's style hasn't loaded, set a flag to open it later
-      if (this.waitingForStylesheet) {
-        // Setting this to true means that this function will be automatically called when the stylesheet returns
-        this.openAfterStylesheet = true;
-        return;
-      }
 
       if (!this.isOpen()) {
         if (hasTransition.call(this)) {
@@ -938,25 +893,6 @@
           window.addEventListener('mousemove', onMouseMove);
         }
       }
-    }
-
-    function loadStyles(stylesheet, complete){
-      var self = this;
-      var link = document.createElement("link");
-      var createCallback = function (success) {
-        return function () {
-          complete.apply(self, [success].concat(arguments));
-        };
-      };
-      link.rel = "stylesheet";
-      link.type = "text/css";
-      link.href = stylesheet;
-      link.onload = createCallback(true);
-      link.onerror = createCallback(false);
-
-      document.head.appendChild(link);
-
-      return link;
     }
 
     function pushDown(height) {
