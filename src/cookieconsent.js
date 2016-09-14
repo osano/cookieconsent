@@ -990,7 +990,7 @@
 
     // This runs the service located at index `currentServiceIndex`.
     // If the service fails, `runNextServiceOnError` will continue trying each service until all fail, or one completes successfully
-    Location.prototype.locate = function (resolve, reject) {
+    Location.prototype.locate = function (complete, error) {
       var self = this;
       var service = this.getCurrentService();
 
@@ -998,8 +998,8 @@
         return;
       }
 
-      self.resolvePromise = resolve;
-      self.rejectPromise = reject;
+      self.callbackComplete = complete;
+      self.callbackError = error;
 
       self.runService(service, self.runNextServiceOnError.bind(self));
     };
@@ -1102,10 +1102,10 @@
           this.currentServiceIndex++;
           this.runService(this.getCurrentService(), this.runNextServiceOnError.bind(this));
         } else {
-          this.completeService.call(this, this.rejectPromise, new Error('All services failed'));
+          this.completeService.call(this, this.callbackError, new Error('All services failed'));
         }
       } else {
-        this.completeService.call(this, this.resolvePromise, data);
+        this.completeService.call(this, this.callbackComplete, data);
       }
     };
 
@@ -1228,7 +1228,7 @@
 
   // This function initialises the app by combining the use of the Popup, Locator and Law modules
   // You can string together these three modules yourself however you want, by writing a new function.
-  cc.initialise = function (options, resolve, reject) {
+  cc.initialise = function (options, complete, error) {
     var law = new cc.Law(options.law);
     cc.getCountryCode(options, function (result) {
       // don't need the law or location options anymore
@@ -1239,8 +1239,8 @@
         options = law.applyLaw(options, result.code);
       }
 
-      resolve(new cc.Popup(options));
-    }, reject);
+      complete(new cc.Popup(options));
+    }, error);
   };
 
   // This function tries to find your current location. It either grabs it from a hardcoded option in
