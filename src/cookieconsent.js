@@ -57,10 +57,12 @@
     // only used for extending the initial options
     deepExtend: function(target, source) {
       for (var prop in source) {
-        if (prop in target && this.isPlainObject(target[prop]) && this.isPlainObject(source[prop])) {
-          this.deepExtend(target[prop], source[prop]);
-        } else {
-          target[prop] = source[prop];
+        if (source.hasOwnProperty(prop)) {
+          if (prop in target && this.isPlainObject(target[prop]) && this.isPlainObject(source[prop])) {
+            this.deepExtend(target[prop], source[prop]);
+          } else {
+            target[prop] = source[prop];
+          }
         }
       }
       return target;
@@ -84,7 +86,7 @@
     hash: function (str) {
       var hash = 0, i, chr, len;
       if (str.length === 0) return hash;
-      for (i = 0, len = str.length; i < len; i++) {
+      for (i = 0, len = str.length; i < len; ++i) {
         chr   = str.charCodeAt(i);
         hash  = ((hash << 5) - hash) + chr;
         hash |= 0;
@@ -116,7 +118,7 @@
     alterLuminance: function(hex, lum) {
       var rgb = "#", c, i;
       hex = this.normaliseHex(hex);
-      for (i = 0; i < 3; i++) {
+      for (i = 0; i < 3; ++i) {
         c = parseInt(hex.substr(i*2,2), 16);
         c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
         rgb += ("00"+c).substr(c.length);
@@ -843,7 +845,9 @@
 
       var ruleIndex = -1;
       for (var prop in colorStyles) {
-        style.sheet.insertRule(prop + '{' + colorStyles[prop].join(';') + '}', ++ruleIndex);
+        if (colorStyles.hasOwnProperty(prop)) {
+          style.sheet.insertRule(prop + '{' + colorStyles[prop].join(';') + '}', ++ruleIndex);
+        }
       }
     }
 
