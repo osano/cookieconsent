@@ -132,6 +132,24 @@
       // The code "typeof obj === 'object' && obj !== null" allows Array objects
       return typeof obj === 'object' && obj !== null && obj.constructor == Object;
     },
+
+    loadStylesheet: function (stylesheet, complete) {
+      var link = document.createElement("link");
+      var createCallback = function (success) {
+        return function () {
+          complete.apply(null, [success].concat(arguments));
+        };
+      };
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      link.href = stylesheet;
+      link.onload = createCallback(true);
+      link.onerror = createCallback(false);
+
+      document.head.appendChild(link);
+
+      return link;
+    },
   };
 
   // valid cookie values
@@ -320,6 +338,12 @@
       // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
       // handlers. You can use other pre-existing classes too. See `src/styles` folder.
       overrideHTML: null,
+
+      // It is recommended that you include your stylesheet as a <link> tag in the <head> of your document.
+      // However, some people will want to defer the loading of the plugin until later. In such cases, this
+      // can be used to dynamically load the stylesheet. To do this, enter the filepath of the stylesheet, exactly
+      // as it would appear in the <link> tags `href` attribute.
+      stylesheet: null,
     };
 
     function CookiePopup () {
@@ -330,6 +354,10 @@
       if (this.options) {
         this.destroy(); // already rendered
       }
+
+      this.waitingForStylesheet = false; // set to true if we have made a request for a stylesheet, and it has not returned
+      this.openAfterStylesheet = false; // set to true if we tried to `open` to popup whilst `waitingForStylesheet`
+      this.requestedTheme = null; // this is the <link> tag containing the coookie popup style, we save it so we can delete it later
 
       // set options back to default options
       util.deepExtend(this.options = {}, defaultOptions);
@@ -351,6 +379,20 @@
       }
       if (arrayContainsMatches(this.options.whitelistPage, location.pathname)) {
         this.options.enabled = true;
+      }
+
+      if (this.options.stylesheet) {
+        this.waitingForStylesheet = true;
+        this.requestedTheme = util.loadStylesheet(this.options.stylesheet, function (success) {
+          this.waitingForStylesheet = false;
+          if (this.openAfterStylesheet) {
+            this.openAfterStylesheet = false;
+            this.open();
+          }
+        }, function(err) {
+          console.error('Failed to load stylesheet: ' + this.options.stylesheet);
+          this.options.enabled = false;
+        });
       }
 
       // the full markup either contains the wrapper or it does not (for multiple instances)
@@ -407,6 +449,16 @@
       }
       this.revokeBtn = null;
 
+      if (this.requestedTheme) {
+        var styleNode = this.requestedTheme.ownerNode;
+        if (styleNode && styleNode.parentNode) {
+          styleNode.parentNode.removeChild(styleNode);
+        }
+      }
+      this.requestedTheme = null;
+      this.waitingForStylesheet = false;
+      this.openAfterStylesheet = false;
+
       removeCustomStyle(this.options.palette);
       this.options = null;
     };
@@ -414,6 +466,13 @@
     CookiePopup.prototype.open = function (callback) {
       if (!this.options.enabled)
         return this;
+
+      // If we try and open the popup, and it's style hasn't loaded, set a flag to open it later
+      if (this.waitingForStylesheet) {
+        // Setting this to true means that this function will be automatically called when the stylesheet returns
+        this.openAfterStylesheet = true;
+        return;
+      }
 
       if (!this.isOpen()) {
         if (cc.hasTransition) {
