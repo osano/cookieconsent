@@ -184,7 +184,8 @@
       // these callback hooks are called at certain points in the program execution
       onPopupOpen: function() {},
       onPopupClose: function() {},
-      onStatusChange: function(status) {},
+      onInitialise: function(status) {},
+      onStatusChange: function(status, chosenBefore) {},
       onRevokeChoice: function() {},
 
       // each item defines the inner text for the element that it references
@@ -547,7 +548,7 @@
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
     function checkCallbackHooks () {
-      var complete = this.options.onStatusChange;
+      var complete = this.options.onInitialise;
 
       if (!window.navigator.cookieEnabled) {
         complete(cc.status.deny);
