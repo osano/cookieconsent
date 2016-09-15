@@ -260,11 +260,12 @@
       //    -block (default, no extra classes)
       //    -edgeless
       //    -classic
-      // use your own style name and use .cc-style-STYLENAME class in CSS to edit .
+      // use your own style name and use `.cc-theme-STYLENAME` class in CSS to edit .
       // Note: style "wire" is used for the configurator, but has no CSS styles of it's own, only palette is used.
-      windowstyle: 'block',
+      theme: 'block',
 
-      // if you want custom colours, pass them in here. this object should look like this
+      // if you want custom colours, pass them in here. this object should look like this.
+      // ideally, any custom colours/themes should be created in a separate style sheet, as this is more efficient.
       //   {
       //     popup: {background: '#000000', text: '#fff', link: '#fff'},
       //     button: {background: 'transparent', border: '#f8e71c', text: '#f8e71c'},
@@ -586,7 +587,7 @@
       var classes = [
         'cc-' + positionStyle,      // floating or banner
         'cc-type-' + opts.type,   // add the compliance type
-        'cc-windowstyle-' + opts.windowstyle, // add the windwowstyle class
+        'cc-theme-' + opts.theme, // add the windwowstyle class
       ];
 
       classes.push.apply(classes, getPositionClasses.call(this));
