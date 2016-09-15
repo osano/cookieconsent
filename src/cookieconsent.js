@@ -113,11 +113,9 @@
     },
 
     // used to change color on highlight
-    getLuminance: function(hex) {
-      hex = this.normaliseHex(hex);
-      if (hex=='000000') return '#222'; //for black buttons
-      var lum = 0.2;
+    alterLuminance: function(hex, lum) {
       var rgb = "#", c, i;
+      hex = this.normaliseHex(hex);
       for (i = 0; i < 3; i++) {
         c = parseInt(hex.substr(i*2,2), 16);
         c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
@@ -753,7 +751,7 @@
             'background-color: '+button.background
           ];
           colorStyles[prefix + ' .cc-btn:hover'] = [
-            'background-color: ' + util.getLuminance(button.background)
+            'background-color: ' + getHoverColour(button.background)
           ];
 
           if (highlight) {
@@ -786,6 +784,15 @@
       for (var prop in colorStyles) {
         style.sheet.insertRule(prop + '{' + colorStyles[prop].join(';') + '}', ++ruleIndex);
       }
+    }
+
+    function getHoverColour(hex) {
+      hex = util.normaliseHex(hex);
+      // for black buttons
+      if (hex == '000000') {
+        return '#222';
+      }
+      return util.alterLuminance(hex, 0.2);
     }
 
     function removeCustomStyle (palette) {
