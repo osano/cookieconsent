@@ -408,7 +408,20 @@
         cookiePopup = customHTML;
       }
 
-      this.element = appendMarkup.call(this, cookiePopup);
+      // if static, we need to grow the element from 0 height so it doesn't jump the page
+      // content. we wrap an element around it which will mask the hidden content
+      if (this.options.static) {
+        var wrapper = appendMarkup.call(this, '<div class="cc-grower">' + cookiePopup + '</div>');
+        wrapper.style.display = ''; // set it to visible
+
+        // get the `element` reference from the wrapper
+        this.element = wrapper.firstChild;
+
+        this.element.style.display = 'none';
+        util.addClass(this.element, 'cc-invisible');
+      } else {
+        this.element = appendMarkup.call(this, cookiePopup);
+      }
 
       // uses `dismissOnScroll` and `dismissOnTimeout`
       applyAutoDismiss.call(this);
@@ -528,7 +541,18 @@
       if (util.hasClass(el, 'cc-invisible')) {
         el.style.display = '';
 
-        this.openingTimeout = setTimeout(afterFadeIn.bind(this, el), 5);
+        if (this.options.static) {
+          util.addClass(this.element.parentNode, 'cc-grow-active');
+        }
+
+        var fadeInTimeout = 20; // (ms) DO NOT MAKE THIS VALUE SMALLER. See below
+
+        // Although most browsers can handle values less than 20ms, it should remain above this value.
+        // This is because we are waiting for a "browser redraw" before we remove the 'cc-invisible' class.
+        // If the class is remvoed before a redraw could happen, then the fadeIn effect WILL NOT work, and
+        // the popup will appear from nothing. Therefore we MUST allow enough time for the browser to do
+        // it's thing. The actually difference between using 0 and 20 in a set timeout is neglegible anyway
+        this.openingTimeout = setTimeout(afterFadeIn.bind(this, el), fadeInTimeout);
       }
     };
 
@@ -546,6 +570,10 @@
       if (!util.hasClass(el, 'cc-invisible')) {
         this.afterTransition = afterFadeOut.bind(this, el);
         el.addEventListener(cc.transitionEnd, this.afterTransition);
+
+        if (this.options.static) {
+          util.removeClass(el.parentNode, 'cc-grow-active');
+        }
 
         util.addClass(el, 'cc-invisible');
       }
@@ -647,10 +675,14 @@
       var opts = this.options;
       var positionStyle = (opts.position == 'top' || opts.position == 'bottom') ? 'banner' : 'floating';
       var classes = [
-        'cc-' + positionStyle,      // floating or banner
+        'cc-' + positionStyle,    // floating or banner
         'cc-type-' + opts.type,   // add the compliance type
-        'cc-theme-' + opts.theme, // add the windwowstyle class
+        'cc-theme-' + opts.theme, // add the theme
       ];
+
+      if (opts.static) {
+        classes.push('cc-static');
+      }
 
       classes.push.apply(classes, getPositionClasses.call(this));
 
