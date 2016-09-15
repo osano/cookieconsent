@@ -92,9 +92,11 @@
       return hash;
     },
 
-    validateHex: function(hex) {
-      hex = hex.substr(1);
-      if (hex.length < 6) {
+    normaliseHex: function(hex) {
+      if (hex[0] == '#') {
+        hex = hex.substr(1);
+      }
+      if (hex.length == 3) {
         hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
       }
       return hex;
@@ -102,7 +104,7 @@
 
     // used to get text colors if not set
     getContrast: function (hex){
-      hex = this.validateHex(hex);
+      hex = this.normaliseHex(hex);
       var r = parseInt(hex.substr(0,2),16);
       var g = parseInt(hex.substr(2,2),16);
       var b = parseInt(hex.substr(4,2),16);
@@ -112,7 +114,7 @@
 
     // used to change color on highlight
     getLuminance: function(hex) {
-      hex = this.validateHex(hex);
+      hex = this.normaliseHex(hex);
       if (hex=='000000') return '#222'; //for black buttons
       var lum = 0.2;
       var rgb = "#", c, i;
