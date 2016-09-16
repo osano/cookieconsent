@@ -1366,19 +1366,19 @@
   // `options.law.countryCode`, or attempts to make a location service request. This function accepts
   // options (which can configure the `law` and `location` modules) and fires a callback with which
   // passes an object `{code: countryCode}` as the first argument (which can have undefined properties)
-  cc.getCountryCode = function (options, cb) {
+  cc.getCountryCode = function (options, complete, error) {
     if (options.law && options.law.countryCode) {
-      cb({code: options.law.countryCode});
+      complete({code: options.law.countryCode});
       return;
     }
     if (options.location) {
       var locator = new cc.Location(options.location);
       locator.locate(function (serviceResult) {
-        cb(serviceResult || {});
-      });
+        complete(serviceResult || {});
+      }, error);
       return;
     }
-    cb({});
+    complete({});
   };
 
   // export utils (no point in hiding them, so we may as well expose them)
