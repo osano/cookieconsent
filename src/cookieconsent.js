@@ -587,12 +587,20 @@
       if (this.revokeBtn) this.revokeBtn.style.display = show ? '' : 'none';
     };
 
-    CookiePopup.prototype.hasConsented = function (options) {
+    // returns true if the cookie has a valid value
+    CookiePopup.prototype.hasAnswered = function (options) {
       return Object.keys(cc.status).indexOf(this.getStatus()) >= 0;
     };
 
+    // returns true if the cookie indicates that consent has been given
+    CookiePopup.prototype.hasConsented = function (options) {
+      var val = this.getStatus();
+      return val == cc.status.allow || val == cc.status.dismiss;
+    };
+
+    // opens the popup if no answer has been given
     CookiePopup.prototype.autoOpen = function (options) {
-      !this.hasConsented() && this.open();
+      !this.hasAnwsered() && this.open();
     };
 
     CookiePopup.prototype.setStatus = function (status) {
