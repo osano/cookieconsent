@@ -1379,6 +1379,8 @@
   // You can string together these three modules yourself however you want, by writing a new function.
   cc.initialise = function (options, complete, error) {
     var law = new cc.Law(options.law);
+    if(!complete) complete=function(){};
+    if(!error) error=function(){};
     cc.getCountryCode(options, function (result) {
       // don't need the law or location options anymore
       delete options.law;
