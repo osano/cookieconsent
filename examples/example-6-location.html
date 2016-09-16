@@ -274,11 +274,9 @@
         popupInst = null;
       }
 
-      options.law = {countryCode: code};
-
       cookieconsent.initialise(options, function (popup) {
         popupInst = popup;
-        popupInst.open();
+        popupInst.autoOpen();
       }, function (err) {
         console.error(err)
       });
@@ -291,7 +289,13 @@
       return {
         type: 'info',
         regionalLaw: true,
-        palette: {"popup":{"background":"#343c66","text":"#cfcfe8"},"button":{"background":"#f71559"}}
+        palette: {
+          "popup":{"background":"#343c66","text":"#cfcfe8"},
+          "button":{"background":"#f71559"}
+        },
+        law: {
+          countryCode: input.location,
+        },
       }
     }
 
