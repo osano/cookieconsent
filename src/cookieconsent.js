@@ -1,44 +1,43 @@
-
-(function (cc) {
+(function(cc) {
   // stop from running again, if accidently included more than once.
   if (cc.hasInitialised) return;
 
   var util = {
     // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
-    escapeRegExp: function (str) {
+    escapeRegExp: function(str) {
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
     },
 
-    hasClass: function (element, selector) {
+    hasClass: function(element, selector) {
       var s = ' ';
       return element.nodeType === 1 &&
-          (s + element.className + s).replace(/[\n\t]/g, s).indexOf(s + selector + s) >= 0;
+        (s + element.className + s).replace(/[\n\t]/g, s).indexOf(s + selector + s) >= 0;
     },
 
-    addClass: function (element, className) {
+    addClass: function(element, className) {
       element.className += ' ' + className;
     },
 
-    removeClass: function (element, className) {
+    removeClass: function(element, className) {
       var regex = new RegExp('\\b' + this.escapeRegExp(className) + '\\b');
       element.className = element.className.replace(regex, '');
     },
 
-    interpolateString: function (str, callback) {
+    interpolateString: function(str, callback) {
       var marker = /{{([a-z][a-z0-9\-_]*)}}/ig;
-      return str.replace(marker, function (matches) {
+      return str.replace(marker, function(matches) {
         return callback(arguments[1]) || '';
       })
     },
 
-    getCookie: function (name) {
+    getCookie: function(name) {
       var value = '; ' + document.cookie;
       var parts = value.split('; ' + name + '=');
       return parts.length != 2 ?
         undefined : parts.pop().split(';').shift();
     },
 
-    setCookie: function (name, value, expiryDays, domain, path) {
+    setCookie: function(name, value, expiryDays, domain, path) {
       var exdate = new Date();
       exdate.setDate(exdate.getDate() + (expiryDays || 365));
 
@@ -69,13 +68,13 @@
     },
 
     // only used for throttling the 'mousemove' event (used for animating the revoke button when `animateRevokable` is true)
-    throttle: function (callback, limit) {
+    throttle: function(callback, limit) {
       var wait = false;
-      return function () {
+      return function() {
         if (!wait) {
           callback.apply(this, arguments);
           wait = true;
-          setTimeout(function () {
+          setTimeout(function() {
             wait = false;
           }, limit);
         }
@@ -83,12 +82,13 @@
     },
 
     // only used for hashing json objects (used for hash mapping palette objects, used when custom colours are passed through JavaScript)
-    hash: function (str) {
-      var hash = 0, i, chr, len;
+    hash: function(str) {
+      var hash = 0,
+        i, chr, len;
       if (str.length === 0) return hash;
       for (i = 0, len = str.length; i < len; ++i) {
-        chr   = str.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
+        chr = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
         hash |= 0;
       }
       return hash;
@@ -99,29 +99,30 @@
         hex = hex.substr(1);
       }
       if (hex.length == 3) {
-        hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
       }
       return hex;
     },
 
     // used to get text colors if not set
-    getContrast: function (hex){
+    getContrast: function(hex) {
       hex = this.normaliseHex(hex);
-      var r = parseInt(hex.substr(0,2),16);
-      var g = parseInt(hex.substr(2,2),16);
-      var b = parseInt(hex.substr(4,2),16);
-      var yiq = ((r*299)+(g*587)+(b*114))/1000;
+      var r = parseInt(hex.substr(0, 2), 16);
+      var g = parseInt(hex.substr(2, 2), 16);
+      var b = parseInt(hex.substr(4, 2), 16);
+      var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
       return (yiq >= 128) ? '#000' : '#fff';
     },
 
     // used to change color on highlight
     alterLuminance: function(hex, lum) {
-      var rgb = "#", c, i;
+      var rgb = "#",
+        c, i;
       hex = this.normaliseHex(hex);
       for (i = 0; i < 3; ++i) {
-        c = parseInt(hex.substr(i*2,2), 16);
+        c = parseInt(hex.substr(i * 2, 2), 16);
         c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-        rgb += ("00"+c).substr(c.length);
+        rgb += ("00" + c).substr(c.length);
       }
       return rgb;
     },
@@ -135,10 +136,10 @@
       return typeof obj === 'object' && obj !== null && obj.constructor == Object;
     },
 
-    loadStylesheet: function (stylesheet, complete) {
+    loadStylesheet: function(stylesheet, complete) {
       var link = document.createElement("link");
-      var createCallback = function (success) {
-        return function () {
+      var createCallback = function(success) {
+        return function() {
           complete.apply(null, [success].concat(arguments));
         };
       };
@@ -155,26 +156,30 @@
   };
 
   // valid cookie values
-  cc.status = {deny: 'deny', allow: 'allow', dismiss: 'dismiss'};
+  cc.status = {
+    deny: 'deny',
+    allow: 'allow',
+    dismiss: 'dismiss'
+  };
 
   // detects the `transitionend` event name
-  cc.transitionEnd = (function () {
-      var el = document.createElement('div');
-      var trans = {
-        t      : "transitionend",
-        OT     : "oTransitionEnd",
-        msT    : "MSTransitionEnd",
-        MozT   : "transitionend",
-        WebkitT: "webkitTransitionEnd",
-      };
+  cc.transitionEnd = (function() {
+    var el = document.createElement('div');
+    var trans = {
+      t: "transitionend",
+      OT: "oTransitionEnd",
+      msT: "MSTransitionEnd",
+      MozT: "transitionend",
+      WebkitT: "webkitTransitionEnd",
+    };
 
-      for (var prefix in trans) {
-        if (trans.hasOwnProperty(prefix) && typeof el.style[prefix+'ransition'] != 'undefined') {
-          return trans[prefix];
-        }
+    for (var prefix in trans) {
+      if (trans.hasOwnProperty(prefix) && typeof el.style[prefix + 'ransition'] != 'undefined') {
+        return trans[prefix];
       }
-      return '';
-  } () );
+    }
+    return '';
+  }());
 
   cc.hasTransition = !!cc.transitionEnd;
 
@@ -184,7 +189,7 @@
   // contains references to the custom <style> tags
   cc.customStyles = {};
 
-  cc.Popup = (function () {
+  cc.Popup = (function() {
 
     var defaultOptions = {
 
@@ -358,11 +363,11 @@
       stylesheet: null,
     };
 
-    function CookiePopup () {
+    function CookiePopup() {
       this.initialise.apply(this, arguments);
     }
 
-    CookiePopup.prototype.initialise = function (options) {
+    CookiePopup.prototype.initialise = function(options) {
       if (this.options) {
         this.destroy(); // already rendered
       }
@@ -395,7 +400,7 @@
 
       if (this.options.stylesheet) {
         this.waitingForStylesheet = true;
-        this.requestedTheme = util.loadStylesheet(this.options.stylesheet, function (success) {
+        this.requestedTheme = util.loadStylesheet(this.options.stylesheet, function(success) {
           this.waitingForStylesheet = false;
           if (this.openAfterStylesheet) {
             this.openAfterStylesheet = false;
@@ -441,7 +446,7 @@
       }
     };
 
-    CookiePopup.prototype.destroy = function () {
+    CookiePopup.prototype.destroy = function() {
       if (this.onButtonClick && this.element) {
         this.element.removeEventListener('click', this.onButtonClick);
         this.onButtonClick = null;
@@ -486,7 +491,7 @@
       this.options = null;
     };
 
-    CookiePopup.prototype.open = function (callback) {
+    CookiePopup.prototype.open = function(callback) {
       if (!this.element) return;
 
       // If we try and open the popup, and it's style hasn't loaded, set a flag to open it later
@@ -508,11 +513,11 @@
         }
         this.options.onPopupOpen.call(this);
       }
-      
+
       return this;
     };
 
-    CookiePopup.prototype.close = function (showRevoke) {
+    CookiePopup.prototype.close = function(showRevoke) {
       if (!this.element) return;
 
       if (this.isOpen()) {
@@ -531,7 +536,7 @@
       return this;
     };
 
-    CookiePopup.prototype.fadeIn = function () {
+    CookiePopup.prototype.fadeIn = function() {
       var el = this.element;
 
       if (!cc.hasTransition || !el)
@@ -562,7 +567,7 @@
       }
     };
 
-    CookiePopup.prototype.fadeOut = function () {
+    CookiePopup.prototype.fadeOut = function() {
       var el = this.element;
 
       if (!cc.hasTransition || !el)
@@ -585,15 +590,15 @@
       }
     };
 
-    CookiePopup.prototype.isOpen = function () {
+    CookiePopup.prototype.isOpen = function() {
       return this.element && this.element.style.display == '' && (cc.hasTransition ? !util.hasClass(this.element, 'cc-invisible') : true);
     };
 
-    CookiePopup.prototype.toggleRevokeButton = function (show) {
+    CookiePopup.prototype.toggleRevokeButton = function(show) {
       if (this.revokeBtn) this.revokeBtn.style.display = show ? '' : 'none';
     };
 
-    CookiePopup.prototype.revokeChoice = function (preventOpen) {
+    CookiePopup.prototype.revokeChoice = function(preventOpen) {
       this.options.enabled = true;
       this.clearStatus();
 
@@ -605,22 +610,22 @@
     };
 
     // returns true if the cookie has a valid value
-    CookiePopup.prototype.hasAnswered = function (options) {
+    CookiePopup.prototype.hasAnswered = function(options) {
       return Object.keys(cc.status).indexOf(this.getStatus()) >= 0;
     };
 
     // returns true if the cookie indicates that consent has been given
-    CookiePopup.prototype.hasConsented = function (options) {
+    CookiePopup.prototype.hasConsented = function(options) {
       var val = this.getStatus();
       return val == cc.status.allow || val == cc.status.dismiss;
     };
 
     // opens the popup if no answer has been given
-    CookiePopup.prototype.autoOpen = function (options) {
+    CookiePopup.prototype.autoOpen = function(options) {
       !this.hasAnswered() && this.options.enabled && this.open();
     };
 
-    CookiePopup.prototype.setStatus = function (status) {
+    CookiePopup.prototype.setStatus = function(status) {
       var c = this.options.cookie;
       var value = util.getCookie(c.name);
       var chosenBefore = Object.keys(cc.status).indexOf(value) >= 0;
@@ -635,33 +640,33 @@
       }
     };
 
-    CookiePopup.prototype.getStatus = function () {
+    CookiePopup.prototype.getStatus = function() {
       return util.getCookie(this.options.cookie.name);
     };
 
-    CookiePopup.prototype.clearStatus = function () {
+    CookiePopup.prototype.clearStatus = function() {
       var c = this.options.cookie;
       util.setCookie(c.name, '', -1, c.domain, c.path);
     };
 
     // This needs to be called after 'fadeIn'. This is the code that actually causes the fadeIn to work
     // There is a good reason why it's called in a timeout. Read 'fadeIn';
-    function afterFadeIn (el) {
-      this.openingTimeout =  null;
+    function afterFadeIn(el) {
+      this.openingTimeout = null;
       util.removeClass(el, 'cc-invisible');
     }
 
     // This is called on 'transitionend' (only on the transition of the fadeOut). That's because after we've faded out, we need to
     // set the display to 'none' (so there aren't annoying invisible popups all over the page). If for whenever reason this function
     // is not called (lack of support), the open/close mechanism will still work.
-    function afterFadeOut (el) {
+    function afterFadeOut(el) {
       el.style.display = 'none'; // after close and before open, the display should be none
       el.removeEventListener(cc.transitionEnd, this.afterTransition);
       this.afterTransition = null;
     }
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
-    function checkCallbackHooks () {
+    function checkCallbackHooks() {
       var complete = this.options.onInitialise.bind(this);
 
       if (!window.navigator.cookieEnabled) {
@@ -684,24 +689,24 @@
       return match;
     }
 
-    function getPositionClasses () {
+    function getPositionClasses() {
       var positions = this.options.position.split('-'); // top, bottom, left, right
       var classes = [];
 
       // top, left, right, bottom
-      positions.forEach(function (cur) {
+      positions.forEach(function(cur) {
         classes.push('cc-' + cur);
       });
 
       return classes;
     }
 
-    function getPopupClasses () {
+    function getPopupClasses() {
       var opts = this.options;
       var positionStyle = (opts.position == 'top' || opts.position == 'bottom') ? 'banner' : 'floating';
       var classes = [
-        'cc-' + positionStyle,    // floating or banner
-        'cc-type-' + opts.type,   // add the compliance type
+        'cc-' + positionStyle, // floating or banner
+        'cc-type-' + opts.type, // add the compliance type
         'cc-theme-' + opts.theme, // add the theme
       ];
 
@@ -722,18 +727,18 @@
       return classes;
     }
 
-    function getPopupInnerMarkup () {
+    function getPopupInnerMarkup() {
       var interpolated = {};
       var opts = this.options;
 
       // removes link if showLink is false
-      if(opts.showLink) { 
+      if (opts.showLink) {
         opts.elements.link = '';
         opts.elements.messagelink = opts.elements.message;
       }
 
-      Object.keys(opts.elements).forEach(function (prop) {
-        interpolated[prop] = util.interpolateString(opts.elements[prop], function (name) {
+      Object.keys(opts.elements).forEach(function(prop) {
+        interpolated[prop] = util.interpolateString(opts.elements[prop], function(name) {
           var str = opts.content[name];
           return (name && typeof str == 'string' && str.length) ? str : '';
         })
@@ -746,7 +751,7 @@
       }
 
       // build the compliance types from the already interpolated `elements`
-      interpolated.compliance = util.interpolateString(complianceType, function (name) {
+      interpolated.compliance = util.interpolateString(complianceType, function(name) {
         return interpolated[name];
       });
 
@@ -761,7 +766,7 @@
       });
     }
 
-    function appendMarkup (markup) {
+    function appendMarkup(markup) {
       var opts = this.options;
       var div = document.createElement('div');
       var cont = (opts.container && opts.container.nodeType === 1) ? opts.container : document.body;
@@ -792,7 +797,7 @@
       return el;
     }
 
-    function handleButtonClick (event) {
+    function handleButtonClick(event) {
       var targ = event.target;
       if (util.hasClass(targ, 'cc-btn')) {
 
@@ -815,7 +820,7 @@
 
     // I might change this function to use inline styles. I originally chose a stylesheet because I could select many elements with a
     // single rule (something that happened a lot), the apps has changed slightly now though, so inline styles might be more applicable.
-    function attachCustomPalette (palette) {
+    function attachCustomPalette(palette) {
       var hash = util.hash(JSON.stringify(palette));
       var selector = 'cc-color-override-' + hash;
       var isValid = util.isPlainObject(palette);
@@ -823,12 +828,12 @@
       this.customStyleSelector = isValid ? selector : null;
 
       if (isValid) {
-        addCustomStyle(hash, palette, '.'+selector);
+        addCustomStyle(hash, palette, '.' + selector);
       }
       return isValid;
     }
 
-    function addCustomStyle (hash, palette, prefix) {
+    function addCustomStyle(hash, palette, prefix) {
 
       // only add this if a style like it doesn't exist
       if (cc.customStyles[hash]) {
@@ -843,30 +848,30 @@
       var highlight = palette.highlight;
 
       // needs background colour, text and link will be set to black/white if not specified
-      if (popup) { 
+      if (popup) {
         // assumes popup.background is set
         popup.text = popup.text ? popup.text : util.getContrast(popup.background);
         popup.link = popup.link ? popup.link : popup.text;
         colorStyles[prefix + '.cc-window'] = [
-          'color: '+popup.text, 
-          'background-color: '+popup.background
+          'color: ' + popup.text,
+          'background-color: ' + popup.background
         ];
         colorStyles[prefix + '.cc-revoke'] = [
-          'color: '+popup.text, 
-          'background-color: '+popup.background
+          'color: ' + popup.text,
+          'background-color: ' + popup.background
         ];
-        colorStyles[prefix + ' .cc-link,' + prefix + ' .cc-link:active,' + prefix + ' .cc-link:visited'   ] = [
-          'color: '+popup.link
-          ];
+        colorStyles[prefix + ' .cc-link,' + prefix + ' .cc-link:active,' + prefix + ' .cc-link:visited'] = [
+          'color: ' + popup.link
+        ];
 
         if (button) {
           // assumes button.background is set
           button.text = button.text ? button.text : util.getContrast(button.background);
           button.border = button.border ? button.border : 'transparent';
           colorStyles[prefix + ' .cc-btn'] = [
-            'color: '+button.text, 
-            'border-color: '+button.border, 
-            'background-color: '+button.background
+            'color: ' + button.text,
+            'border-color: ' + button.border,
+            'background-color: ' + button.background
           ];
           colorStyles[prefix + ' .cc-btn:hover'] = [
             'background-color: ' + getHoverColour(button.background)
@@ -877,14 +882,14 @@
             highlight.text = highlight.text ? highlight.text : util.getContrast(highlight.background);
             highlight.border = highlight.border ? highlight.border : 'transparent';
             colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = [
-              'color: '+highlight.text, 
-              'border-color: '+highlight.border, 
-              'background-color: '+highlight.background
+              'color: ' + highlight.text,
+              'border-color: ' + highlight.border,
+              'background-color: ' + highlight.background
             ];
-          } else { 
+          } else {
             // sets highlight text color to popup text. background and border are transparent by default.
             colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = [
-              'color: '+popup.text
+              'color: ' + popup.text
             ];
           }
         }
@@ -896,7 +901,10 @@
       document.head.appendChild(style);
 
       // custom style doesn't exist, so we create it
-      cc.customStyles[hash] = {references: 1, element: style.sheet};
+      cc.customStyles[hash] = {
+        references: 1,
+        element: style.sheet
+      };
 
       var ruleIndex = -1;
       for (var prop in colorStyles) {
@@ -915,7 +923,7 @@
       return util.alterLuminance(hex, 0.2);
     }
 
-    function removeCustomStyle (palette) {
+    function removeCustomStyle(palette) {
       if (util.isPlainObject(palette)) {
         var hash = util.hash(JSON.stringify(palette));
         var customStyle = cc.customStyles[hash];
@@ -929,7 +937,7 @@
       }
     }
 
-    function arrayContainsMatches (array, search) {
+    function arrayContainsMatches(array, search) {
       for (var i = 0, l = array.length; i < l; ++i) {
         var str = array[i];
         // if regex matches or string is equal, return true
@@ -941,19 +949,19 @@
       return false;
     }
 
-    function applyAutoDismiss () {
+    function applyAutoDismiss() {
       var setStatus = this.setStatus.bind(this);
 
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number' && delay >= 0) {
-        this.dismissTimeout = window.setTimeout(function () {
+        this.dismissTimeout = window.setTimeout(function() {
           setStatus(cc.status.dismiss);
         }, Math.floor(delay));
       }
 
       var scrollRange = this.options.dismissOnScroll;
       if (typeof scrollRange == 'number' && scrollRange >= 0) {
-        var onWindowScroll = function (evt) {
+        var onWindowScroll = function(evt) {
           if (window.pageYOffset > Math.floor(scrollRange)) {
             setStatus(cc.status.dismiss);
 
@@ -967,11 +975,11 @@
       }
     }
 
-    function applyRevokeButton () {
+    function applyRevokeButton() {
       // revokable is true if advanced compliance is selected
-      if(this.options.type != 'info') this.options.revokable = true;
+      if (this.options.type != 'info') this.options.revokable = true;
       // animateRevokable false for mobile devices
-      if(util.isMobile()) this.options.animateRevokable = false;
+      if (util.isMobile()) this.options.animateRevokable = false;
 
       if (this.options.revokable) {
         var classes = getPositionClasses.call(this);
@@ -987,7 +995,7 @@
         var btn = this.revokeBtn;
         if (this.options.animateRevokable) {
           var wait = false;
-          var onMouseMove = util.throttle(function (evt) {
+          var onMouseMove = util.throttle(function(evt) {
             var active = false;
             var minY = 20;
             var maxY = (window.innerHeight - 20);
@@ -1015,7 +1023,7 @@
     return CookiePopup
   }());
 
-  cc.Location = (function () {
+  cc.Location = (function() {
 
     // An object containing all the location services we have already set up.
     // When using a service, it could either return a data structure in plain text (like a JSON object) or an executable script
@@ -1042,12 +1050,12 @@
         */
       ],
       serviceDefinitions: {
-        ipinfo: function () {
+        ipinfo: function() {
           return {
             // This service responds with JSON, so we simply need to parse it and return the country code
             url: 'http://ipinfo.io',
             headers: ['Accept: application/json'],
-            callback: function (done, response) {
+            callback: function(done, response) {
               var json = JSON.parse(response);
               return json.error ? toError(json) : {
                 code: json.country
@@ -1055,13 +1063,13 @@
             }
           }
         },
-        freegeoip: function () {
+        freegeoip: function() {
           return {
             // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
             // The callback MUST BE `cookieconsent.locate.jsonp(SERVICE_NAME)` (so cookieconsent.locate.jsonp('freegeoip') for this index)
             url: '//freegeoip.net/json/?callback={callback}',
             isScript: true, // this is JSONP, therefore we must set it to run as a script
-            callback: function (done, response) {
+            callback: function(done, response) {
               var json = JSON.parse(response);
               return json.error ? toError(json) : {
                 code: json.country_code
@@ -1069,24 +1077,24 @@
             }
           }
         },
-        maxmind: function () {
+        maxmind: function() {
           return {
             // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
             // make an additional AJAX call. Therefore we provide a `done` callback that can be called asynchronously
             url: '//js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
             isScript: true, // this service responds with a JavaScript file, so it must be run as a script
-            callback: function (done) {
+            callback: function(done) {
               // if everything went okay then `geoip2` WILL be defined
               if (!window.geoip2) {
                 done(new Error('Unexpected response format. The downloaded script should have exported `geoip2` to the global scope'));
                 return;
               }
 
-              geoip2.country(function (location) {
+              geoip2.country(function(location) {
                 done({
                   code: location.country.iso_code
                 });
-              }, function (err) {
+              }, function(err) {
                 done(toError(err));
               });
 
@@ -1133,7 +1141,7 @@
 
     // This runs the service located at index `currentServiceIndex`.
     // If the service fails, `runNextServiceOnError` will continue trying each service until all fail, or one completes successfully
-    Location.prototype.locate = function (complete, error) {
+    Location.prototype.locate = function(complete, error) {
       var self = this;
       var service = this.getCurrentService();
 
@@ -1148,11 +1156,11 @@
     };
 
     // Potentially adds a callback to a url for jsonp.
-    Location.prototype.setupUrl = function (service) {
-      return service.url.replace(/\{(.*?)\}/, function (_, param) {
+    Location.prototype.setupUrl = function(service) {
+      return service.url.replace(/\{(.*?)\}/, function(_, param) {
         if (param === 'callback') {
           var tempName = 'callback' + Date.now();
-          window[tempName] = function (res) {
+          window[tempName] = function(res) {
             service.__JSONP_DATA = JSON.stringify(res);
           }
           return tempName;
@@ -1179,7 +1187,7 @@
       var requestFunction = service.isScript ? getScript : makeAsyncRequest;
 
       // both functions have similar signatures so we can pass the same arguments to both
-      requestFunction(this.setupUrl(service), function (xhr) {
+      requestFunction(this.setupUrl(service), function(xhr) {
         // if `!xhr`, then `getScript` function was used, so there is no response text
         var responseText = xhr ? xhr.responseText : '';
 
@@ -1201,12 +1209,12 @@
     // The service request has run (and possibly has a `responseText`) [no `responseText` if `isScript`]
     // We need to run it's callback which determines if its successful or not
     // `complete` is called on success or failure
-    Location.prototype.runServiceCallback = function (complete, service, responseText) {
+    Location.prototype.runServiceCallback = function(complete, service, responseText) {
       var self = this;
 
       // the function `service.callback` will either extract a country code from `responseText` and return it (in `result`)
       // or (if it has to make additional requests) it will call a `done` callback with the country code when it is ready
-      var result = service.callback(function (asyncResult) {
+      var result = service.callback(function(asyncResult) {
         // if `result` is a valid value, then this function shouldn't really run
         // even if it is called by `service.callback`
         if (!result) {
@@ -1221,7 +1229,7 @@
 
     // This is called with the `result` from `service.callback` regardless of how it provided that result (sync or async).
     // `result` will be whatever is returned from `service.callback`. A service callback should provide an object with data
-    Location.prototype.onServiceResult = function (complete, result) {
+    Location.prototype.onServiceResult = function(complete, result) {
       // convert result to nodejs style async callback
       if (result instanceof Error || (result && result.error)) {
         complete.call(this, result, null);
@@ -1232,7 +1240,7 @@
 
     // if `err` is set, the next service handler is called
     // if `err` is null, the `onComplete` handler is called with `data`
-    Location.prototype.runNextServiceOnError = function (err, data) {
+    Location.prototype.runNextServiceOnError = function(err, data) {
       var service = this.getCurrentService();
       var idx = this.currentServiceIndex;
 
@@ -1253,20 +1261,20 @@
     };
 
     // calls the `onComplete` callback after resetting the `currentServiceIndex`
-    Location.prototype.completeService = function (fn, data) {
+    Location.prototype.completeService = function(fn, data) {
       this.currentServiceIndex = 0;
 
       fn && fn(data);
     };
 
-    function getScript (url, callback) {
+    function getScript(url, callback) {
       var s = document.createElement('script');
 
       s.type = 'text/' + (url.type || 'javascript');
       s.src = url.src || url;
       s.async = false;
 
-      s.onreadystatechange = s.onload = function () {
+      s.onreadystatechange = s.onload = function() {
         var state = s.readyState;
 
         if (!callback.done && (!state || /loaded|complete/.test(state))) {
@@ -1279,7 +1287,7 @@
       document.body.appendChild(s);
     }
 
-    function makeAsyncRequest (url, onComplete, postData, requestHeaders) {
+    function makeAsyncRequest(url, onComplete, postData, requestHeaders) {
       var xhr = new(window.XMLHttpRequest || window.ActiveXObject)('MSXML2.XMLHTTP.3.0');
 
       xhr.open(postData ? 'POST' : 'GET', url, 1);
@@ -1295,7 +1303,7 @@
       }
 
       if (typeof onComplete == 'function') {
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function() {
           if (xhr.readyState > 3) {
             onComplete(xhr);
           }
@@ -1305,14 +1313,14 @@
       xhr.send(postData);
     }
 
-    function toError (obj) {
+    function toError(obj) {
       return new Error('Error [' + (obj.code || 'UNKNOWN') + ']: ' + obj.error);
     }
 
     return Location;
   }());
 
-  cc.Law = (function () {
+  cc.Law = (function() {
 
     var defaultOptions = {
       // countries that enforce some version of a cookie law
@@ -1326,11 +1334,11 @@
       explicitAction: ['HR', 'IT', 'ES'],
     };
 
-    function Law (options) {
+    function Law(options) {
       this.initialise.apply(this, arguments);
     }
 
-    Law.prototype.initialise = function (options) {
+    Law.prototype.initialise = function(options) {
       // set options back to default options
       util.deepExtend(this.options = {}, defaultOptions);
 
@@ -1340,7 +1348,7 @@
       }
     };
 
-    Law.prototype.get = function (countryCode) {
+    Law.prototype.get = function(countryCode) {
       var opts = this.options;
       return {
         hasLaw: opts.hasLaw.indexOf(countryCode) >= 0,
@@ -1349,27 +1357,27 @@
       };
     };
 
-    Law.prototype.applyLaw = function (options, countryCode) {
-        var country = this.get(countryCode);
+    Law.prototype.applyLaw = function(options, countryCode) {
+      var country = this.get(countryCode);
 
-        if (!country.hasLaw) {
-          // The country has no cookie law
-          options.enabled = false;
+      if (!country.hasLaw) {
+        // The country has no cookie law
+        options.enabled = false;
+      }
+
+      if (options.regionalLaw) {
+        if (country.revokable) {
+          // We must provide an option to revoke consent at a later time
+          options.revokable = true;
         }
 
-        if(options.regionalLaw) {
-          if (country.revokable) {
-            // We must provide an option to revoke consent at a later time
-            options.revokable = true;
-          }
-
-          if (country.explicitAction) {
-            // The user must explicitly click the consent button
-            options.dismissOnScroll = false;
-            options.dismissOnTimeout = false;
-          }
+        if (country.explicitAction) {
+          // The user must explicitly click the consent button
+          options.dismissOnScroll = false;
+          options.dismissOnTimeout = false;
         }
-        return options;
+      }
+      return options;
     };
 
     return Law;
@@ -1377,11 +1385,11 @@
 
   // This function initialises the app by combining the use of the Popup, Locator and Law modules
   // You can string together these three modules yourself however you want, by writing a new function.
-  cc.initialise = function (options, complete, error) {
+  cc.initialise = function(options, complete, error) {
     var law = new cc.Law(options.law);
-    if(!complete) complete=function(){};
-    if(!error) error=function(){};
-    cc.getCountryCode(options, function (result) {
+    if (!complete) complete = function() {};
+    if (!error) error = function() {};
+    cc.getCountryCode(options, function(result) {
       // don't need the law or location options anymore
       delete options.law;
       delete options.location;
@@ -1398,14 +1406,16 @@
   // `options.law.countryCode`, or attempts to make a location service request. This function accepts
   // options (which can configure the `law` and `location` modules) and fires a callback with which
   // passes an object `{code: countryCode}` as the first argument (which can have undefined properties)
-  cc.getCountryCode = function (options, complete, error) {
+  cc.getCountryCode = function(options, complete, error) {
     if (options.law && options.law.countryCode) {
-      complete({code: options.law.countryCode});
+      complete({
+        code: options.law.countryCode
+      });
       return;
     }
     if (options.location) {
       var locator = new cc.Location(options.location);
-      locator.locate(function (serviceResult) {
+      locator.locate(function(serviceResult) {
         complete(serviceResult || {});
       }, error);
       return;
@@ -1421,4 +1431,4 @@
 
   window.cookieconsent = cc;
 
-} (window.cookieconsent || {}));
+}(window.cookieconsent || {}));
