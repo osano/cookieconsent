@@ -499,7 +499,7 @@
         if (this.options.revokable) {
           this.toggleRevokeButton();
         }
-        this.options.onPopupOpen();
+        this.options.onPopupOpen.call(this);
       }
       
       return this;
@@ -519,7 +519,7 @@
         if (showRevoke && this.options.revokable) {
           this.toggleRevokeButton(true);
         }
-        this.options.onPopupClose();
+        this.options.onPopupClose.call(this);
       }
 
       return this;
@@ -604,7 +604,7 @@
       if (Object.keys(cc.status).indexOf(status) >= 0) {
         util.setCookie(c.name, status, c.expiryDays, c.domain, c.path);
 
-        this.options.onStatusChange(status, chosenBefore);
+        this.options.onStatusChange.call(this, status, chosenBefore);
       } else {
         this.clearStatus();
       }
@@ -637,7 +637,7 @@
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
     function checkCallbackHooks () {
-      var complete = this.options.onInitialise;
+      var complete = this.options.onInitialise.call(this);
 
       if (!window.navigator.cookieEnabled) {
         complete(cc.status.deny);
@@ -784,7 +784,7 @@
         this.close(true);
       }
       if (util.hasClass(targ, 'cc-revoke')) {
-        this.options.onRevokeChoice();
+        this.options.onRevokeChoice.call(this);
         this.clearStatus();
         this.open();
       }
