@@ -995,60 +995,61 @@
 
         */
       ],
-      serviceDefinitions: {
-        ipinfo: function() {
-          return {
-            // This service responds with JSON, so we simply need to parse it and return the country code
-            url: 'http://ipinfo.io',
-            headers: ['Accept: application/json'],
-            callback: function(done, response) {
-              var json = JSON.parse(response);
-              return json.error ? toError(json) : {
-                code: json.country
-              };
-            }
+    };
+    
+    var serviceDefinitions = {
+      ipinfo: function() {
+        return {
+          // This service responds with JSON, so we simply need to parse it and return the country code
+          url: 'http://ipinfo.io',
+          headers: ['Accept: application/json'],
+          callback: function(done, response) {
+            var json = JSON.parse(response);
+            return json.error ? toError(json) : {
+              code: json.country
+            };
           }
-        },
-        freegeoip: function() {
-          return {
-            // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
-            // The callback MUST BE `cookieconsent.locate.jsonp(SERVICE_NAME)` (so cookieconsent.locate.jsonp('freegeoip') for this index)
-            url: '//freegeoip.net/json/?callback={callback}',
-            isScript: true, // this is JSONP, therefore we must set it to run as a script
-            callback: function(done, response) {
-              var json = JSON.parse(response);
-              return json.error ? toError(json) : {
-                code: json.country_code
-              };
-            }
+        }
+      },
+      freegeoip: function() {
+        return {
+          // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
+          // The callback MUST BE `cookieconsent.locate.jsonp(SERVICE_NAME)` (so cookieconsent.locate.jsonp('freegeoip') for this index)
+          url: '//freegeoip.net/json/?callback={callback}',
+          isScript: true, // this is JSONP, therefore we must set it to run as a script
+          callback: function(done, response) {
+            var json = JSON.parse(response);
+            return json.error ? toError(json) : {
+              code: json.country_code
+            };
           }
-        },
-        maxmind: function() {
-          return {
-            // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
-            // make an additional AJAX call. Therefore we provide a `done` callback that can be called asynchronously
-            url: '//js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
-            isScript: true, // this service responds with a JavaScript file, so it must be run as a script
-            callback: function(done) {
-              // if everything went okay then `geoip2` WILL be defined
-              if (!window.geoip2) {
-                done(new Error('Unexpected response format. The downloaded script should have exported `geoip2` to the global scope'));
-                return;
-              }
+        }
+      },
+      maxmind: function() {
+        return {
+          // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
+          // make an additional AJAX call. Therefore we provide a `done` callback that can be called asynchronously
+          url: '//js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
+          isScript: true, // this service responds with a JavaScript file, so it must be run as a script
+          callback: function(done) {
+            // if everything went okay then `geoip2` WILL be defined
+            if (!window.geoip2) {
+              done(new Error('Unexpected response format. The downloaded script should have exported `geoip2` to the global scope'));
+              return;
+            }
 
-              geoip2.country(function(location) {
-                done({
-                  code: location.country.iso_code
-                });
-              }, function(err) {
-                done(toError(err));
+            geoip2.country(function(location) {
+              done({
+                code: location.country.iso_code
               });
+            }, function(err) {
+              done(toError(err));
+            });
 
-              // We can't return anything, because we need to wait for the second AJAX call to return.
-              // Then we can 'complete' the service by passing data or an error to the `done` callback.
-            }
+            // We can't return anything, because we need to wait for the second AJAX call to return.
+            // Then we can 'complete' the service by passing data or an error to the `done` callback.
           }
-        },
+        }
       },
     };
 
@@ -1071,12 +1072,12 @@
       if (typeof serviceOption === 'function') return serviceOption;
 
       // If it's a string, use one of the location services.
-      if (typeof serviceOption === 'string') return this.options.serviceDefinitions[serviceOption]();
+      if (typeof serviceOption === 'string') return serviceDefinitions[serviceOption]();
 
       // If it's an object, assume {name: 'ipinfo', ...otherOptions}
       // Allows user to pass in API keys etc.
       if (util.isPlainObject(serviceOption)) {
-        return this.options.serviceDefinitions[serviceOption.name](serviceOption);
+        return serviceDefinitions[serviceOption.name](serviceOption);
       }
     };
 
@@ -1194,7 +1195,7 @@
         console.log('The service[' + idx + '] (' + service.url + ') responded with the following error', err);
 
         // if another service exists
-        if (this.options.serviceDefinitions[idx + 1]) {
+        if (serviceDefinitions[idx + 1]) {
           // an error occurred, try the next service
           this.currentServiceIndex++;
           this.runService(this.getCurrentService(), this.runNextServiceOnError.bind(this));
