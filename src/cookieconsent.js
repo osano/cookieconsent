@@ -487,6 +487,8 @@
     };
 
     CookiePopup.prototype.open = function (callback) {
+      if (!this.element) return;
+
       // If we try and open the popup, and it's style hasn't loaded, set a flag to open it later
       if (this.waitingForStylesheet) {
         // Setting this to true means that this function will be automatically called when the stylesheet returns
@@ -511,6 +513,8 @@
     };
 
     CookiePopup.prototype.close = function (showRevoke) {
+      if (!this.element) return;
+
       if (this.isOpen()) {
         if (cc.hasTransition) {
           this.fadeOut();
@@ -530,7 +534,7 @@
     CookiePopup.prototype.fadeIn = function () {
       var el = this.element;
 
-      if (!cc.hasTransition)
+      if (!cc.hasTransition || !el)
         return;
 
       // This should always be called AFTER fadeOut (which is governed by the 'transitionend' event).
@@ -561,7 +565,7 @@
     CookiePopup.prototype.fadeOut = function () {
       var el = this.element;
 
-      if (!cc.hasTransition)
+      if (!cc.hasTransition || !el)
         return;
 
       if (this.openingTimeout) {
@@ -590,8 +594,10 @@
     };
 
     CookiePopup.prototype.revokeChoice = function (preventOpen) {
-      this.options.onRevokeChoice.call(this);
+      this.options.enabled = true;
       this.clearStatus();
+
+      this.options.onRevokeChoice.call(this);
 
       if (!preventOpen) {
         this.autoOpen();
