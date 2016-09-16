@@ -268,14 +268,15 @@
         //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
       },
 
-      //default layout
+      // default layout (see above)
       layout: 'basic',
 
       // this refers to the popup windows position. we currently support:
-      //  banner positions: top, bottom
-      //  floating positions: top-left, top-right, bottom-left, bottom-right
-      //  adds a class `cc-floating` or `cc-banner` which helps when styling
-      position: 'bottom',
+      //  - banner positions: top, bottom
+      //  - floating positions: top-left, top-right, bottom-left, bottom-right
+      //
+      // adds a class `cc-floating` or `cc-banner` which helps when styling
+      position: 'bottom', // default position is 'bottom'
 
       // Available styles
       //    -block (default, no extra classes)
@@ -389,7 +390,7 @@
           this.waitingForStylesheet = false;
           if (this.openAfterStylesheet) {
             this.openAfterStylesheet = false;
-            this.open();
+            this.autoOpen();
           }
         }, function(err) {
           console.error('Failed to load stylesheet: ' + this.options.stylesheet);
@@ -411,19 +412,17 @@
       // if static, we need to grow the element from 0 height so it doesn't jump the page
       // content. we wrap an element around it which will mask the hidden content
       if (this.options.static) {
+        // `grower` is a wrapper div with a hidden overflow whose height is animated
         var wrapper = appendMarkup.call(this, '<div class="cc-grower">' + cookiePopup + '</div>');
-        wrapper.style.display = ''; // set it to visible
 
-        // get the `element` reference from the wrapper
-        this.element = wrapper.firstChild;
-
+        wrapper.style.display = ''; // set it to visible (because appendMarkup hides it)
+        this.element = wrapper.firstChild; // get the `element` reference from the wrapper
         this.element.style.display = 'none';
         util.addClass(this.element, 'cc-invisible');
       } else {
         this.element = appendMarkup.call(this, cookiePopup);
       }
 
-      // uses `dismissOnScroll` and `dismissOnTimeout`
       applyAutoDismiss.call(this);
 
       applyRevokeButton.call(this);
