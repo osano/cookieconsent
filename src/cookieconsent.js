@@ -157,17 +157,26 @@
   // valid cookie values
   cc.status = {deny: 'deny', allow: 'allow', dismiss: 'dismiss'};
 
-  // is true if the browser supports css transitions
-  cc.hasTransition = (function () {
-    var style = document.documentElement.style;
-    var trans = ['t','OT','msT','MozT','KhtmlT','WebkitT'];
-    for (var i = 0, l = trans.length; i < l; ++i) {
-      if (trans[i]+'ransition' in style) return true;
-    }
-    return false;
-  }());
+  // detects the `transitionend` event name
+  cc.transitionEnd = (function () {
+      var el = document.createElement('div');
+      var trans = {
+        t      : "transitionend",
+        OT     : "oTransitionEnd",
+        msT    : "MSTransitionEnd",
+        MozT   : "transitionend",
+        WebkitT: "webkitTransitionEnd",
+      };
 
-  cc.transitionEnd = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
+      for (var prefix in trans) {
+        if (trans.hasOwnProperty(prefix) && typeof el.style[prefix+'ransition'] != 'undefined') {
+          return trans[prefix];
+        }
+      }
+      return '';
+  } () );
+
+  cc.hasTransition = !!cc.transitionEnd;
 
   // array of valid regexp escaped statuses
   var __allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
@@ -478,9 +487,6 @@
     };
 
     CookiePopup.prototype.open = function (callback) {
-      if (!this.options.enabled)
-        return this;
-
       // If we try and open the popup, and it's style hasn't loaded, set a flag to open it later
       if (this.waitingForStylesheet) {
         // Setting this to true means that this function will be automatically called when the stylesheet returns
@@ -505,9 +511,6 @@
     };
 
     CookiePopup.prototype.close = function (showRevoke) {
-      if (!this.options.enabled)
-        return this;
-
       if (this.isOpen()) {
         if (cc.hasTransition) {
           this.fadeOut();
@@ -567,12 +570,12 @@
       }
 
       if (!util.hasClass(el, 'cc-invisible')) {
-        this.afterTransition = afterFadeOut.bind(this, el);
-        el.addEventListener(cc.transitionEnd, this.afterTransition);
-
         if (this.options.static) {
           util.removeClass(el.parentNode, 'cc-grow-active');
         }
+
+        this.afterTransition = afterFadeOut.bind(this, el);
+        el.addEventListener(cc.transitionEnd, this.afterTransition);
 
         util.addClass(el, 'cc-invisible');
       }
@@ -584,6 +587,15 @@
 
     CookiePopup.prototype.toggleRevokeButton = function (show) {
       if (this.revokeBtn) this.revokeBtn.style.display = show ? '' : 'none';
+    };
+
+    CookiePopup.prototype.revokeChoice = function (preventOpen) {
+      this.options.onRevokeChoice.call(this);
+      this.clearStatus();
+
+      if (!preventOpen) {
+        this.autoOpen();
+      }
     };
 
     // returns true if the cookie has a valid value
@@ -599,7 +611,7 @@
 
     // opens the popup if no answer has been given
     CookiePopup.prototype.autoOpen = function (options) {
-      !this.hasAnwsered() && this.open();
+      !this.hasAnswered() && this.options.enabled && this.open();
     };
 
     CookiePopup.prototype.setStatus = function (status) {
@@ -644,7 +656,7 @@
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
     function checkCallbackHooks () {
-      var complete = this.options.onInitialise.call(this);
+      var complete = this.options.onInitialise.bind(this);
 
       if (!window.navigator.cookieEnabled) {
         complete(cc.status.deny);
@@ -791,9 +803,7 @@
         this.close(true);
       }
       if (util.hasClass(targ, 'cc-revoke')) {
-        this.options.onRevokeChoice.call(this);
-        this.clearStatus();
-        this.open();
+        this.revokeChoice();
       }
     }
 

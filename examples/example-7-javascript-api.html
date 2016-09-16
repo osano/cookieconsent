@@ -50,8 +50,8 @@
     </div>
   </div>
 
-<script src="build/cookieconsent.min.js"></script>
 <script src="examples/script.js"></script>
+<script src="build/cookieconsent.min.js"></script>
 <script>
 
   var h = document.getElementById('console');
@@ -108,13 +108,8 @@
   };
 
   document.getElementById('btn-revokeChoice').onclick = function (e) {
-
     log("Calling <em>revokeChoice()</em>");
-
-    // @todo Add revokeChoice() method to Cookie Consent, replace all of this with that
-    p.options.onRevokeChoice();
-    p.clearStatus();
-    p.open();
+    p.revokeChoice();
 
   };
 
