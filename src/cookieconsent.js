@@ -1285,8 +1285,14 @@
   cc.Law = (function () {
 
     var defaultOptions = {
+      // countries that enforce some version of a cookie law
       hasLaw: ['AT', 'BE', 'BG', 'HR', 'CZ', 'CY', 'DK', 'EE', 'FI', 'FR', 'DE', 'EL', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'SK', 'SI', 'ES', 'SE', 'GB', 'UK'],
+
+      // countries that say that all cookie consent choices must be revokable (a user must be able too change their mind)
       revokable: ['HR', 'CY', 'DK', 'EE', 'FR', 'DE', 'LV', 'LT', 'NL', 'PT', 'ES'],
+
+      // countries that say that a person can only "consent" if the explicitly click on "I agree".
+      // in these countries, consent cannot be implied via a timeout or by scrolling down the page
       explicitAction: ['HR', 'IT', 'ES'],
     };
 
