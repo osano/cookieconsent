@@ -704,6 +704,11 @@
     function getPopupClasses() {
       var opts = this.options;
       var positionStyle = (opts.position == 'top' || opts.position == 'bottom') ? 'banner' : 'floating';
+
+      if (util.isMobile()) {
+        positionStyle = 'floating';
+      }
+
       var classes = [
         'cc-' + positionStyle, // floating or banner
         'cc-type-' + opts.type, // add the compliance type
