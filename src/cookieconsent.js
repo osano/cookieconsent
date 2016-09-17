@@ -1157,16 +1157,18 @@
     // `complete` is called on success or failure
     Location.prototype.runServiceCallback = function(complete, service, responseText) {
       var self = this;
-
-      // the function `service.callback` will either extract a country code from `responseText` and return it (in `result`)
-      // or (if it has to make additional requests) it will call a `done` callback with the country code when it is ready
-      var result = service.callback(function(asyncResult) {
+      // this is the function that is called if the service uses the async callback in its handler method
+      var serviceResultHandler = function (asyncResult) {
         // if `result` is a valid value, then this function shouldn't really run
         // even if it is called by `service.callback`
         if (!result) {
           self.onServiceResult.call(self, complete, asyncResult)
         }
-      }, responseText);
+      };
+
+      // the function `service.callback` will either extract a country code from `responseText` and return it (in `result`)
+      // or (if it has to make additional requests) it will call a `done` callback with the country code when it is ready
+      var result = service.callback(serviceResultHandler, responseText);
 
       if (result) {
         this.onServiceResult.call(this, complete, result);
