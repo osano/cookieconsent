@@ -1216,23 +1216,34 @@
     };
 
     function getScript(url, callback) {
-      var s = document.createElement('script');
+      var timeout, s = document.createElement('script');
 
       s.type = 'text/' + (url.type || 'javascript');
       s.src = url.src || url;
       s.async = false;
 
       s.onreadystatechange = s.onload = function() {
+        // this code handles two scenarios, whether called by onload or onreadystatechange
         var state = s.readyState;
+
+        clearTimeout(timeout);
 
         if (!callback.done && (!state || /loaded|complete/.test(state))) {
           callback.done = true;
           callback();
-          s = s.onreadystatechange = s.onload = null;
+          s = null;
         }
       };
 
       document.body.appendChild(s);
+
+      // You can't catch JSONP Errors, because it's handled by the script tag
+      // one way is to use a timeout
+      timeout = setTimeout(function () {
+        callback.done = true;
+        callback();
+        s = null;
+      }, 3000);
     }
 
     function makeAsyncRequest(url, onComplete, postData, requestHeaders) {
