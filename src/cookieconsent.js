@@ -1089,17 +1089,16 @@
     // This runs the service located at index `currentServiceIndex`.
     // If the service fails, `runNextServiceOnError` will continue trying each service until all fail, or one completes successfully
     Location.prototype.locate = function(complete, error) {
-      var self = this;
       var service = this.getCurrentService();
 
       if (!service) {
-        return;
+        return; // TODO should try next service
       }
 
-      self.callbackComplete = complete;
-      self.callbackError = error;
+      this.callbackComplete = complete;
+      this.callbackError = error;
 
-      self.runService(service, self.runNextServiceOnError.bind(self));
+      this.runService(service, this.runNextServiceOnError.bind(this));
     };
 
     // Potentially adds a callback to a url for jsonp.
