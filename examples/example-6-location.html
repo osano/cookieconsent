@@ -252,21 +252,26 @@
   (function (C, U) {
 
     var popupInst;
-    var elems = U.createInputs(['location']);
-    var updater = U.createUpdater(elems, draw);
+    var $loc = document.getElementById('location');
 
-    U.fillSelect(elems.location, COUNTRY_CODES, COUNTRY_CODES['AC'])
+    U.fillSelect($loc, COUNTRY_CODES, COUNTRY_CODES['AC']);
 
-    updater(); // trigger the first update
-    elems.location.focus(); // focus the first input
+    $loc.onchange = function () {
+      var code = $loc.selectedIndex >= 0 ?
+        $loc[$loc.selectedIndex].value : undefined;
 
-    function draw(inputs) {
-      var code = inputs.location;
+      if (!code)
+        return;
 
-      if (!code) return;
+      draw(code);
+    };
 
-      // applyLaw takes the "preferred" options and changes them slightly to match the country's law
-      var options = getOptions(inputs);
+    draw($loc[0].value);
+
+    $loc.focus();
+
+    function draw(code) {
+      var options = getOptions(code);
 
       if (popupInst) {
         popupInst.clearStatus();
@@ -285,7 +290,7 @@
       document.getElementById('message').innerHTML = getCountryDetails(code);
     }
 
-    function getOptions(input) {
+    function getOptions(code) {
       return {
         type: 'info',
         regionalLaw: true,
@@ -294,8 +299,9 @@
           "button":{"background":"#f71559"}
         },
         law: {
-          countryCode: input.location,
-        },
+          // takes the "preferred" options and changes them slightly to match the country's law
+          countryCode: code,
+        }
       }
     }
 
@@ -305,15 +311,13 @@
       var countryOpts = law.get(code);
 
       if (!countryOpts.hasLaw) {
-        return U.tabularObject({
-          'Has cookie law?': 'no'
-        });
+        return 'Has cookie law? no';
       }
 
       return U.tabularObject({
         'Has cookie law?': 'yes',
-        'Choice has to be revokable?': U.yn(countryOpts.revokable),
-        'Can be automatically dismissed?': U.yn(!countryOpts.explicitAction),
+        'Choice has to be revokable?': countryOpts.revokable ? 'yes' : 'no',
+        'Can be automatically dismissed?': countryOpts.explicitAction ? 'no' : 'yes',
       });
     }
 
