@@ -1371,7 +1371,13 @@
       }
 
       complete(new cc.Popup(options));
-    }, error);
+    }, function(err) {
+      // don't need the law or location options anymore
+      delete options.law;
+      delete options.location;
+
+      error(err, new cc.Popup(options));
+    });
   };
 
   // This function tries to find your current location. It either grabs it from a hardcoded option in
