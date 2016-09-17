@@ -87,9 +87,10 @@ window['cookieconsent_example_util'] = {
 
       options.cookieconsent.initialise(myOpts, function(idx, popup){
         instances[idx] = popup;
-      }.bind(null, i), function(err) {
+      }.bind(null, i), function(idx, err, popup) {
+        instances[idx] = popup;
         console.error(err);
-      })
+      }.bind(null, i));
     }
 
     return instances;
