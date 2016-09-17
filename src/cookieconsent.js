@@ -982,6 +982,8 @@
 
         /* OPTIONAL
 
+        TODO test these syntaxes
+
         function () {
           return serviceDefinition
         },
@@ -1141,7 +1143,8 @@
         var responseText = xhr ? xhr.responseText : '';
 
         // if the resource is a script, then this function is called after the script has been run.
-        // if the script is JSONP, then `cc.locate.jsonp` has already been called (as the JSONP callback).
+        // if the script is JSONP, then a time defined function `callback_{Date.now}` has already
+        // been called (as the JSONP callback). This callback sets the __JSONP_DATA property
         if (service.__JSONP_DATA) {
           responseText = service.__JSONP_DATA;
           delete service.__JSONP_DATA;
@@ -1354,8 +1357,10 @@
   // You can string together these three modules yourself however you want, by writing a new function.
   cc.initialise = function(options, complete, error) {
     var law = new cc.Law(options.law);
+
     if (!complete) complete = function() {};
     if (!error) error = function() {};
+
     cc.getCountryCode(options, function(result) {
       // don't need the law or location options anymore
       delete options.law;
