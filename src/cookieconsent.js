@@ -996,27 +996,35 @@
       ipinfo: function() {
         return {
           // This service responds with JSON, so we simply need to parse it and return the country code
-          url: 'http://ipinfo.io',
+          url: '//ipinfo.io',
           headers: ['Accept: application/json'],
           callback: function(done, response) {
-            var json = JSON.parse(response);
-            return json.error ? toError(json) : {
-              code: json.country
-            };
+            try{
+              var json = JSON.parse(response);
+              return json.error ? toError(json) : {
+                code: json.country
+              };
+            } catch (err) {
+              return toError({error: 'Invalid response'});
+            }
           }
         }
       },
       freegeoip: function() {
         return {
           // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
-          // The callback MUST BE `cookieconsent.locate.jsonp(SERVICE_NAME)` (so cookieconsent.locate.jsonp('freegeoip') for this index)
+          // The `{callback}` is automatically rewritten by the tool
           url: '//freegeoip.net/json/?callback={callback}',
           isScript: true, // this is JSONP, therefore we must set it to run as a script
           callback: function(done, response) {
-            var json = JSON.parse(response);
-            return json.error ? toError(json) : {
-              code: json.country_code
-            };
+            try{
+              var json = JSON.parse(response);
+              return json.error ? toError(json) : {
+                code: json.country_code
+              };
+            } catch (err) {
+              return toError({error: 'Invalid response'});
+            }
           }
         }
       },
