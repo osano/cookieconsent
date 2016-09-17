@@ -322,11 +322,6 @@
       //
       autoAttach: true,
 
-      // Make this false if you want to disable all regional overrides for settings.
-      // If true, options can differ by country, depending on their cookie law.
-      // does not affect hiding the concent window for countries that do no have cooki law.
-      regionalLaw: true,
-
       // simple whitelist/blacklist for pages. specify page by:
       //   - using a string : '/index.html'           (matches '/index.html' exactly) OR
       //   - using RegExp   : /\/page_[\d]+\.html/    (matched '/page_1.html' and '/page_2.html' etc)
@@ -1282,6 +1277,11 @@
   cc.Law = (function() {
 
     var defaultOptions = {
+      // Make this false if you want to disable all regional overrides for settings.
+      // If true, options can differ by country, depending on their cookie law.
+      // It does not affect hiding the popup for countries that do not have cookie law.
+      regionalLaw: true,
+
       // countries that enforce some version of a cookie law
       hasLaw: ['AT', 'BE', 'BG', 'HR', 'CZ', 'CY', 'DK', 'EE', 'FI', 'FR', 'DE', 'EL', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'SK', 'SI', 'ES', 'SE', 'GB', 'UK'],
 
@@ -1324,7 +1324,7 @@
         options.enabled = false;
       }
 
-      if (options.regionalLaw) {
+      if (this.options.regionalLaw) {
         if (country.revokable) {
           // We must provide an option to revoke consent at a later time
           options.revokable = true;
