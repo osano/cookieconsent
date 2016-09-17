@@ -1196,7 +1196,7 @@
         console.log('The service[' + idx + '] (' + service.url + ') responded with the following error', err);
 
         // if another service exists
-        if (serviceDefinitions[idx + 1]) {
+        if (this.options.services[idx + 1]) {
           // an error occurred, try the next service
           this.currentServiceIndex++;
           this.runService(this.getCurrentService(), this.runNextServiceOnError.bind(this));
