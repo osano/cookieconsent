@@ -976,6 +976,12 @@
     // cases, the services `callback` property is called with a `done` function. When performing async operations, this must be called
     // with the data (or Error), and `cookieconsent.locate` will take care of the rest
     var defaultOptions = {
+
+      // The default timeout is 5 seconds. This is mainly needed to catch JSONP requests that error.
+      // Otherwise there is no easy way to catch JSONP errors. That means that if a JSONP fails, the
+      // app will take `timeout` milliseconds to react to a JSONP network error.
+      timeout: 5000,
+
       // the order that services will be attempted in
       services: [
         'freegeoip',
@@ -1201,7 +1207,7 @@
         // call the service callback with the response text (so it can parse the response)
         self.runServiceCallback.call(self, complete, service, responseText);
 
-      }, service.data, service.headers);
+      }, this.options.timeout, service.data, service.headers);
 
       // `service.data` and `service.headers` are optional (they only count if `!service.isScript` anyway)
     };
@@ -1290,8 +1296,8 @@
       console.error('The service[' + idx + '] (' + service.url + ') responded with the following error', err);
     };
 
-    function getScript(url, callback) {
-      var timeout, s = document.createElement('script');
+    function getScript(url, callback, timeout) {
+      var timeoutIdx, s = document.createElement('script');
 
       s.type = 'text/' + (url.type || 'javascript');
       s.src = url.src || url;
@@ -1301,7 +1307,7 @@
         // this code handles two scenarios, whether called by onload or onreadystatechange
         var state = s.readyState;
 
-        clearTimeout(timeout);
+        clearTimeout(timeoutIdx);
 
         if (!callback.done && (!state || /loaded|complete/.test(state))) {
           callback.done = true;
@@ -1314,14 +1320,14 @@
 
       // You can't catch JSONP Errors, because it's handled by the script tag
       // one way is to use a timeout
-      timeout = setTimeout(function () {
+      timeoutIdx = setTimeout(function () {
         callback.done = true;
         callback();
         s.onreadystatechange = s.onload = null;
-      }, 10000);
+      }, timeout);
     }
 
-    function makeAsyncRequest(url, onComplete, postData, requestHeaders) {
+    function makeAsyncRequest(url, onComplete, timeout, postData, requestHeaders) {
       var xhr = new(window.XMLHttpRequest || window.ActiveXObject)('MSXML2.XMLHTTP.3.0');
 
       xhr.open(postData ? 'POST' : 'GET', url, 1);
