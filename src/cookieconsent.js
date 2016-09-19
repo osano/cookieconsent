@@ -489,7 +489,8 @@
         el.style.display = '';
 
         if (this.options.static) {
-          util.addClass(this.element.parentNode, 'cc-grow-active');
+          var height = this.element.clientHeight;
+          this.element.parentNode.style.maxHeight = height + 'px';
         }
 
         var fadeInTimeout = 20; // (ms) DO NOT MAKE THIS VALUE SMALLER. See below
@@ -516,7 +517,7 @@
 
       if (!util.hasClass(el, 'cc-invisible')) {
         if (this.options.static) {
-          util.removeClass(el.parentNode, 'cc-grow-active');
+          this.element.parentNode.style.maxHeight = '';
         }
 
         this.afterTransition = afterFadeOut.bind(this, el);

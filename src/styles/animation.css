@@ -49,8 +49,3 @@
   -o-transition: max-height 1s;
   transition: max-height 1s;
 }
-
-.cc-grow-active {
-  /* On hover, set the max-height to something large. In this case there's an obvious limit. */
-  max-height: 4.5em;
-}
