@@ -277,7 +277,7 @@
       //    -edgeless
       //    -classic
       // use your own style name and use `.cc-theme-STYLENAME` class in CSS to edit .
-      // Note: style "wire" is used for the configurator, but has no CSS styles of it's own, only palette is used.
+      // Note: style "wire" is used for the configurator, but has no CSS styles of its own, only palette is used.
       theme: 'block',
 
       // The popup is `fixed` by default, but if you want it to be static (inline with the page content), set this to false
@@ -501,7 +501,7 @@
         // This is because we are waiting for a "browser redraw" before we remove the 'cc-invisible' class.
         // If the class is remvoed before a redraw could happen, then the fadeIn effect WILL NOT work, and
         // the popup will appear from nothing. Therefore we MUST allow enough time for the browser to do
-        // it's thing. The actually difference between using 0 and 20 in a set timeout is neglegible anyway
+        // its thing. The actually difference between using 0 and 20 in a set timeout is neglegible anyway
         this.openingTimeout = setTimeout(afterFadeIn.bind(this, el), fadeInTimeout);
       }
     };
@@ -1217,7 +1217,7 @@
     };
 
     // The service request has run (and possibly has a `responseText`) [no `responseText` if `isScript`]
-    // We need to run it's callback which determines if its successful or not
+    // We need to run its callback which determines if its successful or not
     // `complete` is called on success or failure
     Location.prototype.runServiceCallback = function(complete, service, responseText) {
       var self = this;
