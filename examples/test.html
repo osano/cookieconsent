@@ -45,32 +45,12 @@
   };
 
   var POPUPS = {
-    popup: {
-      type: 'info',
-      position: 'bottom',
-      palette: palettes.mono,
-      regionalLaw: true,
-    },
-    law: {
-      type: 'info',
-      position: 'top',
-      palette: palettes.honeybee,
-      law: {
-        countryCode: 'GB'
-      },
-      regionalLaw: true,
-    },
-    locate: {
-      type: 'opt-out',
-      position: 'bottom-left',
-      palette: palettes.blurple,
-      location: {
-        locationServices: ['maxmind','freegeoip','ipinfo'],
-      },
-      regionalLaw: true,
-    }
+    type: 'info',
+    position: 'bottom',
+    palette: palettes.mono,
+    location: true,
   };
 
-  cookieconsent.initialise(POPUPS.popup);
+  cookieconsent.initialise(POPUPS);
 
 </script>

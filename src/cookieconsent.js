@@ -980,39 +980,31 @@
       services: [
         'freegeoip',
         'ipinfo',
-        'maxmind',
+        'maxmind'
 
-        /* OPTIONAL
+        /*
 
-        TODO test these syntaxes
+        // 'ipinfodb' requires some options, so we define it using an object
+        // this object will be passed to the function that defines the service
 
-        function () {
-          return serviceDefinition
+        {
+          name: 'ipinfodb',
+          interpolateUrl: {
+            key: '488482b7334720b92b6d2242d7e1eacb6e0e6752feac8d8cdb62aa55481e1ae'
+          },
         },
 
-        {name: 'myService', ...serviceDefinition},
+        // as well as defining an object, you can define a function that returns an object
+
+        function () {
+          return {name: 'ipinfodb'};
+        },
 
         */
       ],
 
       serviceDefinitions: {
-        ipinfo: function() {
-          return {
-            // This service responds with JSON, so we simply need to parse it and return the country code
-            url: '//ipinfo.io',
-            headers: ['Accept: application/json'],
-            callback: function(done, response) {
-              try{
-                var json = JSON.parse(response);
-                return json.error ? toError(json) : {
-                  code: json.country
-                };
-              } catch (err) {
-                return toError({error: 'Invalid response'});
-              }
-            }
-          }
-        },
+
         freegeoip: function() {
           return {
             // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
@@ -1026,11 +1018,49 @@
                   code: json.country_code
                 };
               } catch (err) {
-                return toError({error: 'Invalid response'});
+                return toError({error: 'Invalid response ('+err+')'});
               }
             }
           }
         },
+
+        ipinfo: function() {
+          return {
+            // This service responds with JSON, so we simply need to parse it and return the country code
+            url: '//ipinfo.io',
+            headers: ['Accept: application/json'],
+            callback: function(done, response) {
+              try{
+                var json = JSON.parse(response);
+                return json.error ? toError(json) : {
+                  code: json.country
+                };
+              } catch (err) {
+                return toError({error: 'Invalid response ('+err+')'});
+              }
+            }
+          }
+        },
+
+        // This service requires an option to define `key`. Options are proived using objects or functions
+        ipinfodb: function(options) {
+          return {
+            // This service responds with JSON, so we simply need to parse it and return the country code
+            url: '//api.ipinfodb.com/v3/ip-country/?key={key}&format=json&callback={callback}',
+            isScript: true, // this is JSONP, therefore we must set it to run as a script
+            callback: function(done, response) {
+              try{
+                var json = JSON.parse(response);
+                return json.statusCode == 'ERROR' ? toError({error: json.statusMessage}) : {
+                  code: json.countryCode
+                };
+              } catch (err) {
+                return toError({error: 'Invalid response ('+err+')'});
+              }
+            }
+          }
+        },
+
         maxmind: function() {
           return {
             // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
@@ -1068,38 +1098,54 @@
         util.deepExtend(this.options, options);
       }
 
-      this.currentServiceIndex = 0; // the index (in options) of the service we're currently using
+      this.currentServiceIndex = -1; // the index (in options) of the service we're currently using
     }
+
+    Location.prototype.getNextService = function() {
+      var service;
+
+      do {
+        service = this.getServiceByIdx(++this.currentServiceIndex);
+      } while (!service);
+
+      return service;
+    };
 
     Location.prototype.getServiceByIdx = function(idx) {
       // This can either be the name of a default locationService, or a function.
       var serviceOption = this.options.services[idx];
 
-      // User can provide their own servives as functions.
-      if (typeof serviceOption === 'function') return serviceOption;
+      // If it's a string, use one of the location services.
+      if (typeof serviceOption === 'function') {
+        var dynamicOpts = serviceOption();
+        if (dynamicOpts.name) {
+          util.deepExtend(dynamicOpts, this.options.serviceDefinitions[dynamicOpts.name](dynamicOpts));
+        }
+        return dynamicOpts;
+      }
 
       // If it's a string, use one of the location services.
-      if (typeof serviceOption === 'string') return this.options.serviceDefinitions[serviceOption]();
+      if (typeof serviceOption === 'string') {
+        return this.options.serviceDefinitions[serviceOption]();
+      }
 
       // If it's an object, assume {name: 'ipinfo', ...otherOptions}
       // Allows user to pass in API keys etc.
       if (util.isPlainObject(serviceOption)) {
         return this.options.serviceDefinitions[serviceOption.name](serviceOption);
       }
-    };
 
-    Location.prototype.getCurrentService = function() {
-      var idx = this.currentServiceIndex;
-      return this.getServiceByIdx(idx);
+      return null;
     };
 
     // This runs the service located at index `currentServiceIndex`.
     // If the service fails, `runNextServiceOnError` will continue trying each service until all fail, or one completes successfully
     Location.prototype.locate = function(complete, error) {
-      var service = this.getCurrentService();
+      var service = this.getNextService();
 
       if (!service) {
-        return; // TODO should try next service
+        error(new Error('No services to run'));
+        return;
       }
 
       this.callbackComplete = complete;
@@ -1110,7 +1156,8 @@
 
     // Potentially adds a callback to a url for jsonp.
     Location.prototype.setupUrl = function(service) {
-      return service.url.replace(/\{(.*?)\}/, function(_, param) {
+      var serviceOpts = this.getCurrentServiceOpts();
+      return service.url.replace(/\{(.*?)\}/g, function(_, param) {
         if (param === 'callback') {
           var tempName = 'callback' + Date.now();
           window[tempName] = function(res) {
@@ -1118,18 +1165,15 @@
           }
           return tempName;
         }
+        if (param in serviceOpts.interpolateUrl) {
+          return serviceOpts.interpolateUrl[param];
+        }
       });
     };
 
     // requires a `service` object that defines at least a `url` and `callback`
     Location.prototype.runService = function(service, complete) {
       var self = this;
-
-      // User defined services are just a function that returns a result.
-      if (typeof service === 'function') {
-        service(complete);
-        return;
-      }
 
       // basic check to ensure it resembles a `service`
       if (!service || !service.url || !service.callback) {
@@ -1139,8 +1183,10 @@
       // we call either `getScript` or `makeAsyncRequest` depending on the type of resource
       var requestFunction = service.isScript ? getScript : makeAsyncRequest;
 
+      var url = this.setupUrl(service);
+
       // both functions have similar signatures so we can pass the same arguments to both
-      requestFunction(this.setupUrl(service), function(xhr) {
+      requestFunction(url, function(xhr) {
         // if `!xhr`, then `getScript` function was used, so there is no response text
         var responseText = xhr ? xhr.responseText : '';
 
@@ -1197,17 +1243,13 @@
     // if `err` is set, the next service handler is called
     // if `err` is null, the `onComplete` handler is called with `data`
     Location.prototype.runNextServiceOnError = function(err, data) {
-      var service = this.getCurrentService();
-      var idx = this.currentServiceIndex;
-
       if (err) {
-        console.log('The service[' + idx + '] (' + service.url + ') responded with the following error', err);
+        this.logError(err);
 
-        // if another service exists
-        if (this.options.services[idx + 1]) {
-          // an error occurred, try the next service
-          this.currentServiceIndex++;
-          this.runService(this.getCurrentService(), this.runNextServiceOnError.bind(this));
+        var nextService = this.getNextService();
+
+        if (nextService) {
+          this.runService(nextService, this.runNextServiceOnError.bind(this));
         } else {
           this.completeService.call(this, this.callbackError, new Error('All services failed'));
         }
@@ -1216,11 +1258,36 @@
       }
     };
 
+    Location.prototype.getCurrentServiceOpts = function() {
+      var val = this.options.services[this.currentServiceIndex];
+
+      if (typeof val == 'string') {
+        return {name: val};
+      }
+
+      if (typeof val == 'function') {
+        return val();
+      }
+
+      if (util.isPlainObject(val)) {
+        return val;
+      }
+
+      return {};
+    };
+
     // calls the `onComplete` callback after resetting the `currentServiceIndex`
     Location.prototype.completeService = function(fn, data) {
-      this.currentServiceIndex = 0;
+      this.currentServiceIndex = -1;
 
       fn && fn(data);
+    };
+
+    Location.prototype.logError = function (err) {
+      var idx = this.currentServiceIndex;
+      var service = this.getServiceByIdx(idx);
+
+      console.error('The service[' + idx + '] (' + service.url + ') responded with the following error', err);
     };
 
     function getScript(url, callback) {
@@ -1239,7 +1306,7 @@
         if (!callback.done && (!state || /loaded|complete/.test(state))) {
           callback.done = true;
           callback();
-          s = null;
+          s.onreadystatechange = s.onload = null;
         }
       };
 
@@ -1250,8 +1317,8 @@
       timeout = setTimeout(function () {
         callback.done = true;
         callback();
-        s = null;
-      }, 3000);
+        s.onreadystatechange = s.onload = null;
+      }, 10000);
     }
 
     function makeAsyncRequest(url, onComplete, postData, requestHeaders) {
