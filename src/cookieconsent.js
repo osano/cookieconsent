@@ -115,16 +115,14 @@
     },
 
     // used to change color on highlight
-    alterLuminance: function(hex, lum) {
-      var rgb = "#",
-        c, i;
-      hex = this.normaliseHex(hex);
-      for (i = 0; i < 3; ++i) {
-        c = parseInt(hex.substr(i * 2, 2), 16);
-        c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-        rgb += ("00" + c).substr(c.length);
-      }
-      return rgb;
+    getLuminance: function(hex) {
+      var num = parseInt(this.normaliseHex(hex), 16), 
+          amt = 38,
+          R = (num >> 16) + amt,
+          B = (num >> 8 & 0x00FF) + amt,
+          G = (num & 0x0000FF) + amt;
+      var newColour = (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (B<255?B<1?0:B:255)*0x100 + (G<255?G<1?0:G:255)).toString(16).slice(1);
+      return '#'+newColour;
     },
 
     isMobile: function() {
@@ -815,9 +813,11 @@
             'border-color: ' + button.border,
             'background-color: ' + button.background
           ];
-          colorStyles[prefix + ' .cc-btn:hover'] = [
-            'background-color: ' + getHoverColour(button.background)
-          ];
+          
+          if(button.background != 'transparent') 
+            colorStyles[prefix + ' .cc-btn:hover'] = [
+              'background-color: ' + getHoverColour(button.background)
+            ];
 
           if (highlight) {
             //assumes highlight.background is set
@@ -862,7 +862,7 @@
       if (hex == '000000') {
         return '#222';
       }
-      return util.alterLuminance(hex, 0.2);
+      return util.getLuminance(hex);
     }
 
     function removeCustomStyle(palette) {
