@@ -673,7 +673,7 @@
       var opts = this.options;
 
       // removes link if showLink is false
-      if (opts.showLink) {
+      if (!opts.showLink) {
         opts.elements.link = '';
         opts.elements.messagelink = opts.elements.message;
       }
