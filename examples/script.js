@@ -1,47 +1,6 @@
 
 window['cookieconsent_example_util'] = {
 
-  // Creates an object of elements.
-  createInputs: function (inputs) {
-    var elems = {};
-    inputs.forEach(function (c, i, a) {
-      elems[c] = document.getElementById(c);
-    });
-    return elems;
-  },
-
-  // Returns a function that is called every `onchange` event.
-  // Calling the returned function triggers the passed function `draw`.
-  createUpdater: function (elems, draw) {
-    var getInputs = this.getInputs.bind(this);
-    var updater = function () {
-      draw(getInputs(elems));
-    };
-    for (var prop in elems) {
-      elems[prop].onchange = function () { updater() };
-    }
-    return updater;
-  },
-
-  // Maps an object of elements into an object of the elements values
-  getInputs: function (elems) {
-    return this.mapObject(elems, function (c) {
-      if (c.tagName != 'SELECT') {
-        return c.value;
-      }
-      return c.selectedIndex >= 0 ? c[c.selectedIndex].value : undefined;
-    })
-  },
-
-  // Repeatedly uses `fillSelect` for corresponding keys in `inputs` and `opts`.
-  // `optionsFormat` must be a function that accepts an array of values and returns an object of those values.
-  //                 (the object keys are used as option values, and the object values are used as the option labels)
-  createSelects: function (inputs, opts, optionsFormat) {
-    for (var prop in inputs) {
-      this.fillSelect(inputs[prop], optionsFormat(opts[prop]), opts[prop][0]);
-    }
-  },
-
   // Fill a select element with options (html can be configured using `cb`)
   fillSelect: function (select, options, selected, cb) {
     var html = '';
@@ -54,33 +13,8 @@ window['cookieconsent_example_util'] = {
     select.innerHTML = html;
   },
 
-  // Takes an array of values and uses them as keys and provides a callback to generate a new value from the key
-  formatSelectOptionsFromArray: function (cb, opts) {
-    var obj = {};
-    opts.forEach(function (c) {
-      obj[c] = cb.apply(null, arguments);
-    });
-    return obj;
-  },
-
-  pretty: function (str) {
-    return str[0].toUpperCase() + str.slice(1).replace(/\-/g, ' ');
-  },
-
-  yn: function (bool) {
-    return bool ? 'yes' : 'no';
-  },
-
   getSimpleOption: function (label, value, selected) {
     return '<option ' + (selected ? 'selected="selected"' : '') + ' value="' + value + '">' + label + '</option>';
-  },
-
-  mapObject: function (obj, cb) {
-    var newObj = {};
-    Object.keys(obj).map(function(key) {
-      newObj[key] = cb(obj[key], key, obj);
-    });
-    return newObj;
   },
 
   tabularObject: function (obj, formatVal, formatKey) {
@@ -121,7 +55,7 @@ window['cookieconsent_example_util'] = {
       // from this point, 'targ' will be a direct decendant of opts.selector
       var idx = Array.prototype.indexOf.call(options.selector.children, targ);
 
-      if (idx >= 0) {
+      if (idx >= 0 && instances[idx]) {
         instances[idx].clearStatus();
 
         // We could remember the popup that's currently open, but it gets complicated when we consider
@@ -130,11 +64,10 @@ window['cookieconsent_example_util'] = {
           if (popup.isOpen()) {
             popup.close()
           }
-          popup.toggleRevokeButton();
+          popup.toggleRevokeButton(false);
         });
 
         instances[idx].open();
-
       }
     };
 
@@ -147,7 +80,17 @@ window['cookieconsent_example_util'] = {
           }
         };
       } (options.popups[examples[i]]);
-      instances[i] = options.cookieconsent.factory(options.popups[examples[i]]);
+
+      var myOpts = options.popups[examples[i]];
+
+      myOpts.autoOpen = false;
+
+      options.cookieconsent.initialise(myOpts, function(idx, popup){
+        instances[idx] = popup;
+      }.bind(null, i), function(idx, err, popup) {
+        instances[idx] = popup;
+        console.error(err);
+      }.bind(null, i));
     }
 
     return instances;

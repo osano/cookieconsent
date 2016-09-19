@@ -8,6 +8,7 @@
   <title>Demo 1 - Themes</title>
 
   <link href="examples/style.css" rel="stylesheet">
+  <link href="build/cookieconsent.min.css" rel="stylesheet">
 
 <body role="document">
 
@@ -58,7 +59,6 @@
           type: 'info',
           position: 'top',
           palette: palettes.honeybee,
-          pushdown: false
         },
         'Blurple': {
           type: 'opt-out',
@@ -72,7 +72,7 @@
         'Nuclear': {
           type: 'info',
           position: 'bottom-right',
-          windowstyle: "edgeless",
+          theme: "edgeless",
           palette: palettes.nuclear,
           content: {
             "dismiss": "I accept certain doom"
@@ -85,7 +85,7 @@
         },
         'Neon': {
           type: 'info',
-          windowstyle: "classic",
+          theme: "classic",
           position: 'bottom-left',
           palette: palettes.neon,
         },

@@ -8,6 +8,7 @@
   <title>Demo 7 - JavaScript API</title>
 
   <link href="examples/style.css" rel="stylesheet">
+  <link href="build/cookieconsent.min.css" rel="stylesheet">
 
 <body class="example7" role="document">
 
@@ -49,8 +50,8 @@
     </div>
   </div>
 
-<script src="build/cookieconsent.min.js"></script>
 <script src="examples/script.js"></script>
+<script src="build/cookieconsent.min.js"></script>
 <script>
 
   var h = document.getElementById('console');
@@ -60,14 +61,21 @@
     h.scrollTop = h.scrollHeight;
   }
 
-  var p = cookieconsent.factory({
+  var p;
+  cookieconsent.initialise({
     type: 'opt-out',
-    palette: {"popup":{"background":"#eaf7f7","text":"#5c7291"},"button":{"background":"#56cbdb","text":"#ffffff"}},
+    palette: {
+      "popup":{"background":"#eaf7f7","text":"#5c7291"},
+      "button":{"background":"#56cbdb","text":"#ffffff"},
+    },
     onPopupOpen: function() {
       log('<em>onPopupOpen()</em> called');
     },
     onPopupClose: function() {
       log('<em>onPopupClose()</em> called');
+    },
+    onInitialise: function (status) {
+      log('<em>onInitialise()</em> called with status <em>'+status+'</em>');
     },
     onStatusChange: function(status) {
       log('<em>onStatusChange()</em> called with status <em>'+status+'</em>');
@@ -75,6 +83,10 @@
     onRevokeChoice: function() {
       log('<em>onRevokeChoice()</em> called');
     },
+  }, function (popup) {
+    p = popup;
+  }, function (err) {
+    console.error(err);
   });
 
   document.getElementById('btn-dismissCookie').onclick = function (e) {
@@ -99,13 +111,8 @@
   };
 
   document.getElementById('btn-revokeChoice').onclick = function (e) {
-
     log("Calling <em>revokeChoice()</em>");
-
-    // @todo Add revokeChoice() method to Cookie Consent, replace all of this with that
-    p.options.onRevokeChoice();
-    p.clearStatus();
-    p.open();
+    p.revokeChoice();
 
   };
 

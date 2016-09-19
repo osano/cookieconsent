@@ -8,6 +8,7 @@
   <title>Demo 6 - Location</title>
 
   <link href="examples/style.css" rel="stylesheet">
+  <link href="build/cookieconsent.min.css" rel="stylesheet">
 
   <style>
     #message {height: 5em}
@@ -40,8 +41,9 @@
   </div>
 
 <script src="examples/script.js"></script>
-<script src="build/cookieconsent.min.js"></script>
+<script src="src/cookieconsent.js"></script>
 <script>
+
   var COUNTRY_CODES = {
     // Representative group of countries with key differences
     'US' : 'United States',
@@ -245,62 +247,77 @@
     'YE' : 'Yemen',
     'ZM' : 'Zambia',
     'ZW' : 'Zimbabwe'
-    };
+  };
 
   (function (C, U) {
 
-    var elems = U.createInputs(['location']);
+    var popupInst;
+    var $loc = document.getElementById('location');
 
-    var updater = U.createUpdater(elems, draw.bind(null, '__cookieconsent_popup'));
+    U.fillSelect($loc, COUNTRY_CODES, COUNTRY_CODES['AC']);
 
-    U.fillSelect(elems.location, COUNTRY_CODES, COUNTRY_CODES['AC'])
+    $loc.onchange = function () {
+      var code = $loc.selectedIndex >= 0 ?
+        $loc[$loc.selectedIndex].value : undefined;
 
-    updater(); // trigger the first update
-    elems.location.focus(); // focus the first input
+      if (!code)
+        return;
 
-    function draw(name, inputs) {
-      var code = inputs.location;
-      if (!code) return;
+      draw(code);
+    };
 
-      // applyLaw takes the "preferred" options and changes them slightly to match the country's law
-      var options = getOptions(inputs);
-      options.countryCode = code;
+    draw($loc[0].value);
 
-      if (!window[name]) {
-        window[name] = cookieconsent.factory(options);
-      } else {
-        window[name].clearStatus();
-        window[name].initialise(options);
+    $loc.focus();
+
+    function draw(code) {
+      var options = getOptions(code);
+
+      if (popupInst) {
+        popupInst.clearStatus();
+        popupInst.destroy();
+        popupInst = null;
       }
-      window[name].open();
+
+      cookieconsent.initialise(options, function (popup) {
+        popupInst = popup;
+        popupInst.autoOpen();
+      }, function (err) {
+        console.error(err)
+      });
 
       // show country options on screen (so user knows how this country affected the settings)
       document.getElementById('message').innerHTML = getCountryDetails(code);
     }
 
-    function getOptions(input) {
+    function getOptions(code) {
       return {
         type: 'info',
-        revokable: 'false',
         regionalLaw: true,
-        palette: {"popup":{"background":"#343c66","text":"#cfcfe8"},"button":{"background":"#f71559"}}
+        palette: {
+          "popup":{"background":"#343c66","text":"#cfcfe8"},
+          "button":{"background":"#f71559"}
+        },
+        law: {
+          // takes the "preferred" options and changes them slightly to match the country's law
+          countryCode: code,
+        }
       }
     }
 
     function getCountryDetails(code) {
       // We only get these to show (on screen) how the country behaves
-      var countryOpts = cookieconsent.law.get(code);
+      var law = new cookieconsent.Law({});
+      var countryOpts = law.get(code);
 
       if (!countryOpts.hasLaw) {
-        return U.tabularObject({
-          'Has cookie law?': 'no'
-        });
+        return 'Has cookie law? no';
       }
 
       return U.tabularObject({
         'Has cookie law?': 'yes',
-        'Choice has to be revokable?': U.yn(countryOpts.revokable),
-        'Can be automatically dismissed?': U.yn(!countryOpts.explicitAction),
+        'Choice has to be revokable?': countryOpts.revokable ? 'yes' : 'no',
+        'Can be automatically dismissed?': countryOpts.explicitAction ? 'no' : 'yes',
       });
     }
 

@@ -16,6 +16,10 @@
   z-index: 9999;
 }
 
+.cc-window.cc-static {
+  position: static;
+}
+
 /* 2 basic types of window - floating / banner */
 .cc-window.cc-floating {
   padding: 2em;
