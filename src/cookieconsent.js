@@ -995,7 +995,8 @@
         {
           name: 'ipinfodb',
           interpolateUrl: {
-            key: '488482b7334720b92b6d2242d7e1eacb6e0e6752feac8d8cdb62aa55481e1ae'
+            // obviously, this is a fake key
+            api_key: 'vOgI3748dnIytIrsJcxS7qsDf6kbJkE9lN4yEDrXAqXcKUNvjjZPox3ekXqmMMld'
           },
         },
 
@@ -1051,7 +1052,7 @@
         ipinfodb: function(options) {
           return {
             // This service responds with JSON, so we simply need to parse it and return the country code
-            url: '//api.ipinfodb.com/v3/ip-country/?key={key}&format=json&callback={callback}',
+            url: '//api.ipinfodb.com/v3/ip-country/?key={api_key}&format=json&callback={callback}',
             isScript: true, // this is JSONP, therefore we must set it to run as a script
             callback: function(done, response) {
               try{
