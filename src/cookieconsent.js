@@ -280,6 +280,10 @@
       // Note: style "wire" is used for the configurator, but has no CSS styles of it's own, only palette is used.
       theme: 'block',
 
+      // The popup is `fixed` by default, but if you want it to be static (inline with the page content), set this to false
+      // Note: by default, we animate the height of the popup from 0 to full size
+      static: false,
+
       // if you want custom colours, pass them in here. this object should look like this.
       // ideally, any custom colours/themes should be created in a separate style sheet, as this is more efficient.
       //   {
