@@ -685,6 +685,7 @@
         })
       });
 
+      // checks if the type is valid and default to info if it's not
       var complianceType = opts.compliance[opts.type];
 
       if (!complianceType) {
@@ -696,6 +697,7 @@
         return interpolated[name];
       });
 
+      // checks if the layout is valid and default to basic if it's not
       var layout = opts.layouts[opts.layout];
 
       if (!layout) {
