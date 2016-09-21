@@ -8,6 +8,7 @@ var runSequence = require('run-sequence');
 var autoprefixer = require('gulp-autoprefixer');
 var bump = require('gulp-bump');
 var yargs = require('yargs');
+var diff = require('gulp-diff');
 
 
 var buildFolder = './build';
@@ -27,7 +28,7 @@ var cssBuildFiles = [
 
 
 gulp.task('cleanup:begin', function () {
-  return deleteDirs(['./build']);
+  return deleteDirs([buildFolder]);
 });
 
 gulp.task('minify:js', function () {
@@ -46,13 +47,24 @@ gulp.task('minify:css', function () {
 });
 
 gulp.task('bump', function(callback) {
-  gulp.src(['./bower.json', './package.json'])
-      .pipe(bump({'version': yargs.argv.tag}))
-      .pipe(gulp.dest('./'))
+  return gulp.src(['./bower.json', './package.json'])
+             .pipe(bump({'version': yargs.argv.tag}))
+             .pipe(gulp.dest('./'))
 });
 
 gulp.task('build', function(callback) {
   return runSequence('cleanup:begin', 'minify:js', 'minify:css', callback);
+});
+
+gulp.task('verify', function(callback) {
+  buildFolder = "./build-verify";
+  return runSequence('cleanup:begin', 'minify:js', 'minify:css', 'verify:diff', callback);
+});
+
+gulp.task('verify:diff', function(callback) {
+  return gulp.src('./build/*')
+             .pipe(diff('./build-verify'))
+             .pipe(diff.reporter({ fail: true }));
 });
 
 gulp.task('build:release', function(callback) {
@@ -60,7 +72,7 @@ gulp.task('build:release', function(callback) {
     throw "A version number (e.g. 3.0.1) is required to build a release of cookieconsent"
   }
 
-  return runSequence('build', 'bump')
+  return runSequence('build', 'bump', callback)
 });
 
 gulp.task('watch', function() {

@@ -26,5 +26,8 @@
     "url": "https://github.com/insites/cookieconsent.git"
   },
   "author": "Silktide Ltd.",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "gulp-diff": "^1.0.0"
+  }
 }
