@@ -1,13 +1,20 @@
 [![Build Status](https://travis-ci.org/insites/cookieconsent.svg)](https://travis-ci.org/insites/cookieconsent)
-# IMPORTANT
-
-We're currently (7th September 2016) currently in the process of releasing version 3.0. The documentation will incomplete and confusing until this is complete.
-
 ## What is Cookie Consent? 
 
 [Cookie Consent](https://cookieconsent.insites.com/) is a lightweight JavaScript plugin for alerting users about the use of cookies on your website.
 
 It is designed to help you comply with the hideous EU Cookie Law and not make you want to kill yourself in the process. So we made it fast, free, and relatively painless.
+
+## Version 3.0
+
+Version 3.0 is a complete rewrite from version 2, allowing us to integrate a few of the more features version 2 wasn't designed to be able to handle.
+
+The most substantual additional features are:
+
+- the ability to GeoLocate and only show the addon to people in the relevant countries
+- callback hooks for showing/accepting/revoking the banner
+- support for different types of compliance, giving you the flexibility to obey even the strictest cookie laws
+- easy no fuss customisable styles
 
 ## Installation
 
