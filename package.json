@@ -15,7 +15,8 @@
     "autoprefixer": "^6.4.0",
     "gulp-bump": "^2.4.0",
     "gulp-concat": "^2.6.0",
-    "yargs": "^5.0.0"
+    "yargs": "^5.0.0",
+    "gulp-diff": "^1.0.0"
   },
   "homepage": "http://cookieconsent.insites.com/",
   "scripts": {
@@ -26,8 +27,5 @@
     "url": "https://github.com/insites/cookieconsent.git"
   },
   "author": "Silktide Ltd.",
-  "license": "MIT",
-  "dependencies": {
-    "gulp-diff": "^1.0.0"
-  }
+  "license": "MIT"
 }
