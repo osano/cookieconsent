@@ -7,14 +7,12 @@ It is designed to help you comply with the hideous EU Cookie Law and not make yo
 
 ## Version 3.0
 
-Version 3.0 is a complete rewrite from version 2, allowing us to integrate a few of the more features version 2 wasn't designed to be able to handle.
-
-The most substantual additional features are:
+Version 3.0 is a complete rewrite from version 2. The most substantial new features are:
 
 - the ability to GeoLocate and only show the addon to people in the relevant countries
 - callback hooks for showing/accepting/revoking the banner
 - support for different types of compliance, giving you the flexibility to obey even the strictest cookie laws
-- easy no fuss customisable styles
+- easy no-fuss themes and customisable styles
 
 ## Installation
 
