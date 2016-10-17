@@ -83,7 +83,8 @@
   border-color: transparent;
 }
 
-.cc-highlight .cc-btn:first-child:hover {
+.cc-highlight .cc-btn:first-child:hover,
+.cc-highlight .cc-btn:first-child:focus {
   background-color: transparent;
   text-decoration: underline;
 }
@@ -102,6 +103,7 @@
   /*  - setting the line height normalises the height */
   line-height: .75;
 }
-.cc-close:hover {
+.cc-close:hover,
+.cc-close:focus {
   opacity: 1;
 }
