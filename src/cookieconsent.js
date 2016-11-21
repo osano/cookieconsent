@@ -1085,9 +1085,13 @@
               }
 
               geoip2.country(function(location) {
-                done({
-                  code: location.country.iso_code
-                });
+                try {
+                  done({
+                    code: location.country.iso_code
+                  });
+                } catch (err) {
+                  done(toError(err));
+                }
               }, function(err) {
                 done(toError(err));
               });
@@ -1116,7 +1120,7 @@
 
       do {
         service = this.getServiceByIdx(++this.currentServiceIndex);
-      } while (!service);
+      } while (this.currentServiceIndex < this.options.services.length && !service);
 
       return service;
     };
