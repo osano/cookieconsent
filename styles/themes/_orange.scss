@@ -1,0 +1,56 @@
+@import '../_variables';
+
+.cc_container {
+
+    background: #ff6600;
+    color: #fff;
+    font-size:17px;
+    font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
+    box-sizing:border-box;
+
+    ::-moz-selection {
+        background: #ff5e99;
+        color: #fff;
+        text-shadow: none;
+    }
+
+
+    .cc_btn,
+    .cc_btn:visited {
+        color: #ff6600;
+        background-color: #000000;
+        transition: background 200ms ease-in-out, color 200ms ease-in-out, box-shadow 200ms ease-in-out;
+        -webkit-transition: background 200ms ease-in-out, color 200ms ease-in-out, box-shadow 200ms ease-in-out;
+        border-radius: 5px;
+        -webkit-border-radius: 5px;
+    }
+
+    .cc_btn:hover,
+    .cc_btn:active {
+        background-color: #fff;
+        color:#ff6600;
+    }
+
+
+    .cc_more_info {
+
+    }
+
+    a,
+    a:visited {
+        text-decoration: none;
+        color: #31a8f0;
+        transition: 200ms color;
+    }
+
+    a:hover,
+    a:active {
+        color: #b2f7ff;
+    }
+}
+
+@media screen and (min-width: $screen-md-min) {
+    .cc_container {
+
+    }
+}
