@@ -276,7 +276,7 @@
       //    -block (default, no extra classes)
       //    -edgeless
       //    -classic
-      // use your own style name and use `.cc-theme-STYLENAME` class in CSS to edit .
+      // use your own style name and use `.cc-theme-STYLENAME` class in CSS to edit.
       // Note: style "wire" is used for the configurator, but has no CSS styles of its own, only palette is used.
       theme: 'block',
 
@@ -312,7 +312,7 @@
       // set value as time in milliseconds to autodismiss after set time
       dismissOnTimeout: false,
 
-      // The application automatically decideds whether the popup should open.
+      // The application automatically decide whether the popup should open.
       // Set this to false to prevent this from happening and to allow you to control the behaviour yourself
       autoOpen: true,
 
