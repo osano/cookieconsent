@@ -743,6 +743,7 @@
 
     function handleButtonClick(event) {
       var targ = event.target;
+      targ = util.hasClass(targ, 'cc-btn') ? targ : targ.parentNode;
       if (util.hasClass(targ, 'cc-btn')) {
 
         var matches = targ.className.match(new RegExp("\\bcc-(" + __allowedStatuses.join('|') + ")\\b"));
