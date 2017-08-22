@@ -1157,7 +1157,7 @@
               if (!window.geoip2) {
                 done(
                   new Error(
-                    'Unexpected response format. The downloaded script should have exported `geoip2` to the global scope'
+                    'Unexpected response. Expected Maxmind API to define `geoip2`'
                   )
                 );
                 return;
@@ -1247,7 +1247,7 @@
       var service = this.getNextService();
 
       if (!service) {
-        error(new Error('No services to run'));
+        error(new Error('No location services to run'));
         return;
       }
 
@@ -1364,7 +1364,7 @@
           this.runService(nextService, this.runNextServiceOnError.bind(this));
         } else {
           this.currentServiceIndex = -1;
-          this.callbackError(new Error('All services failed'));
+          this.callbackError(new Error('All location services failed'));
         }
       } else {
         this.currentServiceIndex = -1;
@@ -1394,7 +1394,7 @@
       var idx = this.currentServiceIndex;
       var service = this.getServiceByIdx(idx);
 
-      console.error(
+      console.warn(
         'The service[' +
           idx +
           '] (' +
