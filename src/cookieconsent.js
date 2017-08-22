@@ -1594,7 +1594,12 @@
     var law = new cc.Law(options.law);
 
     if (!complete) complete = function() {};
-    if (!error) error = function() {};
+    if (!error) {
+      // default error handler
+      error = function(err, popup) {
+        console.warn(err);
+      };
+    }
 
     cc.getCountryCode(
       options,
