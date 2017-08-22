@@ -1619,6 +1619,10 @@
         delete options.law;
         delete options.location;
 
+        console.info(
+          'CookieConsent failed to find a location. The banner was displayed anyway (unless a cookie prevented it)'
+        );
+
         error(err, new cc.Popup(options));
       }
     );
