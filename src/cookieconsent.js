@@ -1363,14 +1363,12 @@
         if (nextService) {
           this.runService(nextService, this.runNextServiceOnError.bind(this));
         } else {
-          this.completeService.call(
-            this,
-            this.callbackError,
-            new Error('All services failed')
-          );
+          this.currentServiceIndex = -1;
+          this.callbackError(new Error('All services failed'));
         }
       } else {
-        this.completeService.call(this, this.callbackComplete, data);
+        this.currentServiceIndex = -1;
+        this.callbackComplete(data);
       }
     };
 
@@ -1390,13 +1388,6 @@
       }
 
       return {};
-    };
-
-    // calls the `onComplete` callback after resetting the `currentServiceIndex`
-    Location.prototype.completeService = function(fn, data) {
-      this.currentServiceIndex = -1;
-
-      fn && fn(data);
     };
 
     Location.prototype.logError = function(err) {
