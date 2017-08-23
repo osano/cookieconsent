@@ -1157,7 +1157,7 @@
               if (!window.geoip2) {
                 done(
                   new Error(
-                    'Unexpected response format. The downloaded script should have exported `geoip2` to the global scope'
+                    'Unexpected response. Expected Maxmind API to define `geoip2`'
                   )
                 );
                 return;
@@ -1247,7 +1247,7 @@
       var service = this.getNextService();
 
       if (!service) {
-        error(new Error('No services to run'));
+        error(new Error('No location services to run'));
         return;
       }
 
@@ -1363,14 +1363,12 @@
         if (nextService) {
           this.runService(nextService, this.runNextServiceOnError.bind(this));
         } else {
-          this.completeService.call(
-            this,
-            this.callbackError,
-            new Error('All services failed')
-          );
+          this.currentServiceIndex = -1;
+          this.callbackError(new Error('All location services failed'));
         }
       } else {
-        this.completeService.call(this, this.callbackComplete, data);
+        this.currentServiceIndex = -1;
+        this.callbackComplete(data);
       }
     };
 
@@ -1392,18 +1390,11 @@
       return {};
     };
 
-    // calls the `onComplete` callback after resetting the `currentServiceIndex`
-    Location.prototype.completeService = function(fn, data) {
-      this.currentServiceIndex = -1;
-
-      fn && fn(data);
-    };
-
     Location.prototype.logError = function(err) {
       var idx = this.currentServiceIndex;
       var service = this.getServiceByIdx(idx);
 
-      console.error(
+      console.warn(
         'The service[' +
           idx +
           '] (' +
@@ -1604,7 +1595,12 @@
     var law = new cc.Law(options.law);
 
     if (!complete) complete = function() {};
-    if (!error) error = function() {};
+    if (!error) {
+      // default error handler
+      error = function(err, popup) {
+        console.warn(err);
+      };
+    }
 
     cc.getCountryCode(
       options,
@@ -1623,6 +1619,10 @@
         // don't need the law or location options anymore
         delete options.law;
         delete options.location;
+
+        console.info(
+          'CookieConsent failed to find a location. The banner was displayed anyway (unless a cookie prevented it)'
+        );
 
         error(err, new cc.Popup(options));
       }
