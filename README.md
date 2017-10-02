@@ -30,6 +30,12 @@ Or through [Bower](https://bower.io/):
 bower install cookieconsent
 ```
 
+Or via a jsDelivr:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+```
+
 ## Documentation 
 
 See our [full documentation](https://cookieconsent.insites.com/documentation/).
