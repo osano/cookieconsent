@@ -42,7 +42,8 @@
 }
 
 .cc-banner .cc-message {
-  flex: auto;
+  display: block;
+  flex: 1 1 auto;
   max-width: 100%;
 }
 
