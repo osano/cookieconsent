@@ -42,7 +42,8 @@
 }
 
 .cc-banner .cc-message {
-  flex: 1;
+  flex: auto;
+  max-width: 100%;
 }
 
 /* COMPLIANCE BOX */
