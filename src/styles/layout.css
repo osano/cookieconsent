@@ -48,7 +48,12 @@
 /* COMPLIANCE BOX */
 
 .cc-compliance {
-  display: flex;
+  display: table;       
+  display: -webkit-box; 
+  display: -moz-box;   
+  display: -ms-flexbox; 
+  display: -webkit-flex; 
+  display: flex;   
   align-items: center;
   align-content: space-between;
 }
