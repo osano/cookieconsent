@@ -9,7 +9,13 @@
   font-size: 16px; /* by setting the base font here, we can size the rest of the popup using CSS `em` */
   line-height: 1.5em;
 
-  display: flex;
+  display: table;       
+  display: -webkit-box; 
+  display: -moz-box;   
+  display: -ms-flexbox; 
+  display: -webkit-flex; 
+  display: flex; 
+  
   flex-wrap: nowrap;
 
   /* the following are random unjustified styles - just because - should probably be removed */
@@ -24,11 +30,13 @@
 .cc-window.cc-floating {
   padding: 2em;
   max-width: 24em; /* 1em == 16px therefore 24em == 384px */
+  -webkit-flex-direction: column;
   flex-direction: column;
 }
 .cc-window.cc-banner {
   padding: 1em 1.8em;
   width: 100%;
+  -webkit-flex-direction: row; 
   flex-direction:  row;
 }
 
