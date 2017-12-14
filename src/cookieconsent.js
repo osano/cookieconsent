@@ -399,6 +399,15 @@
       if (this.options.autoOpen) {
         this.autoOpen();
       }
+      
+      if (this.options.static) {
+        var thisObj = this;
+
+        window.onresize = function(event) {
+          var height = thisObj.element.clientHeight;
+          thisObj.element.parentNode.style.maxHeight = height + 'px';
+        };
+      }
     };
 
     CookiePopup.prototype.destroy = function() {
