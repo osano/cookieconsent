@@ -563,7 +563,9 @@
     CookiePopup.prototype.autoOpen = function(options) {
       if (!this.hasAnswered() && this.options.enabled) {
           this.open();
-      } else if (this.options.revokable) {
+      }
+
+      if (!this.options.enabled && this.options.revokable) {
           this.toggleRevokeButton(true);
       }
     };
