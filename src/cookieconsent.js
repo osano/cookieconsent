@@ -37,7 +37,7 @@
         undefined : parts.pop().split(';').shift();
     },
 
-    setCookie: function(name, value, expiryDays, domain, path) {
+    setCookie: function(name, value, expiryDays, domain, path, secure) {
       var exdate = new Date();
       exdate.setDate(exdate.getDate() + (expiryDays || 365));
 
@@ -49,6 +49,9 @@
 
       if (domain) {
         cookie.push('domain=' + domain);
+      }
+      if (secure) {
+        cookie.push('secure');
       }
       document.cookie = cookie.join(';');
     },
@@ -193,6 +196,9 @@
 
         // The cookies expire date, specified in days (specify -1 for no expiry)
         expiryDays: 365,
+
+        // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
+        secure: false,
       },
 
       // these callback hooks are called at certain points in the program execution
@@ -571,7 +577,7 @@
 
       // if `status` is valid
       if (Object.keys(cc.status).indexOf(status) >= 0) {
-        util.setCookie(c.name, status, c.expiryDays, c.domain, c.path);
+        util.setCookie(c.name, status, c.expiryDays, c.domain, c.path, c.secure);
 
         this.options.onStatusChange.call(this, status, chosenBefore);
       } else {
