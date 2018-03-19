@@ -116,7 +116,7 @@
 
     // used to change color on highlight
     getLuminance: function(hex) {
-      var num = parseInt(this.normaliseHex(hex), 16), 
+      var num = parseInt(this.normaliseHex(hex), 16),
           amt = 38,
           R = (num >> 16) + amt,
           B = (num >> 8 & 0x00FF) + amt,
@@ -312,13 +312,16 @@
       // set value as time in milliseconds to autodismiss after set time
       dismissOnTimeout: false,
 
+      // set value as click anything on the page
+      dismissOnWindowClick: false,
+
       // The application automatically decide whether the popup should open.
       // Set this to false to prevent this from happening and to allow you to control the behaviour yourself
       autoOpen: true,
 
       // By default the created HTML is automatically appended to the container (which defaults to <body>). You can prevent this behaviour
       // by setting this to false, but if you do, you must attach the `element` yourself, which is a public property of the popup instance:
-      // 
+      //
       //     var instance = cookieconsent.factory(options);
       //     document.body.appendChild(instance.element);
       //
@@ -415,6 +418,11 @@
       if (this.onWindowScroll) {
         window.removeEventListener('scroll', this.onWindowScroll);
         this.onWindowScroll = null;
+      }
+
+      if (this.onWindowClick) {
+        window.removeEventListener('click', this.onWindowClick);
+        this.onWindowClick = null;
       }
 
       if (this.onMouseMove) {
@@ -817,8 +825,8 @@
             'border-color: ' + button.border,
             'background-color: ' + button.background
           ];
-          
-          if(button.background != 'transparent') 
+
+          if(button.background != 'transparent')
             colorStyles[prefix + ' .cc-btn:hover, ' + prefix + ' .cc-btn:focus'] = [
               'background-color: ' + getHoverColour(button.background)
             ];
@@ -897,6 +905,7 @@
 
     function applyAutoDismiss() {
       var setStatus = this.setStatus.bind(this);
+      var close = this.close.bind(this);
 
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number' && delay >= 0) {
@@ -918,6 +927,18 @@
 
         this.onWindowScroll = onWindowScroll;
         window.addEventListener('scroll', onWindowScroll);
+      }
+
+      var windowClick = this.options.dismissOnWindowClick;
+      if (windowClick) {
+        var onWindowClick = function(evt) {
+          setStatus(cc.status.dismiss);
+          close(true);
+          window.removeEventListener('click', onWindowClick);
+          this.onWindowClick = null;
+        };
+        this.onWindowClick = onWindowClick;
+        window.addEventListener('click', onWindowClick);
       }
     }
 
