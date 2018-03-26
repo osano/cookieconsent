@@ -74,10 +74,6 @@
   white-space: nowrap;
 }
 
-.cc-banner .cc-btn:last-child {
-  min-width: 140px;
-}
-
 .cc-highlight .cc-btn:first-child {
   background-color: transparent;
   border-color: transparent;
