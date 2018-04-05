@@ -556,10 +556,10 @@
     // returns true if the cookie indicates that consent has been given
     CookiePopup.prototype.hasConsented = function(options) {
       var val = this.getStatus();
-      if (this.type == "opt-out") {
-        return val == cc.status.allow || val == cc.status.dismiss;
+      if (this.type == "opt-in") {
+        return val == cc.status.allow
       }
-      return val == cc.status.allow;
+      return val == cc.status.allow || val == cc.status.dismiss;
     };
 
     // opens the popup if no answer has been given
