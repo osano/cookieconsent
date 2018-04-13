@@ -3,7 +3,7 @@
   if (cc.hasInitialised) return;
 
   var util = {
-    // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+    // https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
     escapeRegExp: function(str) {
       return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
     },
@@ -210,7 +210,7 @@
         allow: 'Allow cookies',
         deny: 'Decline',
         link: 'Learn more',
-        href: 'http://cookiesandyou.com',
+        href: 'https://cookiesandyou.com',
         close: '&#x274c;',
       },
 
@@ -218,7 +218,7 @@
       // You can remove "{{header}}" and write the content directly inside the HTML if you want.
       //
       //  - ARIA rules suggest to ensure controls are tabbable (so the browser can find the first control),
-      //    and to set the focus to the first interactive control (http://w3c.github.io/aria-in-html/)
+      //    and to set the focus to the first interactive control (https://w3c.github.io/aria-in-html/)
       elements: {
         header: '<span class="cc-header">{{header}}</span>&nbsp;',
         message: '<span id="cookieconsent:desc" class="cc-message">{{message}}</span>',
