@@ -818,10 +818,11 @@
             'background-color: ' + button.background
           ];
           
-          if(button.background != 'transparent') 
+          if(button.background != 'transparent') {
             colorStyles[prefix + ' .cc-btn:hover, ' + prefix + ' .cc-btn:focus'] = [
-              'background-color: ' + getHoverColour(button.background)
+              'background-color: ' + (button.hover || getHoverColour(button.background))
             ];
+          }
 
           if (highlight) {
             //assumes highlight.background is set
