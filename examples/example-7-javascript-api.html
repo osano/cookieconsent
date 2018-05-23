@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <base href="../">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Demo 7 - JavaScript API</title>
 
-  <link href="examples/style.css" rel="stylesheet">
-  <link href="build/cookieconsent.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+  <link href="../build/cookieconsent.min.css" rel="stylesheet">
 
 <body class="example7" role="document">
 
@@ -44,14 +43,17 @@
 
         <pre id="console"></pre>
 
-        <a href="examples/example-6-location.html" class="page-switcher page-switcher-prev" title="Previous demo">&#9664;</a>
+        <a href="example-6-location.html" class="page-switcher page-switcher-prev" title="Previous demo">&#9664;</a>
 
       </div>
     </div>
   </div>
 
-<script src="examples/script.js"></script>
-<script src="build/cookieconsent.min.js"></script>
+<!--[if lte IE 8]>
+<script src="../build/cookieconsent-ie8-polyfill.min.js"></script>
+<![endif]-->
+<script src="script.js"></script>
+<script src="../build/cookieconsent.min.js"></script>
 <script>
 
   var h = document.getElementById('console');

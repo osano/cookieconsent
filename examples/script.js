@@ -3,18 +3,22 @@ window['cookieconsent_example_util'] = {
 
   // Fill a select element with options (html can be configured using `cb`)
   fillSelect: function (select, options, selected, cb) {
-    var html = '';
     if (typeof cb != 'function') {
       cb = this.getSimpleOption;
     }
     for (var prop in options) {
-      html += cb(options[prop], prop, prop == selected);
+      select.appendChild(cb(options[prop], prop, prop == selected));
     }
-    select.innerHTML = html;
   },
 
   getSimpleOption: function (label, value, selected) {
-    return '<option ' + (selected ? 'selected="selected"' : '') + ' value="' + value + '">' + label + '</option>';
+    var elem = document.createElement("option");
+
+    if (selected) elem.selected = true;
+    elem.value = value;
+    elem.innerText = label;
+
+    return elem;
   },
 
   tabularObject: function (obj, formatVal, formatKey) {
@@ -39,10 +43,10 @@ window['cookieconsent_example_util'] = {
     options.selector.innerHTML = itemOpen + Object.keys(options.popups).join(itemClose+itemOpen) + itemClose;
 
     options.selector.onclick = function (e) {
-      var targ = e.target, item;
+      var targ = e ? e.target : window.event.srcElement, item;
 
       // if the target is the container, exit
-      if (targ.isEqualNode(options.selector)) return;
+      if (targ === options.selector) return;
 
       // from this point, only the child elements of opts.selector will get through.
       // out of these child elements, we want to find the closest direct decendant <li>
@@ -50,7 +54,7 @@ window['cookieconsent_example_util'] = {
         targ = targ.parentNode;
       }
 
-      if (!targ.parentNode.isEqualNode(options.selector)) return;
+      if (targ.parentNode !== options.selector) return;
 
       // from this point, 'targ' will be a direct decendant of opts.selector
       var idx = Array.prototype.indexOf.call(options.selector.children, targ);
