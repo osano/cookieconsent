@@ -15,6 +15,9 @@ var buildFolder = './build';
 var jsBuildFiles = [
   './src/cookieconsent.js'
 ];
+var polyfillFiles = [
+  './src/cookieconsent-ie8-polyfill.js'
+];
 var cssBuildFiles = [
   // defined explicitly so they are combined in order
   './src/styles/animation.css',
@@ -38,6 +41,13 @@ gulp.task('minify:js', function () {
     .pipe(gulp.dest(buildFolder));          // save under a new name
 });
 
+gulp.task('minify-polyfill:js', function () {
+  return gulp.src(polyfillFiles)             // get files
+      .pipe(minifyJS())                      // minify them
+      .pipe(concat('cookieconsent-ie8-polyfill.min.js')) // combine them
+      .pipe(gulp.dest(buildFolder));         // save under a new name
+});
+
 gulp.task('minify:css', function () {
   return gulp.src(cssBuildFiles)            // get files
     .pipe(autoprefixer({browsers: ['IE 10', 'last 2 versions']}))
@@ -53,12 +63,12 @@ gulp.task('bump', function(callback) {
 });
 
 gulp.task('build', function(callback) {
-  return runSequence('cleanup:begin', 'minify:js', 'minify:css', callback);
+  return runSequence('cleanup:begin', 'minify:js', 'minify:css', 'minify-polyfill:js', callback);
 });
 
 gulp.task('verify', function(callback) {
   buildFolder = "./build-verify";
-  return runSequence('cleanup:begin', 'minify:js', 'minify:css', 'verify:diff', callback);
+  return runSequence('cleanup:begin', 'minify:js', 'minify:css', 'minify-polyfill:js', 'verify:diff', callback);
 });
 
 gulp.task('verify:diff', function(callback) {
