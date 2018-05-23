@@ -30,6 +30,17 @@ Or through [Bower](https://bower.io/):
 bower install cookieconsent
 ```
 
+## Compatibility
+
+Support for Internet Explorer 8 requires you to load the `cookieconsent-ie8-polyfill.min.js` code before Cookie Consent is loaded.
+You can load this only for old Internet Explorer versions by using conditional comments:
+
+```html
+<!--[if lte IE 8]>
+<script src="cookieconsent-ie8-polyfill.min.js"></script>
+<![endif]-->
+```
+
 ## Documentation 
 
 See our [full documentation](https://cookieconsent.insites.com/documentation/).
