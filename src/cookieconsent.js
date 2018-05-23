@@ -844,18 +844,25 @@
 
       // this will be interpretted as CSS. the key is the selector, and each array element is a rule
       var style = document.createElement('style');
-      document.head.appendChild(style);
+      (document.head || document.getElementsByTagName('head')[0]).appendChild(style);
+
+      var styleSheet = style.sheet || style.styleSheet;
 
       // custom style doesn't exist, so we create it
       cc.customStyles[hash] = {
         references: 1,
-        element: style.sheet
+        element: styleSheet
       };
 
       var ruleIndex = -1;
       for (var prop in colorStyles) {
         if (colorStyles.hasOwnProperty(prop)) {
-          style.sheet.insertRule(prop + '{' + colorStyles[prop].join(';') + '}', ++ruleIndex);
+          if ("insertRule" in styleSheet) {
+            styleSheet.insertRule(prop + '{' + colorStyles[prop].join(';') + '}', ++ruleIndex);
+          } else {
+            // IE 8
+            styleSheet.addRule(prop, colorStyles[prop].join(';'));
+          }
         }
       }
     }
