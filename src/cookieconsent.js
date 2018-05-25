@@ -116,7 +116,7 @@
 
     // used to change color on highlight
     getLuminance: function(hex) {
-      var num = parseInt(this.normaliseHex(hex), 16), 
+      var num = parseInt(this.normaliseHex(hex), 16),
           amt = 38,
           R = (num >> 16) + amt,
           B = (num >> 8 & 0x00FF) + amt,
@@ -212,6 +212,7 @@
         link: 'Learn more',
         href: 'http://cookiesandyou.com',
         close: '&#x274c;',
+        policy: 'Cookie Policy'
       },
 
       // This is the HTML for the elements above. The string {{header}} will be replaced with the equivalent text below.
@@ -239,7 +240,7 @@
 
       // This is the html for the revoke button. This only shows up after the user has selected their level of consent
       // It can be enabled of disabled using the `revokable` option
-      revokeBtn: '<div class="cc-revoke {{classes}}">Cookie Policy</div>',
+      revokeBtn: '<div class="cc-revoke {{classes}}">{{policy}}</div>',
 
       // define types of 'compliance' here. '{{value}}' strings in here are linked to `elements`
       compliance: {
@@ -318,7 +319,7 @@
 
       // By default the created HTML is automatically appended to the container (which defaults to <body>). You can prevent this behaviour
       // by setting this to false, but if you do, you must attach the `element` yourself, which is a public property of the popup instance:
-      // 
+      //
       //     var instance = cookieconsent.factory(options);
       //     document.body.appendChild(instance.element);
       //
@@ -817,8 +818,8 @@
             'border-color: ' + button.border,
             'background-color: ' + button.background
           ];
-          
-          if(button.background != 'transparent') 
+
+          if(button.background != 'transparent')
             colorStyles[prefix + ' .cc-btn:hover, ' + prefix + ' .cc-btn:focus'] = [
               'background-color: ' + getHoverColour(button.background)
             ];
@@ -935,7 +936,7 @@
         if (this.customStyleSelector) {
           classes.push(this.customStyleSelector)
         }
-        var revokeBtn = this.options.revokeBtn.replace('{{classes}}', classes.join(' '));
+        var revokeBtn = this.options.revokeBtn.replace('{{classes}}', classes.join(' ')).replace('{{policy}}', this.options.content.policy);
         this.revokeBtn = appendMarkup.call(this, revokeBtn);
 
         var btn = this.revokeBtn;
