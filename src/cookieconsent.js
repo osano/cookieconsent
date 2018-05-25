@@ -212,6 +212,7 @@
         link: 'Learn more',
         href: 'http://cookiesandyou.com',
         close: '&#x274c;',
+        policy: 'Cookie Policy'
       },
 
       // This is the HTML for the elements above. The string {{header}} will be replaced with the equivalent text below.
@@ -239,7 +240,7 @@
 
       // This is the html for the revoke button. This only shows up after the user has selected their level of consent
       // It can be enabled of disabled using the `revokable` option
-      revokeBtn: '<div class="cc-revoke {{classes}}">Cookie Policy</div>',
+      revokeBtn: '<div class="cc-revoke {{classes}}">{{policy}}</div>',
 
       // define types of 'compliance' here. '{{value}}' strings in here are linked to `elements`
       compliance: {
@@ -935,7 +936,7 @@
         if (this.customStyleSelector) {
           classes.push(this.customStyleSelector)
         }
-        var revokeBtn = this.options.revokeBtn.replace('{{classes}}', classes.join(' '));
+        var revokeBtn = this.options.revokeBtn.replace('{{classes}}', classes.join(' ')).replace('{{policy}}', this.options.content.policy);
         this.revokeBtn = appendMarkup.call(this, revokeBtn);
 
         var btn = this.revokeBtn;
