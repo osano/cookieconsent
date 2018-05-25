@@ -1,0 +1,24 @@
+/* Edgeless */
+
+.cc-theme-edgeless.cc-window {
+  padding: 0;
+}
+
+.cc-floating.cc-theme-edgeless .cc-message {
+  margin: 2em;
+  margin-bottom: 1.5em;
+}
+
+.cc-banner.cc-theme-edgeless .cc-btn {
+  margin: 0;
+  padding: .8em 1.8em;
+  height: 100%;
+}
+
+.cc-banner.cc-theme-edgeless .cc-message {
+  margin-left: 1em;
+}
+
+.cc-floating.cc-theme-edgeless .cc-btn +.cc-btn {
+  margin-left: 0;
+}

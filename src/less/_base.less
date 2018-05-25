@@ -1,0 +1,109 @@
+
+/* the popup window */
+.cc-window, .cc-revoke {
+  position: fixed;
+  overflow: hidden;
+  box-sizing: border-box; /* exclude padding when dealing with width */
+
+  font-family: Helvetica, Calibri, Arial, sans-serif;
+  font-size: 16px; /* by setting the base font here, we can size the rest of the popup using CSS `em` */
+  line-height: 1.5em;
+
+  display: flex;
+  flex-wrap: nowrap;
+
+  /* the following are random unjustified styles - just because - should probably be removed */
+  z-index: 9999;
+}
+
+.cc-window.cc-static {
+  position: static;
+}
+
+/* 2 basic types of window - floating / banner */
+.cc-window.cc-floating {
+  padding: 2em;
+  max-width: 24em; /* 1em == 16px therefore 24em == 384px */
+  flex-direction: column;
+}
+.cc-window.cc-banner {
+  padding: 1em 1.8em;
+  width: 100%;
+  flex-direction:  row;
+}
+
+.cc-revoke {
+  padding: .5em;
+}
+.cc-revoke:hover {
+  text-decoration: underline;
+}
+
+.cc-header {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* clickable things */
+.cc-btn, .cc-link, .cc-close, .cc-revoke {
+  cursor: pointer;
+}
+
+.cc-link {
+  opacity: .8;
+  display: inline-block;
+  padding: .2em;
+  text-decoration: underline;
+}
+.cc-link:hover {
+  opacity: 1;
+}
+.cc-link:active, .cc-link:visited {
+  color: initial;
+}
+
+
+.cc-btn {
+  display: block;
+  padding: .4em .8em;
+  font-size: 0.9em;
+  font-weight: bold;
+  border-width: 2px;
+  border-style: solid;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cc-banner .cc-btn:last-child {
+  min-width: 140px;
+}
+
+.cc-highlight .cc-btn:first-child {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.cc-highlight .cc-btn:first-child:hover,
+.cc-highlight .cc-btn:first-child:focus {
+  background-color: transparent;
+  text-decoration: underline;
+}
+
+
+.cc-close {
+  display: block;
+  position: absolute;
+  top: .5em;
+  right: .5em;
+  font-size: 1.6em;
+  opacity: .9;
+
+  /* seeing as this contains text and not an image, the element taller than it is wide (because it is text) */
+  /*  - we want it to be a square, because it's acting as an icon */
+  /*  - setting the line height normalises the height */
+  line-height: .75;
+}
+.cc-close:hover,
+.cc-close:focus {
+  opacity: 1;
+}
