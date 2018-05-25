@@ -51,7 +51,7 @@ gulp.task('minify:css', function () {
 
 gulp.task('minify:scss', function () {
   return gulp.src('./src/scss/cookieconsent.scss')
-    .pipe(sourcemaps.init())                // init sourcemaps
+    .pipe(sourcemaps.init())                // init sourcemap
     .pipe(sass())                           // compile scss
     .pipe(autoprefixer({browsers: ['IE 10', 'last 2 versions']}))
     .pipe(minifyCSS())                      // minify them
@@ -61,7 +61,7 @@ gulp.task('minify:scss', function () {
 
 gulp.task('minify:less', function () {
   return gulp.src('./src/less/cookieconsent.less')
-    .pipe(sourcemaps.init())                // init sourcemaps
+    .pipe(sourcemaps.init())                // init sourcemap
     .pipe(less())                           // compile less
     .pipe(autoprefixer({browsers: ['IE 10', 'last 2 versions']}))
     .pipe(minifyCSS())                      // minify them
