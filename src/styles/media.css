@@ -21,6 +21,7 @@
   .cc-window.cc-floating {max-width: none;}
   .cc-window .cc-message {margin-bottom: 1em}
   .cc-window.cc-banner {align-items: unset;}
+  .cc-window.cc-banner .cc-message {margin-right: 0;}
 }
 
 /* iPhone 6 */
