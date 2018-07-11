@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <base href="../">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Demo 2 - Custom CSS</title>
 
-  <link href="examples/style.css" rel="stylesheet">
-  <link href="build/cookieconsent.min.css" rel="stylesheet">
-  <link href="examples/customTheme.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+  <link href="../build/cookieconsent.min.css" rel="stylesheet">
+  <link href="customTheme.css" rel="stylesheet">
 
 <body class="example2" role="document">
 
@@ -26,15 +25,18 @@
 
         <ul class="example-selector"></ul>
 
-        <a href="examples/example-1-themes.html" class="page-switcher page-switcher-prev" title="Previous demo">&#9664;</a>
-        <a href="examples/example-3-informational.html" class="page-switcher page-switcher-next" title="Next demo">&#9654;</a>
+        <a href="example-1-themes.html" class="page-switcher page-switcher-prev" title="Previous demo">&#9664;</a>
+        <a href="example-3-informational.html" class="page-switcher page-switcher-next" title="Next demo">&#9654;</a>
 
       </div>
     </div>
   </div>
 
-<script src="examples/script.js"></script>
-<script src="build/cookieconsent.min.js"></script>
+<!--[if lte IE 8]>
+<script src="../build/cookieconsent-ie8-polyfill.min.js"></script>
+<![endif]-->
+<script src="script.js"></script>
+<script src="../build/cookieconsent.min.js"></script>
 <script>
 
   (function (C, U) {
