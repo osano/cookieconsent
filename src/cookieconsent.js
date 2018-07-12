@@ -116,7 +116,7 @@
 
     // used to change color on highlight
     getLuminance: function(hex) {
-      var num = parseInt(this.normaliseHex(hex), 16), 
+      var num = parseInt(this.normaliseHex(hex), 16),
           amt = 38,
           R = (num >> 16) + amt,
           B = (num >> 8 & 0x00FF) + amt,
@@ -318,7 +318,7 @@
 
       // By default the created HTML is automatically appended to the container (which defaults to <body>). You can prevent this behaviour
       // by setting this to false, but if you do, you must attach the `element` yourself, which is a public property of the popup instance:
-      // 
+      //
       //     var instance = cookieconsent.factory(options);
       //     document.body.appendChild(instance.element);
       //
@@ -556,6 +556,10 @@
     // returns true if the cookie indicates that consent has been given
     CookiePopup.prototype.hasConsented = function(options) {
       var val = this.getStatus();
+      var type = this.options.type;
+      if (type == "opt-in") {
+        return val == cc.status.allow
+      }
       return val == cc.status.allow || val == cc.status.dismiss;
     };
 
@@ -817,8 +821,8 @@
             'border-color: ' + button.border,
             'background-color: ' + button.background
           ];
-          
-          if(button.background != 'transparent') 
+
+          if(button.background != 'transparent')
             colorStyles[prefix + ' .cc-btn:hover, ' + prefix + ' .cc-btn:focus'] = [
               'background-color: ' + getHoverColour(button.background)
             ];
