@@ -315,6 +315,10 @@
       // set value as click anything on the page
       dismissOnWindowClick: false,
 
+      // If `dismissOnWindowClick` is true, we can click on 'revoke' and we'll still dismiss the banner, so we need exceptions.
+      // should be an array of class names
+      ignoreClicksFrom: ['cc-revoke', 'cc-btn'], // already includes the revoke button and the banner itself
+
       // The application automatically decide whether the popup should open.
       // Set this to false to prevent this from happening and to allow you to control the behaviour yourself
       autoOpen: true,
@@ -924,24 +928,44 @@
             window.removeEventListener('scroll', onWindowScroll);
             this.onWindowScroll = null;
           }
-        }.bind(this);
+        };
 
-        this.onWindowScroll = onWindowScroll;
-        window.addEventListener('scroll', onWindowScroll);
+        if (this.options.enabled) {
+          this.onWindowScroll = onWindowScroll;
+          window.addEventListener('scroll', onWindowScroll);
+        }
       }
 
       var windowClick = this.options.dismissOnWindowClick;
+      var ignoredClicks = this.options.ignoreClicksFrom;
       if (windowClick) {
         var onWindowClick = function(evt) {
-          setStatus(cc.status.dismiss);
-          close(true);
+          var isIgnored = false;
+          var pathLen = evt.path.length;
+          var ignoredLen = ignoredClicks.length;
+          for(var i = 0; i < pathLen; i++) {
+            if (isIgnored) continue;
 
-          window.removeEventListener('click', onWindowClick);
-          this.onWindowClick = null;
+            for (var i2 = 0; i2 < ignoredLen; i2++) {
+              if (isIgnored) continue;
+
+              isIgnored = util.hasClass(evt.path[i], ignoredClicks[i2]);
+            }
+          }
+
+          if (!isIgnored) {
+            setStatus(cc.status.dismiss);
+            close(true);
+
+            window.removeEventListener('click', onWindowClick);
+            this.onWindowClick = null;
+          }
         }.bind(this);
 
-        this.onWindowClick = onWindowClick;
-        window.addEventListener('click', onWindowClick);
+        if (this.options.enabled) {
+          this.onWindowClick = onWindowClick;
+          window.addEventListener('click', onWindowClick);
+        }
       }
     }
 
