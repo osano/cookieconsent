@@ -157,15 +157,17 @@
 
     isPlainObject: function(obj) {
       // The code "typeof obj === 'object' && obj !== null" allows Array objects
-      return typeof obj === 'object' && obj !== null && obj.constructor == Object;
+      return (
+        typeof obj === 'object' && obj !== null && obj.constructor == Object
+      );
     },
 
     traverseDOMPath: function(elem, className) {
       if (!elem || !elem.parentNode) return null;
       if (util.hasClass(elem, className)) return elem;
 
-      return this.traverseDOMPath(elem.parentNode, className)
-    },
+      return this.traverseDOMPath(elem.parentNode, className);
+    }
   };
 
   // valid cookie values
@@ -841,7 +843,9 @@
       if (!btn) btn = event.target;
 
       if (util.hasClass(btn, 'cc-btn')) {
-        var matches = btn.className.match(new RegExp("\\bcc-(" + __allowedStatuses.join('|') + ")\\b"));
+        var matches = btn.className.match(
+          new RegExp('\\bcc-(' + __allowedStatuses.join('|') + ')\\b')
+        );
         var match = (matches && matches[1]) || false;
 
         if (match) {
@@ -1047,7 +1051,7 @@
           var isIgnored = false;
           var pathLen = evt.path.length;
           var ignoredLen = ignoredClicks.length;
-          for(var i = 0; i < pathLen; i++) {
+          for (var i = 0; i < pathLen; i++) {
             if (isIgnored) continue;
 
             for (var i2 = 0; i2 < ignoredLen; i2++) {
