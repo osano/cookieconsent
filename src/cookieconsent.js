@@ -1493,7 +1493,7 @@
       var idx = this.currentServiceIndex;
       var service = this.getServiceByIdx(idx);
 
-      console.error(
+      console.warn(
         'The service[' +
           idx +
           '] (' +
