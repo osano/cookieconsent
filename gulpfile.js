@@ -1,6 +1,9 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
+var sourcemaps = require('gulp-sourcemaps');
+var sass = require('gulp-sass');
+var less = require('gulp-less');
 var minifyJS = require('gulp-uglify');
 var minifyCSS = require('gulp-minify-css');
 var deleteDirs = require('del');
@@ -43,6 +46,26 @@ gulp.task('minify:css', function () {
     .pipe(autoprefixer({browsers: ['IE 10', 'last 2 versions']}))
     .pipe(minifyCSS())                      // minify them
     .pipe(concat('cookieconsent.min.css'))  // combine them
+    .pipe(gulp.dest(buildFolder));          // save under a new name
+});
+
+gulp.task('minify:scss', function () {
+  return gulp.src('./src/scss/cookieconsent.scss')
+    .pipe(sourcemaps.init())                // init sourcemap
+    .pipe(sass())                           // compile scss
+    .pipe(autoprefixer({browsers: ['IE 10', 'last 2 versions']}))
+    .pipe(minifyCSS())                      // minify them
+    .pipe(sourcemaps.write('./'))           // write sourcemap
+    .pipe(gulp.dest(buildFolder));          // save under a new name
+});
+
+gulp.task('minify:less', function () {
+  return gulp.src('./src/less/cookieconsent.less')
+    .pipe(sourcemaps.init())                // init sourcemap
+    .pipe(less())                           // compile less
+    .pipe(autoprefixer({browsers: ['IE 10', 'last 2 versions']}))
+    .pipe(minifyCSS())                      // minify them
+    .pipe(sourcemaps.write('./'))           // write sourcemap
     .pipe(gulp.dest(buildFolder));          // save under a new name
 });
 
