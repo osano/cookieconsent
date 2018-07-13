@@ -233,6 +233,7 @@
       onInitialise: function(status) {},
       onStatusChange: function(status, chosenBefore) {},
       onRevokeChoice: function() {},
+      onNoCookieLaw: function(countryCode, country) {},
 
       // each item defines the inner text for the element that it references
       content: {
@@ -1595,6 +1596,9 @@
       if (!country.hasLaw) {
         // The country has no cookie law
         options.enabled = false;
+        if (typeof options.onNoCookieLaw === 'function') {
+          options.onNoCookieLaw(countryCode, country);
+        }
       }
 
       if (this.options.regionalLaw) {
