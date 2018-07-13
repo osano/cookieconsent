@@ -3,13 +3,13 @@
   color: black;
 }
 
-.cc-message {
+.cc-banner .cc-message {
   width: auto;
   background: white;
   padding: 20px 76px 20px 16px;
   border-radius: 10px;
   margin-right: -70px;
-  margin-left: 20%;
+  margin-left: 10%;
 }
 
 .cc-link, .cc-link:visited {

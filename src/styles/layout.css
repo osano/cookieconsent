@@ -43,6 +43,7 @@
 
 .cc-banner .cc-message {
   flex: 1;
+  margin-right: 1em;
 }
 
 /* COMPLIANCE BOX */

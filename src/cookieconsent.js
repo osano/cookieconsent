@@ -160,6 +160,13 @@
       return (
         typeof obj === 'object' && obj !== null && obj.constructor == Object
       );
+    },
+
+    traverseDOMPath: function(elem, className) {
+      if (!elem || !elem.parentNode) return null;
+      if (util.hasClass(elem, className)) return elem;
+
+      return this.traverseDOMPath(elem.parentNode, className);
     }
   };
 
@@ -224,7 +231,7 @@
         expiryDays: 365,
 
         // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
-        secure: false,
+        secure: false
       },
 
       // these callback hooks are called at certain points in the program execution
@@ -358,6 +365,13 @@
       // set value as time in milliseconds to autodismiss after set time
       dismissOnTimeout: false,
 
+      // set value as click anything on the page, excluding the `ignoreClicksFrom` below (if we click on the revoke button etc)
+      dismissOnWindowClick: false,
+
+      // If `dismissOnWindowClick` is true, we can click on 'revoke' and we'll still dismiss the banner, so we need exceptions.
+      // should be an array of class names (not CSS selectors)
+      ignoreClicksFrom: ['cc-revoke', 'cc-btn'], // already includes the revoke button and the banner itself
+
       // The application automatically decide whether the popup should open.
       // Set this to false to prevent this from happening and to allow you to control the behaviour yourself
       autoOpen: true,
@@ -464,6 +478,11 @@
       if (this.onWindowScroll) {
         window.removeEventListener('scroll', this.onWindowScroll);
         this.onWindowScroll = null;
+      }
+
+      if (this.onWindowClick) {
+        window.removeEventListener('click', this.onWindowClick);
+        this.onWindowClick = null;
       }
 
       if (this.onMouseMove) {
@@ -616,11 +635,11 @@
     // opens the popup if no answer has been given
     CookiePopup.prototype.autoOpen = function(options) {
       if (!this.hasAnswered() && this.options.enabled) {
-	      this.open();
-	  } else if (this.hasAnswered() && this.options.revokable) {
-		  this.toggleRevokeButton(true);
-	  }
-	};
+        this.open();
+      } else if (this.hasAnswered() && this.options.revokable) {
+        this.toggleRevokeButton(true);
+      }
+    };
 
     CookiePopup.prototype.setStatus = function(status) {
       var c = this.options.cookie;
@@ -629,7 +648,14 @@
 
       // if `status` is valid
       if (Object.keys(cc.status).indexOf(status) >= 0) {
-        util.setCookie(c.name, status, c.expiryDays, c.domain, c.path, c.secure);
+        util.setCookie(
+          c.name,
+          status,
+          c.expiryDays,
+          c.domain,
+          c.path,
+          c.secure
+        );
 
         this.options.onStatusChange.call(this, status, chosenBefore);
       } else {
@@ -811,9 +837,11 @@
     }
 
     function handleButtonClick(event) {
-      var targ = event.target;
-      if (util.hasClass(targ, 'cc-btn')) {
-        var matches = targ.className.match(
+      // returns the parent element with the specified class, or the original element - null if not found
+      var btn = util.traverseDOMPath(event.target, 'cc-btn') || event.target;
+
+      if (util.hasClass(btn, 'cc-btn')) {
+        var matches = btn.className.match(
           new RegExp('\\bcc-(' + __allowedStatuses.join('|') + ')\\b')
         );
         var match = (matches && matches[1]) || false;
@@ -823,11 +851,11 @@
           this.close(true);
         }
       }
-      if (util.hasClass(targ, 'cc-close')) {
+      if (util.hasClass(btn, 'cc-close')) {
         this.setStatus(cc.status.dismiss);
         this.close(true);
       }
-      if (util.hasClass(targ, 'cc-revoke')) {
+      if (util.hasClass(btn, 'cc-revoke')) {
         this.revokeChoice();
       }
     }
@@ -987,6 +1015,7 @@
 
     function applyAutoDismiss() {
       var setStatus = this.setStatus.bind(this);
+      var close = this.close.bind(this);
 
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number' && delay >= 0) {
@@ -1000,14 +1029,49 @@
         var onWindowScroll = function(evt) {
           if (window.pageYOffset > Math.floor(scrollRange)) {
             setStatus(cc.status.dismiss);
+            close(true);
 
             window.removeEventListener('scroll', onWindowScroll);
             this.onWindowScroll = null;
           }
         };
 
-        this.onWindowScroll = onWindowScroll;
-        window.addEventListener('scroll', onWindowScroll);
+        if (this.options.enabled) {
+          this.onWindowScroll = onWindowScroll;
+          window.addEventListener('scroll', onWindowScroll);
+        }
+      }
+
+      var windowClick = this.options.dismissOnWindowClick;
+      var ignoredClicks = this.options.ignoreClicksFrom;
+      if (windowClick) {
+        var onWindowClick = function(evt) {
+          var isIgnored = false;
+          var pathLen = evt.path.length;
+          var ignoredLen = ignoredClicks.length;
+          for (var i = 0; i < pathLen; i++) {
+            if (isIgnored) continue;
+
+            for (var i2 = 0; i2 < ignoredLen; i2++) {
+              if (isIgnored) continue;
+
+              isIgnored = util.hasClass(evt.path[i], ignoredClicks[i2]);
+            }
+          }
+
+          if (!isIgnored) {
+            setStatus(cc.status.dismiss);
+            close(true);
+
+            window.removeEventListener('click', onWindowClick);
+            this.onWindowClick = null;
+          }
+        }.bind(this);
+
+        if (this.options.enabled) {
+          this.onWindowClick = onWindowClick;
+          window.addEventListener('click', onWindowClick);
+        }
       }
     }
 
@@ -1429,7 +1493,7 @@
       var idx = this.currentServiceIndex;
       var service = this.getServiceByIdx(idx);
 
-      console.error(
+      console.warn(
         'The service[' +
           idx +
           '] (' +
