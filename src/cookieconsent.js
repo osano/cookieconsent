@@ -919,11 +919,12 @@
         var onWindowScroll = function(evt) {
           if (window.pageYOffset > Math.floor(scrollRange)) {
             setStatus(cc.status.dismiss);
+            close(true);
 
             window.removeEventListener('scroll', onWindowScroll);
             this.onWindowScroll = null;
           }
-        };
+        }.bind(this);
 
         this.onWindowScroll = onWindowScroll;
         window.addEventListener('scroll', onWindowScroll);
@@ -934,9 +935,11 @@
         var onWindowClick = function(evt) {
           setStatus(cc.status.dismiss);
           close(true);
+
           window.removeEventListener('click', onWindowClick);
           this.onWindowClick = null;
-        };
+        }.bind(this);
+
         this.onWindowClick = onWindowClick;
         window.addEventListener('click', onWindowClick);
       }
