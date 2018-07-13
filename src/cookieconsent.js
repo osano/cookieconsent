@@ -224,7 +224,7 @@
         expiryDays: 365,
 
         // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
-        secure: false,
+        secure: false
       },
 
       // these callback hooks are called at certain points in the program execution
@@ -246,7 +246,8 @@
         link: 'Learn more',
         href: 'https://cookiesandyou.com',
         close: '&#x274c;',
-        target: '_blank'
+        target: '_blank',
+        policy: 'Cookie Policy'
       },
 
       // This is the HTML for the elements above. The string {{header}} will be replaced with the equivalent text below.
@@ -282,7 +283,7 @@
 
       // This is the html for the revoke button. This only shows up after the user has selected their level of consent
       // It can be enabled of disabled using the `revokable` option
-      revokeBtn: '<div class="cc-revoke {{classes}}">Cookie Policy</div>',
+      revokeBtn: '<div class="cc-revoke {{classes}}">{{policy}}</div>',
 
       // define types of 'compliance' here. '{{value}}' strings in here are linked to `elements`
       compliance: {
@@ -614,7 +615,11 @@
 
     // opens the popup if no answer has been given
     CookiePopup.prototype.autoOpen = function(options) {
-      !this.hasAnswered() && this.options.enabled && this.open();
+      if (!this.hasAnswered() && this.options.enabled) {
+        this.open();
+      } else if (this.hasAnswered() && this.options.revokable) {
+        this.toggleRevokeButton(true);
+      }
     };
 
     CookiePopup.prototype.setStatus = function(status) {
@@ -624,7 +629,14 @@
 
       // if `status` is valid
       if (Object.keys(cc.status).indexOf(status) >= 0) {
-        util.setCookie(c.name, status, c.expiryDays, c.domain, c.path, c.secure);
+        util.setCookie(
+          c.name,
+          status,
+          c.expiryDays,
+          c.domain,
+          c.path,
+          c.secure
+        );
 
         this.options.onStatusChange.call(this, status, chosenBefore);
       } else {
@@ -1020,10 +1032,11 @@
         if (this.customStyleSelector) {
           classes.push(this.customStyleSelector);
         }
-        var revokeBtn = this.options.revokeBtn.replace(
-          '{{classes}}',
-          classes.join(' ')
-        );
+
+        var revokeBtn = this.options.revokeBtn
+          .replace('{{classes}}', classes.join(' '))
+          .replace('{{policy}}', this.options.content.policy);
+
         this.revokeBtn = appendMarkup.call(this, revokeBtn);
 
         var btn = this.revokeBtn;
