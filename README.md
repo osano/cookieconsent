@@ -5,6 +5,10 @@
 
 It is designed to help you comply with the hideous EU Cookie Law and not make you want to kill yourself in the process. So we made it fast, free, and relatively painless.
 
+## Warning: Phishing attempt
+
+Several users have been emailed with a phishing attempt trying to get them to move the URL they link to from the cdnjs link that is provided on our website as cdnjs is "going away". This is not associated with us and will most likely result in malicious sideloaded code on your website.
+
 ## Version 3.0
 
 Version 3.0 is a complete rewrite from version 2. The most substantial new features are:
