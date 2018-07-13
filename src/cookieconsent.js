@@ -609,7 +609,7 @@
     // returns true if the cookie indicates that consent has been given
     CookiePopup.prototype.hasConsented = function(options) {
       var val = this.getStatus();
-      return val == cc.status.allow || val == cc.status.dismiss;
+      return ( val == cc.status.allow ) ? true : false;
     };
 
     // opens the popup if no answer has been given
