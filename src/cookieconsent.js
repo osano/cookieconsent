@@ -838,9 +838,7 @@
 
     function handleButtonClick(event) {
       // returns the parent element with the specified class, or the original element - null if not found
-      var btn = util.traverseDOMPath(event.target, 'cc-btn');
-
-      if (!btn) btn = event.target;
+      var btn = util.traverseDOMPath(event.target, 'cc-btn') || event.target;
 
       if (util.hasClass(btn, 'cc-btn')) {
         var matches = btn.className.match(
