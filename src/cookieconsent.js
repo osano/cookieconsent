@@ -224,7 +224,7 @@
         expiryDays: 365,
 
         // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
-        secure: false,
+        secure: false
       },
 
       // these callback hooks are called at certain points in the program execution
@@ -616,11 +616,11 @@
     // opens the popup if no answer has been given
     CookiePopup.prototype.autoOpen = function(options) {
       if (!this.hasAnswered() && this.options.enabled) {
-	      this.open();
-	  } else if (this.hasAnswered() && this.options.revokable) {
-		  this.toggleRevokeButton(true);
-	  }
-	};
+        this.open();
+      } else if (this.hasAnswered() && this.options.revokable) {
+        this.toggleRevokeButton(true);
+      }
+    };
 
     CookiePopup.prototype.setStatus = function(status) {
       var c = this.options.cookie;
@@ -629,7 +629,14 @@
 
       // if `status` is valid
       if (Object.keys(cc.status).indexOf(status) >= 0) {
-        util.setCookie(c.name, status, c.expiryDays, c.domain, c.path, c.secure);
+        util.setCookie(
+          c.name,
+          status,
+          c.expiryDays,
+          c.domain,
+          c.path,
+          c.secure
+        );
 
         this.options.onStatusChange.call(this, status, chosenBefore);
       } else {
