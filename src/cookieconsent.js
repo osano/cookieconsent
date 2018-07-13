@@ -363,6 +363,13 @@
       // set value as time in milliseconds to autodismiss after set time
       dismissOnTimeout: false,
 
+      // set value as click anything on the page, excluding the `ignoreClicksFrom` below (if we click on the revoke button etc)
+      dismissOnWindowClick: false,
+
+      // If `dismissOnWindowClick` is true, we can click on 'revoke' and we'll still dismiss the banner, so we need exceptions.
+      // should be an array of class names (not CSS selectors)
+      ignoreClicksFrom: ['cc-revoke', 'cc-btn'], // already includes the revoke button and the banner itself
+
       // The application automatically decide whether the popup should open.
       // Set this to false to prevent this from happening and to allow you to control the behaviour yourself
       autoOpen: true,
@@ -469,6 +476,11 @@
       if (this.onWindowScroll) {
         window.removeEventListener('scroll', this.onWindowScroll);
         this.onWindowScroll = null;
+      }
+
+      if (this.onWindowClick) {
+        window.removeEventListener('click', this.onWindowClick);
+        this.onWindowClick = null;
       }
 
       if (this.onMouseMove) {
@@ -1001,6 +1013,7 @@
 
     function applyAutoDismiss() {
       var setStatus = this.setStatus.bind(this);
+      var close = this.close.bind(this);
 
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number' && delay >= 0) {
@@ -1014,14 +1027,49 @@
         var onWindowScroll = function(evt) {
           if (window.pageYOffset > Math.floor(scrollRange)) {
             setStatus(cc.status.dismiss);
+            close(true);
 
             window.removeEventListener('scroll', onWindowScroll);
             this.onWindowScroll = null;
           }
         };
 
-        this.onWindowScroll = onWindowScroll;
-        window.addEventListener('scroll', onWindowScroll);
+        if (this.options.enabled) {
+          this.onWindowScroll = onWindowScroll;
+          window.addEventListener('scroll', onWindowScroll);
+        }
+      }
+
+      var windowClick = this.options.dismissOnWindowClick;
+      var ignoredClicks = this.options.ignoreClicksFrom;
+      if (windowClick) {
+        var onWindowClick = function(evt) {
+          var isIgnored = false;
+          var pathLen = evt.path.length;
+          var ignoredLen = ignoredClicks.length;
+          for(var i = 0; i < pathLen; i++) {
+            if (isIgnored) continue;
+
+            for (var i2 = 0; i2 < ignoredLen; i2++) {
+              if (isIgnored) continue;
+
+              isIgnored = util.hasClass(evt.path[i], ignoredClicks[i2]);
+            }
+          }
+
+          if (!isIgnored) {
+            setStatus(cc.status.dismiss);
+            close(true);
+
+            window.removeEventListener('click', onWindowClick);
+            this.onWindowClick = null;
+          }
+        }.bind(this);
+
+        if (this.options.enabled) {
+          this.onWindowClick = onWindowClick;
+          window.addEventListener('click', onWindowClick);
+        }
       }
     }
 
