@@ -133,6 +133,13 @@
       // The code "typeof obj === 'object' && obj !== null" allows Array objects
       return typeof obj === 'object' && obj !== null && obj.constructor == Object;
     },
+
+    traverseDOMPath: function(elem, className) {
+      if (!elem || !elem.parentNode) return null;
+      if (util.hasClass(elem, className)) return elem;
+
+      return this.traverseDOMPath(elem.parentNode, className)
+    },
   };
 
   // valid cookie values
@@ -742,11 +749,14 @@
     }
 
     function handleButtonClick(event) {
-      var targ = event.target;
-      targ = util.hasClass(targ, 'cc-btn') ? targ : targ.parentNode;
-      if (util.hasClass(targ, 'cc-btn')) {
+      // returns the parent element with the specified class, or the original element - null if not found
+      var btn = util.traverseDOMPath(event.target, 'cc-btn');
 
-        var matches = targ.className.match(new RegExp("\\bcc-(" + __allowedStatuses.join('|') + ")\\b"));
+      if (!btn) btn = event.target;
+
+      if (util.hasClass(btn, 'cc-btn')) {
+
+        var matches = btn.className.match(new RegExp("\\bcc-(" + __allowedStatuses.join('|') + ")\\b"));
         var match = (matches && matches[1]) || false;
 
         if (match) {
@@ -754,11 +764,11 @@
           this.close(true);
         }
       }
-      if (util.hasClass(targ, 'cc-close')) {
+      if (util.hasClass(btn, 'cc-close')) {
         this.setStatus(cc.status.dismiss);
         this.close(true);
       }
-      if (util.hasClass(targ, 'cc-revoke')) {
+      if (util.hasClass(btn, 'cc-revoke')) {
         this.revokeChoice();
       }
     }
