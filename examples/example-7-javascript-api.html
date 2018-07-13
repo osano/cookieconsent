@@ -83,6 +83,9 @@
     onRevokeChoice: function() {
       log('<em>onRevokeChoice()</em> called');
     },
+    onNoCookieLaw: function (countryCode, country) {
+      log('<em>onNoCookieLaw()</em> called with countryCode <em>'+countryCode+'</em>');
+    },
   }, function (popup) {
     p = popup;
   }, function (err) {
