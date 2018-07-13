@@ -259,7 +259,7 @@
         deny:
           '<a aria-label="deny cookies" role=button tabindex="0" class="cc-btn cc-deny">{{deny}}</a>',
         link:
-          '<a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" target="_blank">{{link}}</a>',
+          '<a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="_blank">{{link}}</a>',
         close:
           '<span aria-label="dismiss cookie message" role=button tabindex="0" class="cc-close">{{close}}</span>'
 
