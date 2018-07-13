@@ -312,11 +312,11 @@
       // set value as time in milliseconds to autodismiss after set time
       dismissOnTimeout: false,
 
-      // set value as click anything on the page
+      // set value as click anything on the page, excluding the `ignoreClicksFrom` below (if we click on the revoke button etc)
       dismissOnWindowClick: false,
 
       // If `dismissOnWindowClick` is true, we can click on 'revoke' and we'll still dismiss the banner, so we need exceptions.
-      // should be an array of class names
+      // should be an array of class names (not CSS selectors)
       ignoreClicksFrom: ['cc-revoke', 'cc-btn'], // already includes the revoke button and the banner itself
 
       // The application automatically decide whether the popup should open.
