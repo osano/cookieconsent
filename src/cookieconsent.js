@@ -1146,7 +1146,6 @@
 
       // the order that services will be attempted in
       services: [
-        'freegeoip',
         'ipinfo',
         'maxmind'
 
@@ -1173,27 +1172,6 @@
       ],
 
       serviceDefinitions: {
-        freegeoip: function() {
-          return {
-            // This service responds with JSON, but they do not have CORS set, so we must use JSONP and provide a callback
-            // The `{callback}` is automatically rewritten by the tool
-            url: '//freegeoip.net/json/?callback={callback}',
-            isScript: true, // this is JSONP, therefore we must set it to run as a script
-            callback: function(done, response) {
-              try {
-                var json = JSON.parse(response);
-                return json.error
-                  ? toError(json)
-                  : {
-                      code: json.country_code
-                    };
-              } catch (err) {
-                return toError({error: 'Invalid response (' + err + ')'});
-              }
-            }
-          };
-        },
-
         ipinfo: function() {
           return {
             // This service responds with JSON, so we simply need to parse it and return the country code
