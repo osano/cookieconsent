@@ -1147,7 +1147,6 @@
       services: [
         'freegeoip',
         'ipinfo',
-        'maxmind'
 
         /*
 
