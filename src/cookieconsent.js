@@ -1021,6 +1021,7 @@
       if (typeof delay == 'number' && delay >= 0) {
         this.dismissTimeout = window.setTimeout(function() {
           setStatus(cc.status.dismiss);
+          close(true);
         }, Math.floor(delay));
       }
 
