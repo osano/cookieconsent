@@ -296,9 +296,9 @@
       compliance: {
         info: '<div class="cc-compliance">{{dismiss}}</div>',
         'opt-in':
-          '<div class="cc-compliance cc-highlight">{{dismiss}}{{allow}}</div>',
+          '<div class="cc-compliance cc-highlight">{{deny}}{{allow}}</div>',
         'opt-out':
-          '<div class="cc-compliance cc-highlight">{{deny}}{{dismiss}}</div>'
+          '<div class="cc-compliance cc-highlight">{{deny}}{{allow}}</div>'
       },
 
       // select your type of popup here
