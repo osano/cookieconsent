@@ -1530,7 +1530,6 @@
 
       xhr.open(postData ? 'POST' : 'GET', url, 1);
 
-      xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
       if (Array.isArray(requestHeaders)) {
