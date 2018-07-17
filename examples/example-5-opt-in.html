@@ -35,26 +35,20 @@
     </div>
 
     <script src="examples/script.js"></script>
-    <script src="src/cookieconsent.js"></script>
+    <script src="build/cookieconsent.min.js"></script>
     <script>
 
-      // (function (C, U) {
-      //   pageState = U.initialisePopupSelector({
-      //     cookieconsent: C,
-      //     selector: document.querySelector('.example-selector'),
-      //     popups: {
-      //       'Try it': {
-      //         type: 'opt-in',
-      //         "palette": { "popup": { "background": "#383b75" }, "button": { "background": "#f1d600" } }
-      //       },
-      //     },
-      //   });
-      // }(window.cookieconsent, window.cookieconsent_example_util));
-
-      cookieconsent.initialise({
-        type: 'opt-in',
-        location: true,
-        "palette": { "popup": { "background": "#383b75" }, "button": { "background": "#f1d600" } }
-      });
+      (function (C, U) {
+        pageState = U.initialisePopupSelector({
+          cookieconsent: C,
+          selector: document.querySelector('.example-selector'),
+          popups: {
+            'Try it': {
+              type: 'opt-in',
+              "palette": { "popup": { "background": "#383b75" }, "button": { "background": "#f1d600" } }
+            },
+          },
+        });
+      }(window.cookieconsent, window.cookieconsent_example_util));
 
     </script>
