@@ -54,6 +54,9 @@
   align-content: space-between;
 }
 .cc-compliance>.cc-btn {
+  flex: 1 0 auto;
+}
+.cc-floating .cc-compliance>.cc-btn {
   flex: 1;
 }
 
