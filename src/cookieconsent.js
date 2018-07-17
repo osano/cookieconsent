@@ -921,8 +921,12 @@
           colorStyles[prefix + ' .cc-btn'] = [
             'color: ' + button.text,
             'border-color: ' + button.border,
-            'background-color: ' + button.background
+            'background-color: ' + button.background,
           ];
+
+          if (button.padding) {
+            colorStyles[prefix + ' .cc-btn'].push('padding: ' + button.padding)
+          }
 
           if (button.background != 'transparent') {
             colorStyles[
