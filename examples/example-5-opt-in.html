@@ -38,17 +38,23 @@
     <script src="build/cookieconsent.min.js"></script>
     <script>
 
-      (function (C, U) {
-        pageState = U.initialisePopupSelector({
-          cookieconsent: C,
-          selector: document.querySelector('.example-selector'),
-          popups: {
-            'Try it': {
-              type: 'opt-in',
-              "palette": { "popup": { "background": "#383b75" }, "button": { "background": "#f1d600" } }
-            },
-          },
-        });
-      }(window.cookieconsent, window.cookieconsent_example_util));
+      // (function (C, U) {
+      //   pageState = U.initialisePopupSelector({
+      //     cookieconsent: C,
+      //     selector: document.querySelector('.example-selector'),
+      //     popups: {
+      //       'Try it': {
+      //         type: 'opt-in',
+      //         "palette": { "popup": { "background": "#383b75" }, "button": { "background": "#f1d600" } }
+      //       },
+      //     },
+      //   });
+      // }(window.cookieconsent, window.cookieconsent_example_util));
+
+      cookieconsent.initialise({
+          type: 'opt-in',
+          "palette": { "popup": { "background": "#383b75" }, "button": { "background": "#f1d600" } },
+          location: true
+      })
 
     </script>

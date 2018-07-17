@@ -1679,6 +1679,18 @@
     if (!complete) complete = function() {};
     if (!error) error = function() {};
 
+    // I hardcoded this because I cba to refactor a fuck load of code.
+    // Bad developer. Bad.
+    var allowed = Object.keys(cc.status);
+    var answer = util.getCookie('cookieconsent_status');
+    var match = allowed.indexOf(answer) >= 0;
+
+    // if they have already answered
+    if (match) {
+      complete(new cc.Popup(options));
+      return;
+    }
+
     cc.getCountryCode(
       options,
       function(result) {
