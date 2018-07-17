@@ -1,23 +1,11 @@
 {
   "name": "cookieconsent",
-  "version": "3.0.6",
+  "version": "3.1.0",
   "homepage": "http://cookieconsent.insites.com/",
-  "authors": [
-    "Insites"
-  ],
+  "authors": ["Insites"],
   "description": "Insites' cookie consent plugin",
   "main": ["build/cookieconsent.min.js", "build/cookieconsent.min.css"],
-  "keywords": [
-    "cookieconsent",
-    "cookie",
-    "law"
-  ],
+  "keywords": ["cookieconsent", "cookie", "law"],
   "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ]
+  "ignore": ["**/.*", "node_modules", "bower_components", "test", "tests"]
 }
