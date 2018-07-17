@@ -1,300 +1,302 @@
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: "proxima-nova", sans-serif;
-    font-size: 20px;
-    height: 100%;
-    background: #3f4f79;
-    background: radial-gradient(ellipse at center, #3f4f79 0%, #1d1d2b 100%);
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: 'proxima-nova', sans-serif;
+  font-size: 20px;
+  height: 100%;
+  background: #3f4f79;
+  background: radial-gradient(ellipse at center, #3f4f79 0%, #1d1d2b 100%);
 }
 
 body.example2 {
-    background: #5f4f59;
-    background: radial-gradient(ellipse at center, #5f4f59 0%, #2d1d2b 100%);
+  background: #5f4f59;
+  background: radial-gradient(ellipse at center, #5f4f59 0%, #2d1d2b 100%);
 }
 
 body.example3 {
-    background: #7f5f49;
-    background: radial-gradient(ellipse at center, #5f7f49 0%, #1d1d2b 100%);
+  background: #7f5f49;
+  background: radial-gradient(ellipse at center, #5f7f49 0%, #1d1d2b 100%);
 }
 
 body.example4 {
-
-    background: #7f5f49;
-    background: radial-gradient(ellipse at center, #7f5f49 0%, #1d1d2b 100%);
+  background: #7f5f49;
+  background: radial-gradient(ellipse at center, #7f5f49 0%, #1d1d2b 100%);
 }
 
 body.example5 {
-    background: #7f3f49;
-    background: radial-gradient(ellipse at center, #7f3f49 0%, #1d1d2b 100%);
+  background: #7f3f49;
+  background: radial-gradient(ellipse at center, #7f3f49 0%, #1d1d2b 100%);
 }
 
 body.example6 {
-    background: #3f5f59;
-    background: radial-gradient(ellipse at center, #3f5f59 0%, #1d1d2b 100%);
+  background: #3f5f59;
+  background: radial-gradient(ellipse at center, #3f5f59 0%, #1d1d2b 100%);
 }
 
 body.example7 {
-    background: #604060;
-    background: radial-gradient(ellipse at center, #604060 0%, #1d1d2b 100%);
+  background: #604060;
+  background: radial-gradient(ellipse at center, #604060 0%, #1d1d2b 100%);
 }
 
 pre {
-    border-radius: 5px;
-    font-size: 12px;
-    line-height: 16px;
-    text-align: left;
-    background: black;
-    padding: 20px;
-    max-height: 300px;
-    width: 60%;
-    margin: 0 20% 30px 20%;
-    overflow: auto;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: left;
+  background: black;
+  padding: 20px;
+  max-height: 300px;
+  width: 60%;
+  margin: 0 20% 30px 20%;
+  overflow: auto;
 }
 
 pre .alert {
-    color: #D00;
+  color: #d00;
 }
 
 p a {
-    text-decoration: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 p {
-    line-height: 1.4em;
+  line-height: 1.4em;
 }
 
-a, a:visited {
-    color: #fff;
+a,
+a:visited {
+  color: #fff;
 }
 
 em {
-    opacity: 0.7;
-    font-style: normal;
+  opacity: 0.7;
+  font-style: normal;
 }
 
 h1 span {
-    font-weight: lighter;
-    opacity: 0.6;
+  font-weight: lighter;
+  opacity: 0.6;
 }
 
 h3 {
-    opacity: 0.6;
-    font-weight: normal;
+  opacity: 0.6;
+  font-weight: normal;
 }
 
 /**************** Page switcher ****************/
 
 .page-switcher {
-    background: rgba(0, 0, 0, 0.2);
-    color: rgba(255, 255, 255, 0.5);
-    text-decoration: none;
-    transition: all 0.25s;
-    position: fixed;
-    top: 50%;
-    height: 100px;
-    width: 100px;
-    margin-top: -50px;
-    font-size: 40px;
-    display: flex;
-    align-content: center;
-    align-items: center;
-    justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: all 0.25s;
+  position: fixed;
+  top: 50%;
+  height: 100px;
+  width: 100px;
+  margin-top: -50px;
+  font-size: 40px;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .page-switcher:hover {
-    background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .page-switcher-prev {
-    left: 0;
+  left: 0;
 }
 
 .page-switcher-prev:hover {
-    left: -10px;
+  left: -10px;
 }
 
 .page-switcher-next {
-    right: 0;
+  right: 0;
 }
 
 .page-switcher-next:hover {
-    right: -10px;
+  right: -10px;
 }
 
 /**************** JavaScript API examples ****************/
 
 #console {
-    height: 100px;
-    width: 100%;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    margin: 0 0 30px 0;
+  height: 100px;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin: 0 0 30px 0;
 }
 
 /******************** Example window ********************/
 
 .example-window {
-    text-align: center;
-    color: #e9e9e9;
-    max-width: 40em;
-    display: inline-block;
+  text-align: center;
+  color: #e9e9e9;
+  max-width: 40em;
+  display: inline-block;
 }
 
 .example-window h1 {
-    margin: 0 0 .5em 0;
+  margin: 0 0 0.5em 0;
 }
 
 .example-window p {
-    margin: 0 0 1em 0;
+  margin: 0 0 1em 0;
 }
 
 .example-window button {
-    margin: 0;
-    padding: .5em;
-    font-size: 1em;
+  margin: 0;
+  padding: 0.5em;
+  font-size: 1em;
 }
 
 /******************** Forms ********************/
 
 .form-controls {
-    margin: 40px;
+  margin: 40px;
 }
 
 .form-controls label {
-    display: block;
-    text-align: center;
-    opacity: 0.5;
-    margin-bottom: 10px;
+  display: block;
+  text-align: center;
+  opacity: 0.5;
+  margin-bottom: 10px;
 }
 
 .btn-group {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
-.btn, .btn:visited {
-    display: inline-block;
-    background: #FFF;
-    color: #000;
-    border: 0;
-    padding: 0.5em 1.4em;
-    text-decoration: none;
-    border-radius: 0.2em;
-    transition: all 0.25s;
-    margin: 0 0.25em;
+.btn,
+.btn:visited {
+  display: inline-block;
+  background: #fff;
+  color: #000;
+  border: 0;
+  padding: 0.5em 1.4em;
+  text-decoration: none;
+  border-radius: 0.2em;
+  transition: all 0.25s;
+  margin: 0 0.25em;
 }
 
 .btn:hover {
-    background: #DDD;
-    color: #000;
+  background: #ddd;
+  color: #000;
 }
 
 /******************** Table ********************/
 
 table th {
-    text-align: right;
-    font-weight: normal;
-    opacity: 0.5;
+  text-align: right;
+  font-weight: normal;
+  opacity: 0.5;
 }
 
 /******************** Example selector ********************/
 
 ul {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
-.example-selector>li {
-    display: inline-block;
-    height: 6em;
-    width: 6em;
-    color: rgba(0, 0, 0, 0.7);
-    background: rgba(255, 255, 255, 0.7);
-    text-align: center;
-    cursor: pointer;
-    margin: 0.5em;
-    padding: 0.5em;
-    overflow: hidden;
-    transition: all 0.25s;
-    border-radius: 5px;
+.example-selector > li {
+  display: inline-block;
+  height: 6em;
+  width: 6em;
+  color: rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  cursor: pointer;
+  margin: 0.5em;
+  padding: 0.5em;
+  overflow: hidden;
+  transition: all 0.25s;
+  border-radius: 5px;
 }
 
-.example-selector>li:hover {
-    color: rgba(0, 0, 0, 1);
-    background: rgba(255, 255, 255, 0.9);
+.example-selector > li:hover {
+  color: rgba(0, 0, 0, 1);
+  background: rgba(255, 255, 255, 0.9);
 }
 
-.example-selector>li:before {
-    content: "";
-    display: inline-block;
-    vertical-align: middle;
-    height: 100%;
+.example-selector > li:before {
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
 }
 
-.example-selector>li>span {
-    display: inline-block;
-    vertical-align: middle;
-    padding: 3px 5px;
+.example-selector > li > span {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 3px 5px;
 }
 
 /******************** SelectBox ********************/
 
 .selectbox {
-    text-align: center;
-    font-size: inherit;
-    max-width: 20em;
-    padding: .2em .4em;
+  text-align: center;
+  font-size: inherit;
+  max-width: 20em;
+  padding: 0.2em 0.4em;
 }
 
 /******************** Layout ********************/
 
 .center-outer {
-    display: table;
+  display: table;
 }
 
 .center-inner {
-    display:table-cell;
-    vertical-align:middle;
-    text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
 
 .fit {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 /******************** Code ********************/
 
 #options {
-    display: none;
+  display: none;
 }
 
 /******************** Responsiveness ********************/
 
-@media (min-width : 820px) and (max-width: 1000px) {
-    .example-window {
-        margin: 0 100px;
-    }
+@media (min-width: 820px) and (max-width: 1000px) {
+  .example-window {
+    margin: 0 100px;
+  }
 }
 
 @media (max-width: 819px) {
-    body {
-        padding: 20px;
-    }
+  body {
+    padding: 20px;
+  }
 
-    .example-window {
-        margin: 0;
-    }
+  .example-window {
+    margin: 0;
+  }
 
-    .page-switcher {
-        position: inherit;
-        display: inline-block;
-        padding: 10px 10px;
-        width: 30px;
-        height: 30px;
-        font-size: 20px;
-        border-radius: 50%;
-        margin: 20px 0;
-    }
+  .page-switcher {
+    position: inherit;
+    display: inline-block;
+    padding: 10px 10px;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    border-radius: 50%;
+    margin: 20px 0;
+  }
 }

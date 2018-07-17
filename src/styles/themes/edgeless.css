@@ -11,7 +11,7 @@
 
 .cc-banner.cc-theme-edgeless .cc-btn {
   margin: 0;
-  padding: .8em 1.8em;
+  padding: 0.8em 1.8em;
   height: 100%;
 }
 
@@ -19,6 +19,6 @@
   margin-left: 1em;
 }
 
-.cc-floating.cc-theme-edgeless .cc-btn +.cc-btn {
+.cc-floating.cc-theme-edgeless .cc-btn + .cc-btn {
   margin-left: 0;
 }

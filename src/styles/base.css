@@ -1,6 +1,6 @@
-
 /* the popup window */
-.cc-window, .cc-revoke {
+.cc-window,
+.cc-revoke {
   position: fixed;
   overflow: hidden;
   box-sizing: border-box; /* exclude padding when dealing with width */
@@ -29,11 +29,11 @@
 .cc-window.cc-banner {
   padding: 1em 1.8em;
   width: 100%;
-  flex-direction:  row;
+  flex-direction: row;
 }
 
 .cc-revoke {
-  padding: .5em;
+  padding: 0.5em;
 }
 .cc-revoke:hover {
   text-decoration: underline;
@@ -45,27 +45,30 @@
 }
 
 /* clickable things */
-.cc-btn, .cc-link, .cc-close, .cc-revoke {
+.cc-btn,
+.cc-link,
+.cc-close,
+.cc-revoke {
   cursor: pointer;
 }
 
 .cc-link {
-  opacity: .8;
+  opacity: 0.8;
   display: inline-block;
-  padding: .2em;
+  padding: 0.2em;
   text-decoration: underline;
 }
 .cc-link:hover {
   opacity: 1;
 }
-.cc-link:active, .cc-link:visited {
+.cc-link:active,
+.cc-link:visited {
   color: initial;
 }
 
-
 .cc-btn {
   display: block;
-  padding: .4em .8em;
+  padding: 0.4em 0.8em;
   font-size: 0.9em;
   font-weight: bold;
   border-width: 2px;
@@ -85,19 +88,18 @@
   text-decoration: underline;
 }
 
-
 .cc-close {
   display: block;
   position: absolute;
-  top: .5em;
-  right: .5em;
+  top: 0.5em;
+  right: 0.5em;
   font-size: 1.6em;
-  opacity: .9;
+  opacity: 0.9;
 
   /* seeing as this contains text and not an image, the element taller than it is wide (because it is text) */
   /*  - we want it to be a square, because it's acting as an icon */
   /*  - setting the line height normalises the height */
-  line-height: .75;
+  line-height: 0.75;
 }
 .cc-close:hover,
 .cc-close:focus {

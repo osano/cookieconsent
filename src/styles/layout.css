@@ -1,28 +1,52 @@
 /* This file should contain CSS that modifies the popup layout. */
 /* By layout, we mean the physical position of the elements on the popup window, and the margin / padding around those elements. */
 
-
-.cc-revoke.cc-top {top:0; left: 3em; border-bottom-left-radius:.5em;border-bottom-right-radius:.5em;}
-.cc-revoke.cc-bottom {bottom:0; left: 3em; border-top-left-radius:.5em;border-top-right-radius:.5em;}
-.cc-revoke.cc-left{left: 3em; right: unset;}
-.cc-revoke.cc-right{right: 3em; left: unset;}
+.cc-revoke.cc-top {
+  top: 0;
+  left: 3em;
+  border-bottom-left-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+}
+.cc-revoke.cc-bottom {
+  bottom: 0;
+  left: 3em;
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
+}
+.cc-revoke.cc-left {
+  left: 3em;
+  right: unset;
+}
+.cc-revoke.cc-right {
+  right: 3em;
+  left: unset;
+}
 
 /**************************************** FLOATING ****************************************/
 
 /* these classes position the floating element */
-.cc-top {top: 1em} .cc-left {left: 1em} .cc-right {right: 1em} .cc-bottom {bottom: 1em}
-
+.cc-top {
+  top: 1em;
+}
+.cc-left {
+  left: 1em;
+}
+.cc-right {
+  right: 1em;
+}
+.cc-bottom {
+  bottom: 1em;
+}
 
 /* links that are direct decendants should be displayed as block */
-.cc-floating>.cc-link {
-  margin-bottom: 1em
+.cc-floating > .cc-link {
+  margin-bottom: 1em;
 }
 
 .cc-floating .cc-message {
   display: block;
   margin-bottom: 1em;
 }
-
 
 .cc-window.cc-floating .cc-compliance {
   flex: 1 0 auto;
@@ -35,10 +59,14 @@
 }
 
 .cc-banner.cc-top {
-  left: 0; right: 0; top: 0;
+  left: 0;
+  right: 0;
+  top: 0;
 }
 .cc-banner.cc-bottom {
-  left: 0; right: 0; bottom: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .cc-banner .cc-message {
@@ -55,10 +83,10 @@
   align-items: center;
   align-content: space-between;
 }
-.cc-floating .cc-compliance>.cc-btn {
+.cc-floating .cc-compliance > .cc-btn {
   flex: 1;
 }
 
 .cc-btn + .cc-btn {
-  margin-left: .5em;
+  margin-left: 0.5em;
 }
