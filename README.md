@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/insites/cookieconsent.svg)](https://travis-ci.org/insites/cookieconsent)
-## What is Cookie Consent? 
+
+## What is Cookie Consent?
 
 [Cookie Consent](https://cookieconsent.insites.com/) is a lightweight JavaScript plugin for alerting users about the use of cookies on your website.
 
@@ -20,7 +21,7 @@ Version 3.0 is a complete rewrite from version 2. The most substantial new featu
 
 ## Installation
 
-The easiest way to get up and running is to use our [wizard](https://cookieconsent.insites.com/download/). 
+The easiest way to get up and running is to use our [wizard](https://cookieconsent.insites.com/download/).
 
 You can also install this project through [npm](https://www.npmjs.com/):
 
@@ -40,15 +41,15 @@ Or via a jsDelivr:
 <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
 ```
 
-## Documentation 
+## Documentation
 
 See our [full documentation](https://cookieconsent.insites.com/documentation/).
 
 ## Contributing
 
-Feel free to improve the plugin and send us a pull request.  
+Feel free to improve the plugin and send us a pull request.
 
-The easiest way to develop is to host the files with a local webserver. e.g. 
+The easiest way to develop is to host the files with a local webserver. e.g.
 
 ```sh
 python -m SimpleHTTPServer
@@ -68,11 +69,11 @@ Code released under the [MIT licence](http://opensource.org/licenses/MIT).
 
 Cookie Consent v3
 
-+ Alex Morley-Finch - JavaScript
-+ Piiu Pilt - JavaScript
-+ Oliver Emberton (@oliveremberton) - a couple of lines of CSS, maybe
+- Alex Morley-Finch (@alexmorleyfinch) - JavaScript
+- Piiu Pilt - JavaScript
+- Oliver Emberton (@oliveremberton) - a couple of lines of CSS, maybe
 
 Cookie Consent v2
 
-+ David Ball (@drball) - CSS / themes
-+ Adam Hutchinson (@adjohu) - JavaScript
+- David Ball (@drball) - CSS / themes
+- Adam Hutchinson (@adjohu) - JavaScript
