@@ -1674,9 +1674,6 @@
   cc.initialise = function(options, complete, error) {
     var law = new cc.Law(options.law);
 
-    var popup = new cc.Popup(options);
-    if (!popup.options.enabled) return;
-
     if (!complete) complete = function() {};
     if (!error) error = function() {};
 
