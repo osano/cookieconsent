@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <base href="../">
   <meta charset="UTF-8" />
@@ -10,44 +11,45 @@
   <link href="examples/style.css" rel="stylesheet">
   <link href="build/cookieconsent.min.css" rel="stylesheet">
 
-<body class="example3" role="document">
+  <body class="example3" role="document">
 
-  <div class="center-outer fit">
-    <div class="center-inner">
-      <div class="example-window" role="main">
+    <div class="center-outer fit">
+      <div class="center-inner">
+        <div class="example-window" role="main">
 
-        <h1><span>Demo 3</span> Informational</h1>
+          <h1>
+            <span>Demo 3</span> Informational</h1>
 
-        <p>
-          An <a href="http://cookieconsent.insites.com/documentation/compliance/#informational">informational</a> notice simply tells
-          users that we use cookies, and lets the user dismiss the message. This is the simplest solution, and
-          recommended for most websites.
-        </p>
+          <p>
+            An
+            <a href="http://cookieconsent.insites.com/documentation/compliance/#informational">informational</a> notice simply tells users that we use cookies, and lets the user dismiss the message. This
+            is the simplest solution, and recommended for most websites.
+          </p>
 
-        <ul class="example-selector"></ul>
+          <ul class="example-selector"></ul>
 
-        <a href="examples/example-2-custom-theme.html" class="page-switcher page-switcher-prev" title="Previous demo">&#9664;</a>
-        <a href="examples/example-4-opt-out.html" class="page-switcher page-switcher-next" title="Next demo">&#9654;</a>
+          <a href="examples/example-2-custom-theme.html" class="page-switcher page-switcher-prev" title="Previous demo">&#9664;</a>
+          <a href="examples/example-4-opt-out.html" class="page-switcher page-switcher-next" title="Next demo">&#9654;</a>
 
+        </div>
       </div>
     </div>
-  </div>
 
-<script src="examples/script.js"></script>
-<script src="build/cookieconsent.min.js"></script>
-<script>
+    <script src="examples/script.js"></script>
+    <script src="build/cookieconsent.min.js"></script>
+    <script>
 
-  (function (C, U) {
-    pageState = U.initialisePopupSelector({
-      cookieconsent: C,
-      selector: document.querySelector('.example-selector'),
-      popups: {
-        'Try it': {
-          type: 'info',
-          "palette":{"popup":{"background":"#383b75"},"button":{"background":"#f1d600"}}
-        },
-      },
-    });
-  } (window.cookieconsent, window.cookieconsent_example_util));
+      (function (C, U) {
+        pageState = U.initialisePopupSelector({
+          cookieconsent: C,
+          selector: document.querySelector('.example-selector'),
+          popups: {
+            'Try it': {
+              type: 'info',
+              "palette": { "popup": { "background": "#383b75" }, "button": { "background": "#f1d600" } }
+            },
+          },
+        });
+      }(window.cookieconsent, window.cookieconsent_example_util));
 
-</script>
+    </script>
