@@ -1147,7 +1147,6 @@
       // the order that services will be attempted in
       services: [
         'ipinfo',
-        'maxmind'
 
         /*
 
