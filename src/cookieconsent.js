@@ -414,7 +414,7 @@
       }
 
       // returns true if `onComplete` was called
-      if (checkCallbackHooks.call(this)) {
+      if (checkCallbackHooks.call(this) && options.revokable === false) {
         // user has already answered
         this.options.enabled = false;
       }
