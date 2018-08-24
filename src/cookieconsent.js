@@ -1052,7 +1052,7 @@
       if (windowClick) {
         var onWindowClick = function(evt) {
           var isIgnored = false;
-          var pathLen = evt.path.length;
+          var pathLen = evt.composedPath.length;
           var ignoredLen = ignoredClicks.length;
           for (var i = 0; i < pathLen; i++) {
             if (isIgnored) continue;
@@ -1060,7 +1060,7 @@
             for (var i2 = 0; i2 < ignoredLen; i2++) {
               if (isIgnored) continue;
 
-              isIgnored = util.hasClass(evt.path[i], ignoredClicks[i2]);
+              isIgnored = util.hasClass(evt.composedPath[i], ignoredClicks[i2]);
             }
           }
 
