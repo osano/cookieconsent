@@ -558,8 +558,12 @@
         el.style.display = '';
 
         if (this.options.static) {
-          var height = this.element.clientHeight;
-          this.element.parentNode.style.maxHeight = height + 'px';
+          this.onWindowResize = function() {
+              var height = this.element.offsetHeight;
+              this.element.parentNode.style.maxHeight = height + 'px';
+          }.bind(this);
+          window.addEventListener('resize', this.onWindowResize);
+          this.onWindowResize();
         }
 
         var fadeInTimeout = 20; // (ms) DO NOT MAKE THIS VALUE SMALLER. See below
@@ -589,6 +593,7 @@
       if (!util.hasClass(el, 'cc-invisible')) {
         if (this.options.static) {
           this.element.parentNode.style.maxHeight = '';
+          window.removeEventListener('resize', this.onWindowResize);
         }
 
         this.afterTransition = afterFadeOut.bind(this, el);
