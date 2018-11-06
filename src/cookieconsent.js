@@ -1178,7 +1178,7 @@
         ipinfo: function() {
           return {
             // This service responds with JSON, so we simply need to parse it and return the country code
-            url: '//ipinfo.io',
+            url: 'https://ipinfo.io',
             headers: ['Accept: application/json'],
             callback: function(done, response) {
               try {
@@ -1200,7 +1200,7 @@
           return {
             // This service responds with JSON, so we simply need to parse it and return the country code
             url:
-              '//api.ipinfodb.com/v3/ip-country/?key={api_key}&format=json&callback={callback}',
+              'https://api.ipinfodb.com/v3/ip-country/?key={api_key}&format=json&callback={callback}',
             isScript: true, // this is JSONP, therefore we must set it to run as a script
             callback: function(done, response) {
               try {
@@ -1221,7 +1221,7 @@
           return {
             // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
             // make an additional AJAX call. Therefore we provide a `done` callback that can be called asynchronously
-            url: '//js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
+            url: 'https://js.maxmind.com/js/apis/geoip2/v2.1/geoip2.js',
             isScript: true, // this service responds with a JavaScript file, so it must be run as a script
             callback: function(done) {
               // if everything went okay then `geoip2` WILL be defined

@@ -20,6 +20,7 @@
   },
   "homepage": "http://cookieconsent.insites.com/",
   "scripts": {
+    "build": "node_modules/.bin/gulp build",
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
