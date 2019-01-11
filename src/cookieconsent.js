@@ -623,7 +623,7 @@
 
     // returns true if the cookie has a valid value
     CookiePopup.prototype.hasAnswered = function(options) {
-      return Object.keys(cc.status).indexOf(this.getStatus()) >= 0;
+      return Object.values(cc.status).indexOf(this.getStatus()) >= 0;
     };
 
     // returns true if the cookie indicates that consent has been given
@@ -644,10 +644,10 @@
     CookiePopup.prototype.setStatus = function(status) {
       var c = this.options.cookie;
       var value = util.getCookie(c.name);
-      var chosenBefore = Object.keys(cc.status).indexOf(value) >= 0;
+      var chosenBefore = Object.values(cc.status).indexOf(value) >= 0;
 
       // if `status` is valid
-      if (Object.keys(cc.status).indexOf(status) >= 0) {
+      if (Object.values(cc.status).indexOf(status) >= 0) {
         util.setCookie(
           c.name,
           status,
@@ -702,7 +702,7 @@
         return true;
       }
 
-      var allowed = Object.keys(cc.status);
+      var allowed = Object.values(cc.status);
       var answer = this.getStatus();
       var match = allowed.indexOf(answer) >= 0;
 
@@ -847,7 +847,7 @@
         var match = (matches && matches[1]) || false;
 
         if (match) {
-          this.setStatus(match);
+          this.setStatus(cc.status[match]);
           this.close(true);
         }
       }
@@ -1682,8 +1682,8 @@
 
     // I hardcoded this because I cba to refactor a fuck load of code.
     // Bad developer. Bad.
-    var allowed = Object.keys(cc.status);
-    var answer = util.getCookie('cookieconsent_status');
+    var allowed = Object.values(cc.status);
+    var answer = util.getCookie(options.cookie.name);
     var match = allowed.indexOf(answer) >= 0;
 
     // if they have already answered
