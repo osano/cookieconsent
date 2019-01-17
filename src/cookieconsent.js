@@ -1,4 +1,18 @@
 (function(cc) {
+  // stub for environments with no window object, like server-side rendering
+  var windowStub = {
+    ActiveXObject: function() {},
+    addEventListener: function() {},
+    innerHeight: 0,
+    navigator: {},
+    pageYOffset: 0.0,
+    removeEventListener: function() {},
+    setTimeout: function() {},
+    XMLHttpRequest: function() {},
+  };
+
+  var global = typeof window !== 'undefined' ? window : windowStub;
+
   // stop from running again, if accidently included more than once.
   if (cc.hasInitialised) return;
 
@@ -476,17 +490,17 @@
       }
 
       if (this.onWindowScroll) {
-        window.removeEventListener('scroll', this.onWindowScroll);
+        global.removeEventListener('scroll', this.onWindowScroll);
         this.onWindowScroll = null;
       }
 
       if (this.onWindowClick) {
-        window.removeEventListener('click', this.onWindowClick);
+        global.removeEventListener('click', this.onWindowClick);
         this.onWindowClick = null;
       }
 
       if (this.onMouseMove) {
-        window.removeEventListener('mousemove', this.onMouseMove);
+        global.removeEventListener('mousemove', this.onMouseMove);
         this.onMouseMove = null;
       }
 
@@ -692,12 +706,12 @@
     function checkCallbackHooks() {
       var complete = this.options.onInitialise.bind(this);
 
-      if (!window.navigator.cookieEnabled) {
+      if (!global.navigator.cookieEnabled) {
         complete(cc.status.deny);
         return true;
       }
 
-      if (window.CookiesOK || window.navigator.CookiesOK) {
+      if (global.CookiesOK || global.navigator.CookiesOK) {
         complete(cc.status.allow);
         return true;
       }
@@ -1023,7 +1037,7 @@
 
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number' && delay >= 0) {
-        this.dismissTimeout = window.setTimeout(function() {
+        this.dismissTimeout = global.setTimeout(function() {
           setStatus(cc.status.dismiss);
           close(true);
         }, Math.floor(delay));
@@ -1032,18 +1046,18 @@
       var scrollRange = this.options.dismissOnScroll;
       if (typeof scrollRange == 'number' && scrollRange >= 0) {
         var onWindowScroll = function(evt) {
-          if (window.pageYOffset > Math.floor(scrollRange)) {
+          if (global.pageYOffset > Math.floor(scrollRange)) {
             setStatus(cc.status.dismiss);
             close(true);
 
-            window.removeEventListener('scroll', onWindowScroll);
+            global.removeEventListener('scroll', onWindowScroll);
             this.onWindowScroll = null;
           }
         };
 
         if (this.options.enabled) {
           this.onWindowScroll = onWindowScroll;
-          window.addEventListener('scroll', onWindowScroll);
+          global.addEventListener('scroll', onWindowScroll);
         }
       }
 
@@ -1068,14 +1082,14 @@
             setStatus(cc.status.dismiss);
             close(true);
 
-            window.removeEventListener('click', onWindowClick);
+            global.removeEventListener('click', onWindowClick);
             this.onWindowClick = null;
           }
         }.bind(this);
 
         if (this.options.enabled) {
           this.onWindowClick = onWindowClick;
-          window.addEventListener('click', onWindowClick);
+          global.addEventListener('click', onWindowClick);
         }
       }
     }
@@ -1107,7 +1121,7 @@
           var onMouseMove = util.throttle(function(evt) {
             var active = false;
             var minY = 20;
-            var maxY = window.innerHeight - 20;
+            var maxY = global.innerHeight - 20;
 
             if (util.hasClass(btn, 'cc-top') && evt.clientY < minY)
               active = true;
@@ -1126,7 +1140,7 @@
           }, 200);
 
           this.onMouseMove = onMouseMove;
-          window.addEventListener('mousemove', onMouseMove);
+          global.addEventListener('mousemove', onMouseMove);
         }
       }
     }
@@ -1225,7 +1239,7 @@
             isScript: true, // this service responds with a JavaScript file, so it must be run as a script
             callback: function(done) {
               // if everything went okay then `geoip2` WILL be defined
-              if (!window.geoip2) {
+              if (!global.geoip2) {
                 done(
                   new Error(
                     'Unexpected response format. The downloaded script should have exported `geoip2` to the global scope'
@@ -1524,7 +1538,7 @@
       postData,
       requestHeaders
     ) {
-      var xhr = new (window.XMLHttpRequest || window.ActiveXObject)(
+      var xhr = new (global.XMLHttpRequest || global.ActiveXObject)(
         'MSXML2.XMLHTTP.3.0'
       );
 
@@ -1745,6 +1759,6 @@
   if (typeof exports !== 'undefined') {
     module.exports = cc;
   } else {
-    window.cookieconsent = cc;
+    global.cookieconsent = cc;
   }
-})(window.cookieconsent || {});
+})(global.cookieconsent || {});
