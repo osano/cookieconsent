@@ -1742,5 +1742,9 @@
   // prevent this code from being run twice
   cc.hasInitialised = true;
 
-  window.cookieconsent = cc;
+  if (typeof exports !== 'undefined') {
+    module.exports = cc;
+  } else {
+    window.cookieconsent = cc;
+  }
 })(window.cookieconsent || {});
