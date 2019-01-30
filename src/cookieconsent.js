@@ -383,7 +383,10 @@
       //     document.body.appendChild(instance.element);
       //
       autoAttach: true,
-
+	  
+	  // If `attachBelow` is true, the created HTML will be attached as last element of the HTML body instead of the first element.
+	  attachBelow: false,
+	  
       // simple whitelist/blacklist for pages. specify page by:
       //   - using a string : '/index.html'           (matches '/index.html' exactly) OR
       //   - using RegExp   : /\/page_[\d]+\.html/    (matched '/page_1.html' and '/page_2.html' etc)
@@ -826,7 +829,7 @@
       el.addEventListener('click', this.onButtonClick);
 
       if (opts.autoAttach) {
-        if (!cont.firstChild) {
+        if (!cont.firstChild || opts.attachBelow) {
           cont.appendChild(el);
         } else {
           cont.insertBefore(el, cont.firstChild);
