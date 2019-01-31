@@ -45,13 +45,18 @@
             .shift();
     },
 
-    setCookie: function(name, value, expiryDays, domain, path, secure) {
+    setCookie: function(name, value, expiryDays, domain, path, secure, sessionOnly) {
       var exdate = new Date();
       exdate.setDate(exdate.getDate() + (expiryDays || 365));
+      var expires = 'expires=' + exdate.toUTCString();
+
+      if (sessionOnly) {
+        expires = '';
+      }
 
       var cookie = [
         name + '=' + value,
-        'expires=' + exdate.toUTCString(),
+        expires,
         'path=' + (path || '/')
       ];
 
@@ -231,7 +236,10 @@
         expiryDays: 365,
 
         // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
-        secure: false
+        secure: false,
+
+        // The cookie expires after browser session
+        sessionOnly: false,
       },
 
       // these callback hooks are called at certain points in the program execution
@@ -654,7 +662,8 @@
           c.expiryDays,
           c.domain,
           c.path,
-          c.secure
+          c.secure,
+          c.sessionOnly
         );
 
         this.options.onStatusChange.call(this, status, chosenBefore);
