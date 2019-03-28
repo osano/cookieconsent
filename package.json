@@ -27,5 +27,8 @@
     "url": "https://github.com/insites/cookieconsent.git"
   },
   "author": "Silktide Ltd.",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=8.0.0"
+  }
 }
