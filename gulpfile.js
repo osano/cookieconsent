@@ -11,28 +11,28 @@ const diff = require('gulp-diff');
 
 let buildFolder = './build';
 const buildFiles = {
-    js: [
-        './src/cookieconsent.js'
-    ],
-    css: [
-        // defined explicitly so they are combined in order
-        './src/styles/animation.css',
-        './src/styles/base.css',
-        './src/styles/layout.css',
-        './src/styles/media.css',
+  js: [
+    './src/cookieconsent.js'
+  ],
+  css: [
+    // defined explicitly so they are combined in order
+    './src/styles/animation.css',
+    './src/styles/base.css',
+    './src/styles/layout.css',
+    './src/styles/media.css',
 
-        // all theme files
-        './src/styles/themes/*.css',
-    ]
+    // all theme files
+    './src/styles/themes/*.css',
+  ]
 };
 
 gulp.task('cleanup:begin', () => deleteDirs([buildFolder]));
 
 gulp.task('minify:js', () =>
-    gulp.src(buildFiles.js) // get files
-      .pipe(minifyJS()) // minify them
-      .pipe(concat('cookieconsent.min.js')) // combine them
-      .pipe(gulp.dest(buildFolder)) // save under a new name
+  gulp.src(buildFiles.js) // get files
+    .pipe(minifyJS()) // minify them
+    .pipe(concat('cookieconsent.min.js')) // combine them
+    .pipe(gulp.dest(buildFolder)) // save under a new name
 );
 
 gulp.task('minify:css', () =>
