@@ -1,5 +1,5 @@
 (function(cc) {
-  // stop from running again, if accidently included more than once.
+  // stop from running again, if accidentally included more than once.
   if (cc.hasInitialised) return;
 
   var util = {
