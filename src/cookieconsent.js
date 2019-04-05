@@ -1069,6 +1069,7 @@
             close(true);
 
             window.removeEventListener('click', onWindowClick);
+            window.removeEventListener('touchend', onWindowClick);
             this.onWindowClick = null;
           }
         }.bind(this);
@@ -1076,6 +1077,7 @@
         if (this.options.enabled) {
           this.onWindowClick = onWindowClick;
           window.addEventListener('click', onWindowClick);
+          window.addEventListener('touchend', onWindowClick);
         }
       }
     }
