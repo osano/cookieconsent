@@ -1,9 +1,9 @@
 {
   "name": "cookieconsent",
   "version": "3.1.0",
-  "homepage": "http://cookieconsent.insites.com/",
-  "authors": ["Insites"],
-  "description": "Insites' cookie consent plugin",
+  "homepage": "http://cookieconsent.osano.com/",
+  "authors": ["Osano"],
+  "description": "Osano cookie consent plugin",
   "main": ["build/cookieconsent.min.js", "build/cookieconsent.min.css"],
   "keywords": ["cookieconsent", "cookie", "law"],
   "license": "MIT",
