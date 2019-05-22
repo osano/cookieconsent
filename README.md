@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.org/insites/cookieconsent.svg)](https://travis-ci.org/insites/cookieconsent)
+[![Build Status](https://travis-ci.org/osano/cookieconsent.svg?branch=master)](https://travis-ci.org/osano/cookieconsent)
 
 ## What is Cookie Consent?
 
-[Cookie Consent](https://cookieconsent.insites.com/) is a lightweight JavaScript plugin for alerting users about the use of cookies on your website.
+[Cookie Consent](https://cookieconsent.osano.com/) is a lightweight JavaScript plugin for alerting users about the use of cookies on your website.
 
 It is designed to help you comply with the hideous EU Cookie Law and not make you want to kill yourself in the process. So we made it fast, free, and relatively painless.
 
@@ -21,7 +21,7 @@ Version 3.0 is a complete rewrite from version 2. The most substantial new featu
 
 ## Installation
 
-The easiest way to get up and running is to use our [wizard](https://cookieconsent.insites.com/download/).
+The easiest way to get up and running is to use our [wizard](https://cookieconsent.osano.com/download/).
 
 You can also install this project through [npm](https://www.npmjs.com/):
 
@@ -43,7 +43,7 @@ Or via a jsDelivr:
 
 ## Documentation
 
-See our [full documentation](https://cookieconsent.insites.com/documentation/).
+See our [full documentation](https://cookieconsent.osano.com/documentation/).
 
 ## Contributing
 
