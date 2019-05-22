@@ -1,7 +1,7 @@
 {
   "name": "cookieconsent",
   "version": "3.1.0",
-  "description": "Insites' cookie consent tool.",
+  "description": "Osano' cookie consent tool.",
   "main": "build/cookieconsent.min.js",
   "devDependencies": {
     "del": "^2.0.2",
@@ -18,13 +18,13 @@
     "yargs": "^5.0.0",
     "gulp-diff": "^1.0.0"
   },
-  "homepage": "http://cookieconsent.insites.com/",
+  "homepage": "http://cookieconsent.osano.com/",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/insites/cookieconsent.git"
+    "url": "https://github.com/osano/cookieconsent.git"
   },
   "author": "Silktide Ltd.",
   "license": "MIT"
