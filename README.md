@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/osano/cookieconsent.svg?branch=master)](https://travis-ci.org/osano/cookieconsent)
 
+![Cookie Consent](images/cookie-consent.png)
+
 ## What is Cookie Consent?
 
 [Cookie Consent](https://cookieconsent.osano.com/) is a lightweight JavaScript plugin for alerting users about the use of cookies on your website.
