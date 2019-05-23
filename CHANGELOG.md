@@ -52,6 +52,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [3.1.1] - 2019-05-22
 
+### Security
+
+- Updated all dependencies to latest stable releases
+
 ### Fixed
 
 - Expiration date future calculation error
