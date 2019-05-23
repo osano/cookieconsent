@@ -1036,14 +1036,14 @@
             setStatus(cc.status.dismiss);
             close(true);
 
-            window.removeEventListener('scroll', onWindowScroll);
+            window.removeEventListener('scroll', onWindowScroll, { passive: true });
             this.onWindowScroll = null;
           }
         };
 
         if (this.options.enabled) {
           this.onWindowScroll = onWindowScroll;
-          window.addEventListener('scroll', onWindowScroll);
+          window.addEventListener('scroll', onWindowScroll, { passive: true });
         }
       }
 
