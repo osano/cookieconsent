@@ -1591,6 +1591,7 @@
         'LU',
         'MT',
         'NL',
+        'NO',
         'PL',
         'PT',
         'SK',
@@ -1613,13 +1614,14 @@
         'LV',
         'LT',
         'NL',
+        'NO',
         'PT',
         'ES'
       ],
 
       // countries that say that a person can only "consent" if the explicitly click on "I agree".
       // in these countries, consent cannot be implied via a timeout or by scrolling down the page
-      explicitAction: ['HR', 'IT', 'ES']
+      explicitAction: ['HR', 'IT', 'ES', 'NO']
     };
 
     function Law(options) {
