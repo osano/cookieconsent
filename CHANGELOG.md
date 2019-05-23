@@ -49,3 +49,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Deprecated
 
 - Removed deprecated FreeGeoIP
+
+## [3.1.1] - 2019-05-22
+
+### Fixed
+
+- Expiration date future calculation error
+- Closing with touch out did not work when cookie consent was displayed on iPhone Safari and dismissOnWindowClick is enabled
+
+### Random
+
+- Insite branding and domains replaced with Osano branding and domains
