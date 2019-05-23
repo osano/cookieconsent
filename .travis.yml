@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '4.1'
+- 'lts/*'
 install:
 - npm install
 - npm install -g gulp
