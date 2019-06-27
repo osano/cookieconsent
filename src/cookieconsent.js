@@ -1600,7 +1600,8 @@
         'GB',
         'UK',
         'GR',
-        'EU'
+        'EU',
+        'RO'
       ],
 
       // countries that say that all cookie consent choices must be revokable (a user must be able too change their mind)
