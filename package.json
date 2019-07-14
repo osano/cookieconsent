@@ -4,17 +4,17 @@
   "description": "Osano cookie consent tool.",
   "main": "build/cookieconsent.min.js",
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.5",
-    "@babel/plugin-proposal-class-properties": "^7.4.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
-    "@babel/preset-env": "^7.4.5",
-    "autoprefixer": "^9.6.0",
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "autoprefixer": "^9.6.1",
     "node-sass": "^4.12.0",
-    "postcss-cli": "^6.1.2",
+    "postcss-cli": "^6.1.3",
     "rimraf": "^2.6.3",
     "terser": "^4.1.2",
-    "version-bump-prompt": "^5.0.3"
+    "version-bump-prompt": "^5.0.4"
   },
   "homepage": "http://cookieconsent.osano.com/",
   "scripts": {
