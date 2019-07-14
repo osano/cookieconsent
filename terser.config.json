@@ -1,0 +1,15 @@
+{
+    "parse": {
+        "ecma": 5
+    },
+    "compress": {
+        "drop_console": true,
+        "keep_fargs": false,
+        "passes": 3
+    },
+    "output": {
+        "beautify": false,
+        "ecma": 5
+    },
+    "ecma": 5
+}

@@ -65,16 +65,10 @@ The easiest way to develop is to host the files with a local webserver. e.g.
 python -m SimpleHTTPServer
 ```
 
-We use Gulp 4 to compile the SCSS and minify the JavaScript. You can run a build with:
+We use Babel, Terser, and PostCSS to compile the SCSS and minify the JavaScript. You can run a build with:
 
 ```sh
-gulp build
-```
-
-or
-
-```sh
-npm run-script build
+npm run build
 ```
 
 or
