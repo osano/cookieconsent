@@ -14,6 +14,15 @@ Cookie Consent is seen over 2 BILLION times every month and is used on millions 
 
 We welcome community contributions and actively review pull requests.
 
+## Version 3.1
+
+Reflects the ownership change of the Cookie Consent project. Now actively maintained by:
+
+- @arlogilbert
+- @L0key
+- @pgoforth
+- @relicmelex
+
 ## Version 3.0
 
 Version 3.0 is a complete rewrite from version 2. The most substantial new features are:
