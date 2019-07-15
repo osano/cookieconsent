@@ -1,67 +1,59 @@
 (function(cc) {
   // stop from running again, if accidently included more than once.
-  if (cc.hasInitialised) return;
+  if (cc.hasInitialized) return;
 
-  var util = {
+  const util = {
     // https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
     escapeRegExp: function(str) {
-      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&')
     },
 
-    hasClass: function(element, selector) {
-      var s = ' ';
-      return (
-        element.nodeType === 1 &&
-        (s + element.className + s)
-          .replace(/[\n\t]/g, s)
-          .indexOf(s + selector + s) >= 0
-      );
+    hasClass: function( element, selector) {
+      return element.classList.contains( selector )
     },
 
     addClass: function(element, className) {
-      element.className += ' ' + className;
+      element.classList.add( className )
     },
 
     removeClass: function(element, className) {
-      var regex = new RegExp('\\b' + this.escapeRegExp(className) + '\\b');
-      element.className = element.className.replace(regex, '');
+      element.classList.remove( className )
     },
 
     interpolateString: function(str, callback) {
-      var marker = /{{([a-z][a-z0-9\-_]*)}}/gi;
-      return str.replace(marker, function(matches) {
-        return callback(arguments[1]) || '';
+      return str.replace( /{{([a-z][a-z0-9\-_]*)}}/gi, function() {
+        return callback(arguments[1]) || ''
       });
     },
 
     getCookie: function(name) {
-      var value = '; ' + document.cookie;
-      var parts = value.split('; ' + name + '=');
+      const value = '; ' + document.cookie
+      const parts = value.split('; ' + name + '=')
       return parts.length < 2
         ? undefined
         : parts
             .pop()
             .split(';')
-            .shift();
+            .shift()
     },
 
     setCookie: function(name, value, expiryDays, domain, path, secure) {
-      var exdate = new Date();
-      exdate.setHours(exdate.getHours() + ((expiryDays || 365) * 24));
+      const exdate = new Date()
+      exdate.setHours(exdate.getHours() + ((expiryDays || 365) * 24))
 
       var cookie = [
         name + '=' + value,
         'expires=' + exdate.toUTCString(),
         'path=' + (path || '/')
-      ];
+      ]
 
       if (domain) {
-        cookie.push('domain=' + domain);
+        cookie.push('domain=' + domain)
       }
       if (secure) {
-        cookie.push('secure');
+        cookie.push('secure')
       }
-      document.cookie = cookie.join(';');
+      document.cookie = cookie.join(';')
     },
 
     // only used for extending the initial options
@@ -237,7 +229,7 @@
       // these callback hooks are called at certain points in the program execution
       onPopupOpen: function() {},
       onPopupClose: function() {},
-      onInitialise: function(status) {},
+      onInitialize: function(status) {},
       onStatusChange: function(status, chosenBefore) {},
       onRevokeChoice: function() {},
       onNoCookieLaw: function(countryCode, country) {},
@@ -397,10 +389,10 @@
     };
 
     function CookiePopup() {
-      this.initialise.apply(this, arguments);
+      this.initialize.apply(this, arguments);
     }
 
-    CookiePopup.prototype.initialise = function(options) {
+    CookiePopup.prototype.initialize = function(options) {
       if (this.options) {
         this.destroy(); // already rendered
       }
@@ -622,18 +614,18 @@
     };
 
     // returns true if the cookie has a valid value
-    CookiePopup.prototype.hasAnswered = function(options) {
+    CookiePopup.prototype.hasAnswered = function() {
       return Object.keys(cc.status).indexOf(this.getStatus()) >= 0;
     };
 
     // returns true if the cookie indicates that consent has been given
-    CookiePopup.prototype.hasConsented = function(options) {
+    CookiePopup.prototype.hasConsented = function() {
       var val = this.getStatus();
       return val == cc.status.allow || val == cc.status.dismiss;
     };
 
     // opens the popup if no answer has been given
-    CookiePopup.prototype.autoOpen = function(options) {
+    CookiePopup.prototype.autoOpen = function() {
       if (!this.hasAnswered() && this.options.enabled) {
         this.open();
       } else if (this.hasAnswered() && this.options.revokable) {
@@ -690,7 +682,7 @@
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
     function checkCallbackHooks() {
-      var complete = this.options.onInitialise.bind(this);
+      var complete = this.options.onInitialize.bind(this);
 
       if (!window.navigator.cookieEnabled) {
         complete(cc.status.deny);
@@ -1626,10 +1618,10 @@
     };
 
     function Law(options) {
-      this.initialise.apply(this, arguments);
+      this.initialize.apply(this, arguments);
     }
 
-    Law.prototype.initialise = function(options) {
+    Law.prototype.initialize = function(options) {
       // set options back to default options
       util.deepExtend((this.options = {}), defaultOptions);
 
@@ -1677,9 +1669,9 @@
     return Law;
   })();
 
-  // This function initialises the app by combining the use of the Popup, Locator and Law modules
+  // This function initializes the app by combining the use of the Popup, Locator and Law modules
   // You can string together these three modules yourself however you want, by writing a new function.
-  cc.initialise = function(options, complete, error) {
+  cc.initialize = function(options, complete, error) {
     var law = new cc.Law(options.law);
 
     if (!complete) complete = function() {};
@@ -1745,7 +1737,7 @@
   cc.utils = util;
 
   // prevent this code from being run twice
-  cc.hasInitialised = true;
+  cc.hasInitialized = true;
 
   window.cookieconsent = cc;
 })(window.cookieconsent || {});
