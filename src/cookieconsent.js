@@ -3,23 +3,7 @@
   if (cc.hasInitialized) return;
 
   const util = {
-    // https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
-    escapeRegExp: function(str) {
-      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&')
-    },
-
-    hasClass: function( element, selector) {
-      return element.classList.contains( selector )
-    },
-
-    addClass: function(element, className) {
-      element.classList.add( className )
-    },
-
-    removeClass: function(element, className) {
-      element.classList.remove( className )
-    },
-
+    
     interpolateString: function(str, callback) {
       return str.replace( /{{([a-z][a-z0-9\-_]*)}}/gi, function() {
         return callback(arguments[1]) || ''
@@ -40,38 +24,11 @@
     setCookie: function(name, value, expiryDays, domain, path, secure) {
       const exdate = new Date()
       exdate.setHours(exdate.getHours() + ((expiryDays || 365) * 24))
-
-      var cookie = [
-        name + '=' + value,
-        'expires=' + exdate.toUTCString(),
-        'path=' + (path || '/')
-      ]
-
-      if (domain) {
-        cookie.push('domain=' + domain)
-      }
-      if (secure) {
-        cookie.push('secure')
-      }
-      document.cookie = cookie.join(';')
-    },
-
-    // only used for extending the initial options
-    deepExtend: function(target, source) {
-      for (var prop in source) {
-        if (source.hasOwnProperty(prop)) {
-          if (
-            prop in target &&
-            this.isPlainObject(target[prop]) &&
-            this.isPlainObject(source[prop])
-          ) {
-            this.deepExtend(target[prop], source[prop]);
-          } else {
-            target[prop] = source[prop];
-          }
-        }
-      }
-      return target;
+      document.cookie = name + '=' + value +
+                        ';expires=' + exdate.toUTCString() +
+                        ';path=' + (path || '/') +
+                        ( domain ? cookieArr.push(';domain=' + domain) : '' ) +
+                        ( secure ? ';secure')
     },
 
     // only used for throttling the 'mousemove' event (used for animating the revoke button when `animateRevokable` is true)
@@ -156,7 +113,7 @@
 
     traverseDOMPath: function(elem, className) {
       if (!elem || !elem.parentNode) return null;
-      if (util.hasClass(elem, className)) return elem;
+      if (elem.classList.contains(className)) return elem;
 
       return this.traverseDOMPath(elem.parentNode, className);
     }
@@ -192,9 +149,6 @@
   })();
 
   cc.hasTransition = !!cc.transitionEnd;
-
-  // array of valid regexp escaped statuses
-  var __allowedStatuses = Object.keys(cc.status).map(util.escapeRegExp);
 
   // contains references to the custom <style> tags
   cc.customStyles = {};
@@ -398,11 +352,11 @@
       }
 
       // set options back to default options
-      util.deepExtend((this.options = {}), defaultOptions);
+      this.options = Object.assign( {}, defaultOptions )
 
       // merge in user options
       if (util.isPlainObject(options)) {
-        util.deepExtend(this.options, options);
+        this.options = Object.assign( {}, this.options, options )
       }
 
       // returns true if `onComplete` was called
@@ -442,7 +396,7 @@
         wrapper.style.display = ''; // set it to visible (because appendMarkup hides it)
         this.element = wrapper.firstChild; // get the `element` reference from the wrapper
         this.element.style.display = 'none';
-        util.addClass(this.element, 'cc-invisible');
+        this.element.classList.add('cc-invisible');
       } else {
         this.element = appendMarkup.call(this, cookiePopup);
       }
@@ -546,7 +500,7 @@
         afterFadeOut.call(this, el);
       }
 
-      if (util.hasClass(el, 'cc-invisible')) {
+      if (el.classList.contains('cc-invisible')) {
         el.style.display = '';
 
         if (this.options.static) {
@@ -578,7 +532,7 @@
         afterFadeIn.bind(this, el);
       }
 
-      if (!util.hasClass(el, 'cc-invisible')) {
+      if (!el.classList.contains('cc-invisible')) {
         if (this.options.static) {
           this.element.parentNode.style.maxHeight = '';
         }
@@ -586,7 +540,7 @@
         this.afterTransition = afterFadeOut.bind(this, el);
         el.addEventListener(cc.transitionEnd, this.afterTransition);
 
-        util.addClass(el, 'cc-invisible');
+        el.classList.add('cc-invisible');
       }
     };
 
@@ -594,7 +548,7 @@
       return (
         this.element &&
         this.element.style.display == '' &&
-        (cc.hasTransition ? !util.hasClass(this.element, 'cc-invisible') : true)
+        (cc.hasTransition ? !this.element.classList.contains('cc-invisible') : true)
       );
     };
 
@@ -668,7 +622,7 @@
     // There is a good reason why it's called in a timeout. Read 'fadeIn';
     function afterFadeIn(el) {
       this.openingTimeout = null;
-      util.removeClass(el, 'cc-invisible');
+      el.classList.remove('cc-invisible')
     }
 
     // This is called on 'transitionend' (only on the transition of the fadeOut). That's because after we've faded out, we need to
@@ -808,8 +762,8 @@
 
       el.style.display = 'none';
 
-      if (util.hasClass(el, 'cc-window') && cc.hasTransition) {
-        util.addClass(el, 'cc-invisible');
+      if (el.classList.contains('cc-window') && cc.hasTransition) {
+        el.classList.add('cc-invisible');
       }
 
       // save ref to the function handle so we can unbind it later
@@ -830,24 +784,24 @@
 
     function handleButtonClick(event) {
       // returns the parent element with the specified class, or the original element - null if not found
-      var btn = util.traverseDOMPath(event.target, 'cc-btn') || event.target;
+      const btn = util.traverseDOMPath(event.target, 'cc-btn') || event.target;
 
-      if (util.hasClass(btn, 'cc-btn')) {
-        var matches = btn.className.match(
-          new RegExp('\\bcc-(' + __allowedStatuses.join('|') + ')\\b')
+      if (btn.classList.contains('cc-btn')) {
+        const matches = btn.className.match(
+          new RegExp('\\bcc-(' + Object.keys(cc.status).join('|') + ')\\b')
         );
-        var match = (matches && matches[1]) || false;
+        const match = (matches && matches[1]) || false;
 
         if (match) {
           this.setStatus(match);
           this.close(true);
         }
       }
-      if (util.hasClass(btn, 'cc-close')) {
+      if (btn.classList.contains('cc-close')) {
         this.setStatus(cc.status.dismiss);
         this.close(true);
       }
-      if (util.hasClass(btn, 'cc-revoke')) {
+      if (btn.classList.contains('cc-revoke')) {
         this.revokeChoice();
       }
     }
@@ -1105,19 +1059,15 @@
             var minY = 20;
             var maxY = window.innerHeight - 20;
 
-            if (util.hasClass(btn, 'cc-top') && evt.clientY < minY)
-              active = true;
-            if (util.hasClass(btn, 'cc-bottom') && evt.clientY > maxY)
-              active = true;
+            if ( ( btn.classList.contains( 'cc-top' ) && evt.clientY < minY ) ||
+                 ( btn.classList.contains( 'cc-bottom' ) && evt.clientY > maxY ) ) {
+              active = true
+            }
 
-            if (active) {
-              if (!util.hasClass(btn, 'cc-active')) {
-                util.addClass(btn, 'cc-active');
-              }
-            } else {
-              if (util.hasClass(btn, 'cc-active')) {
-                util.removeClass(btn, 'cc-active');
-              }
+            if (active && !btn.classList.contains( 'cc-active' ) ) {
+                btn.classList.add( 'cc-active' )
+            } else if ( !active && btn.classList.contains( 'cc-active' ) ) {
+                btn.classList.remove( 'cc-active' )
             }
           }, 200);
 
@@ -1255,10 +1205,10 @@
 
     function Location(options) {
       // Set up options
-      util.deepExtend((this.options = {}), defaultOptions);
+      this.options = Object.assign( {}, defaultOptions )
 
       if (util.isPlainObject(options)) {
-        util.deepExtend(this.options, options);
+        this.options = Object.assign( {}, this.options, options )
       }
 
       this.currentServiceIndex = -1; // the index (in options) of the service we're currently using
@@ -1285,10 +1235,11 @@
       if (typeof serviceOption === 'function') {
         var dynamicOpts = serviceOption();
         if (dynamicOpts.name) {
-          util.deepExtend(
+          dynamicOpts = Object.assign(
+            {},
             dynamicOpts,
-            this.options.serviceDefinitions[dynamicOpts.name](dynamicOpts)
-          );
+            this.options.serviceDefinitions[ dynamicOpts.name ]( dynamicOpts )
+          )
         }
         return dynamicOpts;
       }
@@ -1625,11 +1576,11 @@
 
     Law.prototype.initialize = function(options) {
       // set options back to default options
-      util.deepExtend((this.options = {}), defaultOptions);
+      this.options = Object.assign( {}, defaultOptions )
 
       // merge in user options
       if (util.isPlainObject(options)) {
-        util.deepExtend(this.options, options);
+        this.options = Object.assign( {}, this.options, options )
       }
     };
 
