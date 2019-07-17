@@ -1047,26 +1047,28 @@
         }
       }
 
-      var windowClick = this.options.dismissOnWindowClick;
-      var ignoredClicks = this.options.ignoreClicksFrom;
+      const windowClick = this.options.dismissOnWindowClick;
+      const ignoredClicks = this.options.ignoreClicksFrom;
       if (windowClick) {
-        var onWindowClick = function(evt) {
-          var isIgnored = false;
-          var pathLen = evt.path.length;
-          var ignoredLen = ignoredClicks.length;
-          for (var i = 0; i < pathLen; i++) {
-            if (isIgnored) continue;
-
-            for (var i2 = 0; i2 < ignoredLen; i2++) {
-              if (isIgnored) continue;
-
-              isIgnored = util.hasClass(evt.path[i], ignoredClicks[i2]);
+        const onWindowClick = function(evt) {
+          const path = evt.composedPath ? evt.composedPath() : (function ( arr, element ) {
+            while ( element ) {
+              arr.push( element )
+              element = element.parentNode
             }
+            return arr
+          })([],evt.target )
+          if ( !path ) {
+            console.error( "'.path' & '.composedPath' failed to generate an event path." )
+            return
           }
-
-          if (!isIgnored) {
-            setStatus(cc.status.dismiss);
-            close(true);
+          if ( !path.some(function ( element ) {
+              return ignoredClicks.some( function ( ignoredClick  ){
+                return element.classList && element.classList.contains( ignoredClick )
+              })
+            } ) ) {
+            setStatus(cc.status.dismiss)
+            close(true)
 
             window.removeEventListener('click', onWindowClick);
             window.removeEventListener('touchend', onWindowClick);
