@@ -14,15 +14,6 @@ Cookie Consent is seen over 2 BILLION times every month and is used on millions 
 
 We welcome community contributions and actively review pull requests.
 
-## Version 3.1
-
-Reflects the ownership change of the Cookie Consent project. Now actively maintained by:
-
-- @arlogilbert
-- @L0key
-- @pgoforth
-- @relicmelex
-
 ## Version 3.0
 
 Version 3.0 is a complete rewrite from version 2. The most substantial new features are:
@@ -86,18 +77,12 @@ or
 yarn run build
 ```
 
-## Credits
+## Maintainers
 
-Cookie Consent v3
-
-- Alex Morley-Finch (@alexmorleyfinch) - JavaScript
-- Piiu Pilt - JavaScript
-- Oliver Emberton (@oliveremberton) - a couple of lines of CSS, maybe
-
-Cookie Consent v2
-
-- David Ball (@drball) - CSS / themes
-- Adam Hutchinson (@adjohu) - JavaScript
+- [@arlogilbert](https://github.com/arlogilbert)
+- [@L0key](https://github.com/L0key)
+- [@pgoforth](https://github.com/pgoforth)
+- [@relicmelex](https://github.com/relicmelex)
 
 
 ## Export Control
