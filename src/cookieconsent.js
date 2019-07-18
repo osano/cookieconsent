@@ -706,11 +706,8 @@
       var answer = this.getStatus();
       var match = allowed.indexOf(answer) >= 0;
 
-      if (match) {
-        complete(answer);
-      } else {
-        complete();
-      }
+      complete(match ? answer : undefined);
+      
       return match;
     }
 
