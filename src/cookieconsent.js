@@ -1044,6 +1044,9 @@
         if (this.customStyleSelector) {
           classes.push(this.customStyleSelector);
         }
+        if (this.options.theme) {
+          classes.push('cc-theme-'+this.options.theme)
+        }
 
         var revokeBtn = this.options.revokeBtn
           .replace('{{classes}}', classes.join(' '))
