@@ -708,12 +708,14 @@
 
       if (match) {
         complete(answer);
+      } else {
+        complete();
       }
       return match;
     }
 
     function getPositionClasses() {
-      var positions = this.options.position.split('-'); // top, bottom, left, right
+      var positions = this.options.position.split( '-' ); // top, bottom, left, right
       var classes = [];
 
       // top, left, right, bottom
