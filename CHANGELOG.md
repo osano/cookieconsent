@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.1] - 2019-05-22
+
+### Security
+
+- Updated all dependencies to latest stable releases
+
+### Fixed
+
+- Expiration date future calculation error
+- Closing with touch out did not work when cookie consent was displayed on iPhone Safari and dismissOnWindowClick is enabled
+
+### Random
+
+- Insite branding and domains replaced with Osano branding and domains
+
+
 ## [3.1.0] - 2018-07-17
 
 ### Added
@@ -48,4 +64,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - geolocation
   - callback hooks
   - different consent types
-  - new and easy to customise stylings
+  - new and easy to customize stylings

@@ -1,4 +1,7 @@
 node_modules/
-.idea/
-.DS_Store/
+.idea
+.vscode
+*.code-workspace
+vscode.code-workspace
+.DS_Store
 build-verify/

@@ -47,7 +47,7 @@
 
     setCookie: function(name, value, expiryDays, domain, path, secure) {
       var exdate = new Date();
-      exdate.setDate(exdate.getDate() + (expiryDays || 365));
+      exdate.setHours(exdate.getHours() + ((expiryDays || 365) * 24));
 
       var cookie = [
         name + '=' + value,
@@ -251,7 +251,7 @@
         allow: 'Allow cookies',
         deny: 'Decline',
         link: 'Learn more',
-        href: 'https://cookiesandyou.com',
+        href: 'https://www.cookiesandyou.com',
         close: '&#x274c;',
         target: '_blank',
         policy: 'Cookie Policy'
@@ -1036,14 +1036,14 @@
             setStatus(cc.status.dismiss);
             close(true);
 
-            window.removeEventListener('scroll', onWindowScroll);
+            window.removeEventListener('scroll', onWindowScroll, { passive: true });
             this.onWindowScroll = null;
           }
         };
 
         if (this.options.enabled) {
           this.onWindowScroll = onWindowScroll;
-          window.addEventListener('scroll', onWindowScroll);
+          window.addEventListener('scroll', onWindowScroll, { passive: true });
         }
       }
 
@@ -1069,6 +1069,7 @@
             close(true);
 
             window.removeEventListener('click', onWindowClick);
+            window.removeEventListener('touchend', onWindowClick);
             this.onWindowClick = null;
           }
         }.bind(this);
@@ -1076,6 +1077,7 @@
         if (this.options.enabled) {
           this.onWindowClick = onWindowClick;
           window.addEventListener('click', onWindowClick);
+          window.addEventListener('touchend', onWindowClick);
         }
       }
     }
@@ -1589,6 +1591,7 @@
         'LU',
         'MT',
         'NL',
+        'NO',
         'PL',
         'PT',
         'SK',
@@ -1597,7 +1600,8 @@
         'GB',
         'UK',
         'GR',
-        'EU'
+        'EU',
+        'RO'
       ],
 
       // countries that say that all cookie consent choices must be revokable (a user must be able too change their mind)
@@ -1611,13 +1615,14 @@
         'LV',
         'LT',
         'NL',
+        'NO',
         'PT',
         'ES'
       ],
 
       // countries that say that a person can only "consent" if the explicitly click on "I agree".
       // in these countries, consent cannot be implied via a timeout or by scrolling down the page
-      explicitAction: ['HR', 'IT', 'ES']
+      explicitAction: ['HR', 'IT', 'ES', 'NO']
     };
 
     function Law(options) {
