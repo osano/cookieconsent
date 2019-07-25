@@ -27,8 +27,8 @@
       document.cookie = name + '=' + value +
                         ';expires=' + exdate.toUTCString() +
                         ';path=' + (path || '/') +
-                        ( domain ? cookieArr.push(';domain=' + domain) : '' ) +
-                        ( secure ? ';secure')
+                        ( domain ? ';domain=' + domain : '' ) +
+                        ( secure ? ';secure' : '' )
     },
 
     // only used for throttling the 'mousemove' event (used for animating the revoke button when `animateRevokable` is true)
