@@ -1,4 +1,6 @@
-(function(cc) {
+"use strict"
+
+!(function(cc) {
   // stop from running again, if accidently included more than once.
   if (cc.hasInitialised) return;
 
@@ -46,22 +48,23 @@
     },
 
     setCookie: function(name, value, expiryDays, domain, path, secure) {
-      var exdate = new Date();
+      const exdate = new Date();
       exdate.setHours(exdate.getHours() + ((expiryDays || 365) * 24));
 
-      var cookie = [
+      const cookie = [
         name + '=' + value,
         'expires=' + exdate.toUTCString(),
         'path=' + (path || '/')
-      ];
+      ]
 
       if (domain) {
-        cookie.push('domain=' + domain);
+        cookie.push('domain=' + domain)
       }
       if (secure) {
-        cookie.push('secure');
+        cookie.push('secure')
       }
-      document.cookie = cookie.join(';');
+      
+      document.cookie = cookie.join(';')
     },
 
     // only used for extending the initial options
@@ -172,9 +175,16 @@
 
   // valid cookie values
   cc.status = {
-    deny: 'deny',
-    allow: 'allow',
+    deny   : 'deny',
+    allow  : 'allow',
     dismiss: 'dismiss'
+  };
+  cc.category = {
+    uncategorized  : 'uncategorized',
+    essential      : 'essential',
+    personalization: 'personalization',
+    analytics      : 'analytics',
+    marketing      : 'marketing'
   };
 
   // detects the `transitionend` event name
@@ -237,8 +247,8 @@
       // these callback hooks are called at certain points in the program execution
       onPopupOpen: function() {},
       onPopupClose: function() {},
-      onInitialise: function(status) {},
-      onStatusChange: function(status, chosenBefore) {},
+      onInitialise: function(statuses) {},
+      onStatusChange: function(cookieName, status, chosenBefore) {},
       onRevokeChoice: function() {},
       onNoCookieLaw: function(countryCode, country) {},
 
@@ -612,7 +622,7 @@
 
     CookiePopup.prototype.revokeChoice = function(preventOpen) {
       this.options.enabled = true;
-      this.clearStatus();
+      this.clearStatuses();
 
       this.options.onRevokeChoice.call(this);
 
@@ -621,55 +631,93 @@
       }
     };
 
-    // returns true if the cookie has a valid value
-    CookiePopup.prototype.hasAnswered = function(options) {
-      return Object.keys(cc.status).indexOf(this.getStatus()) >= 0;
+    /**
+     * Has the user responded to the banner
+     * @return { boolean } - true if any cookies have been set
+     */
+    CookiePopup.prototype.hasAnswered = function() {
+      return this.getStatuses().some( status => !!status )
     };
 
-    // returns true if the cookie indicates that consent has been given
-    CookiePopup.prototype.hasConsented = function(options) {
-      var val = this.getStatus();
-      return val == cc.status.allow || val == cc.status.dismiss;
+    /**
+     * Indicates if the user has given consent to all of the categories
+     * @return { array<boolean> } - true if consent has been given
+     */
+    CookiePopup.prototype.hasConsented = function() {
+      return this.getStatuses().map( status => status === cc.status.allow || status === cc.status.dismiss )
     };
 
     // opens the popup if no answer has been given
     CookiePopup.prototype.autoOpen = function(options) {
-      if (!this.hasAnswered() && this.options.enabled) {
+      const hasAnswered = this.hasAnswered()
+      if (!hasAnswered && this.options.enabled) {
         this.open();
-      } else if (this.hasAnswered() && this.options.revokable) {
+      } else if (hasAnswered && this.options.revokable) {
         this.toggleRevokeButton(true);
       }
     };
 
-    CookiePopup.prototype.setStatus = function(status) {
-      var c = this.options.cookie;
-      var value = util.getCookie(c.name);
-      var chosenBefore = Object.keys(cc.status).indexOf(value) >= 0;
+    /**
+     * Checks if a status is in the constants list
+     * @param { string } status - Status String to
+     * @return { boolean } - if status is valid
+     */
+    const isValidStatus = function (status) {
+      return Object.keys(cc.status).indexOf(status) >= 0
+    }
+
+    /** 
+     * Set's cookie statuses
+     * @param { string<cc.status> } allOrUndef      - If this is the only param, set ALL if not, set Uncategorized cookies statuses set to value.
+     * @param { string<cc.status> } essential       - Essential Cookies status set to value
+     * @param { string<cc.status> } personalization - Preferences / Functionality set to value
+     * @param { string<cc.status> } analytics       - Analytis Cookies status set to value
+     * @param { string<cc.status> } marketing       - Marketing Cookies status set to value
+     * @return { undefined }
+    */
+    CookiePopup.prototype.setStatuses = function() {
+      console.log( "Set Statuses" )
+      const {name, expiryDays, domain, path, secure} = this.options.cookie
 
       // if `status` is valid
-      if (Object.keys(cc.status).indexOf(status) >= 0) {
-        util.setCookie(
-          c.name,
-          status,
-          c.expiryDays,
-          c.domain,
-          c.path,
-          c.secure
-        );
-
-        this.options.onStatusChange.call(this, status, chosenBefore);
-      } else {
-        this.clearStatus();
+      const updateCategoryStatus = ( categoryName, status ) => {
+        if (isValidStatus(status)) {
+          const cookieName = name+'_'+categoryName
+          const chosenBefore = Object.keys(cc.status).indexOf(util.getCookie(cookieName)) >= 0
+          util.setCookie(cookieName, status, expiryDays, domain, path, secure)
+          this.options.onStatusChange.call(this, cookieName, status, chosenBefore)
+        } else {
+          this.clearStatuses()
+        }
       }
+      if (arguments.length === 1){
+        const status = arguments[ 0 ]
+        Object.keys(cc.category).forEach( category => updateCategoryStatus( category, status ) )
+      } else if ( arguments.length > 1 ) {
+        arguments.forEach( ( categoryStatus, index ) => {
+          updateCategoryStatus( Object.keys(cc.category)[ index ], categoryStatus )
+        })
+      }
+    }
+
+    /**
+     * Get all cookie categoies statuses
+     * @return { array<string> } - cookie categories status in order of cc.category
+     */
+    CookiePopup.prototype.getStatuses = function() {
+      console.log( "Get Statuses" )
+      return Object.keys(cc.category).map( categoryName => util.getCookie(this.options.cookie.name+'_'+categoryName) )
     };
 
-    CookiePopup.prototype.getStatus = function() {
-      return util.getCookie(this.options.cookie.name);
-    };
-
-    CookiePopup.prototype.clearStatus = function() {
-      var c = this.options.cookie;
-      util.setCookie(c.name, '', -1, c.domain, c.path);
+    /**
+     * Clear all cookie categoies statuses
+     */
+    CookiePopup.prototype.clearStatuses = function() {
+      console.log( "Clear Statuses" )
+      const { name, domain, path } = this.options.cookie;
+      Object.keys(cc.category).forEach( categoryName => {
+        util.setCookie(name+'_'+categoryName, '', -1, domain, path)
+      })
     };
 
     // This needs to be called after 'fadeIn'. This is the code that actually causes the fadeIn to work
@@ -702,13 +750,13 @@
         return true;
       }
 
-      var allowed = Object.keys(cc.status);
-      var answer = this.getStatus();
-      var match = allowed.indexOf(answer) >= 0;
+      const categories = Object.keys(cc.category)
+      const statusesValues = this.getStatuses()
+      const matches = statusesValues.map( ( status, index ) => ( { [categories[index]]: isValidStatus( status ) } ) )
+      const hasMatches = matches.filter( match => match[Object.keys(match)[0]] ).length > 0
+      complete( hasMatches ? statusesValues.map( ( status, index ) => ( { [categories[index]]: status } ) )  : undefined )
 
-      complete(match ? answer : undefined);
-      
-      return match;
+      return hasMatches;
     }
 
     function getPositionClasses() {
@@ -846,12 +894,12 @@
         var match = (matches && matches[1]) || false;
 
         if (match) {
-          this.setStatus(match);
+          this.setStatuses(match);
           this.close(true);
         }
       }
       if (util.hasClass(btn, 'cc-close')) {
-        this.setStatus(cc.status.dismiss);
+        this.setStatuses(cc.status.dismiss);
         this.close(true);
       }
       if (util.hasClass(btn, 'cc-revoke')) {
@@ -1017,13 +1065,13 @@
     }
 
     function applyAutoDismiss() {
-      var setStatus = this.setStatus.bind(this);
+      var setStatuses = this.setStatuses.bind(this);
       var close = this.close.bind(this);
 
       var delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number' && delay >= 0) {
         this.dismissTimeout = window.setTimeout(function() {
-          setStatus(cc.status.dismiss);
+          setStatuses(cc.status.dismiss);
           close(true);
         }, Math.floor(delay));
       }
@@ -1032,7 +1080,7 @@
       if (typeof scrollRange == 'number' && scrollRange >= 0) {
         var onWindowScroll = function(evt) {
           if (window.pageYOffset > Math.floor(scrollRange)) {
-            setStatus(cc.status.dismiss);
+            setStatuses(cc.status.dismiss);
             close(true);
 
             window.removeEventListener('scroll', onWindowScroll, { passive: true });
@@ -1066,7 +1114,7 @@
                 return element.classList && element.classList.contains( ignoredClick )
               })
             } ) ) {
-            setStatus(cc.status.dismiss)
+            setStatuses(cc.status.dismiss)
             close(true)
 
             window.removeEventListener('click', onWindowClick);
@@ -1683,6 +1731,7 @@
 
   // This function initialises the app by combining the use of the Popup, Locator and Law modules
   // You can string together these three modules yourself however you want, by writing a new function.
+  // TODO: fix 'getCookie' ref
   cc.initialise = function(options, complete, error) {
     var law = new cc.Law(options.law);
 
