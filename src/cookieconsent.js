@@ -182,11 +182,11 @@ import "./styles/main.scss"
     dismiss: 'dismiss'
   };
   cc.category = {
-    uncategorized  : '',
-    essential      : '',
-    personalization: '',
-    analytics      : '',
-    marketing      : ''
+    uncategorized  : 'dismiss',
+    essential      : 'allow',
+    personalization: 'dismiss',
+    analytics      : 'dismiss',
+    marketing      : 'dismiss'
   };
 
   /**
@@ -298,30 +298,55 @@ import "./styles/main.scss"
           '<span aria-label="dismiss cookie message" role=button tabindex="0" class="cc-close">{{close}}</span>',
         categories: ` 
           <ul class="cc-categories">
-            <li>
-              <button class="cc-btn" tabindex="0"><input type="checkbox" name="uncategorized"/>Uncategorized</button>
-              <button class="cc-btn cc-info" aria-label="Uncategorized Definition" tabindex="1">^</button>
+            <li class="cc-category">
+              <button class="cc-btn" tabindex="0"><input type="checkbox" name="uncategorized"/><span class="cc-btn-checkbox"></span>Uncategorized</button>
+              <button class="cc-btn cc-info" aria-label="Uncategorized Definition Button" tabindex="1">^</button>
+              <div class="cc-tooltip">
+                <p>This is the category for cookies that don't fit any other category.</p>
+                <!--<a class="cc-cookie-accordion-title" aria-label="Uncategorized Cookies List" role="button">Uncategorized Cookies</a>
+                <ul class="cc-cookie-accordion">--A--</br>--B--</ul>-->
+              </div>
             </li>
-            <li>
-              <button class="cc-btn" tabindex="2"><input type="checkbox" name="essential"/>Essential</button>
-              <button class="cc-btn cc-info" aria-label="Essential Definition" tabindex="3">^</button>
+            <li class="cc-category">
+              <button class="cc-btn" tabindex="2"><input type="checkbox" name="essential" checked disabled/><span class="cc-btn-checkbox"></span>Essential</button>
+              <button class="cc-btn cc-info" aria-label="Essential Definition Button" tabindex="3">^</button>
+              <div class="cc-tooltip">
+                <p>This is the category for essential application or website opperation cookies.</p>
+                <!--<a class="cc-cookie-accordion-title" aria-label="Essential Cookies List" role="button">Essential Cookies</a>
+                <ul class="cc-cookie-accordion">--A--</br>--B--</ul>-->
+              </div>
             </li>
-            <li>
-              <button class="cc-btn" tabindex="4"><input type="checkbox" name="personalization"/>Personalization</button>
-              <button class="cc-btn cc-info" aria-label="Personalization Definition" tabindex="5">^</button>
+            <li class="cc-category">
+              <button class="cc-btn" tabindex="4"><input type="checkbox" name="personalization"/><span class="cc-btn-checkbox"></span>Personalization</button>
+              <button class="cc-btn cc-info" aria-label="Personalization Definition Button" tabindex="5">^</button>
+              <div class="cc-tooltip">
+                <p>This is the category for cookies used to help peronalize the application to a specific user.</p>
+                <!--<a class="cc-cookie-accordion-title" aria-label="Personalization Cookies List" role="button">Personalization Cookies</a>
+                <ul class="cc-cookie-accordion">--A--</br>--B--</ul>-->
+              </div>
             </li>
-            <li>
-              <button class="cc-btn" tabindex="6"><input type="checkbox" name="analytics"/>Analytics</button>
-              <button class="cc-btn cc-info" aria-label="Analytics Definition" tabindex="7">^</button>
+            <li class="cc-category">
+              <button class="cc-btn" tabindex="6"><input type="checkbox" name="analytics"/><span class="cc-btn-checkbox"></span>Analytics</button>
+              <button class="cc-btn cc-info" aria-label="Analytics Definition Button" tabindex="7">^</button>
+              <div class="cc-tooltip">
+                <p>This is the category for cookies used to help analyize data.</p>
+                <!--<a class="cc-cookie-accordion-title" aria-label="Analytics Cookies List" role="button">Analytics Cookies</a>
+                <ul class="cc-cookie-accordion">--A--</br>--B--</ul>-->
+              </div>
             </li>
-            <li>
-              <button class="cc-btn" tabindex="8"><input type="checkbox" name="marketing"/>Marketing</button>
-              <button class="cc-btn cc-info" aria-label="Marketing Definition" tabindex="9">^</button>
+            <li class="cc-category">
+              <button class="cc-btn" tabindex="8"><input type="checkbox" name="marketing"/><span class="cc-btn-checkbox"></span>Marketing</button>
+              <button class="cc-btn cc-info" aria-label="Marketing Definition Button" tabindex="9">^</button>
+              <div class="cc-tooltip">
+                <p>This is the category for cookies used to help peronalize your internet shopping & advertisement experiences.</p>
+                <!--<a class="cc-cookie-accordion-title" aria-label="Marketing Cookies List" role="button">Marketing Cookies</a>
+                <ul class="cc-cookie-accordion">--A--</br>--B--</ul>-->
+              </div>
             </li>
           </ul>
         `,
         save: `
-          <button class="cc-btn cc-save">Save Settings</button>
+          <button class="cc-btn cc-save">Save</button>
         `
         //compliance: compliance is also an element, but it is generated by the application, depending on `type` below
       },
@@ -342,7 +367,7 @@ import "./styles/main.scss"
       compliance: {
         info: '<div class="cc-compliance">{{dismiss}}</div>',
         'opt-in':
-          '<div class="cc-compliance cc-highlight">{{dismiss}}{{allow}}</div>',
+          '<div class="cc-compliance cc-highlight">{{dismiss}}{{allow}}{{customize}}</div>',
         'opt-out':
           '<div class="cc-compliance cc-highlight">{{dismiss}}{{deny}}</div>'
       },
@@ -356,7 +381,7 @@ import "./styles/main.scss"
         basic         : '{{messagelink}}{{compliance}}',
         'basic-close' : '{{messagelink}}{{compliance}}{{close}}',
         'basic-header': '{{header}}{{message}}{{link}}{{compliance}}',
-        categories    : '{{categories}}{{save}}'
+        categories    : '{{messagelink}}{{categories}}{{save}}'
         // add a custom layout here, then add some new css with the class '.cc-layout-my-cool-layout'
         //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
       },
@@ -716,7 +741,10 @@ import "./styles/main.scss"
           this.clearStatuses()
         }
       }
-      if (arguments.length === 1){
+
+      if ( arguments.length === 0 ) {
+        Object.keys(cc.category).forEach( category => updateCategoryStatus( category, cc.category[ category ] ) )
+      } else if (arguments.length === 1){
         const status = arguments[ 0 ]
         Object.keys(cc.category).forEach( category => updateCategoryStatus( category, status ) )
       } else if ( arguments.length > 1 ) {
@@ -895,6 +923,41 @@ import "./styles/main.scss"
       this.onButtonClick = handleButtonClick.bind(this);
 
       el.addEventListener('click', this.onButtonClick);
+      el.querySelectorAll( '.cc-btn [type="checkbox"]' ).forEach( checkbox => {
+        checkbox.addEventListener( 'change', () => {
+          cc.category[ checkbox.name ] = checkbox.checked ? 'allow' : 'deny'
+          this.setStatuses()
+        })
+      })
+      el.querySelectorAll(".cc-info").forEach( showInfo => {
+        showInfo.addEventListener('mousedown', function ( event ) {
+          if ( this === document.activeElement  ) {
+            this.blur()
+            event.preventDefault()
+          }
+        })
+      })
+      /**
+       * Event listeners for the accordion in the tooltip
+       */
+      /*el.querySelectorAll(".cc-cookie-accordion-title").forEach( accordionLink => {
+        accordionLink.addEventListener('click', event => {
+          event.preventDefault()
+          accordionLink.nextElementSibling.classList.toggle( "open" )
+        })
+        accordionLink.addEventListener( 'mousedown', event => event.preventDefault() )
+      })
+      el.querySelectorAll(".cc-tooltip").forEach( toolTip => {
+        toolTip.addEventListener('click', event => {
+          event.preventDefault()
+          event.stopPropagation()
+        })
+        toolTip.addEventListener( 'mousedown', event => {
+          event.preventDefault()
+          event.stopPropagation()
+        })
+      })
+      */
 
       if (opts.autoAttach) {
         if (!cont.firstChild) {
@@ -910,6 +973,13 @@ import "./styles/main.scss"
     function handleButtonClick(event) {
       // returns the parent element with the specified class, or the original element - null if not found
       var btn = util.traverseDOMPath(event.target, 'cc-btn') || event.target;
+      if (util.hasClass(btn, 'cc-btn') && util.hasClass(btn, 'cc-save')){
+        // this.options.layout = "basic"
+        // this.options.type = "info"
+        // this.initialise(this.options)
+        this.close(true);
+        return true
+      }
       if (util.hasClass(btn, 'cc-btn')) {
         var matches = btn.className.match(
           new RegExp('\\bcc-(' + Object.keys(cc.status).map(util.escapeRegExp).join('|') + ')\\b')
@@ -1128,7 +1198,7 @@ import "./styles/main.scss"
             return arr
           })([],evt.target )
           if ( !path ) {
-            console.error( "'.path' & '.composedPath' failed to generate an event path." )
+            console.warn( "'.path' & '.composedPath' failed to generate an event path." )
             return
           }
           if ( !path.some(function ( element ) {
