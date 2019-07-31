@@ -63,4 +63,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - geolocation
   - callback hooks
   - different consent types
-  - new and easy to customise stylings
+  - new and easy to customize stylings

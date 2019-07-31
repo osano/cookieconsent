@@ -329,6 +329,9 @@
       //     document.body.appendChild(instance.element);
       //
       autoAttach: true,
+	  
+	  // set value if floating layout should be forced for mobile devices
+	  mobileForceFloat: true,
 
       // simple whitelist/blacklist for pages. specify page by:
       //   - using a string : '/index.html'           (matches '/index.html' exactly) OR
@@ -676,7 +679,7 @@
           ? 'banner'
           : 'floating';
 
-      if (util.isMobile()) {
+      if (util.isMobile() && opts.mobileForceFloat) {
         positionStyle = 'floating';
       }
 
