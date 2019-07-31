@@ -4,87 +4,35 @@ import "./styles/main.scss"
 
 !(function(cc) {
   // stop from running again, if accidently included more than once.
-  if (cc.hasInitialised) return;
+  if (cc.hasInitialized) return;
 
-  var util = {
-    // https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
-    escapeRegExp: function(str) {
-      return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-    },
-
-    hasClass: function(element, selector) {
-      var s = ' ';
-      return (
-        element.nodeType === 1 &&
-        (s + element.className + s)
-          .replace(/[\n\t]/g, s)
-          .indexOf(s + selector + s) >= 0
-      );
-    },
-
-    addClass: function(element, className) {
-      element.className += ' ' + className;
-    },
-
-    removeClass: function(element, className) {
-      var regex = new RegExp('\\b' + this.escapeRegExp(className) + '\\b');
-      element.className = element.className.replace(regex, '');
-    },
-
+  const util = {
+    
     interpolateString: function(str, callback) {
-      var marker = /{{([a-z][a-z0-9\-_]*)}}/gi;
-      return str.replace(marker, function(matches) {
-        return callback(arguments[1]) || '';
+      return str.replace( /{{([a-z][a-z0-9\-_]*)}}/gi, function() {
+        return callback(arguments[1]) || ''
       });
     },
 
     getCookie: function(name) {
-      var value = '; ' + document.cookie;
-      var parts = value.split('; ' + name + '=');
+      const value = '; ' + document.cookie
+      const parts = value.split('; ' + name + '=')
       return parts.length < 2
         ? undefined
         : parts
             .pop()
             .split(';')
-            .shift();
+            .shift()
     },
 
     setCookie: function(name, value, expiryDays, domain, path, secure) {
-      const exdate = new Date();
-      exdate.setHours(exdate.getHours() + ((expiryDays || 365) * 24));
-
-      const cookie = [
-        name + '=' + value,
-        'expires=' + exdate.toUTCString(),
-        'path=' + (path || '/')
-      ]
-
-      if (domain) {
-        cookie.push('domain=' + domain)
-      }
-      if (secure) {
-        cookie.push('secure')
-      }
-      
-      document.cookie = cookie.join(';')
-    },
-
-    // only used for extending the initial options
-    deepExtend: function(target, source) {
-      for (var prop in source) {
-        if (source.hasOwnProperty(prop)) {
-          if (
-            prop in target &&
-            this.isPlainObject(target[prop]) &&
-            this.isPlainObject(source[prop])
-          ) {
-            this.deepExtend(target[prop], source[prop]);
-          } else {
-            target[prop] = source[prop];
-          }
-        }
-      }
-      return target;
+      const exdate = new Date()
+      exdate.setHours(exdate.getHours() + ((typeof expiryDays !== "number"  ? 365 : expiryDays ) * 24))
+      document.cookie = name + '=' + value +
+                        ';expires=' + exdate.toUTCString() +
+                        ';path=' + (path || '/') +
+                        ( domain ? ';domain=' + domain : '' ) +
+                        ( secure ? ';secure' : '' )
     },
 
     // only used for throttling the 'mousemove' event (used for animating the revoke button when `animateRevokable` is true)
@@ -169,7 +117,7 @@ import "./styles/main.scss"
 
     traverseDOMPath: function(elem, className) {
       if (!elem || !elem.parentNode) return null;
-      if (util.hasClass(elem, className)) return elem;
+      if (elem.classList.contains(className)) return elem;
 
       return this.traverseDOMPath(elem.parentNode, className);
     }
@@ -255,7 +203,7 @@ import "./styles/main.scss"
       // these callback hooks are called at certain points in the program execution
       onPopupOpen: function() {},
       onPopupClose: function() {},
-      onInitialise: function(statuses) {},
+      onInitialize: function(statuses) {},
       onStatusChange: function(cookieName, status, chosenBefore) {},
       onRevokeChoice: function() {},
       onNoCookieLaw: function(countryCode, country) {},
@@ -471,20 +419,20 @@ import "./styles/main.scss"
     };
 
     function CookiePopup() {
-      this.initialise.apply(this, arguments);
+      this.initialize.apply(this, arguments);
     }
 
-    CookiePopup.prototype.initialise = function(options) {
+    CookiePopup.prototype.initialize = function(options) {
       if (this.options) {
         this.destroy(); // already rendered
       }
 
       // set options back to default options
-      util.deepExtend((this.options = {}), defaultOptions);
+      this.options = Object.assign( {}, defaultOptions )
 
       // merge in user options
       if (util.isPlainObject(options)) {
-        util.deepExtend(this.options, options);
+        this.options = Object.assign( {}, this.options, options )
       }
 
       // returns true if `onComplete` was called
@@ -524,7 +472,7 @@ import "./styles/main.scss"
         wrapper.style.display = ''; // set it to visible (because appendMarkup hides it)
         this.element = wrapper.firstChild; // get the `element` reference from the wrapper
         this.element.style.display = 'none';
-        util.addClass(this.element, 'cc-invisible');
+        this.element.classList.add('cc-invisible');
       } else {
         this.element = appendMarkup.call(this, cookiePopup);
       }
@@ -628,7 +576,7 @@ import "./styles/main.scss"
         afterFadeOut.call(this, el);
       }
 
-      if (util.hasClass(el, 'cc-invisible')) {
+      if (el.classList.contains('cc-invisible')) {
         el.style.display = '';
 
         if (this.options.static) {
@@ -660,7 +608,7 @@ import "./styles/main.scss"
         afterFadeIn.bind(this, el);
       }
 
-      if (!util.hasClass(el, 'cc-invisible')) {
+      if (!el.classList.contains('cc-invisible')) {
         if (this.options.static) {
           this.element.parentNode.style.maxHeight = '';
         }
@@ -668,7 +616,7 @@ import "./styles/main.scss"
         this.afterTransition = afterFadeOut.bind(this, el);
         el.addEventListener(cc.transitionEnd, this.afterTransition);
 
-        util.addClass(el, 'cc-invisible');
+        el.classList.add('cc-invisible');
       }
     };
 
@@ -676,7 +624,7 @@ import "./styles/main.scss"
       return (
         this.element &&
         this.element.style.display == '' &&
-        (cc.hasTransition ? !util.hasClass(this.element, 'cc-invisible') : true)
+        (cc.hasTransition ? !this.element.classList.contains('cc-invisible') : true)
       );
     };
 
@@ -779,7 +727,7 @@ import "./styles/main.scss"
     // There is a good reason why it's called in a timeout. Read 'fadeIn';
     function afterFadeIn(el) {
       this.openingTimeout = null;
-      util.removeClass(el, 'cc-invisible');
+      el.classList.remove('cc-invisible')
     }
 
     // This is called on 'transitionend' (only on the transition of the fadeOut). That's because after we've faded out, we need to
@@ -793,7 +741,7 @@ import "./styles/main.scss"
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
     function checkCallbackHooks() {
-      var complete = this.options.onInitialise.bind(this);
+      var complete = this.options.onInitialize.bind(this);
 
       if (!window.navigator.cookieEnabled) {
         complete(cc.status.deny);
@@ -809,6 +757,7 @@ import "./styles/main.scss"
       const statusesValues = this.getStatuses()
       const matches = statusesValues.map( ( status, index ) => ( { [categories[index]]: isValidStatus( status ) } ) )
       const hasMatches = matches.filter( match => match[Object.keys(match)[0]] ).length > 0
+      statusesValues.forEach( ( status, index ) => cc.category[ categories[ index ] ] = status ? status : cc.category[ categories[ index ] ] )
       complete( hasMatches ? statusesValues.map( ( status, index ) => ( { [categories[index]]: status } ) )  : undefined )
 
       return hasMatches;
@@ -918,8 +867,8 @@ import "./styles/main.scss"
 
       el.style.display = 'none';
 
-      if (util.hasClass(el, 'cc-window') && cc.hasTransition) {
-        util.addClass(el, 'cc-invisible');
+      if (el.classList.contains('cc-window') && cc.hasTransition) {
+        el.classList.add('cc-invisible');
       }
 
       // save ref to the function handle so we can unbind it later
@@ -931,6 +880,7 @@ import "./styles/main.scss"
           cc.category[ checkbox.name ] = checkbox.checked ? 'allow' : 'deny'
           this.setStatuses()
         })
+        checkbox.addEventListener( 'click', event => (event.stopPropagation()) )
       })
       el.querySelectorAll(".cc-info").forEach( showInfo => {
         showInfo.addEventListener('mousedown', function ( event ) {
@@ -975,29 +925,27 @@ import "./styles/main.scss"
 
     function handleButtonClick(event) {
       // returns the parent element with the specified class, or the original element - null if not found
-      var btn = util.traverseDOMPath(event.target, 'cc-btn') || event.target;
-      if (util.hasClass(btn, 'cc-btn') && util.hasClass(btn, 'cc-save')){
-        // this.options.layout = "basic"
-        // this.options.type = "info"
-        // this.initialise(this.options)
+      const btn = util.traverseDOMPath(event.target, 'cc-btn') || event.target;
+      
+      if (btn.classList.contains( 'cc-btn' ) && btn.classList.contains( 'cc-save' )){
         this.close(true);
         return true
       }
-      if (util.hasClass(btn, 'cc-btn')) {
-        var matches = btn.className.match(
+      if (btn.classList.contains( 'cc-btn' )) {
+        const matches = btn.className.match(
           new RegExp('\\bcc-(' + Object.keys(cc.status).map(util.escapeRegExp).join('|') + ')\\b')
         );
-        var match = (matches && matches[1]) || false;
+        const match = (matches && matches[1]) || false;
         if (match) {
           this.setStatuses(match);
           this.close(true);
         }
       }
-      if (util.hasClass(btn, 'cc-close')) {
+      if (btn.classList.contains( 'cc-close' )) {
         this.setStatuses(cc.status.dismiss);
         this.close(true);
       }
-      if (util.hasClass(btn, 'cc-revoke')) {
+      if (btn.classList.contains( 'cc-revoke' )) {
         this.revokeChoice();
       }
     }
@@ -1258,19 +1206,15 @@ import "./styles/main.scss"
             var minY = 20;
             var maxY = window.innerHeight - 20;
 
-            if (util.hasClass(btn, 'cc-top') && evt.clientY < minY)
-              active = true;
-            if (util.hasClass(btn, 'cc-bottom') && evt.clientY > maxY)
-              active = true;
+            if ( ( btn.classList.contains( 'cc-top' ) && evt.clientY < minY ) ||
+                 ( btn.classList.contains( 'cc-bottom' ) && evt.clientY > maxY ) ) {
+              active = true
+            }
 
-            if (active) {
-              if (!util.hasClass(btn, 'cc-active')) {
-                util.addClass(btn, 'cc-active');
-              }
-            } else {
-              if (util.hasClass(btn, 'cc-active')) {
-                util.removeClass(btn, 'cc-active');
-              }
+            if (active && !btn.classList.contains( 'cc-active' ) ) {
+                btn.classList.add( 'cc-active' )
+            } else if ( !active && btn.classList.contains( 'cc-active' ) ) {
+                btn.classList.remove( 'cc-active' )
             }
           }, 200);
 
@@ -1408,10 +1352,10 @@ import "./styles/main.scss"
 
     function Location(options) {
       // Set up options
-      util.deepExtend((this.options = {}), defaultOptions);
+      this.options = Object.assign( {}, defaultOptions )
 
       if (util.isPlainObject(options)) {
-        util.deepExtend(this.options, options);
+        this.options = Object.assign( {}, this.options, options )
       }
 
       this.currentServiceIndex = -1; // the index (in options) of the service we're currently using
@@ -1438,10 +1382,11 @@ import "./styles/main.scss"
       if (typeof serviceOption === 'function') {
         var dynamicOpts = serviceOption();
         if (dynamicOpts.name) {
-          util.deepExtend(
+          dynamicOpts = Object.assign(
+            {},
             dynamicOpts,
-            this.options.serviceDefinitions[dynamicOpts.name](dynamicOpts)
-          );
+            this.options.serviceDefinitions[ dynamicOpts.name ]( dynamicOpts )
+          )
         }
         return dynamicOpts;
       }
@@ -1773,16 +1718,16 @@ import "./styles/main.scss"
     };
 
     function Law(options) {
-      this.initialise.apply(this, arguments);
+      this.initialize.apply(this, arguments);
     }
 
-    Law.prototype.initialise = function(options) {
+    Law.prototype.initialize = function(options) {
       // set options back to default options
-      util.deepExtend((this.options = {}), defaultOptions);
+      this.options = Object.assign( {}, defaultOptions )
 
       // merge in user options
       if (util.isPlainObject(options)) {
-        util.deepExtend(this.options, options);
+        this.options = Object.assign( {}, this.options, options )
       }
     };
 
@@ -1824,9 +1769,9 @@ import "./styles/main.scss"
     return Law;
   })();
 
-  // This function initialises the app by combining the use of the Popup, Locator and Law modules
+  // This function initializes the app by combining the use of the Popup, Locator and Law modules
   // You can string together these three modules yourself however you want, by writing a new function.
-  cc.initialise = function(options, complete, error) {
+  cc.initialize = function(options, complete, error) {
     var law = new cc.Law(options.law);
 
     if (!complete) complete = function() {};
@@ -1891,7 +1836,7 @@ import "./styles/main.scss"
   cc.utils = util;
 
   // prevent this code from being run twice
-  cc.hasInitialised = true;
+  cc.hasInitialized = true;
 
   window.cookieconsent = cc;
 })(window.cookieconsent || {});

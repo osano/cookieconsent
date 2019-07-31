@@ -27,7 +27,8 @@
   "scripts": {
     "clean": "rimraf ./build/**/*",
     "build": "npm run clean && npm run minify:js && npm run minify:css",
-    "dev": "npx webpack --config webpack.config.js",
+    "dev": "npx webpack --config webpack.dev.js",
+    "build:prod": "npm run clean && npx webpack --production --optimize-minimize --config webpack.prod.js",
     "minify:js": "babel ./src/cookieconsent.js | terser -c -m --config-file ./terser.config.json > ./build/cookieconsent.min.js",
     "minify:css": "node-sass ./src/styles/main.scss | postcss | node-sass --output-style compressed > ./build/cookieconsent.min.css",
     "build:release": "npm run build && bump -c -t package.json package-lock.json bower.json",
@@ -41,8 +42,10 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.5.5",
+    "babel-minify-webpack-plugin": "^0.3.1",
     "css-loader": "^3.1.0",
     "sass-loader": "^7.1.0",
-    "style-loader": "^0.23.1"
+    "style-loader": "^0.23.1",
+    "webpack-merge": "^4.2.1"
   }
 }
