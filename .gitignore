@@ -5,3 +5,4 @@ node_modules/
 vscode.code-workspace
 .DS_Store
 build-verify/
+*dev.js

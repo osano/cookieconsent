@@ -1,4 +1,4 @@
-/* This file should contain CSS that modifies the popup layout. */
+/* This file should contain styles that modifies the popup layout. */
 /* By layout, we mean the physical position of the elements on the popup window, and the margin / padding around those elements. */
 
 .cc-revoke.cc-top {
@@ -89,4 +89,25 @@
 
 .cc-btn + .cc-btn {
   margin-left: 0.5em;
+}
+
+/* CATEGORIES BOX */
+.cc-categories {
+  display: inline-grid;
+  grid-template-columns: repeat(5, 19%);
+  grid-column-gap: 1%;
+  width: 100%;
+  justify-items: stretch;
+  li{ 
+    justify-items: stretch;
+    display: inline-grid;
+    grid-template-columns: auto 20px;
+    /*grid-column-gap: 4px;*/
+  }
+  .cc-btn {
+    margin: 0;
+  }
+  .cc-info {
+    padding: 0;
+  }
 }

@@ -1,0 +1,43 @@
+/* Classic */
+
+.cc-floating.cc-theme-classic {
+  padding: 1.2em;
+  border-radius: 5px;
+}
+
+.cc-floating.cc-type-info.cc-theme-classic .cc-compliance {
+  text-align: center;
+  display: inline;
+  flex: none;
+}
+
+.cc-theme-classic{
+  .cc-btn {
+    position: relative;
+    border-radius: 5px;
+    &:last-child {
+      min-width: 140px;
+    }
+  }
+  .cc-categories {
+    .cc-btn {
+      border-radius: 5px 0 0 5px;
+      padding-left: 24px;
+      input[type=checkbox]{
+        position: absolute;
+        left: 8px;
+      }
+      &.cc-info {
+        padding-left: 0;
+        border-radius: 0 5px 5px 0;
+      }
+      &:last-child{
+        min-width: 0;
+      }
+    }
+  }
+}
+
+.cc-floating.cc-type-info.cc-theme-classic .cc-btn {
+  display: inline-block;
+}
