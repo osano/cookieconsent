@@ -9,9 +9,9 @@ import "./styles/main.scss"
   const util = {
     
     interpolateString: function(str, callback) {
-      return str.replace( /{{([a-z][a-z0-9\-_]*)}}/gi, function() {
+      return str.replace( /{{([a-z][a-z0-9\-_]*)}}/gi, function () {
         return callback(arguments[1]) || ''
-      });
+      })
     },
 
     getCookie: function(name) {
@@ -37,7 +37,7 @@ import "./styles/main.scss"
 
     // only used for throttling the 'mousemove' event (used for animating the revoke button when `animateRevokable` is true)
     throttle: function(callback, limit) {
-      var wait = false;
+      let wait = false;
       return function() {
         if (!wait) {
           callback.apply(this, arguments);
@@ -51,12 +51,12 @@ import "./styles/main.scss"
 
     // only used for hashing json objects (used for hash mapping palette objects, used when custom colours are passed through JavaScript)
     hash: function(str) {
-      var hash = 0,
-        i,
+      let hash = 0,
+        i = 0,
         chr,
-        len;
+        len = str.length;
       if (str.length === 0) return hash;
-      for (i = 0, len = str.length; i < len; ++i) {
+      for (i; i < len; ++i) {
         chr = str.charCodeAt(i);
         hash = (hash << 5) - hash + chr;
         hash |= 0;
@@ -77,21 +77,21 @@ import "./styles/main.scss"
     // used to get text colors if not set
     getContrast: function(hex) {
       hex = this.normaliseHex(hex);
-      var r = parseInt(hex.substr(0, 2), 16);
-      var g = parseInt(hex.substr(2, 2), 16);
-      var b = parseInt(hex.substr(4, 2), 16);
-      var yiq = (r * 299 + g * 587 + b * 114) / 1000;
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      const yiq = (r * 299 + g * 587 + b * 114) / 1000;
       return yiq >= 128 ? '#000' : '#fff';
     },
 
     // used to change color on highlight
     getLuminance: function(hex) {
-      var num = parseInt(this.normaliseHex(hex), 16),
+      const num = parseInt(this.normaliseHex(hex), 16),
         amt = 38,
         R = (num >> 16) + amt,
         B = ((num >> 8) & 0x00ff) + amt,
         G = (num & 0x0000ff) + amt;
-      var newColour = (
+        return '#' + (
         0x1000000 +
         (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
         (B < 255 ? (B < 1 ? 0 : B) : 255) * 0x100 +
@@ -99,7 +99,6 @@ import "./styles/main.scss"
       )
         .toString(16)
         .slice(1);
-      return '#' + newColour;
     },
 
     isMobile: function() {
@@ -110,9 +109,7 @@ import "./styles/main.scss"
 
     isPlainObject: function(obj) {
       // The code "typeof obj === 'object' && obj !== null" allows Array objects
-      return (
-        typeof obj === 'object' && obj !== null && obj.constructor == Object
-      );
+      return typeof obj === 'object' && obj !== null && obj.constructor == Object
     },
 
     traverseDOMPath: function(elem, className) {
@@ -148,8 +145,8 @@ import "./styles/main.scss"
 
   // detects the `transitionend` event name
   cc.transitionEnd = (function() {
-    var el = document.createElement('div');
-    var trans = {
+    const el = document.createElement('div');
+    const trans = {
       t: 'transitionend',
       OT: 'oTransitionEnd',
       msT: 'MSTransitionEnd',
@@ -157,7 +154,7 @@ import "./styles/main.scss"
       WebkitT: 'webkitTransitionEnd'
     };
 
-    for (var prefix in trans) {
+    for (let prefix in trans) {
       if (
         trans.hasOwnProperty(prefix) &&
         typeof el.style[prefix + 'ransition'] != 'undefined'
@@ -174,7 +171,7 @@ import "./styles/main.scss"
   cc.customStyles = {};
 
   cc.Popup = (function() {
-    var defaultOptions = {
+    const defaultOptions = {
       // if false, this prevents the popup from showing (useful for giving to control to another piece of code)
       enabled: true,
 
@@ -398,7 +395,7 @@ import "./styles/main.scss"
       // By default the created HTML is automatically appended to the container (which defaults to <body>). You can prevent this behaviour
       // by setting this to false, but if you do, you must attach the `element` yourself, which is a public property of the popup instance:
       //
-      //     var instance = cookieconsent.factory(options);
+      //     const instance = cookieconsent.factory(options);
       //     document.body.appendChild(instance.element);
       //
       autoAttach: true,
@@ -442,21 +439,21 @@ import "./styles/main.scss"
       }
 
       // apply blacklist / whitelist
-      if (arrayContainsMatches(this.options.blacklistPage, location.pathname)) {
+      if (this.options.blacklistPage.includes(location.pathname)) {
         this.options.enabled = false;
       }
-      if (arrayContainsMatches(this.options.whitelistPage, location.pathname)) {
+      if (this.options.whitelistPage.includes(location.pathname)) {
         this.options.enabled = true;
       }
 
       // the full markup either contains the wrapper or it does not (for multiple instances)
-      var cookiePopup = this.options.window
+      let cookiePopup = this.options.window
         .replace('{{classes}}', getPopupClasses.call(this).join(' '))
         .replace('{{children}}', getPopupInnerMarkup.call(this));
 
       // if user passes html, use it instead
-      var customHTML = this.options.overrideHTML;
-      if (typeof customHTML == 'string' && customHTML.length) {
+      const customHTML = this.options.overrideHTML;
+      if (typeof customHTML == 'string' && customHTML.length ) {
         cookiePopup = customHTML;
       }
 
@@ -464,7 +461,7 @@ import "./styles/main.scss"
       // content. we wrap an element around it which will mask the hidden content
       if (this.options.static) {
         // `grower` is a wrapper div with a hidden overflow whose height is animated
-        var wrapper = appendMarkup.call(
+        const wrapper = appendMarkup.call(
           this,
           '<div class="cc-grower">' + cookiePopup + '</div>'
         );
@@ -565,7 +562,7 @@ import "./styles/main.scss"
     };
 
     CookiePopup.prototype.fadeIn = function() {
-      var el = this.element;
+      const el = this.element;
 
       if (!cc.hasTransition || !el) return;
 
@@ -580,11 +577,10 @@ import "./styles/main.scss"
         el.style.display = '';
 
         if (this.options.static) {
-          var height = this.element.clientHeight;
-          this.element.parentNode.style.maxHeight = height + 'px';
+          this.element.parentNode.style.maxHeight = this.element.clientHeight + 'px';
         }
 
-        var fadeInTimeout = 20; // (ms) DO NOT MAKE THIS VALUE SMALLER. See below
+        const fadeInTimeout = 20; // (ms) DO NOT MAKE THIS VALUE SMALLER. See below
 
         // Although most browsers can handle values less than 20ms, it should remain above this value.
         // This is because we are waiting for a "browser redraw" before we remove the 'cc-invisible' class.
@@ -599,7 +595,7 @@ import "./styles/main.scss"
     };
 
     CookiePopup.prototype.fadeOut = function() {
-      var el = this.element;
+      const el = this.element;
 
       if (!cc.hasTransition || !el) return;
 
@@ -741,7 +737,7 @@ import "./styles/main.scss"
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
     function checkCallbackHooks() {
-      var complete = this.options.onInitialize.bind(this);
+      const complete = this.options.onInitialize.bind(this);
 
       if (!window.navigator.cookieEnabled) {
         complete(cc.status.deny);
@@ -763,21 +759,14 @@ import "./styles/main.scss"
       return hasMatches;
     }
 
+    // top, bottom, left, right
     function getPositionClasses() {
-      var positions = this.options.position.split( '-' ); // top, bottom, left, right
-      var classes = [];
-
-      // top, left, right, bottom
-      positions.forEach(function(cur) {
-        classes.push('cc-' + cur);
-      });
-
-      return classes;
+      return this.options.position.split( '-' ).map( pos => 'cc-'+pos)
     }
 
     function getPopupClasses() {
-      var opts = this.options;
-      var positionStyle =
+      const opts = this.options;
+      let positionStyle =
         opts.position == 'top' || opts.position == 'bottom'
           ? 'banner'
           : 'floating';
@@ -786,7 +775,7 @@ import "./styles/main.scss"
         positionStyle = 'floating';
       }
 
-      var classes = [
+      const classes = [
         'cc-' + positionStyle, // floating or banner
         'cc-type-' + opts.type, // add the compliance type
         'cc-theme-' + opts.theme // add the theme
@@ -799,7 +788,7 @@ import "./styles/main.scss"
       classes.push.apply(classes, getPositionClasses.call(this));
 
       // we only add extra styles if `palette` has been set to a valid value
-      var didAttach = attachCustomPalette.call(this, this.options.palette);
+      attachCustomPalette.call(this, this.options.palette);
 
       // if we override the palette, add the class that enables this
       if (this.customStyleSelector) {
@@ -810,8 +799,8 @@ import "./styles/main.scss"
     }
 
     function getPopupInnerMarkup() {
-      var interpolated = {};
-      var opts = this.options;
+      const interpolated = {};
+      const opts = this.options;
 
       // removes link if showLink is false
       if (!opts.showLink) {
@@ -819,18 +808,18 @@ import "./styles/main.scss"
         opts.elements.messagelink = opts.elements.message;
       }
 
-      Object.keys(opts.elements).forEach(function(prop) {
+      Object.keys(opts.elements).forEach( prop => {
         interpolated[prop] = util.interpolateString(
           opts.elements[prop],
-          function(name) {
-            var str = opts.content[name];
+          name => {
+            const str = opts.content[name];
             return name && typeof str == 'string' && str.length ? str : '';
           }
         );
       });
 
       // checks if the type is valid and defaults to info if it's not
-      var complianceType = opts.compliance[opts.type];
+      let complianceType = opts.compliance[opts.type];
       if (!complianceType) {
         complianceType = opts.compliance.info;
       }
@@ -843,7 +832,7 @@ import "./styles/main.scss"
       });
 
       // checks if the layout is valid and defaults to basic if it's not
-      var layout = opts.layouts[opts.layout];
+      let layout = opts.layouts[opts.layout];
       if (!layout) {
         layout = opts.layouts.basic;
       }
@@ -854,16 +843,16 @@ import "./styles/main.scss"
     }
 
     function appendMarkup(markup) {
-      var opts = this.options;
-      var div = document.createElement('div');
-      var cont =
+      const opts = this.options;
+      const div = document.createElement('div');
+      const cont =
         opts.container && opts.container.nodeType === 1
           ? opts.container
           : document.body;
 
       div.innerHTML = markup;
 
-      var el = div.children[0];
+      const el = div.children[0];
 
       el.style.display = 'none';
 
@@ -953,9 +942,9 @@ import "./styles/main.scss"
     // I might change this function to use inline styles. I originally chose a stylesheet because I could select many elements with a
     // single rule (something that happened a lot), the apps has changed slightly now though, so inline styles might be more applicable.
     function attachCustomPalette(palette) {
-      var hash = util.hash(JSON.stringify(palette));
-      var selector = 'cc-color-override-' + hash;
-      var isValid = util.isPlainObject(palette);
+      const hash = util.hash(JSON.stringify(palette));
+      const selector = 'cc-color-override-' + hash;
+      const isValid = util.isPlainObject(palette);
 
       this.customStyleSelector = isValid ? selector : null;
 
@@ -973,10 +962,10 @@ import "./styles/main.scss"
         return;
       }
 
-      var colorStyles = {};
-      var popup = palette.popup;
-      var button = palette.button;
-      var highlight = palette.highlight;
+      const colorStyles = {};
+      const popup = palette.popup;
+      const button = palette.button;
+      const highlight = palette.highlight;
 
       // needs background colour, text and link will be set to black/white if not specified
       if (popup) {
@@ -1050,7 +1039,7 @@ import "./styles/main.scss"
       }
 
       // this will be interpretted as CSS. the key is the selector, and each array element is a rule
-      var style = document.createElement('style');
+      const style = document.createElement('style');
       document.head.appendChild(style);
 
       // custom style doesn't exist, so we create it
@@ -1059,8 +1048,8 @@ import "./styles/main.scss"
         element: style.sheet
       };
 
-      var ruleIndex = -1;
-      for (var prop in colorStyles) {
+      let ruleIndex = -1;
+      for (let prop in colorStyles) {
         if (colorStyles.hasOwnProperty(prop)) {
           style.sheet.insertRule(
             prop + '{' + colorStyles[prop].join(';') + '}',
@@ -1081,10 +1070,10 @@ import "./styles/main.scss"
 
     function removeCustomStyle(palette) {
       if (util.isPlainObject(palette)) {
-        var hash = util.hash(JSON.stringify(palette));
-        var customStyle = cc.customStyles[hash];
+        const hash = util.hash(JSON.stringify(palette));
+        const customStyle = cc.customStyles[hash];
         if (customStyle && !--customStyle.references) {
-          var styleNode = customStyle.element.ownerNode;
+          const styleNode = customStyle.element.ownerNode;
           if (styleNode && styleNode.parentNode) {
             styleNode.parentNode.removeChild(styleNode);
           }
@@ -1093,25 +1082,11 @@ import "./styles/main.scss"
       }
     }
 
-    function arrayContainsMatches(array, search) {
-      for (var i = 0, l = array.length; i < l; ++i) {
-        var str = array[i];
-        // if regex matches or string is equal, return true
-        if (
-          (str instanceof RegExp && str.test(search)) ||
-          (typeof str == 'string' && str.length && str === search)
-        ) {
-          return true;
-        }
-      }
-      return false;
-    }
-
     function applyAutoDismiss() {
-      var setStatuses = this.setStatuses.bind(this);
-      var close = this.close.bind(this);
+      const setStatuses = this.setStatuses.bind(this);
+      const close = this.close.bind(this);
 
-      var delay = this.options.dismissOnTimeout;
+      const delay = this.options.dismissOnTimeout;
       if (typeof delay == 'number' && delay >= 0) {
         this.dismissTimeout = window.setTimeout(function() {
           setStatuses(cc.status.dismiss);
@@ -1119,9 +1094,9 @@ import "./styles/main.scss"
         }, Math.floor(delay));
       }
 
-      var scrollRange = this.options.dismissOnScroll;
+      const scrollRange = this.options.dismissOnScroll;
       if (typeof scrollRange == 'number' && scrollRange >= 0) {
-        var onWindowScroll = function(evt) {
+        const onWindowScroll = function() {
           if (window.pageYOffset > Math.floor(scrollRange)) {
             setStatuses(cc.status.dismiss);
             close(true);
@@ -1181,7 +1156,7 @@ import "./styles/main.scss"
       if (util.isMobile()) this.options.animateRevokable = false;
 
       if (this.options.revokable) {
-        var classes = getPositionClasses.call(this);
+        const classes = getPositionClasses.call(this);
         if (this.options.animateRevokable) {
           classes.push('cc-animate');
         }
@@ -1192,19 +1167,18 @@ import "./styles/main.scss"
           classes.push('cc-theme-'+this.options.theme)
         }
 
-        var revokeBtn = this.options.revokeBtn
+        const revokeBtn = this.options.revokeBtn
           .replace('{{classes}}', classes.join(' '))
           .replace('{{policy}}', this.options.content.policy);
 
         this.revokeBtn = appendMarkup.call(this, revokeBtn);
 
-        var btn = this.revokeBtn;
+        const btn = this.revokeBtn;
         if (this.options.animateRevokable) {
-          var wait = false;
-          var onMouseMove = util.throttle(function(evt) {
-            var active = false;
-            var minY = 20;
-            var maxY = window.innerHeight - 20;
+          const onMouseMove = util.throttle(function(evt) {
+            let active = false;
+            const minY = 20;
+            const maxY = window.innerHeight - 20;
 
             if ( ( btn.classList.contains( 'cc-top' ) && evt.clientY < minY ) ||
                  ( btn.classList.contains( 'cc-bottom' ) && evt.clientY > maxY ) ) {
@@ -1275,7 +1249,7 @@ import "./styles/main.scss"
             headers: ['Accept: application/json'],
             callback: function(done, response) {
               try {
-                var json = JSON.parse(response);
+                const json = JSON.parse(response);
                 return json.error
                   ? toError(json)
                   : {
@@ -1289,7 +1263,7 @@ import "./styles/main.scss"
         },
 
         // This service requires an option to define `key`. Options are proived using objects or functions
-        ipinfodb: function(options) {
+        ipinfodb: function() {
           return {
             // This service responds with JSON, so we simply need to parse it and return the country code
             url:
@@ -1297,7 +1271,7 @@ import "./styles/main.scss"
             isScript: true, // this is JSONP, therefore we must set it to run as a script
             callback: function(done, response) {
               try {
-                var json = JSON.parse(response);
+                const json = JSON.parse(response);
                 return json.statusCode == 'ERROR'
                   ? toError({error: json.statusMessage})
                   : {
@@ -1362,7 +1336,7 @@ import "./styles/main.scss"
     }
 
     Location.prototype.getNextService = function() {
-      var service;
+      let service;
 
       do {
         service = this.getServiceByIdx(++this.currentServiceIndex);
@@ -1376,19 +1350,17 @@ import "./styles/main.scss"
 
     Location.prototype.getServiceByIdx = function(idx) {
       // This can either be the name of a default locationService, or a function.
-      var serviceOption = this.options.services[idx];
+      const serviceOption = this.options.services[idx];
 
       // If it's a string, use one of the location services.
       if (typeof serviceOption === 'function') {
-        var dynamicOpts = serviceOption();
-        if (dynamicOpts.name) {
-          dynamicOpts = Object.assign(
+        const dynamicOpts = serviceOption();
+        return dynamicOpts.name ? 
+          Object.assign(
             {},
             dynamicOpts,
             this.options.serviceDefinitions[ dynamicOpts.name ]( dynamicOpts )
-          )
-        }
-        return dynamicOpts;
+          ) : dynamicOpts;
       }
 
       // If it's a string, use one of the location services.
@@ -1410,7 +1382,7 @@ import "./styles/main.scss"
     // This runs the service located at index `currentServiceIndex`.
     // If the service fails, `runNextServiceOnError` will continue trying each service until all fail, or one completes successfully
     Location.prototype.locate = function(complete, error) {
-      var service = this.getNextService();
+      const service = this.getNextService();
 
       if (!service) {
         error(new Error('No services to run'));
@@ -1425,10 +1397,10 @@ import "./styles/main.scss"
 
     // Potentially adds a callback to a url for jsonp.
     Location.prototype.setupUrl = function(service) {
-      var serviceOpts = this.getCurrentServiceOpts();
+      const serviceOpts = this.getCurrentServiceOpts();
       return service.url.replace(/\{(.*?)\}/g, function(_, param) {
         if (param === 'callback') {
-          var tempName = 'callback' + Date.now();
+          const tempName = 'callback' + Date.now();
           window[tempName] = function(res) {
             service.__JSONP_DATA = JSON.stringify(res);
           };
@@ -1442,24 +1414,20 @@ import "./styles/main.scss"
 
     // requires a `service` object that defines at least a `url` and `callback`
     Location.prototype.runService = function(service, complete) {
-      var self = this;
-
       // basic check to ensure it resembles a `service`
       if (!service || !service.url || !service.callback) {
         return;
       }
 
       // we call either `getScript` or `makeAsyncRequest` depending on the type of resource
-      var requestFunction = service.isScript ? getScript : makeAsyncRequest;
-
-      var url = this.setupUrl(service);
+      const requestFunction = service.isScript ? getScript : makeAsyncRequest;
 
       // both functions have similar signatures so we can pass the same arguments to both
       requestFunction(
-        url,
-        function(xhr) {
+        this.setupUrl(service),
+        xhr => {
           // if `!xhr`, then `getScript` function was used, so there is no response text
-          var responseText = xhr ? xhr.responseText : '';
+          let responseText = xhr ? xhr.responseText : '';
 
           // if the resource is a script, then this function is called after the script has been run.
           // if the script is JSONP, then a time defined function `callback_{Date.now}` has already
@@ -1470,7 +1438,7 @@ import "./styles/main.scss"
           }
 
           // call the service callback with the response text (so it can parse the response)
-          self.runServiceCallback.call(self, complete, service, responseText);
+          this.runServiceCallback.call(this, complete, service, responseText);
         },
         this.options.timeout,
         service.data,
@@ -1488,19 +1456,18 @@ import "./styles/main.scss"
       service,
       responseText
     ) {
-      var self = this;
       // this is the function that is called if the service uses the async callback in its handler method
-      var serviceResultHandler = function(asyncResult) {
+      const serviceResultHandler = asyncResult => {
         // if `result` is a valid value, then this function shouldn't really run
         // even if it is called by `service.callback`
         if (!result) {
-          self.onServiceResult.call(self, complete, asyncResult);
+          this.onServiceResult.call(this, complete, asyncResult);
         }
       };
 
       // the function `service.callback` will either extract a country code from `responseText` and return it (in `result`)
       // or (if it has to make additional requests) it will call a `done` callback with the country code when it is ready
-      var result = service.callback(serviceResultHandler, responseText);
+      const result = service.callback(serviceResultHandler, responseText);
 
       if (result) {
         this.onServiceResult.call(this, complete, result);
@@ -1524,7 +1491,7 @@ import "./styles/main.scss"
       if (err) {
         this.logError(err);
 
-        var nextService = this.getNextService();
+        const nextService = this.getNextService();
 
         if (nextService) {
           this.runService(nextService, this.runNextServiceOnError.bind(this));
@@ -1541,21 +1508,17 @@ import "./styles/main.scss"
     };
 
     Location.prototype.getCurrentServiceOpts = function() {
-      var val = this.options.services[this.currentServiceIndex];
+      const val = this.options.services[this.currentServiceIndex]
 
       if (typeof val == 'string') {
-        return {name: val};
+        return {name: val}
+      } else if (typeof val == 'function') {
+        return val()
+      }else if (util.isPlainObject(val)) {
+        return val
+      } else {
+        return {}
       }
-
-      if (typeof val == 'function') {
-        return val();
-      }
-
-      if (util.isPlainObject(val)) {
-        return val;
-      }
-
-      return {};
     };
 
     // calls the `onComplete` callback after resetting the `currentServiceIndex`
@@ -1566,8 +1529,8 @@ import "./styles/main.scss"
     };
 
     Location.prototype.logError = function(err) {
-      var idx = this.currentServiceIndex;
-      var service = this.getServiceByIdx(idx);
+      const idx = this.currentServiceIndex;
+      const service = this.getServiceByIdx(idx);
 
       console.warn(
         'The service[' +
@@ -1580,8 +1543,8 @@ import "./styles/main.scss"
     };
 
     function getScript(url, callback, timeout) {
-      var timeoutIdx,
-        s = document.createElement('script');
+      let timeoutIdx;
+      const s = document.createElement('script');
 
       s.type = 'text/' + (url.type || 'javascript');
       s.src = url.src || url;
@@ -1589,7 +1552,7 @@ import "./styles/main.scss"
 
       s.onreadystatechange = s.onload = function() {
         // this code handles two scenarios, whether called by onload or onreadystatechange
-        var state = s.readyState;
+        const state = s.readyState;
 
         clearTimeout(timeoutIdx);
 
@@ -1618,7 +1581,7 @@ import "./styles/main.scss"
       postData,
       requestHeaders
     ) {
-      var xhr = new (window.XMLHttpRequest || window.ActiveXObject)(
+      const xhr = new (window.XMLHttpRequest || window.ActiveXObject)(
         'MSXML2.XMLHTTP.3.0'
       );
 
@@ -1627,8 +1590,8 @@ import "./styles/main.scss"
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
       if (Array.isArray(requestHeaders)) {
-        for (var i = 0, l = requestHeaders.length; i < l; ++i) {
-          var split = requestHeaders[i].split(':', 2);
+        for (let i = 0, l = requestHeaders.length; i < l; ++i) {
+          const split = requestHeaders[i].split(':', 2);
           xhr.setRequestHeader(
             split[0].replace(/^\s+|\s+$/g, ''),
             split[1].replace(/^\s+|\s+$/g, '')
@@ -1655,7 +1618,7 @@ import "./styles/main.scss"
   })();
 
   cc.Law = (function() {
-    var defaultOptions = {
+    const defaultOptions = {
       // Make this false if you want to disable all regional overrides for settings.
       // If true, options can differ by country, depending on their cookie law.
       // It does not affect hiding the popup for countries that do not have cookie law.
@@ -1732,16 +1695,15 @@ import "./styles/main.scss"
     };
 
     Law.prototype.get = function(countryCode) {
-      var opts = this.options;
       return {
-        hasLaw: opts.hasLaw.indexOf(countryCode) >= 0,
-        revokable: opts.revokable.indexOf(countryCode) >= 0,
-        explicitAction: opts.explicitAction.indexOf(countryCode) >= 0
+        hasLaw: this.options.hasLaw.indexOf(countryCode) >= 0,
+        revokable: this.options.revokable.indexOf(countryCode) >= 0,
+        explicitAction: this.options.explicitAction.indexOf(countryCode) >= 0
       };
     };
 
     Law.prototype.applyLaw = function(options, countryCode) {
-      var country = this.get(countryCode);
+      const country = this.get(countryCode);
 
       if (!country.hasLaw) {
         // The country has no cookie law
@@ -1772,7 +1734,7 @@ import "./styles/main.scss"
   // This function initializes the app by combining the use of the Popup, Locator and Law modules
   // You can string together these three modules yourself however you want, by writing a new function.
   cc.initialize = function(options, complete, error) {
-    var law = new cc.Law(options.law);
+    const law = new cc.Law(options.law);
 
     if (!complete) complete = function() {};
     if (!error) error = function() {};
@@ -1823,7 +1785,7 @@ import "./styles/main.scss"
       return;
     }
     if (options.location) {
-      var locator = new cc.Location(options.location);
+      const locator = new cc.Location(options.location);
       locator.locate(function(serviceResult) {
         complete(serviceResult || {});
       }, error);
