@@ -326,7 +326,7 @@ import "./styles/main.scss"
         basic         : '{{messagelink}}{{compliance}}',
         'basic-close' : '{{messagelink}}{{compliance}}{{close}}',
         'basic-header': '{{header}}{{message}}{{link}}{{compliance}}',
-        categories    : '{{messagelink}}{{categories}}{{save}}'
+        categories    : '{{messagelink}}<div class="form">{{categories}}{{save}}</div>'
         // add a custom layout here, then add some new css with the class '.cc-layout-my-cool-layout'
         //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
       },
@@ -778,7 +778,8 @@ import "./styles/main.scss"
       const classes = [
         'cc-' + positionStyle, // floating or banner
         'cc-type-' + opts.type, // add the compliance type
-        'cc-theme-' + opts.theme // add the theme
+        'cc-theme-' + opts.theme, // add the theme
+        'cc-layout-' + opts.layout // add the layout 
       ];
 
       if (opts.static) {
