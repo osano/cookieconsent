@@ -30,16 +30,8 @@
       padding-right: 2px;
       padding-left : 28px;
       font-weight  : normal;
-      background   : white;
       border-right : none;
-      border-left  : 2px solid rgb(86, 203, 219);
-      border-top   : 2px solid rgb(86, 203, 219);
-      border-bottom: 2px solid rgb(86, 203, 219);
-      color        : rgb(42, 148, 161);
       box-sizing   : border-box;
-      &:hover, &:focus{
-        background: rgb(221, 237, 240);
-      }
       input[type=checkbox]{
         position: absolute;
         left    : 0;
@@ -73,38 +65,23 @@
         }
       }
       &.cc-info {
+        margin       : 0;
         padding      : 0 4px;
         border-radius: 0 5px 5px 0;
-        border-left  : none;
-        border-right : 2px solid rgb(86, 203, 219);
-        border-top   : 2px solid rgb(86, 203, 219);
-        border-bottom: 2px solid rgb(86, 203, 219);
       }
       &:last-child{
         min-width: 0;
       }
-      &.cc-info:focus + .cc-tooltip{
-        display: block;
-      }
     }
     .cc-tooltip{
       border-radius: 5px;
-      background   : white;
-      border       : 2px solid rgb(86, 203, 219);
       &:after{
-        content      : "";
-        border-right : 2px solid rgb(86, 203, 219);
-        border-bottom: 2px solid rgb(86, 203, 219);
-        width        : 10px;
-        height       : 10px;
-        transform    : rotate(45deg);
-        position     : absolute;
-        bottom       : -7px;
-        left         : 10px;
-        background   : white;
+        background  : white;
+        border-bottom  : thin solid lightgrey;
+        border-right: thin solid lightgrey;
       }
       .cc-cookie-accordion-title{
-        color : rgb(86, 203, 219);
+        color : black;
       }
     }
   }

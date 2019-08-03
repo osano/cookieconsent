@@ -14,6 +14,23 @@ import "./styles/main.scss"
       })
     },
 
+    deepExtend: function(target, source) {
+      for (var prop in source) {
+        if (source.hasOwnProperty(prop)) {
+          if (
+            prop in target &&
+            this.isPlainObject(target[prop]) &&
+            this.isPlainObject(source[prop])
+          ) {
+            this.deepExtend(target[prop], source[prop]);
+          } else {
+            target[prop] = source[prop];
+          }
+        }
+      }
+      return target;
+    },
+    
     getCookie: function(name) {
       const value = '; ' + document.cookie
       const parts = value.split('; ' + name + '=')
@@ -314,7 +331,8 @@ import "./styles/main.scss"
         'opt-in':
           '<div class="cc-compliance cc-highlight">{{dismiss}}{{allow}}{{customize}}</div>',
         'opt-out':
-          '<div class="cc-compliance cc-highlight">{{dismiss}}{{deny}}</div>'
+          '<div class="cc-compliance cc-highlight">{{dismiss}}{{deny}}</div>',
+        categories: '<div class="form">{{categories}}{{save}}</div>'
       },
 
       // select your type of popup here
@@ -325,8 +343,7 @@ import "./styles/main.scss"
         // the 'block' layout tend to be for square floating popups
         basic         : '{{messagelink}}{{compliance}}',
         'basic-close' : '{{messagelink}}{{compliance}}{{close}}',
-        'basic-header': '{{header}}{{message}}{{link}}{{compliance}}',
-        categories    : '{{messagelink}}<div class="form">{{categories}}{{save}}</div>'
+        'basic-header': '{{header}}{{message}}{{link}}{{compliance}}'
         // add a custom layout here, then add some new css with the class '.cc-layout-my-cool-layout'
         //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
       },
@@ -425,11 +442,11 @@ import "./styles/main.scss"
       }
 
       // set options back to default options
-      this.options = Object.assign( {}, defaultOptions )
+      util.deepExtend((this.options = {}), defaultOptions )
 
       // merge in user options
       if (util.isPlainObject(options)) {
-        this.options = Object.assign( {}, this.options, options )
+        util.deepExtend(this.options, options )
       }
 
       // returns true if `onComplete` was called
@@ -692,8 +709,7 @@ import "./styles/main.scss"
       if ( arguments.length === 0 ) {
         Object.keys(cc.category).forEach( category => updateCategoryStatus( category, cc.category[ category ] ) )
       } else if (arguments.length === 1){
-        const status = arguments[ 0 ]
-        Object.keys(cc.category).forEach( category => updateCategoryStatus( category, status ) )
+        Object.keys(cc.category).forEach( category => updateCategoryStatus( category, arguments[ 0 ] ) )
       } else if ( arguments.length > 1 ) {
         arguments.forEach( ( categoryStatus, index ) => {
           updateCategoryStatus( Object.keys(cc.category)[ index ], categoryStatus )
@@ -779,7 +795,6 @@ import "./styles/main.scss"
         'cc-' + positionStyle, // floating or banner
         'cc-type-' + opts.type, // add the compliance type
         'cc-theme-' + opts.theme, // add the theme
-        'cc-layout-' + opts.layout // add the layout 
       ];
 
       if (opts.static) {
@@ -918,12 +933,12 @@ import "./styles/main.scss"
       const btn = util.traverseDOMPath(event.target, 'cc-btn') || event.target;
       
       if (btn.classList.contains( 'cc-btn' ) && btn.classList.contains( 'cc-save' )){
-        this.close(true);
-        return true
+        this.setStatuses()
+        this.close(true)
       }
       if (btn.classList.contains( 'cc-btn' )) {
         const matches = btn.className.match(
-          new RegExp('\\bcc-(' + Object.keys(cc.status).map(util.escapeRegExp).join('|') + ')\\b')
+          new RegExp('\\bcc-(' + Object.keys(cc.status).map(str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') ).join('|') + ')\\b')
         );
         const match = (matches && matches[1]) || false;
         if (match) {
@@ -975,6 +990,10 @@ import "./styles/main.scss"
           ? popup.text
           : util.getContrast(popup.background);
         popup.link = popup.link ? popup.link : popup.text;
+        colorStyles[prefix + ' .cc-tooltip'] = [
+          'color: ' + popup.text,
+          'background-color: ' + popup.background
+        ]
         colorStyles[prefix + '.cc-window'] = [
           'color: ' + popup.text,
           'background-color: ' + popup.background
@@ -1115,6 +1134,7 @@ import "./styles/main.scss"
 
       const windowClick = this.options.dismissOnWindowClick;
       const ignoredClicks = this.options.ignoreClicksFrom;
+      
       if (windowClick) {
         const onWindowClick = function(evt) {
           const path = evt.composedPath ? evt.composedPath() : (function ( arr, element ) {
@@ -1128,14 +1148,10 @@ import "./styles/main.scss"
             console.warn( "'.path' & '.composedPath' failed to generate an event path." )
             return
           }
-          if ( !path.some(function ( element ) {
-              return ignoredClicks.some( function ( ignoredClick  ){
-                return element.classList && element.classList.contains( ignoredClick )
-              })
-            } ) ) {
+          if ( !path.some( element => ignoredClicks.some( ignoredClick => element.classList && element.classList.contains( ignoredClick ) ) ) ) {
             setStatuses(cc.status.dismiss)
             close(true)
-
+            
             window.removeEventListener('click', onWindowClick);
             window.removeEventListener('touchend', onWindowClick);
             this.onWindowClick = null;
@@ -1144,6 +1160,7 @@ import "./styles/main.scss"
 
         if (this.options.enabled) {
           this.onWindowClick = onWindowClick;
+
           window.addEventListener('click', onWindowClick);
           window.addEventListener('touchend', onWindowClick);
         }
@@ -1327,10 +1344,10 @@ import "./styles/main.scss"
 
     function Location(options) {
       // Set up options
-      this.options = Object.assign( {}, defaultOptions )
+      util.deepExtend((this.options = {}), defaultOptions )
 
       if (util.isPlainObject(options)) {
-        this.options = Object.assign( {}, this.options, options )
+        util.deepExtend(this.options, options )
       }
 
       this.currentServiceIndex = -1; // the index (in options) of the service we're currently using
@@ -1687,11 +1704,11 @@ import "./styles/main.scss"
 
     Law.prototype.initialize = function(options) {
       // set options back to default options
-      this.options = Object.assign( {}, defaultOptions )
+      util.deepExtend((this.options = {}), defaultOptions )
 
       // merge in user options
       if (util.isPlainObject(options)) {
-        this.options = Object.assign( {}, this.options, options )
+        util.deepExtend(this.options, options )
       }
     };
 
