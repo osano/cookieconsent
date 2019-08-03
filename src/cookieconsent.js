@@ -1,6 +1,24 @@
 (function(cc) {
   // stop from running again, if accidently included more than once.
   if (cc.hasInitialised) return;
+  
+  var defaultCookie = {
+    // This is the name of this cookie - you can ignore this
+    name: 'cookieconsent_status',
+
+    // This is the url path that the cookie 'name' belongs to. The cookie can only be read at this location
+    path: '/',
+
+    // This is the domain that the cookie 'name' belongs to. The cookie can only be read on this domain.
+    //  - Guide to cookie domains - https://www.mxsasha.eu/blog/2014/03/04/definitive-guide-to-cookie-domains/
+    domain: '',
+
+    // The cookies expire date, specified in days (specify -1 for no expiry)
+    expiryDays: 365,
+
+    // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
+    secure: false
+  }
 
   var util = {
     // https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
@@ -62,6 +80,18 @@
         cookie.push('secure');
       }
       document.cookie = cookie.join(';');
+    },
+
+    setSession: function(name, value) {
+      sessionStorage.setItem(name, value);
+    },
+
+    getSession: function(name) {
+      sessionStorage.getItem(name);
+    },
+
+    removeSession: function(name) {
+      sessionStorage.removeItem(name);
     },
 
     // only used for extending the initial options
@@ -216,23 +246,7 @@
       container: null,
 
       // defaults cookie options - it is RECOMMENDED to set these values to correspond with your server
-      cookie: {
-        // This is the name of this cookie - you can ignore this
-        name: 'cookieconsent_status',
-
-        // This is the url path that the cookie 'name' belongs to. The cookie can only be read at this location
-        path: '/',
-
-        // This is the domain that the cookie 'name' belongs to. The cookie can only be read on this domain.
-        //  - Guide to cookie domains - https://www.mxsasha.eu/blog/2014/03/04/definitive-guide-to-cookie-domains/
-        domain: '',
-
-        // The cookies expire date, specified in days (specify -1 for no expiry)
-        expiryDays: 365,
-
-        // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
-        secure: false
-      },
+      cookie: defaultCookie,
 
       // these callback hooks are called at certain points in the program execution
       onPopupOpen: function() {},
@@ -646,20 +660,30 @@
 
     CookiePopup.prototype.setStatus = function(status) {
       var c = this.options.cookie;
-      var value = util.getCookie(c.name);
+      var value = this.getStatus(c.name);
       var chosenBefore = Object.keys(cc.status).indexOf(value) >= 0;
-
+      
+      // Cleanout everything on deny and start over
+      if (status === cc.status.deny) { this.clearStatus(); }
+      
       // if `status` is valid
       if (Object.keys(cc.status).indexOf(status) >= 0) {
-        util.setCookie(
-          c.name,
-          status,
-          c.expiryDays,
-          c.domain,
-          c.path,
-          c.secure
-        );
-
+        if (status === cc.status.deny) {
+          util.setSession(
+            c.name,
+            status
+          );
+        } else {
+          util.removeSession(c.name); // Cleanout any residual deny
+          util.setCookie(
+            c.name,
+            status,
+            c.expiryDays,
+            c.domain,
+            c.path,
+            c.secure
+          );
+        }
         this.options.onStatusChange.call(this, status, chosenBefore);
       } else {
         this.clearStatus();
@@ -667,12 +691,15 @@
     };
 
     CookiePopup.prototype.getStatus = function() {
-      return util.getCookie(this.options.cookie.name);
+      return util.getCookie(this.options.cookie.name) || util.getSession(this.options.cookie.name);
     };
 
     CookiePopup.prototype.clearStatus = function() {
       var c = this.options.cookie;
-      util.setCookie(c.name, '', -1, c.domain, c.path);
+      if (util.getCookie(c.name)) {
+        util.setCookie(c.name, '', -1, c.domain, c.path);
+      }
+      util.removeSession(c.name);
     };
 
     // This needs to be called after 'fadeIn'. This is the code that actually causes the fadeIn to work
@@ -1692,10 +1719,9 @@
     if (!complete) complete = function() {};
     if (!error) error = function() {};
 
-    // I hardcoded this because I cba to refactor a fuck load of code.
-    // Bad developer. Bad.
+    var cookieName = ((options || {}).cookie || {}).name || defaultCookie.name;
     var allowed = Object.keys(cc.status);
-    var answer = util.getCookie('cookieconsent_status');
+    var answer = util.getCookie(cookieName) || util.getSession(cookieName);
     var match = allowed.indexOf(answer) >= 0;
 
     // if they have already answered
@@ -1751,6 +1777,31 @@
   // export utils (no point in hiding them, so we may as well expose them)
   cc.utils = util;
 
+  // Define psudo sessionStorage for broken
+  if(typeof(sessionStorage) == 'undefined') {
+    var _sessionVals = [];
+    sessionStorage = {
+        getItem: function(name){
+          return _sessionVals.find(function(_v) {
+            return (_v.name === _v);
+          });
+        },
+        setItem: function(name, value){
+          _sessionVals.push({'name': name, 'val': value});
+        },
+        clear: function(){
+          _sessionVals = [];
+        },
+        removeItem: function(name){
+          var _nIdx = _sessionVals.findIndex(function(_v) {
+            return (_v.name === name);
+          });
+          if (_nIdx !== false && _nIdx > -1) {
+            _sessionVals.slice(_nIdx, 1);
+          }
+        }
+    };
+  }
   // prevent this code from being run twice
   cc.hasInitialised = true;
 
