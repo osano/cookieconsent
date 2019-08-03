@@ -150,14 +150,16 @@
     bottom       : 46px;
     padding      : 8px;
     border       : thin solid lightgrey;
+    box-shadow: 1px 1px 4px rgba( 150, 150, 150, .7 );
     &:after{
-      content  : "";
-      width    : 10px;
-      height   : 10px;
-      transform: rotate(45deg);
-      position : absolute;
-      bottom   : -7px;
-      left     : 10px;
+      content   : "";
+      width     : 10px;
+      height    : 10px;
+      transform : rotate(45deg);
+      position  : absolute;
+      bottom    : -7px;
+      left      : 10px;
+      box-shadow: 2px 1px 1px rgba( 200, 200, 200, .5 );
     }
     p {
       margin: 0;

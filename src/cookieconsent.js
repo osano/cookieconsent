@@ -990,7 +990,7 @@ import "./styles/main.scss"
           ? popup.text
           : util.getContrast(popup.background);
         popup.link = popup.link ? popup.link : popup.text;
-        colorStyles[prefix + ' .cc-tooltip'] = [
+        colorStyles[prefix + ' .cc-tooltip, ' + prefix + ' .cc-tooltip:after'] = [
           'color: ' + popup.text,
           'background-color: ' + popup.background
         ]
