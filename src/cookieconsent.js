@@ -11,7 +11,7 @@
 
     // This is the domain that the cookie 'name' belongs to. The cookie can only be read on this domain.
     //  - Guide to cookie domains - https://www.mxsasha.eu/blog/2014/03/04/definitive-guide-to-cookie-domains/
-    domain: '',
+    domain: (location || {}).hostname || '',
 
     // The cookies expire date, specified in days (specify -1 for no expiry)
     expiryDays: 365,
@@ -1783,7 +1783,7 @@
     sessionStorage = {
         getItem: function(name){
           return _sessionVals.find(function(_v) {
-            return (_v.name === _v);
+            return (_v.name == name);
           });
         },
         setItem: function(name, value){
@@ -1794,7 +1794,7 @@
         },
         removeItem: function(name){
           var _nIdx = _sessionVals.findIndex(function(_v) {
-            return (_v.name === name);
+            return (_v.name == name);
           });
           if (_nIdx !== false && _nIdx > -1) {
             _sessionVals.slice(_nIdx, 1);
