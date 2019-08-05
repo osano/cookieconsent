@@ -7,23 +7,32 @@ const exp = Object.assign({}, common, {
     module: {
       rules: [
         {
-          test: /\.js?$/,
-          loader: "babel-loader",
+          test   : /\.js?$/,
+          loader : "babel-loader",
           options: {
-            root: __dirname,
+            root    : __dirname,
             rootMode: "upward-optional"
           }
         },
         {
           test: /\.scss?$/,
-          use: [
+          use : [
             "style-loader", // creates style nodes from JS strings
             "css-loader", // translates CSS into CommonJS
-            "sass-loader" // compiles Sass to CSS, using Node Sass by default
+            "sass-loader", // compiles Sass to CSS, using Node Sass by default
+            "postcss-loader"
           ]
+        },
+        {
+          test  : /\.js?$/,
+          loader: "string-replace-loader",
+          options: {
+            search : ">\\n\ {2,}|\\n\ {2,}<",
+            replace: () => '',
+            flags  : "g"
+          }
         }
       ]
-    },
-    plugins: []
+    }
   })
   module.exports = exp
