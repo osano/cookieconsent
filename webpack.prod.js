@@ -13,15 +13,16 @@ module.exports = merge(common, {
       filename: 'cookieconsent.min.js'
     },
     optimization: {
-      moduleIds        : 'total-size',
-      mangleWasmImports: true
+      moduleIds         : 'total-size',
+      mangleWasmImports : true,
+      concatenateModules: false
     },
     plugins: [
       new CleanWebpackPlugin(),
       new MinifyPlugin({
         removeDebugger: true,
         removeConsole : true,
-        mangle: { topLevel: true }
+        mangle        : true
       },{
         sourceMap: false,
         comments : false
