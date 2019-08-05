@@ -87,7 +87,7 @@
     },
 
     getSession: function(name) {
-      sessionStorage.getItem(name);
+      return sessionStorage.getItem(name);
     },
 
     removeSession: function(name) {
