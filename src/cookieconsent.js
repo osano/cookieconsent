@@ -265,8 +265,6 @@ import "./styles/main.scss"
               <button class="cc-btn cc-info" aria-label="Uncategorized Definition Button" tabindex="1">^</button>
               <div class="cc-tooltip">
                 <p>This is the category for cookies that don't fit any other category.</p>
-                <!--<a class="cc-cookie-accordion-title" aria-label="Uncategorized Cookies List" role="button">Uncategorized Cookies</a>
-                <ul class="cc-cookie-accordion">--A--</br>--B--</ul>-->
               </div>
             </li>
             <li class="cc-category">
@@ -274,8 +272,6 @@ import "./styles/main.scss"
               <button class="cc-btn cc-info" aria-label="Essential Definition Button" tabindex="3">^</button>
               <div class="cc-tooltip">
                 <p>This is the category for essential application or website opperation cookies.</p>
-                <!--<a class="cc-cookie-accordion-title" aria-label="Essential Cookies List" role="button">Essential Cookies</a>
-                <ul class="cc-cookie-accordion">--A--</br>--B--</ul>-->
               </div>
             </li>
             <li class="cc-category">
@@ -283,8 +279,6 @@ import "./styles/main.scss"
               <button class="cc-btn cc-info" aria-label="Personalization Definition Button" tabindex="5">^</button>
               <div class="cc-tooltip">
                 <p>This is the category for cookies used to help peronalize the application to a specific user.</p>
-                <!--<a class="cc-cookie-accordion-title" aria-label="Personalization Cookies List" role="button">Personalization Cookies</a>
-                <ul class="cc-cookie-accordion">--A--</br>--B--</ul>-->
               </div>
             </li>
             <li class="cc-category">
@@ -292,8 +286,6 @@ import "./styles/main.scss"
               <button class="cc-btn cc-info" aria-label="Analytics Definition Button" tabindex="7">^</button>
               <div class="cc-tooltip">
                 <p>This is the category for cookies used to help analyize data.</p>
-                <!--<a class="cc-cookie-accordion-title" aria-label="Analytics Cookies List" role="button">Analytics Cookies</a>
-                <ul class="cc-cookie-accordion">--A--</br>--B--</ul>-->
               </div>
             </li>
             <li class="cc-category">
@@ -301,8 +293,6 @@ import "./styles/main.scss"
               <button class="cc-btn cc-info" aria-label="Marketing Definition Button" tabindex="9">^</button>
               <div class="cc-tooltip">
                 <p>This is the category for cookies used to help peronalize your internet shopping & advertisement experiences.</p>
-                <!--<a class="cc-cookie-accordion-title" aria-label="Marketing Cookies List" role="button">Marketing Cookies</a>
-                <ul class="cc-cookie-accordion">--A--</br>--B--</ul>-->
               </div>
             </li>
           </ul>
@@ -893,27 +883,6 @@ import "./styles/main.scss"
           }
         })
       })
-      /**
-       * Event listeners for the accordion in the tooltip
-       */
-      /*el.querySelectorAll(".cc-cookie-accordion-title").forEach( accordionLink => {
-        accordionLink.addEventListener('click', event => {
-          event.preventDefault()
-          accordionLink.nextElementSibling.classList.toggle( "open" )
-        })
-        accordionLink.addEventListener( 'mousedown', event => event.preventDefault() )
-      })
-      el.querySelectorAll(".cc-tooltip").forEach( toolTip => {
-        toolTip.addEventListener('click', event => {
-          event.preventDefault()
-          event.stopPropagation()
-        })
-        toolTip.addEventListener( 'mousedown', event => {
-          event.preventDefault()
-          event.stopPropagation()
-        })
-      })
-      */
 
       if (opts.autoAttach) {
         if (!cont.firstChild) {

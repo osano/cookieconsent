@@ -164,16 +164,5 @@
     p {
       margin: 0;
     }
-    .cc-cookie-accordion-title{
-      cursor: pointer;
-    }
-    .cc-cookie-accordion{
-      display: none;
-      height : 0;
-    }
-    .cc-cookie-accordion.open{
-      display: block;
-      height : auto;
-    }
   }
 }
