@@ -38,7 +38,7 @@
   "scripts": {
     "clean": "rimraf ./build/**/*",
     "build:dev": "npx webpack --config webpack.dev.js",
-    "build:prod": "npm run clean && npx webpack -p --optimize-minimize --config webpack.prod.js",
+    "build": "npm run clean && npx webpack -p --optimize-minimize --config webpack.prod.js",
     "minify:js": "babel ./src/cookieconsent.js | terser -c -m --config-file ./terser.config.json > ./build/cookieconsent.min.js",
     "minify:css": "node-sass ./src/styles/main.scss | postcss | node-sass --output-style compressed > ./build/cookieconsent.min.css",
     "build:release": "npm run build:prod && bump -c -t package.json package-lock.json bower.json",
