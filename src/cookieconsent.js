@@ -15,7 +15,7 @@ import "./styles/main.scss"
     },
 
     deepExtend: function(target, source) {
-      for (var prop in source) {
+      for (let prop in source) {
         if (source.hasOwnProperty(prop)) {
           if (
             prop in target &&
