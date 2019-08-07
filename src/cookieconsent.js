@@ -1078,7 +1078,7 @@ import "./styles/main.scss"
     }
 
     function getEventPath( event ) {
-      event.composedPath ? event.composedPath() : (function ( arr, element ) {
+      const path = event.composedPath ? event.composedPath() : (function ( arr, element ) {
         while ( element ) {
           arr.push( element )
           element = element.parentNode
@@ -1089,6 +1089,7 @@ import "./styles/main.scss"
         console.warn( "'.path' & '.composedPath' failed to generate an event path." )
         return
       }
+      return path
     }
 
     function applyAutoDismiss() {
