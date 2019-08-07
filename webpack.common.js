@@ -22,15 +22,6 @@ const exp = Object.assign({}, common, {
             "sass-loader", // compiles Sass to CSS, using Node Sass by default
             "postcss-loader"
           ]
-        },
-        {
-          test  : /\.js?$/,
-          loader: "string-replace-loader",
-          options: {
-            search : ">\\n\ {2,}|\\n\ {2,}<",
-            replace: () => '',
-            flags  : "g"
-          }
         }
       ]
     }
