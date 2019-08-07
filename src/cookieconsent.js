@@ -953,10 +953,8 @@ import "./styles/main.scss"
         return;
       }
 
-      const colorStyles = {};
-      const popup = palette.popup;
-      const button = palette.button;
-      const highlight = palette.highlight;
+      const colorStyles = {}
+      const { popup, button, highlight, saveButton } = palette
 
       // needs background colour, text and link will be set to black/white if not specified
       if (popup) {
@@ -1030,6 +1028,14 @@ import "./styles/main.scss"
               'color: ' + popup.text
             ];
           }
+        }
+
+        if ( saveButton ) {
+          colorStyles[prefix + ' .cc-btn.cc-save'] = [
+            'color: ' + saveButton.text,
+            'border-color: ' + saveButton.border,
+            'background-color: ' + saveButton.background
+          ];
         }
       }
 
