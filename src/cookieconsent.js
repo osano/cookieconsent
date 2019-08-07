@@ -389,9 +389,12 @@ import "./styles/main.scss"
       // set value as click anything on the page, excluding the `ignoreClicksFrom` below (if we click on the revoke button etc)
       dismissOnWindowClick: false,
 
+      // set value as click anything on the page, excluding the `ignoreClicksFrom` below (if we click on the revoke button etc)
+      dismissOnLinkClick: false,
+
       // If `dismissOnWindowClick` is true, we can click on 'revoke' and we'll still dismiss the banner, so we need exceptions.
       // should be an array of class names (not CSS selectors)
-      ignoreClicksFrom: ['cc-revoke', 'cc-btn'], // already includes the revoke button and the banner itself
+      ignoreClicksFrom: ['cc-revoke', 'cc-btn', 'cc-link'], // already includes the revoke button and the banner itself
 
       // The application automatically decide whether the popup should open.
       // Set this to false to prevent this from happening and to allow you to control the behaviour yourself
@@ -405,8 +408,8 @@ import "./styles/main.scss"
       //
       autoAttach: true,
 	  
-	  // set value if floating layout should be forced for mobile devices
-	  mobileForceFloat: true,
+      // set value if floating layout should be forced for mobile devices
+      mobileForceFloat: true,
 
       // simple whitelist/blacklist for pages. specify page by:
       //   - using a string : '/index.html'           (matches '/index.html' exactly) OR
@@ -507,6 +510,11 @@ import "./styles/main.scss"
       if (this.onWindowClick) {
         window.removeEventListener('click', this.onWindowClick);
         this.onWindowClick = null;
+      }
+
+      if (this.onLinkClick) {
+        window.removeEventListener('click', this.onLinkClick);
+        this.onLinkClick = null;
       }
 
       if (this.onMouseMove) {
@@ -1069,67 +1077,78 @@ import "./styles/main.scss"
       }
     }
 
+    function getEventPath( event ) {
+      event.composedPath ? event.composedPath() : (function ( arr, element ) {
+        while ( element ) {
+          arr.push( element )
+          element = element.parentNode
+        }
+        return arr
+      })([],event.target )
+      if ( !path ) {
+        console.warn( "'.path' & '.composedPath' failed to generate an event path." )
+        return
+      }
+    }
+
     function applyAutoDismiss() {
       const setStatuses = this.setStatuses.bind(this);
       const close = this.close.bind(this);
+      const {
+        enabled,
+        dismissOnTimeout  : delay,
+        dismissOnScroll   :scrollRange,
+        dismissOnLinkClick,
+        dismissOnWindowClick,
 
-      const delay = this.options.dismissOnTimeout;
-      if (typeof delay == 'number' && delay >= 0) {
-        this.dismissTimeout = window.setTimeout(function() {
-          setStatuses(cc.status.dismiss);
-          close(true);
-        }, Math.floor(delay));
-      }
+      } = this.options
 
-      const scrollRange = this.options.dismissOnScroll;
-      if (typeof scrollRange == 'number' && scrollRange >= 0) {
-        const onWindowScroll = function() {
-          if (window.pageYOffset > Math.floor(scrollRange)) {
-            setStatuses(cc.status.dismiss);
-            close(true);
-
-            window.removeEventListener('scroll', onWindowScroll, { passive: true });
-            this.onWindowScroll = null;
-          }
-        };
-
-        if (this.options.enabled) {
-          this.onWindowScroll = onWindowScroll;
-          window.addEventListener('scroll', onWindowScroll, { passive: true });
-        }
-      }
-
-      const windowClick = this.options.dismissOnWindowClick;
-      const ignoredClicks = this.options.ignoreClicksFrom;
-      
-      if (windowClick) {
-        const onWindowClick = function(evt) {
-          const path = evt.composedPath ? evt.composedPath() : (function ( arr, element ) {
-            while ( element ) {
-              arr.push( element )
-              element = element.parentNode
-            }
-            return arr
-          })([],evt.target )
-          if ( !path ) {
-            console.warn( "'.path' & '.composedPath' failed to generate an event path." )
-            return
-          }
-          if ( !path.some( element => ignoredClicks.some( ignoredClick => element.classList && element.classList.contains( ignoredClick ) ) ) ) {
+      if ( enabled ) {
+        if (typeof delay == 'number' && delay >= 0) {
+          this.dismissTimeout = window.setTimeout(function() {
             setStatuses(cc.status.dismiss)
             close(true)
-            
-            window.removeEventListener('click', onWindowClick);
-            window.removeEventListener('touchend', onWindowClick);
-            this.onWindowClick = null;
+          }, Math.floor(delay))
+        } else if (typeof scrollRange == 'number' && scrollRange >= 0) {
+          this.onWindowScroll = () => {
+            if (window.pageYOffset > Math.floor(scrollRange)) {
+              setStatuses(cc.status.dismiss)
+              close(true)
+
+              window.removeEventListener('scroll', this.onWindowScroll, { passive: true })
+              this.onWindowScroll = null
+            }
           }
-        }.bind(this);
+          window.addEventListener('scroll', this.onWindowScroll, { passive: true })
+        } else if (dismissOnWindowClick) {
+          this.onWindowClick = evt => {
+            if ( !getEventPath( evt ).some( element =>
+                    this.options.ignoreClicksFrom.some( ignoredClick =>
+                      element.classList && element.classList.contains( ignoredClick )
+                    )
+                  )
+            ) {
+              setStatuses(cc.status.dismiss)
+              close(true)
+              
+              window.removeEventListener('click', this.onWindowClick)
+              window.removeEventListener('touchend', this.onWindowClick)
+              this.onWindowClick = null
+            }
+          }
 
-        if (this.options.enabled) {
-          this.onWindowClick = onWindowClick;
-
-          window.addEventListener('click', onWindowClick);
-          window.addEventListener('touchend', onWindowClick);
+          window.addEventListener('click', this.onWindowClick)
+          window.addEventListener('touchend', this.onWindowClick)
+        } else if (dismissOnLinkClick) {
+          this.onLinkClick = evt => {
+            if ( getEventPath( evt ).some( elem => typeof elem.tagName !== 'undefined' && elem.tagName === 'A' ) ) {
+              setStatuses( cc.status.dismiss )
+              close( true )
+              window.removeEventListener('click', this.onLinkClick)
+              this.onLinkClick = null
+            }
+          }
+          window.addEventListener('click', this.onLinkClick)
         }
       }
     }

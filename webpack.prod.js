@@ -17,6 +17,19 @@ module.exports = merge(common, {
       mangleWasmImports : true,
       concatenateModules: false
     },
+    module: {
+      rules: [
+        {
+          test  : /\.js?$/,
+          loader: "string-replace-loader",
+          options: {
+            search : "(?<=>)\\n\ {2,}|\\n\ {2,}(?=<)",
+            replace: () => '',
+            flags  : "g"
+          }
+        }
+      ]
+    },
     plugins: [
       new CleanWebpackPlugin(),
       new MinifyPlugin({
