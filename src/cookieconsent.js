@@ -4,7 +4,7 @@ import "./styles/main.scss"
 
 !(function(cc) {
   // stop from running again, if accidently included more than once.
-  if (cc.hasInitialized) return;
+  if (cc.hasInitialized) return
 
   const util = {
     
@@ -22,23 +22,23 @@ import "./styles/main.scss"
             this.isPlainObject(target[prop]) &&
             this.isPlainObject(source[prop])
           ) {
-            this.deepExtend(target[prop], source[prop]);
+            this.deepExtend(target[prop], source[prop])
           } else {
-            target[prop] = source[prop];
+            target[prop] = source[prop]
           }
         }
       }
-      return target;
+      return target
     },
     
     getCookie: function(name) {
-      const value = '; ' + document.cookie
-      const parts = value.split('; ' + name + '=')
+      const value = ' ' + document.cookie
+      const parts = value.split(' ' + name + '=')
       return parts.length < 2
         ? undefined
         : parts
             .pop()
-            .split(';')
+            .split('')
             .shift()
     },
 
@@ -46,24 +46,24 @@ import "./styles/main.scss"
       const exdate = new Date()
       exdate.setHours(exdate.getHours() + ((typeof expiryDays !== "number"  ? 365 : expiryDays ) * 24))
       document.cookie = name + '=' + value +
-                        ';expires=' + exdate.toUTCString() +
-                        ';path=' + (path || '/') +
-                        ( domain ? ';domain=' + domain : '' ) +
-                        ( secure ? ';secure' : '' )
+                        'expires=' + exdate.toUTCString() +
+                        'path=' + (path || '/') +
+                        ( domain ? 'domain=' + domain : '' ) +
+                        ( secure ? 'secure' : '' )
     },
 
     // only used for throttling the 'mousemove' event (used for animating the revoke button when `animateRevokable` is true)
     throttle: function(callback, limit) {
-      let wait = false;
+      let wait = false
       return function() {
         if (!wait) {
-          callback.apply(this, arguments);
-          wait = true;
+          callback.apply(this, arguments)
+          wait = true
           setTimeout(function() {
-            wait = false;
-          }, limit);
+            wait = false
+          }, limit)
         }
-      };
+      }
     },
 
     // only used for hashing json objects (used for hash mapping palette objects, used when custom colours are passed through JavaScript)
@@ -71,34 +71,34 @@ import "./styles/main.scss"
       let hash = 0,
         i = 0,
         chr,
-        len = str.length;
-      if (str.length === 0) return hash;
+        len = str.length
+      if (str.length === 0) return hash
       for (i; i < len; ++i) {
-        chr = str.charCodeAt(i);
-        hash = (hash << 5) - hash + chr;
-        hash |= 0;
+        chr = str.charCodeAt(i)
+        hash = (hash << 5) - hash + chr
+        hash |= 0
       }
-      return hash;
+      return hash
     },
 
     normaliseHex: function(hex) {
       if (hex[0] == '#') {
-        hex = hex.substr(1);
+        hex = hex.substr(1)
       }
       if (hex.length == 3) {
-        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
       }
-      return hex;
+      return hex
     },
 
     // used to get text colors if not set
     getContrast: function(hex) {
-      hex = this.normaliseHex(hex);
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-      const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-      return yiq >= 128 ? '#000' : '#fff';
+      hex = this.normaliseHex(hex)
+      const r = parseInt(hex.substr(0, 2), 16)
+      const g = parseInt(hex.substr(2, 2), 16)
+      const b = parseInt(hex.substr(4, 2), 16)
+      const yiq = (r * 299 + g * 587 + b * 114) / 1000
+      return yiq >= 128 ? '#000' : '#fff'
     },
 
     // used to change color on highlight
@@ -107,7 +107,7 @@ import "./styles/main.scss"
         amt = 38,
         R = (num >> 16) + amt,
         B = ((num >> 8) & 0x00ff) + amt,
-        G = (num & 0x0000ff) + amt;
+        G = (num & 0x0000ff) + amt
         return '#' + (
         0x1000000 +
         (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
@@ -115,13 +115,13 @@ import "./styles/main.scss"
         (G < 255 ? (G < 1 ? 0 : G) : 255)
       )
         .toString(16)
-        .slice(1);
+        .slice(1)
     },
 
     isMobile: function() {
       return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
-      );
+      )
     },
 
     isPlainObject: function(obj) {
@@ -130,26 +130,26 @@ import "./styles/main.scss"
     },
 
     traverseDOMPath: function(elem, className) {
-      if (!elem || !elem.parentNode) return null;
-      if (elem.classList.contains(className)) return elem;
+      if (!elem || !elem.parentNode) return null
+      if (elem.classList.contains(className)) return elem
 
-      return this.traverseDOMPath(elem.parentNode, className);
+      return this.traverseDOMPath(elem.parentNode, className)
     }
-  };
+  }
 
   // valid cookie values
   cc.status = {
     deny   : 'deny',
     allow  : 'allow',
     dismiss: 'dismiss'
-  };
+  }
   cc.category = {
     uncategorized  : 'dismiss',
     essential      : 'allow',
     personalization: 'dismiss',
     analytics      : 'dismiss',
     marketing      : 'dismiss'
-  };
+  }
 
   /**
    * Checks if a status is in the constants list
@@ -162,30 +162,30 @@ import "./styles/main.scss"
 
   // detects the `transitionend` event name
   cc.transitionEnd = (function() {
-    const el = document.createElement('div');
+    const el = document.createElement('div')
     const trans = {
       t: 'transitionend',
       OT: 'oTransitionEnd',
       msT: 'MSTransitionEnd',
       MozT: 'transitionend',
       WebkitT: 'webkitTransitionEnd'
-    };
+    }
 
     for (let prefix in trans) {
       if (
         trans.hasOwnProperty(prefix) &&
         typeof el.style[prefix + 'ransition'] != 'undefined'
       ) {
-        return trans[prefix];
+        return trans[prefix]
       }
     }
-    return '';
-  })();
+    return ''
+  })()
 
-  cc.hasTransition = !!cc.transitionEnd;
+  cc.hasTransition = !!cc.transitionEnd
 
   // contains references to the custom <style> tags
-  cc.customStyles = {};
+  cc.customStyles = {}
 
   cc.Popup = (function() {
     const defaultOptions = {
@@ -232,7 +232,7 @@ import "./styles/main.scss"
         deny: 'Decline',
         link: 'Learn more',
         href: 'https://www.cookiesandyou.com',
-        close: '&#x274c;',
+        close: '&#x274c',
         target: '_blank',
         policy: 'Cookie Policy'
       },
@@ -243,7 +243,7 @@ import "./styles/main.scss"
       //  - ARIA rules suggest to ensure controls are tabbable (so the browser can find the first control),
       //    and to set the focus to the first interactive control (https://w3c.github.io/using-aria/)
       elements: {
-        header: '<span class="cc-header">{{header}}</span>&nbsp;',
+        header: '<span class="cc-header">{{header}}</span>&nbsp',
         message:
           '<span id="cookieconsent:desc" class="cc-message">{{message}}</span>',
         messagelink:
@@ -392,6 +392,9 @@ import "./styles/main.scss"
       // set value as click anything on the page, excluding the `ignoreClicksFrom` below (if we click on the revoke button etc)
       dismissOnLinkClick: false,
 
+      // set value as keys are pressed, ( allowKeyCode = 13, denyKeyCode = 27 )
+      dismissOnKeyPress: false,
+
       // If `dismissOnWindowClick` is true, we can click on 'revoke' and we'll still dismiss the banner, so we need exceptions.
       // should be an array of class names (not CSS selectors)
       ignoreClicksFrom: ['cc-revoke', 'cc-btn', 'cc-link'], // already includes the revoke button and the banner itself
@@ -403,8 +406,8 @@ import "./styles/main.scss"
       // By default the created HTML is automatically appended to the container (which defaults to <body>). You can prevent this behaviour
       // by setting this to false, but if you do, you must attach the `element` yourself, which is a public property of the popup instance:
       //
-      //     const instance = cookieconsent.factory(options);
-      //     document.body.appendChild(instance.element);
+      //     const instance = cookieconsent.factory(options)
+      //     document.body.appendChild(instance.element)
       //
       autoAttach: true,
 	  
@@ -421,15 +424,15 @@ import "./styles/main.scss"
       // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
       // handlers. You can use other pre-existing classes too. See `src/styles` folder.
       overrideHTML: null
-    };
+    }
 
     function CookiePopup() {
-      this.initialize.apply(this, arguments);
+      this.initialize.apply(this, arguments)
     }
 
     CookiePopup.prototype.initialize = function(options) {
       if (this.options) {
-        this.destroy(); // already rendered
+        this.destroy() // already rendered
       }
 
       // set options back to default options
@@ -443,26 +446,26 @@ import "./styles/main.scss"
       // returns true if `onComplete` was called
       if (checkCallbackHooks.call(this)) {
         // user has already answered
-        this.options.enabled = false;
+        this.options.enabled = false
       }
 
       // apply blacklist / whitelist
       if (this.options.blacklistPage.includes(location.pathname)) {
-        this.options.enabled = false;
+        this.options.enabled = false
       }
       if (this.options.whitelistPage.includes(location.pathname)) {
-        this.options.enabled = true;
+        this.options.enabled = true
       }
 
       // the full markup either contains the wrapper or it does not (for multiple instances)
       let cookiePopup = this.options.window
         .replace('{{classes}}', getPopupClasses.call(this).join(' '))
-        .replace('{{children}}', getPopupInnerMarkup.call(this));
+        .replace('{{children}}', getPopupInnerMarkup.call(this))
 
       // if user passes html, use it instead
-      const customHTML = this.options.overrideHTML;
+      const customHTML = this.options.overrideHTML
       if (typeof customHTML == 'string' && customHTML.length ) {
-        cookiePopup = customHTML;
+        cookiePopup = customHTML
       }
 
       // if static, we need to grow the element from 0 height so it doesn't jump the page
@@ -472,128 +475,128 @@ import "./styles/main.scss"
         const wrapper = appendMarkup.call(
           this,
           '<div class="cc-grower">' + cookiePopup + '</div>'
-        );
+        )
 
-        wrapper.style.display = ''; // set it to visible (because appendMarkup hides it)
-        this.element = wrapper.firstChild; // get the `element` reference from the wrapper
-        this.element.style.display = 'none';
-        this.element.classList.add('cc-invisible');
+        wrapper.style.display = '' // set it to visible (because appendMarkup hides it)
+        this.element = wrapper.firstChild // get the `element` reference from the wrapper
+        this.element.style.display = 'none'
+        this.element.classList.add('cc-invisible')
       } else {
-        this.element = appendMarkup.call(this, cookiePopup);
+        this.element = appendMarkup.call(this, cookiePopup)
       }
 
-      applyAutoDismiss.call(this);
+      applyAutoDismiss.call(this)
 
-      applyRevokeButton.call(this);
+      applyRevokeButton.call(this)
 
       if (this.options.autoOpen) {
-        this.autoOpen();
+        this.autoOpen()
       }
-    };
+    }
 
     CookiePopup.prototype.destroy = function() {
       if (this.onButtonClick && this.element) {
-        this.element.removeEventListener('click', this.onButtonClick);
-        this.onButtonClick = null;
+        this.element.removeEventListener('click', this.onButtonClick)
+        this.onButtonClick = null
       }
 
       if (this.dismissTimeout) {
-        clearTimeout(this.dismissTimeout);
-        this.dismissTimeout = null;
+        clearTimeout(this.dismissTimeout)
+        this.dismissTimeout = null
       }
 
       if (this.onWindowScroll) {
-        window.removeEventListener('scroll', this.onWindowScroll);
-        this.onWindowScroll = null;
+        window.removeEventListener('scroll', this.onWindowScroll)
+        this.onWindowScroll = null
       }
 
       if (this.onWindowClick) {
-        window.removeEventListener('click', this.onWindowClick);
-        this.onWindowClick = null;
+        window.removeEventListener('click', this.onWindowClick)
+        this.onWindowClick = null
       }
 
       if (this.onLinkClick) {
-        window.removeEventListener('click', this.onLinkClick);
-        this.onLinkClick = null;
+        window.removeEventListener('click', this.onLinkClick)
+        this.onLinkClick = null
       }
 
       if (this.onMouseMove) {
-        window.removeEventListener('mousemove', this.onMouseMove);
-        this.onMouseMove = null;
+        window.removeEventListener('mousemove', this.onMouseMove)
+        this.onMouseMove = null
       }
 
       if (this.element && this.element.parentNode) {
-        this.element.parentNode.removeChild(this.element);
+        this.element.parentNode.removeChild(this.element)
       }
-      this.element = null;
+      this.element = null
 
       if (this.revokeBtn && this.revokeBtn.parentNode) {
-        this.revokeBtn.parentNode.removeChild(this.revokeBtn);
+        this.revokeBtn.parentNode.removeChild(this.revokeBtn)
       }
-      this.revokeBtn = null;
+      this.revokeBtn = null
 
-      removeCustomStyle(this.options.palette);
-      this.options = null;
-    };
+      removeCustomStyle(this.options.palette)
+      this.options = null
+    }
 
     CookiePopup.prototype.open = function(callback) {
-      if (!this.element) return;
+      if (!this.element) return
 
       if (!this.isOpen()) {
         if (cc.hasTransition) {
-          this.fadeIn();
+          this.fadeIn()
         } else {
-          this.element.style.display = '';
+          this.element.style.display = ''
         }
 
         if (this.options.revokable) {
-          this.toggleRevokeButton();
+          this.toggleRevokeButton()
         }
-        this.options.onPopupOpen.call(this);
+        this.options.onPopupOpen.call(this)
       }
 
-      return this;
-    };
+      return this
+    }
 
     CookiePopup.prototype.close = function(showRevoke) {
-      if (!this.element) return;
+      if (!this.element) return
 
       if (this.isOpen()) {
         if (cc.hasTransition) {
-          this.fadeOut();
+          this.fadeOut()
         } else {
-          this.element.style.display = 'none';
+          this.element.style.display = 'none'
         }
 
         if (showRevoke && this.options.revokable) {
-          this.toggleRevokeButton(true);
+          this.toggleRevokeButton(true)
         }
-        this.options.onPopupClose.call(this);
+        this.options.onPopupClose.call(this)
       }
 
-      return this;
-    };
+      return this
+    }
 
     CookiePopup.prototype.fadeIn = function() {
-      const el = this.element;
+      const el = this.element
 
-      if (!cc.hasTransition || !el) return;
+      if (!cc.hasTransition || !el) return
 
       // This should always be called AFTER fadeOut (which is governed by the 'transitionend' event).
       // 'transitionend' isn't all that reliable, so, if we try and fadeIn before 'transitionend' has
       // has a chance to run, then we run it ourselves
       if (this.afterTransition) {
-        afterFadeOut.call(this, el);
+        afterFadeOut.call(this, el)
       }
 
       if (el.classList.contains('cc-invisible')) {
-        el.style.display = '';
+        el.style.display = ''
 
         if (this.options.static) {
-          this.element.parentNode.style.maxHeight = this.element.clientHeight + 'px';
+          this.element.parentNode.style.maxHeight = this.element.clientHeight + 'px'
         }
 
-        const fadeInTimeout = 20; // (ms) DO NOT MAKE THIS VALUE SMALLER. See below
+        const fadeInTimeout = 20 // (ms) DO NOT MAKE THIS VALUE SMALLER. See below
 
         // Although most browsers can handle values less than 20ms, it should remain above this value.
         // This is because we are waiting for a "browser redraw" before we remove the 'cc-invisible' class.
@@ -603,54 +606,54 @@ import "./styles/main.scss"
         this.openingTimeout = setTimeout(
           afterFadeIn.bind(this, el),
           fadeInTimeout
-        );
+        )
       }
-    };
+    }
 
     CookiePopup.prototype.fadeOut = function() {
-      const el = this.element;
+      const el = this.element
 
-      if (!cc.hasTransition || !el) return;
+      if (!cc.hasTransition || !el) return
 
       if (this.openingTimeout) {
-        clearTimeout(this.openingTimeout);
-        afterFadeIn.bind(this, el);
+        clearTimeout(this.openingTimeout)
+        afterFadeIn.bind(this, el)
       }
 
       if (!el.classList.contains('cc-invisible')) {
         if (this.options.static) {
-          this.element.parentNode.style.maxHeight = '';
+          this.element.parentNode.style.maxHeight = ''
         }
 
-        this.afterTransition = afterFadeOut.bind(this, el);
-        el.addEventListener(cc.transitionEnd, this.afterTransition);
+        this.afterTransition = afterFadeOut.bind(this, el)
+        el.addEventListener(cc.transitionEnd, this.afterTransition)
 
-        el.classList.add('cc-invisible');
+        el.classList.add('cc-invisible')
       }
-    };
+    }
 
     CookiePopup.prototype.isOpen = function() {
       return (
         this.element &&
         this.element.style.display == '' &&
         (cc.hasTransition ? !this.element.classList.contains('cc-invisible') : true)
-      );
-    };
+      )
+    }
 
     CookiePopup.prototype.toggleRevokeButton = function(show) {
-      if (this.revokeBtn) this.revokeBtn.style.display = show ? '' : 'none';
-    };
+      if (this.revokeBtn) this.revokeBtn.style.display = show ? '' : 'none'
+    }
 
     CookiePopup.prototype.revokeChoice = function(preventOpen) {
-      this.options.enabled = true;
-      this.clearStatuses();
+      this.options.enabled = true
+      this.clearStatuses()
 
-      this.options.onRevokeChoice.call(this);
+      this.options.onRevokeChoice.call(this)
 
       if (!preventOpen) {
-        this.autoOpen();
+        this.autoOpen()
       }
-    };
+    }
 
     /**
      * Has the user responded to the banner
@@ -658,7 +661,7 @@ import "./styles/main.scss"
      */
     CookiePopup.prototype.hasAnswered = function() {
       return this.getStatuses().some( status => !!status )
-    };
+    }
 
     /**
      * Indicates if the user has given consent to all of the categories
@@ -666,17 +669,17 @@ import "./styles/main.scss"
      */
     CookiePopup.prototype.hasConsented = function() {
       return this.getStatuses().map( status => status === cc.status.allow || status === cc.status.dismiss )
-    };
+    }
 
     // opens the popup if no answer has been given
     CookiePopup.prototype.autoOpen = function(options) {
       const hasAnswered = this.hasAnswered()
       if (!hasAnswered && this.options.enabled) {
-        this.open();
+        this.open()
       } else if (hasAnswered && this.options.revokable) {
-        this.toggleRevokeButton(true);
+        this.toggleRevokeButton(true)
       }
-    };
+    }
 
     /** 
      * Set's cookie statuses
@@ -719,22 +722,22 @@ import "./styles/main.scss"
      */
     CookiePopup.prototype.getStatuses = function() {
       return Object.keys(cc.category).map( categoryName => util.getCookie(this.options.cookie.name+'_'+categoryName) )
-    };
+    }
 
     /**
      * Clear all cookie categoies statuses
      */
     CookiePopup.prototype.clearStatuses = function() {
-      const { name, domain, path } = this.options.cookie;
+      const { name, domain, path } = this.options.cookie
       Object.keys(cc.category).forEach( categoryName => {
         util.setCookie(name+'_'+categoryName, '', -1, domain, path)
       })
-    };
+    }
 
     // This needs to be called after 'fadeIn'. This is the code that actually causes the fadeIn to work
-    // There is a good reason why it's called in a timeout. Read 'fadeIn';
+    // There is a good reason why it's called in a timeout. Read 'fadeIn'
     function afterFadeIn(el) {
-      this.openingTimeout = null;
+      this.openingTimeout = null
       el.classList.remove('cc-invisible')
     }
 
@@ -742,23 +745,23 @@ import "./styles/main.scss"
     // set the display to 'none' (so there aren't annoying invisible popups all over the page). If for whenever reason this function
     // is not called (lack of support), the open/close mechanism will still work.
     function afterFadeOut(el) {
-      el.style.display = 'none'; // after close and before open, the display should be none
-      el.removeEventListener(cc.transitionEnd, this.afterTransition);
-      this.afterTransition = null;
+      el.style.display = 'none' // after close and before open, the display should be none
+      el.removeEventListener(cc.transitionEnd, this.afterTransition)
+      this.afterTransition = null
     }
 
     // this function calls the `onComplete` hook and returns true (if needed) and returns false otherwise
     function checkCallbackHooks() {
-      const complete = this.options.onInitialize.bind(this);
+      const complete = this.options.onInitialize.bind(this)
 
       if (!window.navigator.cookieEnabled) {
-        complete(cc.status.deny);
-        return true;
+        complete(cc.status.deny)
+        return true
       }
 
       if (window.CookiesOK || window.navigator.CookiesOK) {
-        complete(cc.status.allow);
-        return true;
+        complete(cc.status.allow)
+        return true
       }
 
       const categories = Object.keys(cc.category)
@@ -768,7 +771,7 @@ import "./styles/main.scss"
       statusesValues.forEach( ( status, index ) => cc.category[ categories[ index ] ] = status ? status : cc.category[ categories[ index ] ] )
       complete( hasMatches ? statusesValues.map( ( status, index ) => ( { [categories[index]]: status } ) )  : undefined )
 
-      return hasMatches;
+      return hasMatches
     }
 
     // top, bottom, left, right
@@ -777,105 +780,105 @@ import "./styles/main.scss"
     }
 
     function getPopupClasses() {
-      const opts = this.options;
+      const opts = this.options
       let positionStyle =
         opts.position == 'top' || opts.position == 'bottom'
           ? 'banner'
-          : 'floating';
+          : 'floating'
 
       if (util.isMobile() && opts.mobileForceFloat) {
-        positionStyle = 'floating';
+        positionStyle = 'floating'
       }
 
       const classes = [
         'cc-' + positionStyle, // floating or banner
         'cc-type-' + opts.type, // add the compliance type
         'cc-theme-' + opts.theme, // add the theme
-      ];
+      ]
 
       if (opts.static) {
-        classes.push('cc-static');
+        classes.push('cc-static')
       }
 
-      classes.push.apply(classes, getPositionClasses.call(this));
+      classes.push.apply(classes, getPositionClasses.call(this))
 
       // we only add extra styles if `palette` has been set to a valid value
-      attachCustomPalette.call(this, this.options.palette);
+      attachCustomPalette.call(this, this.options.palette)
 
       // if we override the palette, add the class that enables this
       if (this.customStyleSelector) {
-        classes.push(this.customStyleSelector);
+        classes.push(this.customStyleSelector)
       }
 
-      return classes;
+      return classes
     }
 
     function getPopupInnerMarkup() {
-      const interpolated = {};
-      const opts = this.options;
+      const interpolated = {}
+      const opts = this.options
 
       // removes link if showLink is false
       if (!opts.showLink) {
-        opts.elements.link = ''; 
-        opts.elements.messagelink = opts.elements.message;
+        opts.elements.link = '' 
+        opts.elements.messagelink = opts.elements.message
       }
 
       Object.keys(opts.elements).forEach( prop => {
         interpolated[prop] = util.interpolateString(
           opts.elements[prop],
           name => {
-            const str = opts.content[name];
-            return name && typeof str == 'string' && str.length ? str : '';
+            const str = opts.content[name]
+            return name && typeof str == 'string' && str.length ? str : ''
           }
-        );
-      });
+        )
+      })
 
       // checks if the type is valid and defaults to info if it's not
-      let complianceType = opts.compliance[opts.type];
+      let complianceType = opts.compliance[opts.type]
       if (!complianceType) {
-        complianceType = opts.compliance.info;
+        complianceType = opts.compliance.info
       }
 
       // build the compliance types from the already interpolated `elements`
       interpolated.compliance = util.interpolateString(complianceType, function(
         name
       ) {
-        return interpolated[name];
-      });
+        return interpolated[name]
+      })
 
       // checks if the layout is valid and defaults to basic if it's not
-      let layout = opts.layouts[opts.layout];
+      let layout = opts.layouts[opts.layout]
       if (!layout) {
-        layout = opts.layouts.basic;
+        layout = opts.layouts.basic
       }
 
       return util.interpolateString(layout, function(match) {
-        return interpolated[match];
-      });
+        return interpolated[match]
+      })
     }
 
     function appendMarkup(markup) {
-      const opts = this.options;
-      const div = document.createElement('div');
+      const opts = this.options
+      const div = document.createElement('div')
       const cont =
         opts.container && opts.container.nodeType === 1
           ? opts.container
-          : document.body;
+          : document.body
 
-      div.innerHTML = markup;
+      div.innerHTML = markup
 
-      const el = div.children[0];
+      const el = div.children[0]
 
-      el.style.display = 'none';
+      el.style.display = 'none'
 
       if (el.classList.contains('cc-window') && cc.hasTransition) {
-        el.classList.add('cc-invisible');
+        el.classList.add('cc-invisible')
       }
 
       // save ref to the function handle so we can unbind it later
-      this.onButtonClick = handleButtonClick.bind(this);
+      this.onButtonClick = handleButtonClick.bind(this)
 
-      el.addEventListener('click', this.onButtonClick);
+      el.addEventListener('click', this.onButtonClick)
       el.querySelectorAll( '.cc-btn [type="checkbox"]' ).forEach( checkbox => {
         checkbox.addEventListener( 'change', () => {
           cc.category[ checkbox.name ] = checkbox.checked ? 'allow' : 'deny'
@@ -895,21 +898,21 @@ import "./styles/main.scss"
       if (opts.autoAttach) {
         try {
           if (!cont.firstChild) {
-            cont.appendChild(el);
+            cont.appendChild(el)
           } else {
             cont.insertBefore(el, cont.firstChild);
           }
         } catch ( error ) {
-          throw new Error( "No container to attach too. Make sure the DOM has loaded. Is your script loaded just before the `</body>` tag." )
+          throw new Error( "No container to attach too. Make sure the DOM has loaded. Is your script loaded just before the `</body>` tag?" )
         }
       }
 
-      return el;
+      return el
     }
 
     function handleButtonClick(event) {
       // returns the parent element with the specified class, or the original element - null if not found
-      const btn = util.traverseDOMPath(event.target, 'cc-btn') || event.target;
+      const btn = util.traverseDOMPath(event.target, 'cc-btn') || event.target
       
       if (btn.classList.contains( 'cc-btn' ) && btn.classList.contains( 'cc-save' )){
         this.setStatuses()
@@ -918,43 +921,43 @@ import "./styles/main.scss"
       if (btn.classList.contains( 'cc-btn' )) {
         const matches = btn.className.match(
           new RegExp('\\bcc-(' + Object.keys(cc.status).map(str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') ).join('|') + ')\\b')
-        );
-        const match = (matches && matches[1]) || false;
+        )
+        const match = (matches && matches[1]) || false
         if (match) {
-          this.setStatuses(match);
-          this.close(true);
+          this.setStatuses(match)
+          this.close(true)
         }
       }
       if (btn.classList.contains( 'cc-close' )) {
-        this.setStatuses(cc.status.dismiss);
-        this.close(true);
+        this.setStatuses(cc.status.dismiss)
+        this.close(true)
       }
       if (btn.classList.contains( 'cc-revoke' )) {
-        this.revokeChoice();
+        this.revokeChoice()
       }
     }
 
     // I might change this function to use inline styles. I originally chose a stylesheet because I could select many elements with a
     // single rule (something that happened a lot), the apps has changed slightly now though, so inline styles might be more applicable.
     function attachCustomPalette(palette) {
-      const hash = util.hash(JSON.stringify(palette));
-      const selector = 'cc-color-override-' + hash;
-      const isValid = util.isPlainObject(palette);
+      const hash = util.hash(JSON.stringify(palette))
+      const selector = 'cc-color-override-' + hash
+      const isValid = util.isPlainObject(palette)
 
-      this.customStyleSelector = isValid ? selector : null;
+      this.customStyleSelector = isValid ? selector : null
 
       if (isValid) {
-        addCustomStyle(hash, palette, '.' + selector);
+        addCustomStyle(hash, palette, '.' + selector)
       }
-      return isValid;
+      return isValid
     }
 
     function addCustomStyle(hash, palette, prefix) {
       // only add this if a style like it doesn't exist
       if (cc.customStyles[hash]) {
         // custom style already exists, so increment the reference count
-        ++cc.customStyles[hash].references;
-        return;
+        ++cc.customStyles[hash].references
+        return
       }
 
       const colorStyles = {}
@@ -965,8 +968,8 @@ import "./styles/main.scss"
         // assumes popup.background is set
         popup.text = popup.text
           ? popup.text
-          : util.getContrast(popup.background);
-        popup.link = popup.link ? popup.link : popup.text;
+          : util.getContrast(popup.background)
+        popup.link = popup.link ? popup.link : popup.text
         colorStyles[prefix + ' .cc-tooltip, ' + prefix + ' .cc-tooltip:after'] = [
           'color: ' + popup.text,
           'background-color: ' + popup.background
@@ -974,11 +977,11 @@ import "./styles/main.scss"
         colorStyles[prefix + '.cc-window'] = [
           'color: ' + popup.text,
           'background-color: ' + popup.background
-        ];
+        ]
         colorStyles[prefix + '.cc-revoke'] = [
           'color: ' + popup.text,
           'background-color: ' + popup.background
-        ];
+        ]
         colorStyles[
           prefix +
             ' .cc-link,' +
@@ -986,22 +989,22 @@ import "./styles/main.scss"
             ' .cc-link:active,' +
             prefix +
             ' .cc-link:visited'
-        ] = ['color: ' + popup.link];
+        ] = ['color: ' + popup.link]
 
         if (button) {
           // assumes button.background is set
           button.text = button.text
             ? button.text
-            : util.getContrast(button.background);
-          button.border = button.border ? button.border : 'transparent';
+            : util.getContrast(button.background)
+          button.border = button.border ? button.border : 'transparent'
           colorStyles[prefix + ' .cc-btn'] = [
             'color: ' + button.text,
             'border-color: ' + button.border,
             'background-color: ' + button.background
-          ];
+          ]
 
           if (button.padding) {
-            colorStyles[prefix + ' .cc-btn'].push('padding: ' + button.padding);
+            colorStyles[prefix + ' .cc-btn'].push('padding: ' + button.padding)
           }
 
           if (button.background != 'transparent') {
@@ -1010,27 +1013,27 @@ import "./styles/main.scss"
             ] = [
               'background-color: ' +
                 (button.hover || getHoverColour(button.background))
-            ];
+            ]
           }
 
           if (highlight) {
             //assumes highlight.background is set
             highlight.text = highlight.text
               ? highlight.text
-              : util.getContrast(highlight.background);
+              : util.getContrast(highlight.background)
             highlight.border = highlight.border
               ? highlight.border
-              : 'transparent';
+              : 'transparent'
             colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = [
               'color: ' + highlight.text,
               'border-color: ' + highlight.border,
               'background-color: ' + highlight.background
-            ];
+            ]
           } else {
             // sets highlight text color to popup text. background and border are transparent by default.
             colorStyles[prefix + ' .cc-highlight .cc-btn:first-child'] = [
               'color: ' + popup.text
-            ];
+            ]
           }
         }
 
@@ -1039,50 +1042,50 @@ import "./styles/main.scss"
             'color: ' + saveButton.text,
             'border-color: ' + saveButton.border,
             'background-color: ' + saveButton.background
-          ];
+          ]
         }
       }
 
       // this will be interpretted as CSS. the key is the selector, and each array element is a rule
-      const style = document.createElement('style');
-      document.head.appendChild(style);
+      const style = document.createElement('style')
+      document.head.appendChild(style)
 
       // custom style doesn't exist, so we create it
       cc.customStyles[hash] = {
         references: 1,
         element: style.sheet
-      };
+      }
 
-      let ruleIndex = -1;
+      let ruleIndex = -1
       for (let prop in colorStyles) {
         if (colorStyles.hasOwnProperty(prop)) {
           style.sheet.insertRule(
-            prop + '{' + colorStyles[prop].join(';') + '}',
+            prop + '{' + colorStyles[prop].join('') + '}',
             ++ruleIndex
-          );
+          )
         }
       }
     }
 
     function getHoverColour(hex) {
-      hex = util.normaliseHex(hex);
+      hex = util.normaliseHex(hex)
       // for black buttons
       if (hex == '000000') {
-        return '#222';
+        return '#222'
       }
-      return util.getLuminance(hex);
+      return util.getLuminance(hex)
     }
 
     function removeCustomStyle(palette) {
       if (util.isPlainObject(palette)) {
-        const hash = util.hash(JSON.stringify(palette));
-        const customStyle = cc.customStyles[hash];
+        const hash = util.hash(JSON.stringify(palette))
+        const customStyle = cc.customStyles[hash]
         if (customStyle && !--customStyle.references) {
-          const styleNode = customStyle.element.ownerNode;
+          const styleNode = customStyle.element.ownerNode
           if (styleNode && styleNode.parentNode) {
-            styleNode.parentNode.removeChild(styleNode);
+            styleNode.parentNode.removeChild(styleNode)
           }
-          cc.customStyles[hash] = null;
+          cc.customStyles[hash] = null
         }
       }
     }
@@ -1103,14 +1106,15 @@ import "./styles/main.scss"
     }
 
     function applyAutoDismiss() {
-      const setStatuses = this.setStatuses.bind(this);
-      const close = this.close.bind(this);
+      const setStatuses = this.setStatuses.bind(this)
+      const close = this.close.bind(this)
       const {
         enabled,
         dismissOnTimeout  : delay,
         dismissOnScroll   :scrollRange,
         dismissOnLinkClick,
         dismissOnWindowClick,
+        dismissOnKeyPress,
 
       } = this.options
 
@@ -1160,23 +1164,35 @@ import "./styles/main.scss"
             }
           }
           window.addEventListener('click', this.onLinkClick)
+        } else if ( dismissOnKeyPress ) {
+            this.onKeyPress = event => {
+              const { keyCode } = event
+              if ( keyCode === 13 ) {
+                setStatuses( cc.status.allow )
+                close( true )
+              } else if ( keyCode === 27) {
+                setStatuses( cc.status.dismiss )
+                close( true )
+              }
+            }
+            window.addEventListener( 'onkeypress', this.onKeyPress )
         }
       }
     }
 
     function applyRevokeButton() {
       // revokable is true if advanced compliance is selected
-      if (this.options.type != 'info') this.options.revokable = true;
+      if (this.options.type != 'info') this.options.revokable = true
       // animateRevokable false for mobile devices
-      if (util.isMobile()) this.options.animateRevokable = false;
+      if (util.isMobile()) this.options.animateRevokable = false
 
       if (this.options.revokable) {
-        const classes = getPositionClasses.call(this);
+        const classes = getPositionClasses.call(this)
         if (this.options.animateRevokable) {
-          classes.push('cc-animate');
+          classes.push('cc-animate')
         }
         if (this.customStyleSelector) {
-          classes.push(this.customStyleSelector);
+          classes.push(this.customStyleSelector)
         }
         if (this.options.theme) {
           classes.push('cc-theme-'+this.options.theme)
@@ -1184,16 +1200,16 @@ import "./styles/main.scss"
 
         const revokeBtn = this.options.revokeBtn
           .replace('{{classes}}', classes.join(' '))
-          .replace('{{policy}}', this.options.content.policy);
+          .replace('{{policy}}', this.options.content.policy)
 
-        this.revokeBtn = appendMarkup.call(this, revokeBtn);
+        this.revokeBtn = appendMarkup.call(this, revokeBtn)
 
-        const btn = this.revokeBtn;
+        const btn = this.revokeBtn
         if (this.options.animateRevokable) {
           const onMouseMove = util.throttle(function(evt) {
-            let active = false;
-            const minY = 20;
-            const maxY = window.innerHeight - 20;
+            let active = false
+            const minY = 20
+            const maxY = window.innerHeight - 20
 
             if ( ( btn.classList.contains( 'cc-top' ) && evt.clientY < minY ) ||
                  ( btn.classList.contains( 'cc-bottom' ) && evt.clientY > maxY ) ) {
@@ -1205,16 +1221,16 @@ import "./styles/main.scss"
             } else if ( !active && btn.classList.contains( 'cc-active' ) ) {
                 btn.classList.remove( 'cc-active' )
             }
-          }, 200);
+          }, 200)
 
-          this.onMouseMove = onMouseMove;
-          window.addEventListener('mousemove', onMouseMove);
+          this.onMouseMove = onMouseMove
+          window.addEventListener('mousemove', onMouseMove)
         }
       }
     }
 
-    return CookiePopup;
-  })();
+    return CookiePopup
+  })()
 
   cc.Location = (function() {
     // An object containing all the location services we have already set up.
@@ -1250,7 +1266,7 @@ import "./styles/main.scss"
         // as well as defining an object, you can define a function that returns an object
 
         function () {
-          return {name: 'ipinfodb'};
+          return {name: 'ipinfodb'}
         },
 
         */
@@ -1264,17 +1280,17 @@ import "./styles/main.scss"
             headers: ['Accept: application/json'],
             callback: function(done, response) {
               try {
-                const json = JSON.parse(response);
+                const json = JSON.parse(response)
                 return json.error
                   ? toError(json)
                   : {
                       code: json.country
-                    };
+                    }
               } catch (err) {
-                return toError({error: 'Invalid response (' + err + ')'});
+                return toError({error: 'Invalid response (' + err + ')'})
               }
             }
-          };
+          }
         },
 
         // This service requires an option to define `key`. Options are proived using objects or functions
@@ -1286,17 +1302,17 @@ import "./styles/main.scss"
             isScript: true, // this is JSONP, therefore we must set it to run as a script
             callback: function(done, response) {
               try {
-                const json = JSON.parse(response);
+                const json = JSON.parse(response)
                 return json.statusCode == 'ERROR'
                   ? toError({error: json.statusMessage})
                   : {
                       code: json.countryCode
-                    };
+                    }
               } catch (err) {
-                return toError({error: 'Invalid response (' + err + ')'});
+                return toError({error: 'Invalid response (' + err + ')'})
               }
             }
-          };
+          }
         },
 
         maxmind: function() {
@@ -1312,8 +1328,8 @@ import "./styles/main.scss"
                   new Error(
                     'Unexpected response format. The downloaded script should have exported `geoip2` to the global scope'
                   )
-                );
-                return;
+                )
+                return
               }
 
               geoip2.country(
@@ -1321,23 +1337,23 @@ import "./styles/main.scss"
                   try {
                     done({
                       code: location.country.iso_code
-                    });
+                    })
                   } catch (err) {
-                    done(toError(err));
+                    done(toError(err))
                   }
                 },
                 function(err) {
-                  done(toError(err));
+                  done(toError(err))
                 }
-              );
+              )
 
               // We can't return anything, because we need to wait for the second AJAX call to return.
               // Then we can 'complete' the service by passing data or an error to the `done` callback.
             }
-          };
+          }
         }
       }
-    };
+    }
 
     function Location(options) {
       // Set up options
@@ -1347,40 +1363,40 @@ import "./styles/main.scss"
         util.deepExtend(this.options, options )
       }
 
-      this.currentServiceIndex = -1; // the index (in options) of the service we're currently using
+      this.currentServiceIndex = -1 // the index (in options) of the service we're currently using
     }
 
     Location.prototype.getNextService = function() {
-      let service;
+      let service
 
       do {
-        service = this.getServiceByIdx(++this.currentServiceIndex);
+        service = this.getServiceByIdx(++this.currentServiceIndex)
       } while (
         this.currentServiceIndex < this.options.services.length &&
         !service
-      );
+      )
 
-      return service;
-    };
+      return service
+    }
 
     Location.prototype.getServiceByIdx = function(idx) {
       // This can either be the name of a default locationService, or a function.
-      const serviceOption = this.options.services[idx];
+      const serviceOption = this.options.services[idx]
 
       // If it's a string, use one of the location services.
       if (typeof serviceOption === 'function') {
-        const dynamicOpts = serviceOption();
+        const dynamicOpts = serviceOption()
         return dynamicOpts.name ? 
           Object.assign(
             {},
             dynamicOpts,
             this.options.serviceDefinitions[ dynamicOpts.name ]( dynamicOpts )
-          ) : dynamicOpts;
+          ) : dynamicOpts
       }
 
       // If it's a string, use one of the location services.
       if (typeof serviceOption === 'string') {
-        return this.options.serviceDefinitions[serviceOption]();
+        return this.options.serviceDefinitions[serviceOption]()
       }
 
       // If it's an object, assume {name: 'ipinfo', ...otherOptions}
@@ -1388,80 +1404,80 @@ import "./styles/main.scss"
       if (util.isPlainObject(serviceOption)) {
         return this.options.serviceDefinitions[serviceOption.name](
           serviceOption
-        );
+        )
       }
 
-      return null;
-    };
+      return null
+    }
 
     // This runs the service located at index `currentServiceIndex`.
     // If the service fails, `runNextServiceOnError` will continue trying each service until all fail, or one completes successfully
     Location.prototype.locate = function(complete, error) {
-      const service = this.getNextService();
+      const service = this.getNextService()
 
       if (!service) {
-        error(new Error('No services to run'));
-        return;
+        error(new Error('No services to run'))
+        return
       }
 
-      this.callbackComplete = complete;
-      this.callbackError = error;
+      this.callbackComplete = complete
+      this.callbackError = error
 
-      this.runService(service, this.runNextServiceOnError.bind(this));
-    };
+      this.runService(service, this.runNextServiceOnError.bind(this))
+    }
 
     // Potentially adds a callback to a url for jsonp.
     Location.prototype.setupUrl = function(service) {
-      const serviceOpts = this.getCurrentServiceOpts();
+      const serviceOpts = this.getCurrentServiceOpts()
       return service.url.replace(/\{(.*?)\}/g, function(_, param) {
         if (param === 'callback') {
-          const tempName = 'callback' + Date.now();
+          const tempName = 'callback' + Date.now()
           window[tempName] = function(res) {
-            service.__JSONP_DATA = JSON.stringify(res);
-          };
-          return tempName;
+            service.__JSONP_DATA = JSON.stringify(res)
+          }
+          return tempName
         }
         if (param in serviceOpts.interpolateUrl) {
-          return serviceOpts.interpolateUrl[param];
+          return serviceOpts.interpolateUrl[param]
         }
-      });
-    };
+      })
+    }
 
     // requires a `service` object that defines at least a `url` and `callback`
     Location.prototype.runService = function(service, complete) {
       // basic check to ensure it resembles a `service`
       if (!service || !service.url || !service.callback) {
-        return;
+        return
       }
 
       // we call either `getScript` or `makeAsyncRequest` depending on the type of resource
-      const requestFunction = service.isScript ? getScript : makeAsyncRequest;
+      const requestFunction = service.isScript ? getScript : makeAsyncRequest
 
       // both functions have similar signatures so we can pass the same arguments to both
       requestFunction(
         this.setupUrl(service),
         xhr => {
           // if `!xhr`, then `getScript` function was used, so there is no response text
-          let responseText = xhr ? xhr.responseText : '';
+          let responseText = xhr ? xhr.responseText : ''
 
           // if the resource is a script, then this function is called after the script has been run.
           // if the script is JSONP, then a time defined function `callback_{Date.now}` has already
           // been called (as the JSONP callback). This callback sets the __JSONP_DATA property
           if (service.__JSONP_DATA) {
-            responseText = service.__JSONP_DATA;
-            delete service.__JSONP_DATA;
+            responseText = service.__JSONP_DATA
+            delete service.__JSONP_DATA
           }
 
           // call the service callback with the response text (so it can parse the response)
-          this.runServiceCallback.call(this, complete, service, responseText);
+          this.runServiceCallback.call(this, complete, service, responseText)
         },
         this.options.timeout,
         service.data,
         service.headers
-      );
+      )
 
       // `service.data` and `service.headers` are optional (they only count if `!service.isScript` anyway)
-    };
+    }
 
     // The service request has run (and possibly has a `responseText`) [no `responseText` if `isScript`]
     // We need to run its callback which determines if its successful or not
@@ -1476,51 +1492,51 @@ import "./styles/main.scss"
         // if `result` is a valid value, then this function shouldn't really run
         // even if it is called by `service.callback`
         if (!result) {
-          this.onServiceResult.call(this, complete, asyncResult);
+          this.onServiceResult.call(this, complete, asyncResult)
         }
-      };
+      }
 
       // the function `service.callback` will either extract a country code from `responseText` and return it (in `result`)
       // or (if it has to make additional requests) it will call a `done` callback with the country code when it is ready
-      const result = service.callback(serviceResultHandler, responseText);
+      const result = service.callback(serviceResultHandler, responseText)
 
       if (result) {
-        this.onServiceResult.call(this, complete, result);
+        this.onServiceResult.call(this, complete, result)
       }
-    };
+    }
 
     // This is called with the `result` from `service.callback` regardless of how it provided that result (sync or async).
     // `result` will be whatever is returned from `service.callback`. A service callback should provide an object with data
     Location.prototype.onServiceResult = function(complete, result) {
       // convert result to nodejs style async callback
       if (result instanceof Error || (result && result.error)) {
-        complete.call(this, result, null);
+        complete.call(this, result, null)
       } else {
-        complete.call(this, null, result);
+        complete.call(this, null, result)
       }
-    };
+    }
 
     // if `err` is set, the next service handler is called
     // if `err` is null, the `onComplete` handler is called with `data`
     Location.prototype.runNextServiceOnError = function(err, data) {
       if (err) {
-        this.logError(err);
+        this.logError(err)
 
-        const nextService = this.getNextService();
+        const nextService = this.getNextService()
 
         if (nextService) {
-          this.runService(nextService, this.runNextServiceOnError.bind(this));
+          this.runService(nextService, this.runNextServiceOnError.bind(this))
         } else {
           this.completeService.call(
             this,
             this.callbackError,
             new Error('All services failed')
-          );
+          )
         }
       } else {
-        this.completeService.call(this, this.callbackComplete, data);
+        this.completeService.call(this, this.callbackComplete, data)
       }
-    };
+    }
 
     Location.prototype.getCurrentServiceOpts = function() {
       const val = this.options.services[this.currentServiceIndex]
@@ -1534,18 +1550,18 @@ import "./styles/main.scss"
       } else {
         return {}
       }
-    };
+    }
 
     // calls the `onComplete` callback after resetting the `currentServiceIndex`
     Location.prototype.completeService = function(fn, data) {
-      this.currentServiceIndex = -1;
+      this.currentServiceIndex = -1
 
-      fn && fn(data);
-    };
+      fn && fn(data)
+    }
 
     Location.prototype.logError = function(err) {
-      const idx = this.currentServiceIndex;
-      const service = this.getServiceByIdx(idx);
+      const idx = this.currentServiceIndex
+      const service = this.getServiceByIdx(idx)
 
       console.warn(
         'The service[' +
@@ -1554,39 +1570,39 @@ import "./styles/main.scss"
           service.url +
           ') responded with the following error',
         err
-      );
-    };
+      )
+    }
 
     function getScript(url, callback, timeout) {
-      let timeoutIdx;
-      const s = document.createElement('script');
+      let timeoutIdx
+      const s = document.createElement('script')
 
-      s.type = 'text/' + (url.type || 'javascript');
-      s.src = url.src || url;
-      s.async = false;
+      s.type = 'text/' + (url.type || 'javascript')
+      s.src = url.src || url
+      s.async = false
 
       s.onreadystatechange = s.onload = function() {
         // this code handles two scenarios, whether called by onload or onreadystatechange
-        const state = s.readyState;
+        const state = s.readyState
 
-        clearTimeout(timeoutIdx);
+        clearTimeout(timeoutIdx)
 
         if (!callback.done && (!state || /loaded|complete/.test(state))) {
-          callback.done = true;
-          callback();
-          s.onreadystatechange = s.onload = null;
+          callback.done = true
+          callback()
+          s.onreadystatechange = s.onload = null
         }
-      };
+      }
 
-      document.body.appendChild(s);
+      document.body.appendChild(s)
 
       // You can't catch JSONP Errors, because it's handled by the script tag
       // one way is to use a timeout
       timeoutIdx = setTimeout(function() {
-        callback.done = true;
-        callback();
-        s.onreadystatechange = s.onload = null;
-      }, timeout);
+        callback.done = true
+        callback()
+        s.onreadystatechange = s.onload = null
+      }, timeout)
     }
 
     function makeAsyncRequest(
@@ -1598,39 +1614,39 @@ import "./styles/main.scss"
     ) {
       const xhr = new (window.XMLHttpRequest || window.ActiveXObject)(
         'MSXML2.XMLHTTP.3.0'
-      );
+      )
 
-      xhr.open(postData ? 'POST' : 'GET', url, 1);
+      xhr.open(postData ? 'POST' : 'GET', url, 1)
 
       xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
       if (Array.isArray(requestHeaders)) {
         for (let i = 0, l = requestHeaders.length; i < l; ++i) {
-          const split = requestHeaders[i].split(':', 2);
+          const split = requestHeaders[i].split(':', 2)
           xhr.setRequestHeader(
             split[0].replace(/^\s+|\s+$/g, ''),
             split[1].replace(/^\s+|\s+$/g, '')
-          );
+          )
         }
       }
 
       if (typeof onComplete == 'function') {
         xhr.onreadystatechange = function() {
           if (xhr.readyState > 3) {
-            onComplete(xhr);
+            onComplete(xhr)
           }
-        };
+        }
       }
 
-      xhr.send(postData);
+      xhr.send(postData)
     }
 
     function toError(obj) {
-      return new Error('Error [' + (obj.code || 'UNKNOWN') + ']: ' + obj.error);
+      return new Error('Error [' + (obj.code || 'UNKNOWN') + ']: ' + obj.error)
     }
 
-    return Location;
-  })();
+    return Location
+  })()
 
   cc.Law = (function() {
     const defaultOptions = {
@@ -1693,10 +1709,10 @@ import "./styles/main.scss"
       // countries that say that a person can only "consent" if the explicitly click on "I agree".
       // in these countries, consent cannot be implied via a timeout or by scrolling down the page
       explicitAction: ['HR', 'IT', 'ES', 'NO']
-    };
+    }
 
     function Law(options) {
-      this.initialize.apply(this, arguments);
+      this.initialize.apply(this, arguments)
     }
 
     Law.prototype.initialize = function(options) {
@@ -1707,86 +1723,86 @@ import "./styles/main.scss"
       if (util.isPlainObject(options)) {
         util.deepExtend(this.options, options )
       }
-    };
+    }
 
     Law.prototype.get = function(countryCode) {
       return {
         hasLaw: this.options.hasLaw.indexOf(countryCode) >= 0,
         revokable: this.options.revokable.indexOf(countryCode) >= 0,
         explicitAction: this.options.explicitAction.indexOf(countryCode) >= 0
-      };
-    };
+      }
+    }
 
     Law.prototype.applyLaw = function(options, countryCode) {
-      const country = this.get(countryCode);
+      const country = this.get(countryCode)
 
       if (!country.hasLaw) {
         // The country has no cookie law
-        options.enabled = false;
+        options.enabled = false
         if (typeof options.onNoCookieLaw === 'function') {
-          options.onNoCookieLaw(countryCode, country);
+          options.onNoCookieLaw(countryCode, country)
         }
       }
 
       if (this.options.regionalLaw) {
         if (country.revokable) {
           // We must provide an option to revoke consent at a later time
-          options.revokable = true;
+          options.revokable = true
         }
 
         if (country.explicitAction) {
           // The user must explicitly click the consent button
-          options.dismissOnScroll = false;
-          options.dismissOnTimeout = false;
+          options.dismissOnScroll = false
+          options.dismissOnTimeout = false
         }
       }
-      return options;
-    };
+      return options
+    }
 
-    return Law;
-  })();
+    return Law
+  })()
 
   // This function initializes the app by combining the use of the Popup, Locator and Law modules
   // You can string together these three modules yourself however you want, by writing a new function.
   cc.initialize = function(options, complete, error) {
-    const law = new cc.Law(options.law);
+    const law = new cc.Law(options.law)
 
-    if (!complete) complete = function() {};
-    if (!error) error = function() {};
+    if (!complete) complete = function() {}
+    if (!error) error = function() {}
 
     const answers = Object.keys(cc.category).map( category => {
       const answer = util.getCookie('cookieconsent_status_'+category)
       return isValidStatus(answer) ? { [category]: answer } : undefined
-    }).filter(obj => obj ? obj[Object.keys(obj)[0]] : false);
+    }).filter(obj => obj ? obj[Object.keys(obj)[0]] : false)
 
     // if they have already answered
     if (answers.length > 0) {
-      complete(answers);
-      return;
+      complete(answers)
+      return
     }
 
     cc.getCountryCode(
       options,
       function(result) {
         // don't need the law or location options anymore
-        delete options.law;
-        delete options.location;
+        delete options.law
+        delete options.location
 
         if (result.code) {
-          options = law.applyLaw(options, result.code);
+          options = law.applyLaw(options, result.code)
         }
 
-        complete(new cc.Popup(options));
+        complete(new cc.Popup(options))
       },
       function(err) {
         // don't need the law or location options anymore
-        delete options.law;
-        delete options.location;
+        delete options.law
+        delete options.location
 
-        error(err, new cc.Popup(options));
+        error(err, new cc.Popup(options))
       }
-    );
-  };
+    )
+  }
 
   // This function tries to find your current location. It either grabs it from a hardcoded option in
   // `options.law.countryCode`, or attempts to make a location service request. This function accepts
@@ -1796,29 +1812,29 @@ import "./styles/main.scss"
     if (options.law && options.law.countryCode) {
       complete({
         code: options.law.countryCode
-      });
-      return;
+      })
+      return
     }
     if (options.location) {
-      const locator = new cc.Location(options.location);
+      const locator = new cc.Location(options.location)
       locator.locate(function(serviceResult) {
-        complete(serviceResult || {});
-      }, error);
-      return;
+        complete(serviceResult || {})
+      }, error)
+      return
     }
-    complete({});
-  };
+    complete({})
+  }
 
   // export utils (no point in hiding them, so we may as well expose them)
-  cc.utils = util;
+  cc.utils = util
 
   // prevent this code from being run twice
-  cc.hasInitialized = true;
+  cc.hasInitialized = true
 
   if (typeof exports !== 'undefined') {
-    module.exports = cc;
+    module.exports = cc
   } else {
-    window.cookieconsent = cc;
+    window.cookieconsent = cc
   }
-  
-})(window.cookieconsent || {});
+
+})(window.cookieconsent || {})
