@@ -893,10 +893,14 @@ import "./styles/main.scss"
       })
 
       if (opts.autoAttach) {
-        if (!cont.firstChild) {
-          cont.appendChild(el);
-        } else {
-          cont.insertBefore(el, cont.firstChild);
+        try {
+          if (!cont.firstChild) {
+            cont.appendChild(el);
+          } else {
+            cont.insertBefore(el, cont.firstChild);
+          }
+        } catch ( error ) {
+          throw new Error( "No container to attach too. Make sure the DOM has loaded. Is your script loaded just before the `</body>` tag." )
         }
       }
 
