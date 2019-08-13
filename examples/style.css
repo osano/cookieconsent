@@ -61,6 +61,10 @@ p a {
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+.cc-link {
+  border-bottom: none;
+}
+
 p {
   line-height: 1.4em;
 }
