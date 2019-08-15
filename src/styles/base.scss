@@ -13,6 +13,10 @@
   flex-wrap: nowrap;
 
   /* the following are random unjustified styles - just because - should probably be removed */
+  z-index: 9998;
+}
+
+.cc-revoke {
   z-index: 9999;
 }
 

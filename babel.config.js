@@ -13,10 +13,11 @@ module.exports = {
     "@babel/plugin-proposal-object-rest-spread",
     "@babel/plugin-transform-flow-strip-types",
     "@babel/plugin-transform-runtime",
-    "transform-es2015-modules-commonjs"
+    //"transform-es2015-modules-commonjs"
   ],
   "ignore": [
     "node_modules/**/*"
   ],
-  "sourceMaps": true
+  "sourceMaps": true,
+  "sourceType": "unambiguous"
 }

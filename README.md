@@ -14,6 +14,42 @@ Cookie Consent is seen over 2 BILLION times every month and is used on millions 
 
 We welcome community contributions and actively review pull requests.
 
+## Version 4.0
+Lots of updates & some breaking changes... but they're all for the better, we promise!
+
+###Features
+
+ - Instantiation & Export
+ - Adds Categories Type - `type: "categories"`
+ - Event Based
+   - initialized
+   - error
+   - popupOpened
+   - popupClosed
+   - revokeChoice
+   - statusChanged
+
+ Example:
+ 
+ ```
+ const cc = new CookieConsent({
+ 	  //...options
+ })
+ cc.on( "initialized", ( ...args ) => {
+	  console.log( args )
+ })
+ cc.on( "error", err => {
+	  console.error( err )
+ })
+ ```
+
+ 
+###Code Updates
+ - Move to Classes
+ - Distribute Utilities
+ - Set Constants
+ - Event Emitter Added
+
 ## Version 3.1
 
 Reflects the ownership change of the Cookie Consent project. Now actively maintained by:
