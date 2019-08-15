@@ -24,13 +24,14 @@ class CookieConsent extends Base {
 
     // if they have already answered
     if (answers.length > 0) {
-      return setTimeout( () => this.emit( "initialized", answers ) )
+      setTimeout( () => this.emit( "initialized", answers ) )
     } else if ( this.options.legal && this.options.legal.countryCode ) {
-      return this.initializationComplete( { code: this.options.legal.countryCode } )
+      this.initializationComplete( { code: this.options.legal.countryCode } )
     } else if ( this.options.location ) {
-      return new Location( this.options.location ).locate( this.initializationComplete, this.initializationError )
+      new Location( this.options.location ).locate( this.initializationComplete, this.initializationError )
+    } else {
+      this.initializationComplete({})
     }
-    this.initializationComplete({})
   }
   initializationComplete( result ){
     if (result.code) {
