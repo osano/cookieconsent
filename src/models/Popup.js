@@ -272,7 +272,6 @@ export default class Popup extends Base {
       if (isValidStatus(status)) {
         const cookieName = name+'_'+categoryName
         const chosenBefore = statuses.indexOf( getCookie(cookieName) ) >= 0
-        console.log( cookieName, status, expiryDays, domain, path, secure )
         setCookie(cookieName, status, expiryDays, domain, path, secure)
         this.emit( "statusChanged", cookieName, status, chosenBefore )
       } else {
