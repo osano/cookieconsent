@@ -431,7 +431,6 @@ export default class Popup extends Base {
     el.querySelectorAll( '.cc-btn [type="checkbox"]' ).forEach( checkbox => {
       checkbox.addEventListener( 'change', () => {
         this.userCategories[ checkbox.name.toUpperCase() ] = checkbox.checked ? 'ALLOW' : 'DENY'
-        this.setStatuses()
       })
       checkbox.addEventListener( 'click', event => (event.stopPropagation()) )
     })

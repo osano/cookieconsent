@@ -7,7 +7,7 @@ export const traverseDOMPath = ( elem, className ) =>
   ? null : elem.classList.contains(className)
   ? elem : traverseDOMPath(elem.parentNode, className)
 
-export const addCustomStylesheet = (hashStr, palette, prefix) => {
+export const addCustomStylesheet = (id, palette, prefix) => {
   const colorStyles = {}
   const { popup, button, highlight, saveButton } = palette
 
