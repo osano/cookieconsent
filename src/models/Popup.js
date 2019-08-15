@@ -525,7 +525,7 @@ export default class Popup extends Base {
 
     if ( enabled ) {
       if (typeof delay == 'number' && delay >= 0) {
-        this.dismissTimeout = window.setTimeout( ()=> {
+        this.dismissTimeout = setTimeout( ()=> {
           this.setStatuses(statusDismiss)
           this.close(true)
         }, Math.floor(delay))
