@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [4.0.0] - Release Date
+
+### Added
+### Security
+- Updated all dependencies to latest stable releases
+- `npm audit`
+### Fixed
+### Code
+### Depricated
+- Callbacks: `onInitialise`, `onPopupOpen`, `onPopupClose`, `onStatusChange`, `onRevokeChoice`
+
 ## [3.1.1] - 2019-05-22
 
 ### Security

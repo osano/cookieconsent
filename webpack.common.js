@@ -3,7 +3,7 @@
 const join = require( "path" ).join
 const common = require( "./webpack.common.js" )
 const exp = Object.assign({}, common, {
-    entry: join( __dirname, 'src', 'cookieconsent.js' ),
+    entry: join( __dirname, 'src', 'index.js' ),
     module: {
       rules: [
         {

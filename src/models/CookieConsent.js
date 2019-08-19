@@ -1,19 +1,17 @@
 "use strict"
 
-import "./styles/main.scss"
+import Base from "./Base"
+import Legal from "./Legal"
+import Location from "./Location"
+import Popup from "./Popup"
 
-import Base from "./models/Base"
-import Legal from "./models/Legal"
-import Location from "./models/Location"
-import Popup from "./models/Popup"
-
-import { categories } from "./constants"
-import { getCookie, isValidStatus } from "./utils"
+import { categories } from "../constants"
+import { getCookie, isValidStatus } from "../utils"
 
 // This function initializes the app by combining the use of the Popup, Locator and Law modules
 // You can string together these three modules yourself however you want, by writing a new function.
 
-class CookieConsent extends Base {
+export default class CookieConsent extends Base {
   constructor( options ){
     super( options )
 
@@ -42,10 +40,4 @@ class CookieConsent extends Base {
   initializationError( error ) {
     setTimeout( () => this.emit( "error", error, new Popup( this.options ) ), 0 )
   }
-}
-
-if (typeof exports !== 'undefined') {
-  module.exports = CookieConsent
-} else {
-  window.CookieConsent = CookieConsent
 }

@@ -10,7 +10,7 @@ module.exports = merge(common, {
     devtool: "inline-source-map",
     output: {
       path: join( __dirname, 'src' ),
-      filename: 'cookieconsent.bundle.js'
+      filename: 'bundle.js'
     },
     // plugins: [
     //   new BundleAnalyzerPlugin()
