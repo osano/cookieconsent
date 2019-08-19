@@ -14,41 +14,50 @@ Cookie Consent is seen over 2 BILLION times every month and is used on millions 
 
 We welcome community contributions and actively review pull requests.
 
+## Basic Use
+
+With version 4.0 you only need attach the script, we've bundled everything togeter. The initialization style has change as have the callback ( they're gone), please see the following for how to get started, then you can see the updated API at the above links.
+
+#### Module
+```
+import CC from "CookieConsent"
+// or
+const CC = require( "CookieConsent" )
+```
+
+#### Classic
+```
+const CC = window.CookieConsent
+```
+
+##### Initialization:
+```
+const cc = new CC({
+  //...options,
+  type   : "categories"
+})
+```
+
+##### Lifecycle hooks, are now events: 
+```
+cc.on( "initialized", ( ...args ) => console.log( args ) )
+cc.on( "error", console.error )
+cc.on( "popupOpened", () => console.log( "Popup Open" ) )
+cc.on( "popupClosed", () => console.log( "Popup Closed" ) )
+cc.on( "revokeChoice", () => console.log( "Popup Reset" ) )
+cc.on( "statusChanged", ( ...args ) => console.log( args ) )
+```
+
+
 ## Version 4.0
 Lots of updates & some breaking changes... but they're all for the better, we promise!
 
-###Features
+Now actively maintained by:
 
- - Instantiation & Export
- - Adds Categories Type - `type: "categories"`
- - Event Based
-   - initialized
-   - error
-   - popupOpened
-   - popupClosed
-   - revokeChoice
-   - statusChanged
-
- Example:
- 
- ```
- const cc = new CookieConsent({
- 	  //...options
- })
- cc.on( "initialized", ( ...args ) => {
-	  console.log( args )
- })
- cc.on( "error", err => {
-	  console.error( err )
- })
- ```
-
- 
-###Code Updates
- - Move to Classes
- - Distribute Utilities
- - Set Constants
- - Event Emitter Added
+- @arlogilbert
+- @L0key
+- @pgoforth
+- @Donsky-Osano
 
 ## Version 3.1
 

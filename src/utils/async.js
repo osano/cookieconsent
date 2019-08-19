@@ -2,33 +2,33 @@
 
 export const getScript = ( url, callback, timeout ) => {
   let timeoutIdx
-  const s = document.createElement('script')
+  const scriptTag = document.createElement('script')
 
-  s.type = 'text/' + (url.type || 'javascript')
-  s.src = url.src || url
-  s.async = false
+  scriptTag.type = 'text/' + (url.type || 'javascript')
+  scriptTag.src = url.src || url
+  scriptTag.async = false
 
-  s.onreadystatechange = s.onload = function() {
+  scriptTag.onreadystatechange = s.onload = function() {
     // this code handles two scenarios, whether called by onload or onreadystatechange
-    const state = s.readyState
+    const state = scriptTag.readyState
 
     clearTimeout(timeoutIdx)
 
     if (!callback.done && (!state || /loaded|complete/.test(state))) {
       callback.done = true
       callback()
-      s.onreadystatechange = s.onload = null
+      scriptTag.onreadystatechange = scriptTag.onload = null
     }
   }
 
-  document.body.appendChild(s)
+  document.body.appendChild(scriptTag)
 
   // You can't catch JSONP Errors, because it's handled by the script tag
   // one way is to use a timeout
   timeoutIdx = setTimeout(function() {
     callback.done = true
     callback()
-    s.onreadystatechange = s.onload = null
+    scriptTag.onreadystatechange = scriptTag.onload = null
   }, timeout)
 }
 
