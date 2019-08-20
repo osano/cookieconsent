@@ -11,27 +11,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Watches key press for allow or deny, default keys are 13 (Enter) and 27 (Esc) respectively [#571, #487]
 - Categories: 'Uncategorized', 'Essential', 'Analytics', 'Marketing', 'Personalization' `{ /*...options*/, type: "categories" }`
 - Events: 'initialized', 'error', 'popupOpened', 'popupClosed', 'revokeChoice', 'statusChanged' `cc.on( 'error', console.error.bind( console ) )`
-- Moved to Webpack 4.0: This move integrates the CSS(SCSS) into the JS so there is only one file needed from the CDN.[#558]
-- Added the link click event watcher that will dismiss the pop-up if option `dismissOnLinkClick: (false)` is set to true.[#503]
+- Moved to Webpack 4.0: This move integrates the CSS(SCSS) into the JS so there is only one file needed from the CDN [#558]
+- Added the link click event watcher that will dismiss the pop-up if option `dismissOnLinkClick: (false)` is set to true [#503]
 
 ### Security
 - Updated all dependencies to latest stable releases
 - `npm audit`
 
 ### Fixed
-- Throws appropriate message if there is no container for the popup to attach too. [#579]
-- Opt-Out changes cookie value appropriately [#560] ( we're not destroying them as they fall under the 'essential' category)
-- 'initialise' callback now 'intialized' event fires before any user actions are possible [#474]
-- Removes `event.path` from code base. [#502]
+- Throws appropriate message if there is no container for the popup to attach to [#579]
+- Opt-out changes cookie value appropriately [#560] ( we're not destroying them as they fall under the 'essential' category)
+- 'initialise' callback now 'intialized' event that fires before any user actions are possible [#474]
+- Removed `event.path` from the code base [#502]
 
 ### Refactor:
-- Started move to ES6.
-- Distribute Utilities
-- Set Constants
-- Event Emitter Added
-- Removed Utilities that have built-in JS functionality solutions
+- Started move to ES6
+- Distribute utilities
+- Set constants
+- Event emitter added
+- Removed utilities that have built-in JS functionality solutions
 
-### Depricated:
+### Deprecated:
 - Callbacks: `onInitialise`, `onPopupOpen`, `onPopupClose`, `onStatusChange`, `onRevokeChoice`
 
 ### Where can you help?

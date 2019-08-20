@@ -10,13 +10,13 @@
 
 It is designed to help you quickly comply with the EU Cookie Law. So we made it fast, free, and relatively painless.
 
-Cookie Consent is seen over 2 BILLION times every month and is used on millions of sites, making this the by far most popular consent project on the Internet.
+Cookie Consent is seen over 2 BILLION times every month and is used on millions of sites, making this by far the most popular consent project on the internet.
 
 We welcome community contributions and actively review pull requests.
 
 ## Basic Use
 
-With version 4.0 you only need attach the script, we've bundled everything togeter. The initialization style has change as have the callback ( they're gone), please see the following for how to get started, then you can see the updated API at the above links.
+With version 4.0 you only need to attach the script as we've bundled everything together now. The initialization style has changed as have the callbacks (they're gone). Please see the text below to get started.  Then, take a look at updated API via the above links.
 
 #### Module
 ```
@@ -72,7 +72,7 @@ Reflects the ownership change of the Cookie Consent project. Now actively mainta
 
 Version 3.0 is a complete rewrite from version 2. The most substantial new features are:
 
-- Ability to GeoLocate and only show the addon to people in the relevant countries
+- Ability to GeoLocate and only show the add-on to people in the relevant countries
 - Callback hooks for showing/accepting/revoking the banner
 - Support for different types of compliance, giving you the flexibility to obey even the strictest cookie laws
 - Easy no-fuss themes and customisable styles
