@@ -16,7 +16,7 @@ We welcome community contributions and actively review pull requests.
 
 ## Basic Use
 
-With version 4.0 you only need to attach the script as we've bundled everything together now. The initialization style has changed as have the callbacks (they're gone). Please see the text below to get started.  Then, take a look at updated API via the above links.
+With version 4.0 you only need to attach the script as we've bundled everything together now. The initialization style has changed as have the callbacks (they're gone). Please see the text below to get started.  Then, take a look at updated API via the [docs][dl].
 
 #### Module
 ```
