@@ -306,16 +306,7 @@ export default class Popup extends Base {
       setCookie(name+'_'+categoryName, '', -1, domain, path)
     })
   }
-
-  // This is called on 'transitionend' (only on the transition of the fadeOut). That's because after we've faded out, we need to
-  // set the display to 'none' (so there aren't annoying invisible popups all over the page). If for whenever reason this function
-  // is not called (lack of support), the open/close mechanism will still work.
-  afterFadeOut(el) {
-    el.style.display = 'none' // after close and before open, the display should be none
-    el.removeEventListener(this.transitionEnd, this.afterTransition)
-    this.afterTransition = null
-  }
-
+  
   canUseCookies() {
     if (!window.navigator.cookieEnabled || window.CookiesOK || window.navigator.CookiesOK ) {
       return true

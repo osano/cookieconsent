@@ -12,7 +12,7 @@ import { getCookie, isValidStatus } from "../utils"
 // You can string together these three modules yourself however you want, by writing a new function.
 
 export default class CookieConsent extends Base {
-  constructor( options ){
+  constructor( options = {} ){
     super( options )
 
     const answers = categories.map( category => {

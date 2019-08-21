@@ -14,12 +14,14 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/runtime": "^7.5.5",
     "autoprefixer": "^9.6.1",
+    "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "clean-webpack-plugin": "^3.0.0",
     "compression-webpack-plugin": "^3.0.0",
     "css-loader": "^3.2.0",
+    "jest": "^24.9.0",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.12.0",
     "postcss-cli": "^6.1.3",
@@ -42,12 +44,21 @@
     "minify:js": "babel ./src/cookieconsent.js | terser -c -m --config-file ./terser.config.json > ./build/cookieconsent.min.js",
     "minify:css": "node-sass ./src/styles/main.scss | postcss | node-sass --output-style compressed > ./build/cookieconsent.min.css",
     "build:release": "npm run build && bump -c -t package.json package-lock.json bower.json",
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "jest ./src --verbose"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/osano/cookieconsent.git"
   },
   "author": "Osano, Inc., a Public Benefit Corporation",
-  "license": "MIT"
+  "license": "MIT",
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__mocks__/fileMock.js",
+      "\\.(css|less|scss)$": "<rootDir>/src/__mocks__/styleMock.js"
+    },
+    "setupFiles": [
+      "<rootDir>/src/__mocks__/client.js"
+    ]
+  }
 }
