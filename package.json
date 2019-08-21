@@ -44,7 +44,7 @@
     "minify:js": "babel ./src/cookieconsent.js | terser -c -m --config-file ./terser.config.json > ./build/cookieconsent.min.js",
     "minify:css": "node-sass ./src/styles/main.scss | postcss | node-sass --output-style compressed > ./build/cookieconsent.min.css",
     "build:release": "npm run build && bump -c -t package.json package-lock.json bower.json",
-    "test": "jest ./src --verbose"
+    "test": "jest ./src --verbose --coverage && rm -rf coverage/"
   },
   "repository": {
     "type": "git",
