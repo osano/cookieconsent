@@ -13,6 +13,10 @@
   flex-wrap: nowrap;
 
   /* the following are random unjustified styles - just because - should probably be removed */
+  z-index: 9998;
+}
+
+.cc-revoke {
   z-index: 9999;
 }
 
@@ -98,7 +102,7 @@
 
   /* seeing as this contains text and not an image, the element taller than it is wide (because it is text) */
   /*  - we want it to be a square, because it's acting as an icon */
-  /*  - setting the line height normalises the height */
+  /*  - setting the line height normalizes the height */
   line-height: 0.75;
 }
 .cc-close:hover,

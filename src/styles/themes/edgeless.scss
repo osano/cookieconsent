@@ -22,3 +22,18 @@
 .cc-floating.cc-theme-edgeless .cc-btn + .cc-btn {
   margin-left: 0;
 }
+
+.cc-window.cc-theme-edgeless.cc-type-categories{
+  .cc-categories {
+    .cc-btn{
+      padding: 0.4em 0.8em;
+      padding-left: 26px;
+      &.cc-info{
+        padding: 0.4em 4px;
+      }
+    }
+    .cc-tooltip{
+      border: none;
+    }
+  }
+}

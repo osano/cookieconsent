@@ -10,9 +10,54 @@
 
 It is designed to help you quickly comply with the EU Cookie Law. So we made it fast, free, and relatively painless.
 
-Cookie Consent is seen over 2 BILLION times every month and is used on millions of sites, making this the by far most popular consent project on the Internet.
+Cookie Consent is seen over 2 BILLION times every month and is used on millions of sites, making this by far the most popular consent project on the internet.
 
 We welcome community contributions and actively review pull requests.
+
+## Basic Use
+
+With version 4.0 you only need to attach the script as we've bundled everything together now. The initialization style has changed as have the callbacks (they're gone). Please see the text below to get started.  Then, take a look at updated API via the above links.
+
+#### Module
+```
+import CC from "CookieConsent"
+// or
+const CC = require( "CookieConsent" )
+```
+
+#### Classic
+```
+const CC = window.CookieConsent
+```
+
+##### Initialization:
+```
+const cc = new CC({
+  //...options,
+  type   : "categories"
+})
+```
+
+##### Lifecycle hooks, are now events: 
+```
+cc.on( "initialized", ( ...args ) => console.log( args ) )
+cc.on( "error", console.error )
+cc.on( "popupOpened", () => console.log( "Popup Open" ) )
+cc.on( "popupClosed", () => console.log( "Popup Closed" ) )
+cc.on( "revokeChoice", () => console.log( "Popup Reset" ) )
+cc.on( "statusChanged", ( ...args ) => console.log( args ) )
+```
+
+
+## Version 4.0
+Lots of updates & some breaking changes... but they're all for the better, we promise!
+
+Now actively maintained by:
+
+- @arlogilbert
+- @L0key
+- @pgoforth
+- @Donsky-Osano
 
 ## Version 3.1
 
@@ -27,7 +72,7 @@ Reflects the ownership change of the Cookie Consent project. Now actively mainta
 
 Version 3.0 is a complete rewrite from version 2. The most substantial new features are:
 
-- Ability to GeoLocate and only show the addon to people in the relevant countries
+- Ability to GeoLocate and only show the add-on to people in the relevant countries
 - Callback hooks for showing/accepting/revoking the banner
 - Support for different types of compliance, giving you the flexibility to obey even the strictest cookie laws
 - Easy no-fuss themes and customisable styles
