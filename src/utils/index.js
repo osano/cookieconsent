@@ -37,7 +37,7 @@ export const hash = str => {
   return hashNum
 }
 import * as style from "./style"
-export const normaliseHex = style.normaliseHex
+export const normalizeHex = style.normalizeHex
 export const getContrast = style.getContrast
 export const getLuminance = style.getLuminance
 export const getHoverColor =style.getHoverColor

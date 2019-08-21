@@ -1,13 +1,13 @@
 "use strict"
 
-export const normaliseHex = hex =>
+export const normalizeHex = hex =>
   hex[0] == '#'
     ? hex.substr(1) : hex.length == 3
     ? hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2] : hex
 
 // used to get text colors if not set
 export const getContrast = hex => {
-  hex = normaliseHex(hex)
+  hex = normalizeHex(hex)
   const r = parseInt(hex.substr(0, 2), 16)
   const g = parseInt(hex.substr(2, 2), 16)
   const b = parseInt(hex.substr(4, 2), 16)
@@ -17,7 +17,7 @@ export const getContrast = hex => {
 
 // used to change color on highlight
 export const getLuminance = hex => {
-  const num = parseInt(normaliseHex(hex), 16),
+  const num = parseInt(normalizeHex(hex), 16),
     amt = 38,
     R = (num >> 16) + amt,
     B = ((num >> 8) & 0x00ff) + amt,
@@ -32,7 +32,7 @@ export const getLuminance = hex => {
     .slice(1)
 }
 export const getHoverColor = hex => {
-  hex = normaliseHex( hex )
+  hex = normalizeHex( hex )
   // for black buttons
   return hex === '000000' ? '#222' : getLuminance( hex )
 }

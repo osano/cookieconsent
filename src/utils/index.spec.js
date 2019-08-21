@@ -6,7 +6,7 @@ import {
   interpolateString,
   throttle,
   hash,
-  normaliseHex,
+  normalizeHex,
   getContrast,
   getLuminance,
   getHoverColor,
@@ -19,14 +19,14 @@ import {
   makeAsyncRequest
 } from "./"
 
-describe( "Utils::Cookie", () => {
+describe( "Utils::Index", () => {
   describe( "All exports are available" , () => {
     test( "getCookie", () => expect( getCookie ).toBeInstanceOf( Function ) )
     test( "setCookie", () => expect( setCookie ).toBeInstanceOf( Function ) )
     test( "interpolateString", () => expect( interpolateString ).toBeInstanceOf( Function ) )
     test( "throttle", () => expect( throttle ).toBeInstanceOf( Function ) )
     test( "hash", () => expect( hash ).toBeInstanceOf( Function ) )
-    test( "normaliseHex", () => expect( normaliseHex ).toBeInstanceOf( Function ) )
+    test( "normalizeHex", () => expect( normalizeHex ).toBeInstanceOf( Function ) )
     test( "getContrast", () => expect( getContrast ).toBeInstanceOf( Function ) )
     test( "getLuminance", () => expect( getLuminance ).toBeInstanceOf( Function ) )
     test( "getHoverColor", () => expect( getHoverColor ).toBeInstanceOf( Function ) )

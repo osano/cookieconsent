@@ -8,3 +8,4 @@ describe( "Plugin", () => {
     expect( new CC() ).toBeInstanceOf( CookieConsent )
   })
 })
+
