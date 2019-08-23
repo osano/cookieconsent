@@ -41,14 +41,19 @@ export default class CookieConsent extends Base {
   initializationError( error ) {
     setTimeout( () => this.emit( "error", error, new Popup( this.options ) ), 0 )
   }
+  getCountryLaws( countryCode ){
+    return new Legal(this.options.legal).get( countryCode )
+  }
   destroy(){
     if ( this.popup  ){
       this.popup.destroy()
     }
+    return this
   }
   clearStatuses(){
     if ( this.popup ) {
       this.popup.clearStatuses()
     }
+    return this
   }
 }
