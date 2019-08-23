@@ -246,7 +246,7 @@ export default class Popup extends Base {
   }
 
   // opens the popup if no answer has been given
-  autoOpen( options ) {
+  autoOpen() {
     const hasAnswered = this.hasAnswered()
     if (!hasAnswered && this.options.enabled) {
       this.open()
