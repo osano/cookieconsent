@@ -45,6 +45,9 @@ export default class CookieConsent extends Base {
   getCountryLaws( countryCode ){
     return new Legal(this.options.legal).get( countryCode )
   }
+  isOpen() {
+    return this.popup.isOpen()
+  }
   close(){
     return ( this.popup.close(), this )
   }
@@ -53,6 +56,9 @@ export default class CookieConsent extends Base {
   }
   open(){
     return ( this.popup.open(), this )
+  }
+  toggleRevokeButton( bool ) {
+    return ( this.popup.toggleRevokeButton( bool ), this )
   }
   setStatuses( status ) {
     return (this.popup.setStatuses( status ), this )

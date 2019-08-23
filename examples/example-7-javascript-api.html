@@ -56,84 +56,79 @@
     <script src="build/cookieconsent.min.js"></script>
     <script>
 
-      var h = document.getElementById('console');
+      const logingElem = document.getElementById('console');
 
-      var log = function (message) {
-        h.innerHTML += timeStamp() + message + "<br>";
-        h.scrollTop = h.scrollHeight;
+      const log = function (message) {
+        logingElem.innerHTML += timeStamp() + message + "<br>";
+        logingElem.scrollTop = logingElem.scrollHeight;
       }
 
-      var p;
-      cookieconsent.initialise({
+      const cc = new CookieConsent({
         type: 'opt-out',
         palette: {
-          "popup": { "background": "#eaf7f7", "text": "#5c7291" },
-          "button": { "background": "#56cbdb", "text": "#ffffff" },
-        },
-        onPopupOpen: function () {
-          log('<em>onPopupOpen()</em> called');
-        },
-        onPopupClose: function () {
-          log('<em>onPopupClose()</em> called');
-        },
-        onInitialise: function (status) {
-          log('<em>onInitialise()</em> called with status <em>' + status + '</em>');
-        },
-        onStatusChange: function (status) {
-          log('<em>onStatusChange()</em> called with status <em>' + status + '</em>');
-        },
-        onRevokeChoice: function () {
-          log('<em>onRevokeChoice()</em> called');
-        },
-        onNoCookieLaw: function (countryCode, country) {
-          log('<em>onNoCookieLaw()</em> called with countryCode <em>' + countryCode + '</em>');
-        },
-      }, function (popup) {
-        p = popup;
-      }, function (err) {
-        console.error(err);
-      });
+          popup: { background: "#eaf7f7", text: "#5c7291" },
+          button: { background: "#56cbdb",text: "#ffffff" }
+        }
+      })
+      cc.on( "popupOpened", function () {
+        log('<em>popupOpened</em> event fired');
+      })
+      cc.on( "popupClose", function () {
+          log('<em>popupClose</em> event fired');
+      })
+      cc.on( "initialized", function ( statuses ) {
+        log( '<em>initialized</em> event fired with statuses: ' )
+        Object.keys( statuses ).forEach( status => {
+          log('<em>' + status + ':</em> <em>' + statuses[ status ] + '</em>');
+        })
+      })
+      cc.on( "statusChanged", function ( cookieName, status, chosenBefore ) {
+        log('<em>statusChanged</em> event fired with status <em>' + status + '</em> for cookie <em>' + cookieName + '</em>');
+      })
+      cc.on( "revokeChoice", function () {
+        log('<em>revokeChoice()</em> event fired')
+      })
+      cc.on( "error", console.error )
 
-      document.getElementById('btn-dismissCookie').onclick = function (e) {
-        log("Calling <em>setStatus(cookieconsent.status.dismiss)</em>");
-        p.setStatus(cookieconsent.status.dismiss);
+      document.getElementById('btn-dismissCookie').onclick = function () {
+        log("Calling <em>setStatuses(CookieConsent.DISMISS)</em>");
+        cc.setStatuses(CookieConsent.DISMISS);
         log("Calling <em>close()</em>");
-        p.close();
+        cc.close();
       };
 
-      document.getElementById('btn-allowCookie').onclick = function (e) {
-        log("Calling <em>setStatus(cookieconsent.status.allow)</em>");
-        p.setStatus(cookieconsent.status.allow);
+      document.getElementById('btn-allowCookie').onclick = function () {
+        log("Calling <em>setStatuses(CookieConsent.ALLOW)</em>");
+        cc.setStatuses(CookieConsent.ALLOW);
         log("Calling <em>close()</em>");
-        p.close();
+        cc.close();
       };
 
-      document.getElementById('btn-denyCookie').onclick = function (e) {
-        log("Calling <em>setStatus(cookieconsent.status.deny)</em>");
-        p.setStatus(cookieconsent.status.deny);
+      document.getElementById('btn-denyCookie').onclick = function () {
+        log("Calling <em>setStatuses(CookieConsent.DISMISS)</em>");
+        cc.setStatuses(CookieConsent.DISMISS);
         log("Calling <em>close()</em>");
-        p.close();
+        cc.close();
       };
 
-      document.getElementById('btn-revokeChoice').onclick = function (e) {
+      document.getElementById('btn-revokeChoice').onclick = function () {
         log("Calling <em>revokeChoice()</em>");
-        p.revokeChoice();
-
+        cc.revokeChoice();
       };
 
-      document.getElementById('btn-open').onclick = function (e) {
+      document.getElementById('btn-open').onclick = function () {
         log("Calling <em>open()</em>");
-        p.open();
+        cc.open();
       };
 
-      document.getElementById('btn-close').onclick = function (e) {
+      document.getElementById('btn-close').onclick = function () {
         log("Calling <em>close()</em>");
-        p.close();
+        cc.close();
       };
 
-      document.getElementById('btn-destroy').onclick = function (e) {
+      document.getElementById('btn-destroy').onclick = function () {
         log("Calling <em>destroy()</em>");
-        p.destroy();
+        cc.destroy();
         log("<span class='alert'>Cookie Consent has been destroyed and cannot be used again. Reload the page.</span>");
       };
 

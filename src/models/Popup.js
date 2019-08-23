@@ -119,9 +119,9 @@ export default class Popup extends Base {
     return this
   }
 
-  close(showRevoke) {
+  close( showRevoke ) {
     if (!this.element) return
-
+    
     if (this.isOpen()) {
       if (this.hasTransition) {
         this.fadeOut()
@@ -209,7 +209,7 @@ export default class Popup extends Base {
   isOpen() {
     return (
       this.element &&
-      this.element.style.display == '' &&
+      this.element.style.display === '' &&
       (this.hasTransition ? !this.element.classList.contains('cc-invisible') : true)
     )
   }
@@ -625,6 +625,7 @@ export default class Popup extends Base {
     }
   }
   destroy(){
+    console.warn( "Destroying...")
     if ( this.element ){
       this.element.remove()
     }

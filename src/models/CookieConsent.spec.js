@@ -10,19 +10,25 @@ const isCookieConsent = cc => (
   expect( cc ).toHaveProperty( "initializationComplete" ),
   expect( cc ).toHaveProperty( "initializationError" ),
   expect( cc ).toHaveProperty( "getCountryLaws" ),
-  expect( cc ).toHaveProperty( "destroy" ),
-  expect( cc ).toHaveProperty( "clearStatuses" )
+  expect( cc ).toHaveProperty( "close" ),
+  expect( cc ).toHaveProperty( "revokeChoice" ),
+  expect( cc ).toHaveProperty( "isOpen" ),
+  expect( cc ).toHaveProperty( "open" ),
+  expect( cc ).toHaveProperty( "toggleRevokeButton" ),
+  expect( cc ).toHaveProperty( "setStatuses" ),
+  expect( cc ).toHaveProperty( "clearStatuses" ),
+  expect( cc ).toHaveProperty( "destroy" )
 )
 
 describe( "CookieConsent Class", () => {
+  describe( "has constants for statuses", () => {
+    test( "DENY", () => expect( CookieConsent.DENY ).toEqual( "DENY" ) )
+    test( "ALLOW", () => expect( CookieConsent.ALLOW ).toEqual( "ALLOW" ) )
+    test( "DISMISS", () => expect( CookieConsent.DISMISS ).toEqual( "DISMISS" ) )
+  })
   describe( "as default" , () => {
     const cc = new CookieConsent()
     test("instantiates", () => isCookieConsent( cc ) )
-    describe( "has constants for statuses", () => {
-      test( "DENY", () => expect( CookieConsent.DENY ).toEqual( "DENY" ) )
-      test( "ALLOW", () => expect( CookieConsent.ALLOW ).toEqual( "ALLOW" ) )
-      test( "DISMISS", () => expect( CookieConsent.DISMISS ).toEqual( "DISMISS" ) )
-    })
   })
   describe( "with custom type", () => {
     const type = "categories"

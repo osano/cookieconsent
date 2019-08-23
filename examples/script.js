@@ -1,62 +1,39 @@
 window['cookieconsent_example_util'] = {
   // Fill a select element with options (html can be configured using `cb`)
   fillSelect: function(select, options, selected, cb) {
-    var html = '';
     if (typeof cb != 'function') {
       cb = this.getSimpleOption;
     }
-    for (var prop in options) {
-      html += cb(options[prop], prop, prop == selected);
-    }
-    select.innerHTML = html;
+    select.innerHTML = Object.keys( options ).reduce( function ( str, key ) {
+      return str + cb(options[key], key, key == selected);
+    }, '');
   },
 
   getSimpleOption: function(label, value, selected) {
-    return (
-      '<option ' +
-      (selected ? 'selected="selected"' : '') +
-      ' value="' +
-      value +
-      '">' +
-      label +
-      '</option>'
-    );
+    return '<option '+(selected ? 'selected="selected"' : '')+' value="'+value+'">'+label+'</option>'
   },
 
   tabularObject: function(obj, formatVal, formatKey) {
-    var html = '<ul>';
-    var defaultFn = function() {
-      return arguments[0];
-    };
+    if (typeof formatKey !== 'function') formatKey = function (){ return arguments[0] };
+    if (typeof formatVal !== 'function') formatVal = function (){ return arguments[0] };
 
-    if (typeof formatKey != 'function') formatKey = defaultFn;
-    if (typeof formatVal != 'function') formatVal = defaultFn;
-
-    for (var prop in obj) {
-      html +=
-        '<li><em>' +
-        formatKey(prop, obj[prop]) +
-        '</em> ' +
-        formatVal(obj[prop], prop) +
-        '</li>';
-    }
-    return html + '</ul>';
+    return Object.keys( obj ).reduce( function (str, key) {
+      return str += '<li><em>'+formatKey(key, obj[key])+'</em> '+formatVal(obj[key], key)+'</li>'
+    }, '<ul>' ) + '</ul>';
   },
 
   initialisePopupSelector: function(options) {
-    var examples = Object.keys(options.popups);
-    var itemOpen = '<li><span>';
-    var itemClose = '</span></li>';
-    var instances = [];
+    const itemOpen = '<li><span>';
+    const itemClose = '</span></li>';
+    const instances = [];
 
     options.selector.innerHTML =
       itemOpen +
       Object.keys(options.popups).join(itemClose + itemOpen) +
       itemClose;
 
-    options.selector.onclick = function(e) {
-      var targ = e.target,
-        item;
+    options.selector.onclick = function ( event ) {
+      let targ = event.target;
 
       // if the target is the container, exit
       if (targ.isEqualNode(options.selector)) return;
@@ -70,58 +47,46 @@ window['cookieconsent_example_util'] = {
       if (!targ.parentNode.isEqualNode(options.selector)) return;
 
       // from this point, 'targ' will be a direct decendant of opts.selector
-      var idx = Array.prototype.indexOf.call(options.selector.children, targ);
+      const index = Array.from(options.selector.children).indexOf(targ);
 
-      if (idx >= 0 && instances[idx]) {
-        instances[idx].clearStatus();
+      if (index >= 0 && instances[index]) {
+        instances[index].clearStatuses();
 
         // We could remember the popup that's currently open, but it gets complicated when we consider
         // the revoke button. Therefore, simply close them all regardless
-        instances.forEach(function(popup) {
-          if (popup.isOpen()) {
-            popup.close();
+        instances.forEach(function(instance) {
+          if (instance.isOpen()) {
+            instance.close();
           }
-          popup.toggleRevokeButton(false);
+          instance.toggleRevokeButton(false);
         });
 
-        instances[idx].open();
+        instances[index].open();
       }
     };
 
-    for (var i = 0, l = examples.length; i < l; ++i) {
-      options.popups[examples[i]].onPopupOpen = (function(options) {
-        return function() {
-          var codediv = document.getElementById('options');
-          if (codediv) {
-            codediv.innerHTML = JSON.stringify(options, null, 2);
-          }
-        };
-      })(options.popups[examples[i]]);
-
-      var myOpts = options.popups[examples[i]];
-
+    Object.keys( options.popups ).forEach( function ( example, index ) {
+      const myOpts = options.popups[example];
       myOpts.autoOpen = false;
 
-      options.cookieconsent.initialise(
-        myOpts,
-        function(idx, popup) {
-          instances[idx] = popup;
-        }.bind(null, i),
-        function(idx, err, popup) {
-          instances[idx] = popup;
-          console.error(err);
-        }.bind(null, i)
-      );
-    }
+      instances[ index ] = new options.cookieconsent( myOpts )
+      instances[ index ].on( "popupOpened", function () {
+        const codediv = document.getElementById('options');
+        if (codediv) {
+          codediv.innerHTML = JSON.stringify(options, null, 2);
+        }
+      })
+      instances[ index ].on( "error", console.error );
+    })
 
     return instances;
   }
 };
 
 function timeStamp() {
-  var now = new Date();
-  var time = [now.getHours(), now.getMinutes(), now.getSeconds()];
-  for (var i = 1; i < 3; i++) {
+  const now = new Date();
+  const time = [now.getHours(), now.getMinutes(), now.getSeconds()];
+  for (let i = 1; i < 3; i++) {
     if (time[i] < 10) {
       time[i] = '0' + time[i];
     }

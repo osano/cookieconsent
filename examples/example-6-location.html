@@ -52,7 +52,7 @@
     <script src="build/cookieconsent.min.js"></script>
     <script>
 
-      var COUNTRY_CODES = {
+      const COUNTRY_CODES = {
         // Representative group of countries with key differences
         'US': 'United States',
         'UK': 'United Kingdom',
@@ -188,7 +188,6 @@
         'NR': 'Nauru',
         'NP': 'Nepal',
         'NL': 'Netherlands',
-        'NZ': 'New Zealand',
         'NI': 'Nicaragua',
         'NE': 'Niger',
         'NG': 'Nigeria',
@@ -257,79 +256,48 @@
         'ZM': 'Zambia',
         'ZW': 'Zimbabwe'
       };
-
-      (function (C, U) {
-
-        var popupInst;
-        var $loc = document.getElementById('location');
-
-        U.fillSelect($loc, COUNTRY_CODES, COUNTRY_CODES['AC']);
-
-        $loc.onchange = function () {
-          var code = $loc.selectedIndex >= 0 ?
-            $loc[$loc.selectedIndex].value : undefined;
-
-          if (!code)
-            return;
-
-          draw(code);
-        };
-
-        draw($loc[0].value);
-
-        $loc.focus();
-
-        function draw(code) {
-          var options = getOptions(code);
-
-          if (popupInst) {
-            popupInst.clearStatus();
-            popupInst.destroy();
-            popupInst = null;
-          }
-
-          cookieconsent.initialise(options, function (popup) {
-            popupInst = popup;
-            popupInst.autoOpen();
-          }, function (err) {
-            console.error(err)
-          });
-
-          // show country options on screen (so user knows how this country affected the settings)
-          document.getElementById('message').innerHTML = getCountryDetails(code);
+      let ccInstance;
+      const draw = function( countryCode ) {
+        const options = {
+          type: 'info',
+          regionalLaw: true,
+          palette: {
+            popup: { "background": "#343c66", "text": "#cfcfe8" },
+            button: { "background": "#f71559" }
+          },
+          // takes the "preferred" options and changes them slightly to match the country's law
+          legal: { countryCode }
         }
 
-        function getOptions(code) {
-          return {
-            type: 'info',
-            regionalLaw: true,
-            palette: {
-              "popup": { "background": "#343c66", "text": "#cfcfe8" },
-              "button": { "background": "#f71559" }
-            },
-            law: {
-              // takes the "preferred" options and changes them slightly to match the country's law
-              countryCode: code,
-            }
-          }
+        if ( ccInstance instanceof CookieConsent ) {
+          ccInstance.clearStatuses().destroy();
         }
 
-        function getCountryDetails(code) {
-          // We only get these to show (on screen) how the country behaves
-          var law = new cookieconsent.Law({});
-          var countryOpts = law.get(code);
+        ccInstance = new CookieConsent( options );
+        ccInstance
+          .on( "initialized", function ( popup ) { popup.autoOpen() } )
+          .on( "error", console.error );
+        
+        const countryOpts = ccInstance.getCountryLaws(countryCode);
 
-          if (!countryOpts.hasLaw) {
-            return 'Has cookie law? no';
-          }
+        // show country options on screen (so user knows how this country affected the settings)
+        document.getElementById('message').innerHTML = !countryOpts.hasLaw
+          ? 'Has cookie law? no'
+          : cookieconsent_example_util.tabularObject({
+              'Has cookie law?': 'yes',
+              'Choice has to be revokable?': countryOpts.revokable ? 'yes' : 'no',
+              'Can be automatically dismissed?': countryOpts.explicitAction ? 'no' : 'yes',
+            })
+      };
 
-          return U.tabularObject({
-            'Has cookie law?': 'yes',
-            'Choice has to be revokable?': countryOpts.revokable ? 'yes' : 'no',
-            'Can be automatically dismissed?': countryOpts.explicitAction ? 'no' : 'yes',
-          });
+      const locationElement = document.getElementById('location');
+      cookieconsent_example_util.fillSelect(locationElement, COUNTRY_CODES, COUNTRY_CODES['AC']);
+      locationElement.onchange = function () {
+        if ( locationElement.selectedIndex >= 0 ) {
+          draw( locationElement[locationElement.selectedIndex].value );
         }
-
-      }(window.cookieconsent, window.cookieconsent_example_util));
+      };
+      draw(locationElement[0].value);
+      locationElement.focus();
 
     </script>
