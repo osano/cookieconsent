@@ -18,6 +18,11 @@ describe( "CookieConsent Class", () => {
   describe( "as default" , () => {
     const cc = new CookieConsent()
     test("instantiates", () => isCookieConsent( cc ) )
+    describe( "has constants for statuses", () => {
+      test( "DENY", () => expect( CookieConsent.DENY ).toEqual( "DENY" ) )
+      test( "ALLOW", () => expect( CookieConsent.ALLOW ).toEqual( "ALLOW" ) )
+      test( "DISMISS", () => expect( CookieConsent.DISMISS ).toEqual( "DISMISS" ) )
+    })
   })
   describe( "with custom type", () => {
     const type = "categories"

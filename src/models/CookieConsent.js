@@ -5,7 +5,7 @@ import Legal from "./Legal"
 import Location from "./Location"
 import Popup from "./Popup"
 
-import { categories } from "../constants"
+import { statuses, categories } from "../constants"
 import { getCookie, isValidStatus } from "../utils"
 
 // This function initializes the app by combining the use of the Popup, Locator and Law modules
@@ -16,7 +16,8 @@ export default class CookieConsent extends Base {
     super( options )
 
     const answers = categories.map( category => {
-      const answer = getCookie('cookieconsent_status_'+category)
+      const cookieName = this.options.cookie && this.options.cookie.name ? this.options.cookie.name : 'cookieconsent_status_'
+      const answer = getCookie( cookieName + category )
       return isValidStatus(answer) ? { [category]: answer } : undefined
     }).filter(obj => obj ? obj[Object.keys(obj)[0]] : false)
 
@@ -44,16 +45,29 @@ export default class CookieConsent extends Base {
   getCountryLaws( countryCode ){
     return new Legal(this.options.legal).get( countryCode )
   }
-  destroy(){
-    if ( this.popup  ){
-      this.popup.destroy()
-    }
-    return this
+  close(){
+    return ( this.popup.close(), this )
+  }
+  revokeChoice() {
+    return ( this.popup.revokeChoice(), this )
+  }
+  open(){
+    return ( this.popup.open(), this )
+  }
+  setStatuses( status ) {
+    return (this.popup.setStatuses( status ), this )
   }
   clearStatuses(){
-    if ( this.popup ) {
-      this.popup.clearStatuses()
-    }
-    return this
+    return ( this.popup.clearStatuses(), this )
+  }
+  destroy(){
+    return ( this.popup.destroy(), this )
   }
 }
+statuses.reduce( ( obj, status ) =>
+( Object.defineProperty( CookieConsent, status, {
+  get: function () { return status },
+  enumerable: false,
+  writeable: false,
+  configurable: false
+}), obj ), CookieConsent )
