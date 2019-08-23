@@ -8,7 +8,9 @@ const isCookieConsent = cc => (
   expect( cc ).toBeInstanceOf( Base ),
   expect( cc ).toBeInstanceOf( CookieConsent ),
   expect( cc ).toHaveProperty( "initializationComplete" ),
-  expect( cc ).toHaveProperty( "initializationError" )
+  expect( cc ).toHaveProperty( "initializationError" ),
+  expect( cc ).toHaveProperty( "destroy" ),
+  expect( cc ).toHaveProperty( "clearStatuses" )
 )
 
 describe( "CookieConsent Class", () => {

@@ -1,6 +1,6 @@
 {
   "name": "cookieconsent",
-  "version": "3.1.1",
+  "version": "4.0.0",
   "description": "Osano cookie consent tool.",
   "main": "build/cookieconsent.min.js",
   "devDependencies": {

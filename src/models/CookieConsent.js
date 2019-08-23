@@ -35,9 +35,20 @@ export default class CookieConsent extends Base {
     if (result.code) {
       this.options = new Legal(this.options.legal).applyLaw( this.options, result.code )
     }
-    setTimeout( () => this.emit("initialized", new Popup( this.options ) ), 0 )
+    this.popup = new Popup( this.options )
+    setTimeout( () => this.emit("initialized", this.popup ), 0 )
   }
   initializationError( error ) {
     setTimeout( () => this.emit( "error", error, new Popup( this.options ) ), 0 )
+  }
+  destroy(){
+    if ( this.popup  ){
+      this.popup.destroy()
+    }
+  }
+  clearStatuses(){
+    if ( this.popup ) {
+      this.popup.clearStatuses()
+    }
   }
 }

@@ -624,4 +624,25 @@ export default class Popup extends Base {
       }
     }
   }
+  destroy(){
+    if ( this.element ){
+      this.element.remove()
+    }
+    if ( this.revokeBtn ){
+      this.revokeBtn.remove()
+    }
+    if ( this.onWindowScroll ){
+      window.removeEventListener('scroll', this.onWindowScroll )
+    }
+    if ( this.onWindowClick ) {
+      window.removeEventListener('click', this.onWindowClick )
+      window.removeEventListener('touchend', this.onWindowClick)
+    }
+    if ( this.onLinkClick ) {
+      window.removeEventListener('click', this.onLinkClick)
+    }
+    if ( this.onKeyPress ) {
+      window.addEventListener( 'onkeypress', this.onKeyPress )
+    }
+  }
 }
