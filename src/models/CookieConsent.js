@@ -70,9 +70,11 @@ export default class CookieConsent extends Base {
     return ( this.popup.destroy(), this )
   }
 }
+
 statuses.reduce( ( obj, status ) =>
 ( Object.defineProperty( CookieConsent, status, {
   get: function () { return status },
+  set: function () {},
   enumerable: false,
   writeable: false,
   configurable: false
