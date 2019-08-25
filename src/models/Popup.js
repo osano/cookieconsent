@@ -593,7 +593,7 @@ export default class Popup extends Base {
       if (this.options.theme) {
         classes.push('cc-theme-'+this.options.theme)
       }
-
+      console.log( this.options.content.policy )
       const revokeBtn = this.options.revokeBtn
         .replace('{{classes}}', classes.join(' '))
         .replace('{{policy}}', this.options.content.policy)

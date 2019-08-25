@@ -1,6 +1,6 @@
 "use strict"
 
-const Base = require( "./Base" ).default
+import Base from "./Base"
 
 describe( "Base Class", () => {
   test( "instantiates", () => {

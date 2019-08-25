@@ -54,3 +54,23 @@ export const isMobile = validation.isMobile
 import * as asyncFns from "./async"
 export const getScript = asyncFns.getScript
 export const makeAsyncRequest = asyncFns.makeAsyncRequest
+
+const loopProperties = overwrites => (obj, [key, value]) => {
+  if ( value instanceof Object && !(value instanceof Array) ) {
+    if ( overwrites[ key ] instanceof Object && !(overwrites[ key ] instanceof Array)) {
+      obj[ key ] = Object.entries(value).reduce(loopProperties(overwrites[key]), {})
+    } else {
+      obj[ key ] = value
+    }
+  } else {
+    if ( overwrites.hasOwnProperty( key ) ) {
+      obj[ key ] = overwrites[ key ]
+    }else {
+      obj[ key ] = value 
+    }
+  }
+  return obj
+}
+
+export const mergeOptions = ( defaults, overwrites ) =>
+  Object.entries(defaults).reduce(loopProperties(overwrites), {})

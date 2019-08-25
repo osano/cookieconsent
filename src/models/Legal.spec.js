@@ -1,8 +1,8 @@
 "use strict"
 
-const Legal = require( "./Legal" ).default
-const Base = require( "./Base" ).default
-const defaultOptions = require( "../options/legal" ).default
+import Legal from "./Legal"
+import Base from "./Base"
+import defaultOptions from "../options/legal"
 
 const isLegal = legal => (
   expect( legal ).toBeInstanceOf( Object ),
@@ -14,7 +14,7 @@ const isLegal = legal => (
 )
 const hasCorrectOptions = ( legal, expectedes ) => (
   Object.entries( expectedes ).forEach( ( [ key, value ] ) => {
-    test( "`" + key + "`", () => expect( legal.options[ key ] ).toBe( value ) )
+    test( "`" + key + "`", () => expect( legal.options[ key ] ).toEqual( value ) )
   })
 )
 

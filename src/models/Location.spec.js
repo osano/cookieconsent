@@ -1,8 +1,9 @@
 "use strict"
 
-const Location = require( "./Location" ).default
-const Base = require( "./Base" ).default
-const defaultOptions = require( "../options/location" ).default
+import Location from "./Location"
+import Base from "./Base"
+import defaultOptions from "../options/location"
+import { mergeOptions } from "../utils"
 
 const isLocation = location => (
   expect( location ).toBeInstanceOf( Object ),
@@ -23,7 +24,7 @@ const isLocation = location => (
 )
 const hasCorrectOptions = ( location, expectedes ) => (
   Object.entries( expectedes ).forEach( ( [ key, value ] ) => {
-    test( "`" + key + "`", () => expect( location.options[ key ] ).toBe( value ) )
+    test( "`" + key + "`", () => expect( location.options[ key ] ).toStrictEqual( value ) )
   })
 )
 
@@ -35,12 +36,11 @@ describe( "Location Class", () => {
   })
   describe( "with custom options", () => {
     const options = {
-      ...defaultOptions,
       timeout: 3000,
       services: [ 'ipinfo2' ]
     }
     const location = new Location( options )
     test("instantiates", () => isLocation( location ) )
-    describe( "has the correct options", () => hasCorrectOptions( location, options ) )
+    describe( "has the correct options", () => hasCorrectOptions( location, mergeOptions( defaultOptions, options ) ) )
   })
 })

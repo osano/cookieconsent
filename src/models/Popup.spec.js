@@ -1,9 +1,10 @@
 "use strict"
 
 import Popup from "./Popup"
-const Base = require( "./Base" ).default
-const defaultOptions = require( "../options/popup" ).default
-const categories = require( "../constants" ).categories
+import Base from "./Base"
+import defaultOptions from "../options/popup"
+import { categories } from "../constants"
+import { mergeOptions } from "../utils"
 
 const isPopup = popup => (
   expect( popup ).toBeInstanceOf( Object ),
@@ -37,25 +38,23 @@ const isPopup = popup => (
   expect( popup.options ).toBeInstanceOf( Object ),
   expect( popup.userCategories ).toBeInstanceOf( Object ),
   expect( popup.customStyles ).toBeInstanceOf( Object ),
-  expect( Object.keys( popup.userCategories ) ).toEqual( categories )
+  expect( Object.keys( popup.userCategories ) ).toStrictEqual( categories )
 )
-const hasCorrectOptions = ( popup, expectedes ) => (
-  Object.entries( expectedes ).forEach( ( [ key, value ] ) => {
-    test( "`" + key + "`", () => expect( popup.options[ key ] ).toBe( value ) )
+const hasCorrectOptions = ( popup, expecteds ) => (
+  Object.entries( expecteds ).forEach( ( [ key, value ] ) => {
+    test( "`" + key + "`", () => expect( popup.options[ key ] ).toStrictEqual( value ) )
   })
 )
 
 describe( "Popup Class", () => {
   describe( "as default" , () => {
     const popup = new Popup()
-    console.log( "HAS TRANSITION: ", popup.hasTransition )
     test("instantiates", () => isPopup( popup ) )
     describe( "has the correct options", () => hasCorrectOptions( popup, defaultOptions ) )
   })
   describe( "with custom options", () => {
     const options = {
-      ...defaultOptions,
-      type     : "opt-in",
+      type     : "info",
       container: document.getElementsByClassName( "className" )[ 0 ],
       cookie   : {
         name  : "test_cookie",
@@ -75,12 +74,41 @@ describe( "Popup Class", () => {
       theme    : "classic",
       palette  : {
         popup: { background: "#000000", text: "#fff", link: "#fff" }
-      },
-      revokable: true,
-      showLink : false
+      }
     }
     const popup = new Popup( options )
     test("instantiates", () => isPopup( popup ) )
-    describe( "has the correct options", () => hasCorrectOptions( popup, options ) )
+    describe( "has the correct options", () => hasCorrectOptions( popup, mergeOptions( defaultOptions, options ) ) )
   })
+  describe( "showLink options set to false", () => {
+    const options = {
+      type: "opt-in"
+    }
+    const popup = new Popup( options )
+    describe( "updates `content` options `link` and `messagelink`", () => {
+      hasCorrectOptions(
+        popup,
+        mergeOptions(
+          mergeOptions( defaultOptions, options ),
+          {
+            revokable: true
+          }
+        )
+      )
+    })
+  })
+
+  describe( "when `type` is not 'info'", () =>{
+    const options = {
+      elements : {
+        message: "<div class='test-message'>{{message}}</div>"
+      },
+      showLink : false
+    }
+    const popup = new Popup( options )
+    describe( "revokable is set to true progmatically", () => {
+
+    })
+  })
+
 })

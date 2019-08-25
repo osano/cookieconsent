@@ -1,7 +1,7 @@
 "use strict"
 
-const CookieConsent = require( "./CookieConsent" ).default
-const Base = require( "./Base" ).default
+import CookieConsent from "./CookieConsent"
+import Base from "./Base"
 
 const isCookieConsent = cc => (
   expect( cc ).toBeInstanceOf( Object ),

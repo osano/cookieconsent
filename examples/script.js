@@ -50,7 +50,6 @@ window['cookieconsent_example_util'] = {
       const index = Array.from(options.selector.children).indexOf(targ);
 
       if (index >= 0 && instances[index]) {
-        console.log( index, instances[index] )
         instances[index].clearStatuses();
 
         // We could remember the popup that's currently open, but it gets complicated when we consider
