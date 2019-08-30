@@ -27,7 +27,7 @@ export default class CookieConsent extends Base {
     } else if ( this.options.legal && this.options.legal.countryCode ) {
       this.initializationComplete( { code: this.options.legal.countryCode } )
     } else if ( this.options.location ) {
-      new Location( this.options.location ).locate( this.initializationComplete, this.initializationError )
+      new Location( this.options.location ).locate( this.initializationComplete.bind( this ), this.initializationError.bind( this ) )
     } else {
       this.initializationComplete({})
     }

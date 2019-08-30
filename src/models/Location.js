@@ -208,7 +208,7 @@ export default class Location extends Base {
 
   logError(err) {
     console.warn(
-      `The service[${this.currentServiceIndex}] (${this.getServiceByIdx(idx).url}) responded with the following error`,
+      `The service[${this.currentServiceIndex}] (${this.getServiceByIdx(this.currentServiceIndex).url}) responded with the following error`,
        err
     )
   }
