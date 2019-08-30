@@ -32,7 +32,7 @@ export const getScript = ( url, callback, timeout ) => {
   }, timeout)
 }
 
-export const makeAsyncRequest = ( url, onComplete, timeout, postData, requestHeader ) => {
+export const makeAsyncRequest = ( url, onComplete, timeout, postData, requestHeaders ) => {
   const xhr = new (window.XMLHttpRequest || window.ActiveXObject)(
     'MSXML2.XMLHTTP.3.0'
   )
