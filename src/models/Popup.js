@@ -462,7 +462,7 @@ export default class Popup extends Base {
       )
       const match = (matches && matches[1]) || false
       if (match) {
-        this.setStatuses(match)
+        this.setStatuses(match.toUpperCase())
         this.close(true)
       }
     }
