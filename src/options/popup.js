@@ -1,5 +1,7 @@
 "use strict"
 
+import { statusDeny, statusAllow, statusDismiss, categories }  from "../constants/index.js"
+
 export default {
   // if false, this prevents the popup from showing (useful for giving to control to another piece of code)
   enabled: true,
@@ -15,7 +17,7 @@ export default {
     path: '/',
     // This is the domain that the cookie 'name' belongs to. The cookie can only be read on this domain.
     //  - Guide to cookie domains - https://www.mxsasha.eu/blog/2014/03/04/definitive-guide-to-cookie-domains/
-    domain: '',
+    domain: 'localhost',
     // The cookies expire date, specified in days (specify -1 for no expiry)
     expiryDays: 365,
     // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
@@ -48,54 +50,26 @@ export default {
     messagelink:
       '<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a></span>',
     dismiss:
-      '<a aria-label="dismiss cookie message" role=button tabindex="0" class="cc-btn cc-dismiss">{{dismiss}}</a>',
+      `<a aria-label="dismiss cookie message" role=button tabindex="0" class="cc-btn cc-${statusDismiss}">{{dismiss}}</a>`,
     allow:
-      '<a aria-label="allow cookies" role=button tabindex="0"  class="cc-btn cc-allow">{{allow}}</a>',
+      `<a aria-label="allow cookies" role=button tabindex="0"  class="cc-btn cc-${statusAllow}">{{allow}}</a>`,
     deny:
-      '<a aria-label="deny cookies" role=button tabindex="0" class="cc-btn cc-deny">{{deny}}</a>',
+      `<a aria-label="deny cookies" role=button tabindex="0" class="cc-btn cc-${statusDeny}">{{deny}}</a>`,
     link:
       '<a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a>',
     close:
       '<span aria-label="dismiss cookie message" role=button tabindex="0" class="cc-close">{{close}}</span>',
-    categories: ` 
-      <ul class="cc-categories">
-        <li class="cc-category">
-          <button class="cc-btn" tabindex="0"><input type="checkbox" name="uncategorized"/><span class="cc-btn-checkbox"></span>Uncategorized</button>
-          <button class="cc-btn cc-info" aria-label="Uncategorized Definition Button" tabindex="1">^</button>
+    categories: '<ul class="cc-categories">' +
+      categories.map( ( category, index ) =>
+        `<li class="cc-category">
+          <button class="cc-btn" tabindex="0"><input type="checkbox" name="${category}"/><span class="cc-btn-checkbox"></span>${category}</button>
+          <button class="cc-btn cc-info" aria-label="${category} Definition Button" tabindex="${index+1}">^</button>
           <div class="cc-tooltip">
-            <p>This is the category for cookies that don't fit any other category.</p>
+            <p>This is the category for cookies that don't fit the '${category.toLowerCase()}' category.</p>
           </div>
-        </li>
-        <li class="cc-category">
-          <button class="cc-btn" tabindex="2"><input type="checkbox" name="essential" checked disabled/><span class="cc-btn-checkbox"></span>Essential</button>
-          <button class="cc-btn cc-info" aria-label="Essential Definition Button" tabindex="3">^</button>
-          <div class="cc-tooltip">
-            <p>This is the category for essential application or website opperation cookies.</p>
-          </div>
-        </li>
-        <li class="cc-category">
-          <button class="cc-btn" tabindex="4"><input type="checkbox" name="personalization"/><span class="cc-btn-checkbox"></span>Personalization</button>
-          <button class="cc-btn cc-info" aria-label="Personalization Definition Button" tabindex="5">^</button>
-          <div class="cc-tooltip">
-            <p>This is the category for cookies used to help peronalize the application to a specific user.</p>
-          </div>
-        </li>
-        <li class="cc-category">
-          <button class="cc-btn" tabindex="6"><input type="checkbox" name="analytics"/><span class="cc-btn-checkbox"></span>Analytics</button>
-          <button class="cc-btn cc-info" aria-label="Analytics Definition Button" tabindex="7">^</button>
-          <div class="cc-tooltip">
-            <p>This is the category for cookies used to help analyize data.</p>
-          </div>
-        </li>
-        <li class="cc-category">
-          <button class="cc-btn" tabindex="8"><input type="checkbox" name="marketing"/><span class="cc-btn-checkbox"></span>Marketing</button>
-          <button class="cc-btn cc-info" aria-label="Marketing Definition Button" tabindex="9">^</button>
-          <div class="cc-tooltip">
-            <p>This is the category for cookies used to help peronalize your internet shopping & advertisement experiences.</p>
-          </div>
-        </li>
-      </ul>
-    `,
+        </li>`
+      ).join("")
+      + '</ul>',
     save: `<button class="cc-btn cc-save">Save</button>`
     //compliance: compliance is also an element, but it is generated by the application, depending on `type` below
   },
@@ -220,7 +194,7 @@ export default {
   blacklistPage: [],
 
   // If this is defined, then it is used as the inner html instead of layout. This allows for ultimate customisation.
-  // Be sure to use the classes `cc-btn` and `cc-allow`, `cc-deny` or `cc-dismiss`. They enable the app to register click
+  // Be sure to use the classes `cc-btn` and `cc-ALLOW`, `cc-DENY` or `cc-DISMISS`. They enable the app to register click
   // handlers. You can use other pre-existing classes too. See `src/styles` folder.
   overrideHTML: null
 }

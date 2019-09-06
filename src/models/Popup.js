@@ -265,15 +265,14 @@ export default class Popup extends Base {
    * @return { undefined }
   */
   setStatuses() {
-    const {name, expiryDays, domain, path, secure} = this.options.cookie
+    const { name, expiryDays, domain, path, secure } = this.options.cookie
 
-    // if `status` is valid
     const updateCategoryStatus = ( categoryName, status ) => {
       if (isValidStatus(status)) {
         const cookieName = name+'_'+categoryName
         const chosenBefore = statuses.indexOf( getCookie(cookieName) ) >= 0
         setCookie(cookieName, status, expiryDays, domain, path, secure)
-        this.emit( "statusChanged", cookieName, status.toUpperCase(), chosenBefore )
+        this.emit( "statusChanged", cookieName, status, chosenBefore )
       } else {
         this.clearStatuses()
       }
@@ -420,7 +419,7 @@ export default class Popup extends Base {
     el.addEventListener('click', event => this.handleButtonClick( event ) )
     el.querySelectorAll( '.cc-btn [type="checkbox"]' ).forEach( checkbox => {
       checkbox.addEventListener( 'change', () => {
-        this.userCategories[ checkbox.name.toUpperCase() ] = checkbox.checked ? 'ALLOW' : 'DENY'
+        this.userCategories[ checkbox.name ] = checkbox.checked ? 'ALLOW' : 'DENY'
       })
       checkbox.addEventListener( 'click', event => (event.stopPropagation()) )
     })
@@ -455,23 +454,27 @@ export default class Popup extends Base {
     if (btn.classList.contains( 'cc-btn' ) && btn.classList.contains( 'cc-save' )){
       this.setStatuses()
       this.close(true)
+      return
     }
     if (btn.classList.contains( 'cc-btn' )) {
       const matches = btn.className.match(
-        new RegExp('\\bcc-(' + statuses.map( str => str.toLowerCase().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') ).join('|') + ')\\b')
+        new RegExp('\\bcc-(' + statuses.map( str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') ).join('|') + ')\\b')
       )
       const match = (matches && matches[1]) || false
       if (match) {
-        this.setStatuses(match.toUpperCase())
+        this.setStatuses(match)
         this.close(true)
       }
+      return
     }
     if (btn.classList.contains( 'cc-close' )) {
       this.setStatuses(statusDismiss)
       this.close(true)
+      return
     }
     if (btn.classList.contains( 'cc-revoke' )) {
       this.revokeChoice()
+      return
     }
   }
 

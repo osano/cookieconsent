@@ -118,6 +118,7 @@
   .cc-btn {
     border-right: none;
     outline     : none;
+    text-transform: capitalize;
     input[type=checkbox]{
       float: left;
       height: 26px;
