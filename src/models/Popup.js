@@ -273,7 +273,7 @@ export default class Popup extends Base {
         const cookieName = name+'_'+categoryName
         const chosenBefore = statuses.indexOf( getCookie(cookieName) ) >= 0
         setCookie(cookieName, status, expiryDays, domain, path, secure)
-        this.emit( "statusChanged", cookieName, status, chosenBefore )
+        this.emit( "statusChanged", cookieName, status.toUpperCase(), chosenBefore )
       } else {
         this.clearStatuses()
       }
