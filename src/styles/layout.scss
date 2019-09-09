@@ -50,6 +50,7 @@
 
 .cc-window.cc-floating .cc-compliance {
   flex: 1 0 auto;
+  -ms-flex: 1 0 auto;
 }
 
 /**************************************** BANNER ****************************************/
@@ -72,6 +73,7 @@
 .cc-banner .cc-message {
   display: block;
   flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
   max-width: 100%;
   margin-right: 1em;
 }
@@ -80,11 +82,13 @@
 
 .cc-compliance {
   display: flex;
+  display: -ms-flexbox;
   align-items: center;
   justify-content: space-between;
 }
 .cc-floating .cc-compliance > .cc-btn {
   flex: 1;
+  -ms-flex: 1;
 }
 
 .cc-btn + .cc-btn {

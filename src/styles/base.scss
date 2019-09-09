@@ -10,6 +10,7 @@
   line-height: 1.5em;
 
   display: flex;
+  display: -ms-flexbox;
   flex-wrap: nowrap;
 
   /* the following are random unjustified styles - just because - should probably be removed */
