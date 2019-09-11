@@ -167,7 +167,18 @@
       if (util.hasClass(elem, className)) return elem;
 
       return this.traverseDOMPath(elem.parentNode, className);
-    }
+    },
+	
+	getEventPath: function( event ) {
+		if( event ) {
+			if( event.path )
+				return event.path;
+		
+			if( event.composedPath )
+				return event.composedPath();
+		}
+		return [];
+	}
   };
 
   // valid cookie values
@@ -1052,7 +1063,8 @@
       if (windowClick) {
         var onWindowClick = function(evt) {
           var isIgnored = false;
-          var pathLen = evt.path.length;
+		  var evtpath = util.getEventPath( evt );
+          var pathLen = evtpath.length;
           var ignoredLen = ignoredClicks.length;
           for (var i = 0; i < pathLen; i++) {
             if (isIgnored) continue;
@@ -1060,7 +1072,7 @@
             for (var i2 = 0; i2 < ignoredLen; i2++) {
               if (isIgnored) continue;
 
-              isIgnored = util.hasClass(evt.path[i], ignoredClicks[i2]);
+              isIgnored = util.hasClass(evtpath[i], ignoredClicks[i2]);
             }
           }
 
