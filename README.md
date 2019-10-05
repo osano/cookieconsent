@@ -19,7 +19,7 @@ We welcome community contributions and actively review pull requests.
 
 Our parent company Osano actively maintains this open source project. Ensuring that your website is compliant with various laws can be complicated. To effectively use any open source consent manager, you will need to do GeoIP lookups, adjust the consent types based on visitor location, callback and save consents in a database, and create callbacks to load scripts after consent is granted.
 
-Osano offers a completely [free hosted consent management platform][cl], with additional features. If you have a high traffic website or need additional privacy tools, Osano offers paid plans as well. Unless you specifically need the open source tool, most website owners will be better served by the hosted version.
+Osano offers a completely [free hosted consent management platform][cl], with additional features. If you have a high traffic website or need additional privacy tools, Osano offers paid plans as well. Unless you specifically need the open source tool, most website owners will be better served by the hosted version. If you use Osano for your business, please support us by purchasing a <a href="https://www.osano.com/plans?utm_campaign=Open%20Source%20Cookie%20Consent&utm_source=github">paid plan</a>.
 
 The hosted version of the cookie consent manager provides additional capabilities such as:
 
