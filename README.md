@@ -8,7 +8,7 @@
 
 [Cookie Consent][cl] is a lightweight JavaScript plugin for alerting users about the use of cookies on your website.
 
-It is designed to help you quickly comply with the EU Cookie Law. So we made it fast, free, and relatively painless.
+It is designed to help you quickly comply with the EU Cookie Law, CCPA, GDPR and other privacy laws. We made it fast, free, and relatively painless.
 
 Cookie Consent is seen over 2 BILLION times every month and is used on millions of sites, making this by far the most popular consent project on the internet.
 
