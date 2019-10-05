@@ -2,7 +2,7 @@
 [![MIT License][li]][ll]
 [![Twitter][ti]][tl]
 
-<p align="center"><a href="https://cookieconsent.osano.com"><img width="460" src="images/cookie-consent.png"></a></p>
+<p align="center"><a href="https://www.osano.com/features/consent-management?utm_campaign=Open%20Source%20Cookie%20Consent&utm_source=github"><img width="460" src="images/cookie-consent.png"></a></p>
 
 ## What is Cookie Consent?
 
@@ -13,6 +13,19 @@ It is designed to help you quickly comply with the EU Cookie Law. So we made it 
 Cookie Consent is seen over 2 BILLION times every month and is used on millions of sites, making this by far the most popular consent project on the internet.
 
 We welcome community contributions and actively review pull requests.
+
+
+## Hosted Zero Config Consent
+
+Our parent company Osano actively maintains this open source project. Ensuring that your website is compliant with various laws can be complicated. To effectively use any open source consent manager, you will need to do GeoIP lookups, adjust the consent types based on visitor location, callback and save consents in a database, and create callbacks to load scripts after consent is granted.
+
+Osano offers a completely [free hosted consent management platform][cl], with additional features. If you have a high traffic website or need additional privacy tools, Osano offers paid plans as well. Unless you specifically need the open source tool, most website owners will be better served by the hosted version.
+
+The hosted version of the cookie consent manager provides additional capabilities such as:
+
+* Multi-lingual, translated into 38 languages and growing. Visitors automatically see the dialog in their browser or OS preferred language.
+* Consents are stored automatically on the blockchain
+* Scripts blocking and unblocking does not require callbacks but is instead configurable from a dashboard providing developers with control over what the marketing team can enable or disable.
 
 ## Basic Use
 
@@ -131,20 +144,6 @@ or
 yarn run build
 ```
 
-## Credits
-
-Cookie Consent v3
-
-- Alex Morley-Finch (@alexmorleyfinch) - JavaScript
-- Piiu Pilt - JavaScript
-- Oliver Emberton (@oliveremberton) - a couple of lines of CSS, maybe
-
-Cookie Consent v2
-
-- David Ball (@drball) - CSS / themes
-- Adam Hutchinson (@adjohu) - JavaScript
-
-
 ## Export Control
 
 This distribution includes cryptographic software. The country in which you
@@ -169,7 +168,7 @@ source code.
 [bl]: https://travis-ci.org/osano/cookieconsent
 [bi]: https://travis-ci.org/osano/cookieconsent.svg?branch=master
 [dl]: https://cookieconsent.osano.com/documentation/
-[dll]: https://cookieconsent.osano.com/download/
-[cl]: https://cookieconsent.osano.com
+[dll]: https://www.osano.com/features/consent-management?utm_campaign=Open%20Source%20Cookie%20Consent&utm_source=github
+[cl]: https://www.osano.com/features/consent-management?utm_campaign=Open%20Source%20Cookie%20Consent&utm_source=github
 [ti]: https://img.shields.io/twitter/url/https/osanoatx.svg?style=social
 [tl]: https://twitter.com/osanoatx
