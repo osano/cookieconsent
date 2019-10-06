@@ -17,15 +17,18 @@ We welcome community contributions and actively review pull requests.
 
 ## Hosted Zero Config Consent
 
-Our parent company Osano actively maintains this open source project. Ensuring that your website is compliant with various laws can be complicated. To effectively use any open source consent manager, you will need to do GeoIP lookups, adjust the consent types based on visitor location, callback and save consents in a database, and create callbacks to load scripts after consent is granted.
+Our parent company Osano actively maintains this open source project. Osano is a B-corp and is backed by millions of dollars in venture capital to create data privacy tools for the world. Our mission is to create transparency in data, please consider [joining our team](https://www.osano.com/company/careers).
 
-Osano offers a completely [free hosted consent management platform][cl], with additional features. If you have a high traffic website or need additional privacy tools, Osano offers paid plans as well. Unless you specifically need the open source tool, most website owners will be better served by the hosted version. If you use Osano for your business, please support us by purchasing a <a href="https://www.osano.com/plans?utm_campaign=Open%20Source%20Cookie%20Consent&utm_source=github">paid plan</a>.
+Ensuring that your website is compliant with various laws can be complicated. To effectively use **any** open source consent manager, you will need to do GeoIP lookups, adjust the consent types based on visitor location, callback and save consents in a database, and create callbacks to load scripts after consent is granted.
+
+Osano offers a completely [free hosted consent management platform][cl], with additional features. If you have a high traffic website or need additional privacy tools, Osano offers paid plans as well. **Unless you specifically need the open source tool, most website owners will be better served by the hosted version.** If you use Osano for your business, please support continued development by purchasing a [paid plan](https://www.osano.com/plans?utm_campaign=Open%20Source%20Cookie%20Consent&utm_source=github).
 
 The hosted version of the cookie consent manager provides additional capabilities such as:
 
 * Multi-lingual, translated into 38 languages and growing. Visitors automatically see the dialog in their browser or OS preferred language.
-* Consents are stored automatically on the blockchain
+* Consents are stored automatically on the blockchain. REST API calls are available to developers to search and browse the consent records.
 * 3rd party script blocking and loading does not require callbacks but is instead configurable from a dashboard providing developers with control over what the marketing team can enable or disable.
+* Hosted on AWS Cloudfront with edges around the globe for 
 
 ## Basic Use
 
@@ -65,13 +68,6 @@ cc.on( "statusChanged", ( ...args ) => console.log( args ) )
 ## Version 4.0
 Lots of updates & some breaking changes... but they're all for the better, we promise!
 
-Now actively maintained by:
-
-- @arlogilbert
-- @L0key
-- @pgoforth
-- @Donsky-Osano
-
 ## Version 3.1
 
 Reflects the ownership change of the Cookie Consent project. Now actively maintained by:
@@ -79,7 +75,7 @@ Reflects the ownership change of the Cookie Consent project. Now actively mainta
 - @arlogilbert
 - @L0key
 - @pgoforth
-- @relicmelex
+- @Donsky-Osano
 
 ## Version 3.0
 
