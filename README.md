@@ -140,6 +140,14 @@ or
 yarn run build
 ```
 
+## Legal Mumbo Jumbo
+
+Osano is a registered trademark of Osano, Inc.
+
+Nothing on the Osano website, platform, services, or software, nor any portion thereof constitutes actual legal or regulatory advice, opinion, or recommendation by Osano, Inc. or Osano International Compliance Services LTD. 
+
+**If legal assistance is required, users should seek the services of an attorney.**
+
 ## Export Control
 
 This distribution includes cryptographic software. The country in which you
