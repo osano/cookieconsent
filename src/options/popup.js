@@ -83,7 +83,7 @@ export default {
   modal: '',
 
   // This is the html for the revoke button. This only shows up after the user has selected their level of consent
-  // It can be enabled of disabled using the `revokable` option
+  // It can be enabled or disabled using the `revokable` option
   revokeBtn: '<div class="cc-revoke {{classes}}">{{policy}}</div>',
 
   // define types of 'compliance' here. '{{value}}' strings in here are linked to `elements`
