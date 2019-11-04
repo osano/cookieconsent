@@ -171,7 +171,7 @@ source code.
 [ll]: LICENSE
 [bl]: https://travis-ci.org/osano/cookieconsent
 [bi]: https://travis-ci.org/osano/cookieconsent.svg?branch=master
-[dl]: https://cookieconsent.osano.com/documentation/
+[dl]: https://www.osano.com/cookieconsent/documentation/
 [dll]: https://www.osano.com/features/consent-management?utm_campaign=Open%20Source%20Cookie%20Consent&utm_source=github
 [cl]: https://www.osano.com/features/consent-management?utm_campaign=Open%20Source%20Cookie%20Consent&utm_source=github
 [ti]: https://img.shields.io/twitter/url/https/osanoatx.svg?style=social
