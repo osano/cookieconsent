@@ -30,7 +30,7 @@
     "sass-loader": "^7.3.1",
     "string-replace-loader": "^2.2.0",
     "style-loader": "^1.0.0",
-    "version-bump-prompt": "^5.0.5",
+    "version-bump-prompt": "^6.0.2",
     "webpack": "^4.39.3",
     "webpack-bundle-analyzer": "^3.4.1",
     "webpack-cli": "^3.3.8",
