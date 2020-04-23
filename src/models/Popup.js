@@ -581,7 +581,7 @@ export default class Popup extends Base {
 
   applyRevokeButton() {
     // revokable is true if advanced compliance is selected
-    if (this.options.type != 'info') this.options.revokable = true
+    if (this.options.type != 'info' && this.options.regionalLaw == true) this.options.revokable = true
     // animateRevokable false for mobile devices
     if (isMobile()) this.options.animateRevokable = false
 
