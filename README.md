@@ -75,7 +75,6 @@ Reflects the ownership change of the Cookie Consent project. Now actively mainta
 - @arlogilbert
 - @L0key
 - @pgoforth
-- @Donsky-Osano
 
 ## Version 3.0
 
