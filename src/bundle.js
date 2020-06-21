@@ -923,7 +923,7 @@ function addStyle (obj, options) {
 	// If a transform function was defined, run it on the css
 	if (options.transform && obj.css) {
 	    result = typeof options.transform === 'function'
-		 ? options.transform(obj.css) 
+		 ? options.transform(obj.css)
 		 : options.transform.default(obj.css);
 
 	    if (result) {
@@ -1905,7 +1905,7 @@ class Popup extends _Base__WEBPACK_IMPORTED_MODULE_0__["default"] {
       this.toggleRevokeButton(true);
     }
   }
-  /** 
+  /**
    * Set's cookie statuses
    * @param { string<status> } allOrUndef      - If this is the only param, set ALL if not, set Uncategorized cookies statuses set to value.
    * @param { string<status> } essential       - Essential Cookies status set to value
@@ -1922,14 +1922,15 @@ class Popup extends _Base__WEBPACK_IMPORTED_MODULE_0__["default"] {
       expiryDays,
       domain,
       path,
-      secure
+      secure,
+      sameSite
     } = this.options.cookie;
 
     const updateCategoryStatus = (categoryName, status) => {
       if (Object(_utils__WEBPACK_IMPORTED_MODULE_3__["isValidStatus"])(status)) {
         const cookieName = name + '_' + categoryName;
         const chosenBefore = _constants__WEBPACK_IMPORTED_MODULE_2__["statuses"].indexOf(Object(_utils__WEBPACK_IMPORTED_MODULE_3__["getCookie"])(cookieName)) >= 0;
-        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["setCookie"])(cookieName, status, expiryDays, domain, path, secure);
+        Object(_utils__WEBPACK_IMPORTED_MODULE_3__["setCookie"])(cookieName, status, expiryDays, domain, path, secure, sameSite);
         this.emit("statusChanged", cookieName, status, chosenBefore);
       } else {
         this.clearStatuses();
@@ -2485,7 +2486,9 @@ __webpack_require__.r(__webpack_exports__);
     // The cookies expire date, specified in days (specify -1 for no expiry)
     expiryDays: 365,
     // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
-    secure: false
+    secure: false,
+    // Sets the "sameSite"-Attribute of the `cookieconsent_status`-Cookie allowed attributes are "Lax", "Strict" and "None" ("None" is only allowed with the `Secure`-flag)
+    sameSite: null
   },
   // each item defines the inner text for the element that it references
   content: {
@@ -2741,10 +2744,10 @@ const getCookie = name => {
   const parts = value.split(' ' + name + '=');
   return parts.length < 2 ? undefined : parts.pop().split(';').shift();
 };
-const setCookie = function (name, value, expiryDays, domain, path, secure) {
+const setCookie = function (name, value, expiryDays, domain, path, secure, sameSite) {
   const exdate = new Date();
   exdate.setHours(exdate.getHours() + (typeof expiryDays !== "number" ? 365 : expiryDays) * 24);
-  document.cookie = name + '=' + value + ';expires=' + exdate.toUTCString() + ';path=' + (path || '/') + (domain ? ';domain=' + domain : '') + (secure ? ';secure' : '');
+  document.cookie = name + '=' + value + ';expires=' + exdate.toUTCString() + ';path=' + (path || '/') + (domain ? ';domain=' + domain : '') + (secure ? ';secure' : '') + (sameSite ? ';sameSite=' + sameSite : '');
 };
 
 /***/ }),
