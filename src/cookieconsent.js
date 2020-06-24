@@ -45,7 +45,7 @@
             .shift();
     },
 
-    setCookie: function(name, value, expiryDays, domain, path, secure) {
+    setCookie: function(name, value, expiryDays, domain, path, secure, sameSite) {
       var exdate = new Date();
       exdate.setHours(exdate.getHours() + ((expiryDays || 365) * 24));
 
@@ -60,6 +60,9 @@
       }
       if (secure) {
         cookie.push('secure');
+      }
+      if (sameSite) {
+        cookie.push('sameSite=' + sameSite);
       }
       document.cookie = cookie.join(';');
     },
@@ -231,7 +234,10 @@
         expiryDays: 365,
 
         // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
-        secure: false
+        secure: false,
+
+        // Sets the "sameSite"-Attribute of the `cookieconsent_status`-Cookie allowed attributes are "Lax", "Strict" and "None" ("None" is only allowed with the `Secure`-flag)
+        sameSite: null
       },
 
       // these callback hooks are called at certain points in the program execution
@@ -654,7 +660,8 @@
           c.expiryDays,
           c.domain,
           c.path,
-          c.secure
+          c.secure,
+          c.sameSite
         );
 
         this.options.onStatusChange.call(this, status, chosenBefore);
@@ -669,7 +676,7 @@
 
     CookiePopup.prototype.clearStatus = function() {
       var c = this.options.cookie;
-      util.setCookie(c.name, '', -1, c.domain, c.path);
+      util.setCookie(c.name, '', -1, c.domain, c.path, c.secure, c.sameSite);
     };
 
     // This needs to be called after 'fadeIn'. This is the code that actually causes the fadeIn to work
