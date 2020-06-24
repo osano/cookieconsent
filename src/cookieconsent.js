@@ -676,7 +676,7 @@
 
     CookiePopup.prototype.clearStatus = function() {
       var c = this.options.cookie;
-      util.setCookie(c.name, '', -1, c.domain, c.path, c.sameSite);
+      util.setCookie(c.name, '', -1, c.domain, c.path, c.secure, c.sameSite);
     };
 
     // This needs to be called after 'fadeIn'. This is the code that actually causes the fadeIn to work
