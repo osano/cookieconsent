@@ -59,7 +59,8 @@ describe( "Popup Class", () => {
       cookie   : {
         name  : "test_cookie",
         comain: "me.selfdomain.com",
-        secure: true
+        secure: true,
+        sameSite: "Lax"
       },
       content  : {
         message: "test message"

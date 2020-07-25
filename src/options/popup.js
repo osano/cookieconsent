@@ -21,7 +21,9 @@ export default {
     // The cookies expire date, specified in days (specify -1 for no expiry)
     expiryDays: 365,
     // If true the cookie will be created with the secure flag. Secure cookies will only be transmitted via HTTPS.
-    secure: false
+    secure: false,
+    // Sets the "sameSite"-Attribute of the `cookieconsent_status`-Cookie allowed attributes are "Lax", "Strict" and "None" ("None" is only allowed with the `Secure`-flag)
+    sameSite: null
   },
 
   // each item defines the inner text for the element that it references
@@ -79,7 +81,7 @@ export default {
   //  - {{children}} is where the HTML children are placed
   window:
     '<div role="dialog" aria-live="polite" aria-label="cookieconsent" aria-describedby="cookieconsent:desc" class="cc-window {{classes}}"><!--googleoff: all-->{{children}}<!--googleon: all--></div>',
-  
+
   modal: '',
 
   // This is the html for the revoke button. This only shows up after the user has selected their level of consent
