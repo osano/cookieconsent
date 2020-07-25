@@ -174,4 +174,4 @@ source code.
 [dll]: https://www.osano.com/features/consent-management?utm_campaign=Open%20Source%20Cookie%20Consent&utm_source=github
 [cl]: https://www.osano.com/features/consent-management?utm_campaign=Open%20Source%20Cookie%20Consent&utm_source=github
 [ti]: https://img.shields.io/twitter/url/https/osanoatx.svg?style=social
-[tl]: https://twitter.com/osanoatx
+[tl]: https://twitter.com/osano
