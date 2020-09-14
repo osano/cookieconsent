@@ -52,7 +52,7 @@ export default class Popup extends Base {
       }
       return ''
     })()
-    this.hasTransition = !!this.transitionEnd;
+    this.hasTransition = Boolean(this.transitionEnd);
 
     // returns true if `onComplete` was called
     if (this.canUseCookies()) {
