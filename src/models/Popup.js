@@ -128,7 +128,9 @@ export default class Popup extends Base {
     const statusesFromCookies = this.getStatusesMap();
     
     categories.forEach(categoryName => {
-      this.userCategories[categoryName] = statusesFromCookies[categoryName];
+      if (categoryName !== 'ESSENTIAL') {
+        this.userCategories[categoryName] = statusesFromCookies[categoryName];
+      }
     })
   }
 
@@ -311,11 +313,13 @@ export default class Popup extends Base {
     const { name, expiryDays, domain, path, secure } = this.options.cookie
 
     const updateCategoryStatus = ( categoryName, status ) => {
-      if (isValidStatus(status) && this.usedCategory(categoryName)) {
-        const cookieName = name+'_'+categoryName
-        const chosenBefore = statuses.indexOf( getCookie(cookieName) ) >= 0
-        setCookie(cookieName, status, expiryDays, domain, path, secure)
-        this.emit( "statusChanged", cookieName, status, chosenBefore )
+      if (isValidStatus(status)) {
+        if (this.usedCategory(categoryName)) {
+          const cookieName = name + '_' + categoryName
+          const chosenBefore = statuses.indexOf(getCookie(cookieName)) >= 0
+          setCookie(cookieName, status, expiryDays, domain, path, secure)
+          this.emit("statusChanged", cookieName, status, chosenBefore)
+        }
       } else {
         this.clearStatuses()
       }
