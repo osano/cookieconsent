@@ -173,6 +173,8 @@
 }
 
 .main-content {
+  width: 100%;
+
   .cc-message {
     margin: 0;
     padding-bottom: 8px;
@@ -181,6 +183,7 @@
 
 .customize-content {
   display: none;
+  width: 100%;
 
   .cc-customize-message {
     padding: 16px 0;
