@@ -26,7 +26,7 @@ export default class Popup extends Base {
     super( defaultOptions, options )
     this.userCategories = {
       UNCATEGORIZED  : 'DISMISS',
-      ESSENTIAL      : 'DISMISS',
+      ESSENTIAL      : 'ALLOW',
       PERSONALIZATION: 'DISMISS',
       ANALYTICS      : 'DISMISS',
       MARKETING      : 'DISMISS'
@@ -485,12 +485,18 @@ export default class Popup extends Base {
 
     el.addEventListener('click', event => this.handleButtonClick( event ) )
     el.querySelectorAll('.cc-category label [type="checkbox"]').forEach(checkbox => {
-      this.userCategories[checkbox.name] = currentStatuses[checkbox.name] ? 'ALLOW' : 'DENY';
-      checkbox.checked = currentStatuses[checkbox.name] === 'ALLOW';
-      checkbox.addEventListener('change', () => {
-        this.userCategories[checkbox.name] = checkbox.checked ? 'ALLOW' : 'DENY'
-      })
-      checkbox.addEventListener( 'click', event => (event.stopPropagation()) )
+      if (checkbox.name === 'ESSENTIAL') {
+        checkbox.checked = true;
+        checkbox.disabled = true;
+      } else {
+        this.userCategories[checkbox.name] = currentStatuses[checkbox.name] ? 'ALLOW' : 'DENY';
+        checkbox.checked = currentStatuses[checkbox.name] === 'ALLOW';
+        checkbox.addEventListener('change', () => {
+          this.userCategories[checkbox.name] = checkbox.checked ? 'ALLOW' : 'DENY'
+        })
+      }
+
+      checkbox.addEventListener('click', event => (event.stopPropagation()))
     })
     el.querySelectorAll(".cc-info").forEach( showInfo => {
       showInfo.addEventListener('mousedown', function ( event ) {
