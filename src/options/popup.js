@@ -1,6 +1,6 @@
 "use strict"
 
-import { statusDeny, statusAllow, statusDismiss, categories } from "../constants/index.js"
+import { statusDeny, statusAllow, statusDismiss, categories, categoriesDisplayNames } from "../constants/index.js"
 import { capitalizeFirstLetter } from "../utils/index.js"
 
 export default {
@@ -45,7 +45,9 @@ export default {
     categoryEssential: 'These cookies are necessary so that you won\'t be seeing this pop-up next time you visit us.',
     categoryPersonalization: '[Personalization category read more message]',
     categoryMarketing: '[Marketing category read more message]',
-    categoryUncategorized: '[Uncategorized category read more message]'
+    categoryUncategorized: '[Uncategorized category read more message]',
+    hrefCookiePolicy: '',
+    hrefPrivacyPolicy: ''
   },
 
   // This is the HTML for the elements above. The string {{header}} will be replaced with the equivalent text below.
@@ -94,7 +96,7 @@ export default {
         `<li class="cc-category ${category}">
             <label>
               <input type="checkbox" id="${category}" name="${category}"/>
-              <span class="cc-btn-checkbox">${category}</span>
+              <span class="cc-btn-checkbox">${categoriesDisplayNames[category]}</span>
             </label>
             <label class="sanddev-readmore" for="readmore-${category}">Read more</label>
             <input id="readmore-${category}" type="checkbox"> 
@@ -124,7 +126,7 @@ export default {
   compliance: {
     info: '<div class="cc-compliance">{{dismiss}}</div>',
     'opt-in':
-      '<div class="cc-compliance cc-highlight cc-customize">{{allow}}{{customize}}</div>',
+      '<div class="cc-compliance cc-highlight cc-customize">{{customize}}{{allow}}</div>',
     'opt-out':
       '<div class="cc-compliance cc-highlight">{{dismiss}}{{deny}}</div>',
     categories: '<div class="form">{{categories}}{{save}}</div>'
@@ -139,12 +141,20 @@ export default {
     basic         : '{{messagelink}}{{compliance}}',
     'basic-close' : '{{messagelink}}{{compliance}}{{close}}',
     'basic-header': '{{header}}{{message}}{{link}}{{compliance}}',
-    sanddev: `<div class="main-content">{{message}}{{policiesLinks}}{{compliance}}</div>
+    sanddev: `<div class="main-content">
+        {{message}}
+        <div class="content-footer">
+          {{policiesLinks}}{{compliance}}
+        </div>
+      </div>
       <div class="customize-content">
         {{customizeHeader}}
         {{customizeMessage}}
         {{customizeCategories}}
-        {{acceptSelected}}
+        <div class="content-footer">
+          {{policiesLinks}}
+          {{acceptSelected}}
+        </div>
       </div>`
     // add a custom layout here, then add some new css with the class '.cc-layout-my-cool-layout'
     //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
@@ -243,11 +253,5 @@ export default {
   consentSettingsElemId: null,
 
   // categories to be shown and used - if empty all are displayed
-  showCategories: [],
-
-  // cookie policy link
-  hrefCookiePolicy: '',
-
-  // privacy policy link
-  hrefPrivacyPolicy: ''
+  showCategories: []
 }

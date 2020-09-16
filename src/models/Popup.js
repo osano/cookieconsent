@@ -432,14 +432,7 @@ export default class Popup extends Base {
         opts.elements[prop],
         name => {
           const str = opts.content[name]
-          let result = name && typeof str == 'string' && str.length ? str : ''
-
-          // check if those missing elements can be found in user's configuration
-          if (result === '') {
-            result = this.options[name];
-          }
-
-          return result;
+          return name && typeof str == 'string' && str.length ? str : ''
         }
       )
     })

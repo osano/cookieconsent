@@ -179,6 +179,15 @@
     margin: 0;
     padding-bottom: 8px;
   }
+
+  .cc-compliance {
+    margin-left: auto;
+  }
+
+  .content-footer {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .customize-content {
@@ -222,7 +231,16 @@
     }
   }
 
+  .cc-compliance {
+    margin-left: auto;
+  }
+
   .sanddev-accept-selected {
     margin-left: auto;
+  }
+
+  .content-footer {
+    display: flex;
+    align-items: center;
   }
 }
