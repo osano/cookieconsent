@@ -104,8 +104,8 @@
       };
 
       document.getElementById('btn-denyCookie').onclick = function () {
-        log("Calling <em>setStatuses(CookieConsent.DISMISS)</em>");
-        cc.setStatuses(CookieConsent.DISMISS);
+        log("Calling <em>setStatuses(CookieConsent.DENY)</em>");
+        cc.setStatuses(CookieConsent.DENY);
         log("Calling <em>close()</em>");
         cc.close();
       };
