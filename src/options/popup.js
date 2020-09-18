@@ -28,7 +28,7 @@ export default {
   // each item defines the inner text for the element that it references
   content: {
     header : 'Cookies used on the website!',
-    message: 'Oh no, you\'re thinking, yet another cookie pop-up. Well, sorry, it\'s the law. We measure how many people visit us and which parts are most interesteing, by storing cookies on your device. If you\'re cool with that, hit "Accept all Cookies". For more info and to customise your settings, hit "Customise Settings".',
+    message: `We would like to measure how you browse our website to constantly improve it, based on your usage patterns. To accomplish this, we must store cookies on your device. If you're cool with that, hit "Accept all Cookies". For more information and to customize your settings, hit "Customise Settings".`,
     dismiss: 'Got it!',
     allow  : 'Accept all Cookies',
     deny   : 'Decline',
