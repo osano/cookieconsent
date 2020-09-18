@@ -525,31 +525,41 @@ export default class Popup extends Base {
     
     if (btn.classList.contains( 'cc-btn' ) && btn.classList.contains( 'cc-customize' )){
       this.showCustomizeSettingsContent();
+
       return
     }
-    if (btn.classList.contains( 'cc-btn' ) && btn.classList.contains( 'cc-save' )){
+
+    if (btn.classList.contains('cc-btn') && btn.classList.contains('cc-save')) {
       this.setStatuses()
       this.close(true)
+
       return
     }
-    if (btn.classList.contains( 'cc-btn' )) {
+
+    if (btn.classList.contains('cc-btn')) {
       const matches = btn.className.match(
         new RegExp('\\bcc-(' + statuses.map( str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') ).join('|') + ')\\b')
       )
       const match = (matches && matches[1]) || false
+
       if (match) {
         this.setStatuses(match)
         this.close(true)
       }
+
       return
     }
-    if (btn.classList.contains( 'cc-close' )) {
+
+    if (btn.classList.contains('cc-close')) {
       this.setStatuses(statusDismiss)
       this.close(true)
+
       return
     }
-    if (btn.classList.contains( 'cc-revoke' )) {
+
+    if (btn.classList.contains('cc-revoke')) {
       this.revokeChoice()
+
       return
     }
   }
