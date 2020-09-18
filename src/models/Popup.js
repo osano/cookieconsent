@@ -477,7 +477,7 @@ export default class Popup extends Base {
 
     const openConsentsElem = document.getElementById(this.options.consentSettingsElemId);
     if (openConsentsElem) {
-      openConsentsElem.onclick = () => this.openCustomizeSettings();
+      openConsentsElem.addEventListener('click', () => this.openCustomizeSettings());
     }
 
     el.addEventListener('click', event => this.handleButtonClick( event ) )
@@ -493,7 +493,7 @@ export default class Popup extends Base {
         })
       }
 
-      checkbox.addEventListener('click', event => (event.stopPropagation()))
+      checkbox.addEventListener('click', event => { event.stopPropagation(); })
     })
     el.querySelectorAll(".cc-info").forEach( showInfo => {
       showInfo.addEventListener('mousedown', function ( event ) {
