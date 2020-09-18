@@ -142,13 +142,13 @@ To keep this site secure, we use <a href="https://www.cloudflare.com/privacypoli
     basic         : '{{messagelink}}{{compliance}}',
     'basic-close' : '{{messagelink}}{{compliance}}{{close}}',
     'basic-header': '{{header}}{{message}}{{link}}{{compliance}}',
-    sanddev: `<div class="main-content">
+    sanddev: `<div class="cc-main-content">
         {{message}}
         <div class="content-footer">
           {{policiesLinks}}{{compliance}}
         </div>
       </div>
-      <div class="customize-content">
+      <div class="cc-customize-content">
         {{customizeHeader}}
         {{customizeMessage}}
         {{customizeCategories}}

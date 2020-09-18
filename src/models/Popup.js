@@ -102,8 +102,8 @@ export default class Popup extends Base {
   }
 
   showCustomizeSettingsContent() {
-    const mainPopup = this.element.querySelector('.main-content');
-    const customizePopup = this.element.querySelector('.customize-content');
+    const mainPopup = this.element.querySelector('.cc-main-content');
+    const customizePopup = this.element.querySelector('.cc-customize-content');
 
     // if showCategories is initialized then show only those
     if (this.options.showCategories.length > 0) {
