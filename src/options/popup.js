@@ -88,20 +88,20 @@ To keep this site secure, we use <a href="https://www.cloudflare.com/privacypoli
     customizeHeader: `<div class="cc-customize-header">{{customizeHeader}}</div>`,
     customizeMessage: `<div class="cc-customize-message">{{customizeMessage}}</div>`,
     acceptSelected: `<div class="cc-compliance">
-        <span class="sanddev-accept-selected">
+        <span class="cc-accept-selected">
           <button class="cc-btn cc-save">{{acceptSelected}}</button>
         </span>
       </div>`,
-    customizeCategories: `<ul class="sanddev-categories">` +
+    customizeCategories: `<ul class="cc-customize-categories">` +
       categories.map(category =>
         `<li class="cc-category ${category}">
             <label>
               <input type="checkbox" id="${category}" name="${category}"/>
               <span class="cc-btn-checkbox">${categoriesDisplayNames[category]}</span>
             </label>
-            <label class="sanddev-readmore" for="readmore-${category}">Read more</label>
+            <label class="cc-readmore" for="readmore-${category}">Read more</label>
             <input id="readmore-${category}" type="checkbox"> 
-            <div class="sanddev-more-info">{{category${capitalizeFirstLetter(category)}}}</div>
+            <div class="cc-more-info">{{category${capitalizeFirstLetter(category)}}}</div>
         </li>`
       ).join("")
       + '</ul>',

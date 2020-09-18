@@ -211,7 +211,7 @@
     padding: 16px 0;
   }
 
-  .sanddev-categories {
+  .cc-customize-categories {
     list-style-type: none;
     padding: 0;
     padding-bottom: 8px;
@@ -221,30 +221,30 @@
       padding-bottom: 8px;
     }
 
-    .sanddev-readmore {
+    .cc-readmore {
       font-size: smaller;
       color: gray;
       cursor: pointer;
     }
 
-    .sanddev-readmore + input {
+    .cc-readmore + input {
       display: none; /* hide the checkboxes */
     }
 
-    .sanddev-readmore + input + div {
+    .cc-readmore + input + div {
       display:none;
     }
 
-    .sanddev-readmore + input:checked + div {
+    .cc-readmore + input:checked + div {
       display:block;
     }
 
-    .sanddev-more-info {
+    .cc-more-info {
       padding: 4px 0 8px 24px;
     }
   }
 
-  .sanddev-accept-selected {
+  .cc-accept-selected {
     margin-left: auto;
   }
 
