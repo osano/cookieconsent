@@ -1,6 +1,6 @@
 "use strict"
 
-import { statusDeny, statusAllow, statusDismiss, categories, categoriesDisplayNames } from "../constants/index.js"
+import { STATUS_DENY, STATUS_ALLOW, STATUS_DISMISS, categories, categoriesDisplayNames } from "../constants/index.js"
 import { capitalizeFirstLetter } from "../utils/index.js"
 
 export default {
@@ -63,11 +63,11 @@ To keep this site secure, we use <a href="https://www.cloudflare.com/privacypoli
     messagelink:
       '<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a></span>',
     dismiss:
-      `<a aria-label="dismiss cookie message" role=button tabindex="0" class="cc-btn cc-${statusDismiss}">{{dismiss}}</a>`,
+      `<a aria-label="dismiss cookie message" role=button tabindex="0" class="cc-btn cc-${STATUS_DISMISS}">{{dismiss}}</a>`,
     allow:
-      `<a aria-label="allow cookies" role=button tabindex="0"  class="cc-btn cc-${statusAllow}">{{allow}}</a>`,
+      `<a aria-label="allow cookies" role=button tabindex="0"  class="cc-btn cc-${STATUS_ALLOW}">{{allow}}</a>`,
     deny:
-      `<a aria-label="deny cookies" role=button tabindex="0" class="cc-btn cc-${statusDeny}">{{deny}}</a>`,
+      `<a aria-label="deny cookies" role=button tabindex="0" class="cc-btn cc-${STATUS_DENY}">{{deny}}</a>`,
     link:
       '<a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a>',
     close:

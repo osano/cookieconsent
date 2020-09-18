@@ -4,9 +4,10 @@ import Base from "./Base"
 import defaultOptions from "../options/popup"
 import {
   categories,
-  statuses,
-  statusDismiss,
-  statusAllow
+  STATUSES,
+  STATUS_DISMISS,
+  STATUS_ALLOW,
+  STATUS_DENY
 } from "../constants"
 import {
   addCustomStylesheet,
@@ -25,11 +26,11 @@ export default class Popup extends Base {
   constructor( options ) {
     super( defaultOptions, options )
     this.userCategories = {
-      UNCATEGORIZED  : 'DISMISS',
-      ESSENTIAL      : 'ALLOW',
-      PERSONALIZATION: 'DISMISS',
-      ANALYTICS      : 'DISMISS',
-      MARKETING      : 'DISMISS'
+      UNCATEGORIZED  : STATUS_DISMISS,
+      ESSENTIAL      : STATUS_ALLOW,
+      PERSONALIZATION: STATUS_DISMISS,
+      ANALYTICS      : STATUS_DISMISS,
+      MARKETING      : STATUS_DISMISS
     }
     this.customStyles = {}
     this.transitionEnd = (function() {
@@ -279,7 +280,7 @@ export default class Popup extends Base {
    * @return { array<boolean> } - true if consent has been given
    */
   hasConsented() {
-    return this.getStatuses().map( status => status === statusAllow || status === statusDismiss )
+    return this.getStatuses().map(status => status === STATUS_ALLOW || status === STATUS_DISMISS)
   }
 
   // opens the popup if no answer has been given
@@ -316,7 +317,7 @@ export default class Popup extends Base {
       if (isValidStatus(status)) {
         if (this.usedCategory(categoryName)) {
           const cookieName = name + '_' + categoryName
-          const chosenBefore = statuses.indexOf(getCookie(cookieName)) >= 0
+          const chosenBefore = STATUSES.indexOf(getCookie(cookieName)) >= 0
           setCookie(cookieName, status, expiryDays, domain, path, secure)
           this.emit("statusChanged", cookieName, status, chosenBefore)
         }
@@ -348,7 +349,7 @@ export default class Popup extends Base {
 
     return categories.reduce((statusesMap, categoryName) => {
       const cookieStatus = getCookie(cookieNamePrefix + categoryName);
-      statusesMap[categoryName] = cookieStatus || 'DENY';
+      statusesMap[categoryName] = cookieStatus || STATUS_DENY;
       return statusesMap;
     }, {});
   }
@@ -486,10 +487,10 @@ export default class Popup extends Base {
         checkbox.checked = true;
         checkbox.disabled = true;
       } else {
-        this.userCategories[checkbox.name] = currentStatuses[checkbox.name] ? 'ALLOW' : 'DENY';
-        checkbox.checked = currentStatuses[checkbox.name] === 'ALLOW';
+        this.userCategories[checkbox.name] = currentStatuses[checkbox.name] ? STATUS_ALLOW : STATUS_DENY;
+        checkbox.checked = currentStatuses[checkbox.name] === STATUS_ALLOW;
         checkbox.addEventListener('change', () => {
-          this.userCategories[checkbox.name] = checkbox.checked ? 'ALLOW' : 'DENY'
+          this.userCategories[checkbox.name] = checkbox.checked ? STATUS_ALLOW : STATUS_DENY
         })
       }
 
@@ -538,7 +539,7 @@ export default class Popup extends Base {
 
     if (btn.classList.contains('cc-btn')) {
       const matches = btn.className.match(
-        new RegExp('\\bcc-(' + statuses.map( str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') ).join('|') + ')\\b')
+        new RegExp('\\bcc-(' + STATUSES.map(str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&')).join('|') + ')\\b')
       )
       const match = (matches && matches[1]) || false
 
@@ -551,7 +552,7 @@ export default class Popup extends Base {
     }
 
     if (btn.classList.contains('cc-close')) {
-      this.setStatuses(statusDismiss)
+      this.setStatuses(STATUS_DISMISS)
       this.close(true)
 
       return
@@ -606,13 +607,13 @@ export default class Popup extends Base {
     if ( enabled ) {
       if (typeof delay == 'number' && delay >= 0) {
         this.dismissTimeout = setTimeout( ()=> {
-          this.setStatuses(statusDismiss)
+          this.setStatuses(STATUS_DISMISS)
           this.close(true)
         }, Math.floor(delay))
       } else if (typeof scrollRange == 'number' && scrollRange >= 0) {
         this.onWindowScroll = () => {
           if (window.pageYOffset > Math.floor(scrollRange)) {
-            this.setStatuses(statusDismiss)
+            this.setStatuses(STATUS_DISMISS)
             this.close(true)
 
             window.removeEventListener('scroll', this.onWindowScroll, { passive: true })
@@ -628,7 +629,7 @@ export default class Popup extends Base {
                   )
                 )
           ) {
-            this.setStatuses(statusDismiss)
+            this.setStatuses(STATUS_DISMISS)
             this.close(true)
             
             window.removeEventListener('click', this.onWindowClick)
@@ -642,7 +643,7 @@ export default class Popup extends Base {
       } else if (dismissOnLinkClick) {
         this.onLinkClick = evt => {
           if ( getEventPath( evt ).some( elem => typeof elem.tagName !== 'undefined' && elem.tagName === 'A' ) ) {
-            this.setStatuses( statusDismiss )
+            this.setStatuses(STATUS_DISMISS)
             this.close( true )
             window.removeEventListener('click', this.onLinkClick)
             this.onLinkClick = null
@@ -653,10 +654,10 @@ export default class Popup extends Base {
           this.onKeyPress = event => {
             const { keyCode } = event
             if ( keyCode === 13 ) {
-              this.setStatuses( statusAllow )
+              this.setStatuses(STATUS_ALLOW)
               this.close( true )
             } else if ( keyCode === 27) {
-              this.setStatuses( statusDismiss )
+              this.setStatuses(STATUS_DISMISS)
               this.close( true )
             }
           }

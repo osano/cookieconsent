@@ -5,7 +5,7 @@ import Legal from "./Legal"
 import Location from "./Location"
 import Popup from "./Popup"
 
-import { statuses } from "../constants"
+import { STATUSES } from "../constants"
 
 // This function initializes the app by combining the use of the Popup, Locator and Law modules
 // You can string together these three modules yourself however you want, by writing a new function.
@@ -66,7 +66,7 @@ export default class CookieConsent extends Base {
   }
 }
 
-statuses.reduce( ( obj, status ) =>
+STATUSES.reduce( ( obj, status ) =>
 ( Object.defineProperty( CookieConsent, status, {
   get: function () { return status },
   set: function () {},

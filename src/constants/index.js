@@ -1,9 +1,9 @@
 "use strict"
 
-export const statuses = [ "DENY", "ALLOW", "DISMISS" ]
-export const statusDeny = "DENY"
-export const statusAllow = "ALLOW"
-export const statusDismiss = "DISMISS"
+export const STATUS_DENY = "DENY"
+export const STATUS_ALLOW = "ALLOW"
+export const STATUS_DISMISS = "DISMISS"
+export const STATUSES = [STATUS_DENY, STATUS_ALLOW, STATUS_DISMISS]
 
 export const categories = ["UNCATEGORIZED", "ESSENTIAL", "PERSONALIZATION", "ANALYTICS", "MARKETING"]
 
