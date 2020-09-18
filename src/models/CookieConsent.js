@@ -5,8 +5,7 @@ import Legal from "./Legal"
 import Location from "./Location"
 import Popup from "./Popup"
 
-import { statuses, categories } from "../constants"
-import { getCookie, isValidStatus } from "../utils"
+import { statuses } from "../constants"
 
 // This function initializes the app by combining the use of the Popup, Locator and Law modules
 // You can string together these three modules yourself however you want, by writing a new function.
@@ -64,14 +63,6 @@ export default class CookieConsent extends Base {
   }
   getStatusesMap() {
     return this.popup.getStatusesMap();
-  }
-  
-  getAnswers() {
-    return categories.map( category => {
-      const cookieName = this.options.cookie && this.options.cookie.name ? this.options.cookie.name : 'cookieconsent_status_'
-      const answer = getCookie( cookieName + category )
-      return isValidStatus(answer) ? { [category]: answer } : undefined
-    }).filter(obj => obj ? obj[Object.keys(obj)[0]] : false)
   }
 }
 
