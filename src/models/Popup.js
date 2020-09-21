@@ -315,7 +315,7 @@ export default class Popup extends Base {
       if (isValidStatus(status)) {
         if (this.usedCategory(categoryName)) {
           const cookieName = name + '_' + categoryName
-          const chosenBefore = STATUSES.indexOf(getCookie(cookieName)) >= 0
+          const chosenBefore = STATUSES.includes(getCookie(cookieName));
           setCookie(cookieName, status, expiryDays, domain, path, secure)
           this.emit("statusChanged", cookieName, status, chosenBefore)
         }
@@ -345,11 +345,9 @@ export default class Popup extends Base {
   get consents() {
     const cookieNamePrefix = this.options.cookie.name + '_';
 
-    return CATEGORIES.reduce((statusesMap, categoryName) => {
-      const cookieStatus = getCookie(cookieNamePrefix + categoryName);
-      statusesMap[categoryName] = cookieStatus || STATUS_DENY;
-      return statusesMap;
-    }, {});
+    return Object.fromEntries(
+      CATEGORIES.map(categoryName => [categoryName, getCookie(cookieNamePrefix + categoryName) || STATUS_DENY])
+    );
   }
 
   /**
