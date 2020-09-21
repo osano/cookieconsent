@@ -131,7 +131,7 @@ export default class Popup extends Base {
   }
 
   syncCategoriesFromCookies() {
-    const statusesFromCookies = this.getStatusesMap();
+    const statusesFromCookies = this.consents;
     
     CATEGORIES.forEach(categoryName => {
       if (categoryName !== CATEGORY_ESSENTIAL) {
@@ -349,7 +349,7 @@ export default class Popup extends Base {
     return CATEGORIES.map( categoryName => getCookie(this.options.cookie.name+'_'+categoryName) )
   }
 
-  getStatusesMap() {
+  get consents() {
     const cookieNamePrefix = this.options.cookie.name + '_';
 
     return CATEGORIES.reduce((statusesMap, categoryName) => {
@@ -479,7 +479,7 @@ export default class Popup extends Base {
       el.classList.add('cc-invisible')
     }
 
-    const currentStatuses = this.getStatusesMap();
+    const { consents } = this;
 
     const openConsentsElem = document.getElementById(this.options.consentSettingsElemId);
     if (openConsentsElem) {
@@ -492,8 +492,8 @@ export default class Popup extends Base {
         checkbox.checked = true;
         checkbox.disabled = true;
       } else {
-        this.userCategories[checkbox.name] = currentStatuses[checkbox.name] ? STATUS_ALLOW : STATUS_DENY;
-        checkbox.checked = currentStatuses[checkbox.name] === STATUS_ALLOW;
+        this.userCategories[checkbox.name] = consents[checkbox.name] ? STATUS_ALLOW : STATUS_DENY;
+        checkbox.checked = consents[checkbox.name] === STATUS_ALLOW;
         checkbox.addEventListener('change', () => {
           this.userCategories[checkbox.name] = checkbox.checked ? STATUS_ALLOW : STATUS_DENY
         })

@@ -1,6 +1,6 @@
 "use strict"
 
-import { STATUS_DENY, STATUS_ALLOW, STATUS_DISMISS, categories, categoriesDisplayNames } from "../constants/index.js"
+import { STATUS_DENY, STATUS_ALLOW, STATUS_DISMISS, CATEGORIES, categoriesDisplayNames } from "../constants/index.js"
 import { capitalizeFirstLetter } from "../utils/index.js"
 
 export default {
@@ -73,7 +73,7 @@ To keep this site secure, we use <a href="https://www.cloudflare.com/privacypoli
     close:
       '<span aria-label="dismiss cookie message" role=button tabindex="0" class="cc-close">{{close}}</span>',
     categories: '<ul class="cc-categories">' +
-      categories.map( ( category, index ) =>
+      CATEGORIES.map( ( category, index ) =>
         `<li class="cc-category">
           <button class="cc-btn" tabindex="0"><input type="checkbox" name="${category}"/><span class="cc-btn-checkbox"></span>${category}</button>
           <button class="cc-btn cc-info" aria-label="${category} Definition Button" tabindex="${index+1}">^</button>
@@ -93,7 +93,7 @@ To keep this site secure, we use <a href="https://www.cloudflare.com/privacypoli
         </span>
       </div>`,
     customizeCategories: `<ul class="cc-customize-categories">` +
-      categories.map(category =>
+      CATEGORIES.map(category =>
         `<li class="cc-category ${category}">
             <label>
               <input type="checkbox" id="${category}" name="${category}"/>

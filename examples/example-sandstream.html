@@ -33,7 +33,7 @@
       });
 
       cc.on('initialized', function () {
-        const statusesMap = cc.getStatusesMap();
+        const statusesMap = cc.consents();
 
         if (statusesMap['ANALYTICS'] === 'ALLOW') {
           initializeGTM();
@@ -43,7 +43,7 @@
       });
 
       cc.on('popupClosed', function () {
-        const statusesMap = cc.getStatusesMap();
+        const statusesMap = cc.consents();
 
         if (statusesMap['ANALYTICS'] === 'ALLOW') {
           initializeGTM();
