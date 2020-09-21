@@ -66,20 +66,22 @@ export default class CookieConsent extends Base {
   }
 }
 
-STATUSES.reduce((obj, status) =>
-  (Object.defineProperty(CookieConsent, status, {
+for (const status of STATUSES) {
+  Object.defineProperty(CookieConsent, status, {
     get: function () { return status },
     set: function () { },
     enumerable: false,
     writeable: false,
     configurable: false
-  }), obj), CookieConsent)
+  });
+}
 
-CATEGORIES.reduce((obj, category) =>
-  (Object.defineProperty(CookieConsent, category, {
+for (const category of CATEGORIES) {
+  Object.defineProperty(CookieConsent, category, {
     get: function () { return category },
     set: function () { },
     enumerable: false,
     writeable: false,
     configurable: false
-  }), obj), CookieConsent)
+  });
+}
