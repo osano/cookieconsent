@@ -113,6 +113,7 @@ export default class Popup extends Base {
 
     CATEGORIES.forEach(categoryName => {
       const categoryElement = customizePopup.querySelector('.cc-category.' + categoryName);
+
       if (!this.usedCategory(categoryName)) {
         categoryElement.style.display = 'none';
       }
