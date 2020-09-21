@@ -255,7 +255,7 @@ To keep this site secure, we use <a class="cc-link" href="https://www.cloudflare
   overrideHTML: null,
 
   // element id that is used to open consent pop-up to review and change user consent
-  consentSettingsElemId: null,
+  consentSettingsElementId: null,
 
   // categories to be shown and used
   showCategories: {

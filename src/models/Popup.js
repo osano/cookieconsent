@@ -473,9 +473,9 @@ export default class Popup extends Base {
 
     const { consents } = this;
 
-    const openConsentsElem = document.getElementById(this.options.consentSettingsElemId);
-    if (openConsentsElem) {
-      openConsentsElem.addEventListener('click', () => this.openCustomizeSettings());
+    const openConsentsElement = document.getElementById(this.options.consentSettingsElementId);
+    if (openConsentsElement) {
+      openConsentsElement.addEventListener('click', () => this.openCustomizeSettings());
     }
 
     el.addEventListener('click', event => this.handleButtonClick( event ) )
