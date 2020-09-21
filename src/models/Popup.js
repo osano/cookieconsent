@@ -3,7 +3,12 @@
 import Base from "./Base"
 import defaultOptions from "../options/popup"
 import {
-  categories,
+  CATEGORIES,
+  CATEGORY_UNCATEGORIZED,
+  CATEGORY_ESSENTIAL,
+  CATEGORY_PERSONALIZATION,
+  CATEGORY_ANALYTICS,
+  CATEGORY_MARKETING,
   STATUSES,
   STATUS_DISMISS,
   STATUS_ALLOW,
@@ -26,11 +31,11 @@ export default class Popup extends Base {
   constructor( options ) {
     super( defaultOptions, options )
     this.userCategories = {
-      UNCATEGORIZED  : STATUS_DISMISS,
-      ESSENTIAL      : STATUS_ALLOW,
-      PERSONALIZATION: STATUS_DISMISS,
-      ANALYTICS      : STATUS_DISMISS,
-      MARKETING      : STATUS_DISMISS
+      [CATEGORY_UNCATEGORIZED]: STATUS_DISMISS,
+      [CATEGORY_ESSENTIAL]: STATUS_ALLOW,
+      [CATEGORY_PERSONALIZATION]: STATUS_DISMISS,
+      [CATEGORY_ANALYTICS]: STATUS_DISMISS,
+      [CATEGORY_MARKETING]: STATUS_DISMISS
     }
     this.customStyles = {}
     this.transitionEnd = (function() {
@@ -108,7 +113,7 @@ export default class Popup extends Base {
 
     // if showCategories is initialized then show only those
     if (this.options.showCategories.length > 0) {
-      categories.forEach(categoryName => {
+      CATEGORIES.forEach(categoryName => {
         const categoryElement = customizePopup.querySelector('.cc-category.' + categoryName);
         if (!this.usedCategory(categoryName)) {
           categoryElement.style.display = 'none';
@@ -128,8 +133,8 @@ export default class Popup extends Base {
   syncCategoriesFromCookies() {
     const statusesFromCookies = this.getStatusesMap();
     
-    categories.forEach(categoryName => {
-      if (categoryName !== 'ESSENTIAL') {
+    CATEGORIES.forEach(categoryName => {
+      if (categoryName !== CATEGORY_ESSENTIAL) {
         this.userCategories[categoryName] = statusesFromCookies[categoryName];
       }
     })
@@ -326,9 +331,9 @@ export default class Popup extends Base {
       }
     }
     if ( arguments.length === 0 ) {
-      categories.forEach( category => updateCategoryStatus( category, this.userCategories[ category ] ) )
+      CATEGORIES.forEach( category => updateCategoryStatus( category, this.userCategories[ category ] ) )
     } else if (arguments.length === 1){
-      categories.forEach( category => updateCategoryStatus( category, arguments[ 0 ] ) )
+      CATEGORIES.forEach( category => updateCategoryStatus( category, arguments[ 0 ] ) )
     } else if ( arguments.length > 1 ) {
       arguments.forEach( ( categoryStatus, index ) => {
         updateCategoryStatus( this.userCategories[ index ], categoryStatus )
@@ -341,13 +346,13 @@ export default class Popup extends Base {
    * @return { array<string> } - cookie categories status in order of categories
    */
   getStatuses() {
-    return categories.map( categoryName => getCookie(this.options.cookie.name+'_'+categoryName) )
+    return CATEGORIES.map( categoryName => getCookie(this.options.cookie.name+'_'+categoryName) )
   }
 
   getStatusesMap() {
     const cookieNamePrefix = this.options.cookie.name + '_';
 
-    return categories.reduce((statusesMap, categoryName) => {
+    return CATEGORIES.reduce((statusesMap, categoryName) => {
       const cookieStatus = getCookie(cookieNamePrefix + categoryName);
       statusesMap[categoryName] = cookieStatus || STATUS_DENY;
       return statusesMap;
@@ -359,7 +364,7 @@ export default class Popup extends Base {
    */
   clearStatuses() {
     const { name, domain, path } = this.options.cookie
-    categories.forEach( categoryName => {
+    CATEGORIES.forEach( categoryName => {
       setCookie(name+'_'+categoryName, '', -1, domain, path)
     })
   }
@@ -370,11 +375,11 @@ export default class Popup extends Base {
     }
 
     const statusesValues = this.getStatuses()
-    const matches = statusesValues.map( ( status, index ) => ( { [categories[index]]: isValidStatus( status ) } ) )
+    const matches = statusesValues.map( ( status, index ) => ( { [CATEGORIES[index]]: isValidStatus( status ) } ) )
     const hasMatches = matches.filter( match => match[Object.keys(match)[0]] ).length > 0
     statusesValues.forEach( ( status, index ) =>
-      this.userCategories[ categories[ index ] ] === status
-        ? status : this.userCategories[ categories[ index ] ] )
+      this.userCategories[ CATEGORIES[ index ] ] === status
+        ? status : this.userCategories[ CATEGORIES[ index ] ] )
 
     return hasMatches
   }
@@ -483,7 +488,7 @@ export default class Popup extends Base {
 
     el.addEventListener('click', event => this.handleButtonClick( event ) )
     el.querySelectorAll('.cc-category label [type="checkbox"]').forEach(checkbox => {
-      if (checkbox.name === 'ESSENTIAL') {
+      if (checkbox.name === CATEGORY_ESSENTIAL) {
         checkbox.checked = true;
         checkbox.disabled = true;
       } else {
