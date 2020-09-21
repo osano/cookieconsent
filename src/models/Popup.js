@@ -128,11 +128,11 @@ export default class Popup extends Base {
   }
 
   syncCategoriesFromCookies() {
-    const statusesFromCookies = this.consents;
+    const { consents } = this;
     
     CATEGORIES.forEach(categoryName => {
       if (categoryName !== CATEGORY_ESSENTIAL) {
-        this.userCategories[categoryName] = statusesFromCookies[categoryName];
+        this.userCategories[categoryName] = consents[categoryName];
       }
     })
   }

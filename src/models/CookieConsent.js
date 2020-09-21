@@ -61,7 +61,7 @@ export default class CookieConsent extends Base {
   destroy(){
     return ( this.popup.destroy(), this )
   }
-  consents() {
+  get consents() {
     return this.popup.consents;
   }
 }

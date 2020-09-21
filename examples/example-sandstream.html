@@ -39,23 +39,21 @@
       });
 
       cc.on('initialized', function () {
-        const statusesMap = cc.consents();
+        const { consents } = cc;
 
-        if (statusesMap[CC.ANALYTICS] === CC.ALLOW) {
+        if (consents[CC.ANALYTICS] === CC.ALLOW) {
           initializeGTM();
         }
-
-        console.info('initialized', statusesMap);
       });
 
       cc.on('popupClosed', function () {
-        const statusesMap = cc.consents();
+        const { consents } = cc;
 
-        if (statusesMap[CC.ANALYTICS] === CC.ALLOW) {
+        if (consents[CC.ANALYTICS] === CC.ALLOW) {
           initializeGTM();
         }
 
-        if (statusesMap[CC.ANALYTICS] === CC.DENY && window.gtmInitialized) {
+        if (consents[CC.ANALYTICS] === CC.DENY && window.gtmInitialized) {
           // reload page to get rid of GTM
           location.reload();
         }

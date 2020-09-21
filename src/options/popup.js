@@ -47,7 +47,7 @@ export default {
     acceptSelected: 'Accept Selected',
     categoryAnalytics: 'These cookies collect information to help us understand how our website is being used. They allow us to count unique visits and see from where visitors came from. With this information, we can measure and improve the content of our site. We can also see how users navigate between pages and what actions they take.',
     categoryEssential: `These cookies are necessary to make this site run properly and securely. For example, with this kind of cookies, we register your cookie preferences so that you won't be seeing this pop-up next time you visit our page and we can keep track which categories you have opted-in.
-To keep this site secure, we use <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener noreferrer" target="_blank">Cloudflare</a> content delivery network and security solutions. The service may place a unique cookie to identify your browser and device to make sure no automated programs can impose security threats on our site.`,
+To keep this site secure, we use <a class="cc-link" href="https://www.cloudflare.com/privacypolicy/" rel="noopener noreferrer" target="_blank">Cloudflare</a> content delivery network and security solutions. The service may place a unique cookie to identify your browser and device to make sure no automated programs can impose security threats on our site.`,
     categoryPersonalization: '[Personalization category read more message]',
     categoryMarketing: '[Marketing category read more message]',
     categoryUncategorized: '[Uncategorized category read more message]',
@@ -257,7 +257,7 @@ To keep this site secure, we use <a href="https://www.cloudflare.com/privacypoli
   // element id that is used to open consent pop-up to review and change user consent
   consentSettingsElemId: null,
 
-  // categories to be shown and used - if empty all are displayed
+  // categories to be shown and used
   showCategories: {
     [CATEGORY_UNCATEGORIZED]: true,
     [CATEGORY_ESSENTIAL]: true,
