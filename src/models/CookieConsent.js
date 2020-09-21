@@ -5,7 +5,7 @@ import Legal from "./Legal"
 import Location from "./Location"
 import Popup from "./Popup"
 
-import { STATUSES } from "../constants"
+import { CATEGORIES, STATUSES } from "../constants"
 
 // This function initializes the app by combining the use of the Popup, Locator and Law modules
 // You can string together these three modules yourself however you want, by writing a new function.
@@ -61,16 +61,25 @@ export default class CookieConsent extends Base {
   destroy(){
     return ( this.popup.destroy(), this )
   }
-  getStatusesMap() {
-    return this.popup.getStatusesMap();
+  consents() {
+    return this.popup.consents;
   }
 }
 
-STATUSES.reduce( ( obj, status ) =>
-( Object.defineProperty( CookieConsent, status, {
-  get: function () { return status },
-  set: function () {},
-  enumerable: false,
-  writeable: false,
-  configurable: false
-}), obj ), CookieConsent )
+STATUSES.reduce((obj, status) =>
+  (Object.defineProperty(CookieConsent, status, {
+    get: function () { return status },
+    set: function () { },
+    enumerable: false,
+    writeable: false,
+    configurable: false
+  }), obj), CookieConsent)
+
+CATEGORIES.reduce((obj, category) =>
+  (Object.defineProperty(CookieConsent, category, {
+    get: function () { return category },
+    set: function () { },
+    enumerable: false,
+    writeable: false,
+    configurable: false
+  }), obj), CookieConsent)

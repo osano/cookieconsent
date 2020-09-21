@@ -111,15 +111,12 @@ export default class Popup extends Base {
     const mainPopup = this.element.querySelector('.cc-main-content');
     const customizePopup = this.element.querySelector('.cc-customize-content');
 
-    // if showCategories is initialized then show only those
-    if (this.options.showCategories.length > 0) {
-      CATEGORIES.forEach(categoryName => {
-        const categoryElement = customizePopup.querySelector('.cc-category.' + categoryName);
-        if (!this.usedCategory(categoryName)) {
-          categoryElement.style.display = 'none';
-        }
-      })
-    }
+    CATEGORIES.forEach(categoryName => {
+      const categoryElement = customizePopup.querySelector('.cc-category.' + categoryName);
+      if (!this.usedCategory(categoryName)) {
+        categoryElement.style.display = 'none';
+      }
+    })
     
     mainPopup.style.display = 'none';
     customizePopup.style.display = 'block';
@@ -299,11 +296,7 @@ export default class Popup extends Base {
   }
 
   usedCategory = categoryName => {
-    if (this.options.showCategories.length > 0) {
-      return this.options.showCategories.includes(categoryName);
-    }
-
-    return true;
+    return this.options.showCategories[categoryName];
   }
 
   /** 

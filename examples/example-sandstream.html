@@ -25,7 +25,13 @@
         type: 'opt-in',
         consentSettingsElemId: 'btn-revokeChoice',
         layout: 'sanddev',
-        showCategories: ['ESSENTIAL', 'ANALYTICS'],
+        showCategories: {
+          [CC.UNCATEGORIZED]: false,
+          [CC.ESSENTIAL]: true,
+          [CC.PERSONALIZATION]: false,
+          [CC.ANALYTICS]: true,
+          [CC.MARKETING]: false
+        },
         content: {
           privacyPolicyLink: '/privacy-policy',
           cookiePolicyLink: '/cookie-policy'
@@ -35,7 +41,7 @@
       cc.on('initialized', function () {
         const statusesMap = cc.consents();
 
-        if (statusesMap['ANALYTICS'] === 'ALLOW') {
+        if (statusesMap[CC.ANALYTICS] === CC.ALLOW) {
           initializeGTM();
         }
 
@@ -45,11 +51,11 @@
       cc.on('popupClosed', function () {
         const statusesMap = cc.consents();
 
-        if (statusesMap['ANALYTICS'] === 'ALLOW') {
+        if (statusesMap[CC.ANALYTICS] === CC.ALLOW) {
           initializeGTM();
         }
 
-        if (statusesMap['ANALYTICS'] === 'DENY' && window.gtmInitialized) {
+        if (statusesMap[CC.ANALYTICS] === CC.DENY && window.gtmInitialized) {
           // reload page to get rid of GTM
           location.reload();
         }

@@ -1,6 +1,10 @@
 "use strict"
 
-import { STATUS_DENY, STATUS_ALLOW, STATUS_DISMISS, CATEGORIES, categoriesDisplayNames } from "../constants/index.js"
+import {
+  STATUS_DENY, STATUS_ALLOW, STATUS_DISMISS, CATEGORIES, categoriesDisplayNames,
+  CATEGORY_UNCATEGORIZED, CATEGORY_ESSENTIAL, CATEGORY_PERSONALIZATION, CATEGORY_ANALYTICS,
+  CATEGORY_MARKETING
+} from "../constants/index.js"
 import { capitalizeFirstLetter } from "../utils/index.js"
 
 export default {
@@ -254,5 +258,11 @@ To keep this site secure, we use <a href="https://www.cloudflare.com/privacypoli
   consentSettingsElemId: null,
 
   // categories to be shown and used - if empty all are displayed
-  showCategories: []
+  showCategories: {
+    [CATEGORY_UNCATEGORIZED]: true,
+    [CATEGORY_ESSENTIAL]: true,
+    [CATEGORY_PERSONALIZATION]: true,
+    [CATEGORY_ANALYTICS]: true,
+    [CATEGORY_MARKETING]: true
+  }
 }
