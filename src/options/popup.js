@@ -59,7 +59,7 @@ export default {
     customize: 'Customize settings',
     customizeHeader: 'Review and manage your consent',
     customizeMessage: `Here is an overview of the cookies we use on this site. Please select categories that you are OK with. You can always change your choices at any time, by hitting the "Manage your consent options" link on the site's footer.`,
-    acceptSelected: 'Accept Selected',
+    acceptSelected: 'Accept selected',
     categoryAnalytics: 'These cookies collect information to help us understand how our website is being used. They allow us to count unique visits and see from where visitors came from. With this information, we can measure and improve the content of our site. We can also see how users navigate between pages and what actions they take.',
     categoryEssential: `These cookies are necessary to make this site run properly and securely. For example, with this kind of cookies, we register your cookie preferences so that you won't be seeing this pop-up next time you visit our page and we can keep track which categories you have opted-in.
 To keep this site secure, we use <a class="cc-link" href="https://www.cloudflare.com/privacypolicy/" rel="noopener noreferrer" target="_blank">Cloudflare</a> content delivery network and security solutions. The service may place a unique cookie to identify your browser and device to make sure no automated programs can impose security threats on our site.`,
