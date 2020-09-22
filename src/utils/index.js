@@ -74,8 +74,3 @@ const loopProperties = overwrites => (obj, [key, value]) => {
 
 export const mergeOptions = ( defaults, overwrites ) =>
   Object.entries(defaults).reduce(loopProperties(overwrites), {})
-
-export const capitalizeFirstLetter = string => {
-  let lowercase = string.toLowerCase();
-  return lowercase.charAt(0).toUpperCase() + lowercase.slice(1);
-}
