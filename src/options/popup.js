@@ -1,7 +1,7 @@
 "use strict"
 
 import {
-  STATUS_DENY, STATUS_ALLOW, STATUS_DISMISS, CATEGORIES, categoriesDisplayNames,
+  STATUS_DENY, STATUS_ALLOW, STATUS_DISMISS, CATEGORIES,
   CATEGORY_UNCATEGORIZED, CATEGORY_ESSENTIAL, CATEGORY_PERSONALIZATION, CATEGORY_ANALYTICS,
   CATEGORY_MARKETING
 } from "../constants/index.js"
@@ -12,6 +12,14 @@ const categoryVariablesNames = {
   [CATEGORY_MARKETING]: 'categoryMarketing',
   [CATEGORY_PERSONALIZATION]: 'categoryPersonalization',
   [CATEGORY_UNCATEGORIZED]: 'categoryUncategorized'
+}
+
+export const categoryDisplayNamesVariablesNames = {
+  [CATEGORY_ANALYTICS]: 'categoryAnalyticsDisplayName',
+  [CATEGORY_ESSENTIAL]: 'categoryEssentialDisplayName',
+  [CATEGORY_MARKETING]: 'categoryMarketingDisplayName',
+  [CATEGORY_PERSONALIZATION]: 'categoryPersonalizationDisplayName',
+  [CATEGORY_UNCATEGORIZED]: 'categoryUncategorizedDisplayName'
 }
 
 export default {
@@ -60,7 +68,12 @@ To keep this site secure, we use <a class="cc-link" href="https://www.cloudflare
     categoryUncategorized: '[Uncategorized category read more message]',
     cookiePolicyLink: '',
     privacyPolicyLink: '',
-    policiesLinkRel: 'noopener noreferrer nofollow'
+    policiesLinkRel: 'noopener noreferrer nofollow',
+    categoryUncategorizedDisplayName: 'Uncategorized',
+    categoryEssentialDisplayName: 'Necessary (always active)',
+    categoryPersonalizationDisplayName: 'Personalization',
+    categoryAnalyticsDisplayName: 'Analytics',
+    categoryMarketingDisplayName: 'Marketing'
   },
 
   // This is the HTML for the elements above. The string {{header}} will be replaced with the equivalent text below.
@@ -109,7 +122,7 @@ To keep this site secure, we use <a class="cc-link" href="https://www.cloudflare
         `<li class="cc-category ${category}">
            <label>
              <input type="checkbox" id="${category}" name="${category}"/>
-             <span class="cc-btn-checkbox">${categoriesDisplayNames[category]}</span>
+             <span class="cc-btn-checkbox">{{${categoryDisplayNamesVariablesNames[category]}}}</span>
            </label>
            <label class="cc-readmore" for="readmore-${category}">Read more</label>
            <input id="readmore-${category}" type="checkbox"> 
