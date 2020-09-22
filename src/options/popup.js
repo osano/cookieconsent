@@ -49,7 +49,7 @@ export default {
     header : 'Cookies used on the website!',
     message: `We would like to measure how you browse our website to constantly improve it, based on your usage patterns. To accomplish this, we must store cookies on your device. If you're cool with that, hit "Accept all Cookies". For more information and to customize your settings, hit "Customise Settings".`,
     dismiss: 'Got it!',
-    allow  : 'Accept all Cookies',
+    allow  : 'Accept all cookies',
     deny   : 'Decline',
     link   : 'Learn more',
     href   : 'https://www.cookiesandyou.com',
