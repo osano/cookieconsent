@@ -51,10 +51,8 @@
 
         if (consents[CC.ANALYTICS] === CC.ALLOW) {
           initializeGTM();
-        }
-
-        if (consents[CC.ANALYTICS] === CC.DENY && window.gtmInitialized) {
-          // reload page to get rid of GTM
+        } else if (window.gtmInitialized) {
+          // reload page to get rid of GTM script
           location.reload();
         }
       });
