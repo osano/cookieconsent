@@ -369,9 +369,6 @@ export default class Popup extends Base {
     const statusesValues = this.getStatuses()
     const matches = statusesValues.map( ( status, index ) => ( { [CATEGORIES[index]]: isValidStatus( status ) } ) )
     const hasMatches = matches.filter( match => match[Object.keys(match)[0]] ).length > 0
-    statusesValues.forEach( ( status, index ) =>
-      this.userCategories[ CATEGORIES[ index ] ] === status
-        ? status : this.userCategories[ CATEGORIES[ index ] ] )
 
     return hasMatches
   }
