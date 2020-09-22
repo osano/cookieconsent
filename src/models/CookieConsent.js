@@ -4,6 +4,7 @@ import Base from "./Base"
 import Legal from "./Legal"
 import Location from "./Location"
 import Popup from "./Popup"
+import { deleteCookie as removeCookie } from '../utils/cookie'
 
 import { CATEGORIES, STATUSES } from "../constants"
 
@@ -63,6 +64,12 @@ export default class CookieConsent extends Base {
   }
   get consents() {
     return this.popup.consents;
+  }
+
+  deleteCookie(name) {
+    const { domain, path, secure } = this.popup.options.cookie;
+
+    removeCookie(name, domain, path, secure)
   }
 }
 
