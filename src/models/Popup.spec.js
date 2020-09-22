@@ -3,7 +3,7 @@
 import Popup from "./Popup"
 import Base from "./Base"
 import defaultOptions from "../options/popup"
-import { categories } from "../constants"
+import { CATEGORIES } from "../constants"
 import { mergeOptions } from "../utils"
 
 const isPopup = popup => (
@@ -38,7 +38,7 @@ const isPopup = popup => (
   expect( popup.options ).toBeInstanceOf( Object ),
   expect( popup.userCategories ).toBeInstanceOf( Object ),
   expect( popup.customStyles ).toBeInstanceOf( Object ),
-  expect( Object.keys( popup.userCategories ) ).toStrictEqual( categories )
+  expect( Object.keys( popup.userCategories ) ).toStrictEqual( CATEGORIES )
 )
 const hasCorrectOptions = ( popup, expecteds ) => (
   Object.entries( expecteds ).forEach( ( [ key, value ] ) => {

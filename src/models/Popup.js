@@ -3,10 +3,16 @@
 import Base from "./Base"
 import defaultOptions from "../options/popup"
 import {
-  categories,
-  statuses,
-  statusDismiss,
-  statusAllow
+  CATEGORIES,
+  CATEGORY_UNCATEGORIZED,
+  CATEGORY_ESSENTIAL,
+  CATEGORY_PERSONALIZATION,
+  CATEGORY_ANALYTICS,
+  CATEGORY_MARKETING,
+  STATUSES,
+  STATUS_DISMISS,
+  STATUS_ALLOW,
+  STATUS_DENY
 } from "../constants"
 import {
   addCustomStylesheet,
@@ -25,11 +31,11 @@ export default class Popup extends Base {
   constructor( options ) {
     super( defaultOptions, options )
     this.userCategories = {
-      UNCATEGORIZED  : 'DISMISS',
-      ESSENTIAL      : 'ALLOW',
-      PERSONALIZATION: 'DISMISS',
-      ANALYTICS      : 'DISMISS',
-      MARKETING      : 'DISMISS'
+      [CATEGORY_UNCATEGORIZED]: STATUS_DISMISS,
+      [CATEGORY_ESSENTIAL]: STATUS_ALLOW,
+      [CATEGORY_PERSONALIZATION]: STATUS_DISMISS,
+      [CATEGORY_ANALYTICS]: STATUS_DISMISS,
+      [CATEGORY_MARKETING]: STATUS_DISMISS
     }
     this.customStyles = {}
     this.transitionEnd = (function() {
@@ -101,6 +107,37 @@ export default class Popup extends Base {
     }
   }
 
+  showCustomizeSettingsContent() {
+    const mainPopup = this.element.querySelector('.cc-main-content');
+    const customizePopup = this.element.querySelector('.cc-customize-content');
+
+    CATEGORIES.forEach(categoryName => {
+      const categoryElement = customizePopup.querySelector('.cc-category.' + categoryName);
+
+      if (!this.usedCategory(categoryName)) {
+        categoryElement.style.display = 'none';
+      }
+    })
+    
+    mainPopup.style.display = 'none';
+    customizePopup.style.display = 'block';
+  }
+
+  openCustomizeSettings() {
+    this.open();
+    this.showCustomizeSettingsContent();
+  }
+
+  syncCategoriesFromCookies() {
+    const { consents } = this;
+    
+    for (const categoryName of CATEGORIES) {
+      if (categoryName !== CATEGORY_ESSENTIAL) {
+        this.userCategories[categoryName] = consents[categoryName];
+      }
+    }
+  }
+
   open() {
     if (!this.element) return
 
@@ -114,6 +151,9 @@ export default class Popup extends Base {
       if (this.options.revokable) {
         this.toggleRevokeButton()
       }
+
+      this.syncCategoriesFromCookies();
+
       this.emit( "popupOpened" )
     }
 
@@ -243,7 +283,7 @@ export default class Popup extends Base {
    * @return { array<boolean> } - true if consent has been given
    */
   hasConsented() {
-    return this.getStatuses().map( status => status === statusAllow || status === statusDismiss )
+    return this.getStatuses().map(status => status === STATUS_ALLOW || status === STATUS_DISMISS)
   }
 
   // opens the popup if no answer has been given
@@ -254,6 +294,10 @@ export default class Popup extends Base {
     } else if (hasAnswered && this.options.revokable) {
       this.toggleRevokeButton(true)
     }
+  }
+
+  usedCategory = categoryName => {
+    return this.options.showCategories[categoryName];
   }
 
   /** 
@@ -270,18 +314,20 @@ export default class Popup extends Base {
 
     const updateCategoryStatus = ( categoryName, status ) => {
       if (isValidStatus(status)) {
-        const cookieName = name+'_'+categoryName
-        const chosenBefore = statuses.indexOf( getCookie(cookieName) ) >= 0
-        setCookie(cookieName, status, expiryDays, domain, path, secure)
-        this.emit( "statusChanged", cookieName, status, chosenBefore )
+        if (this.usedCategory(categoryName)) {
+          const cookieName = name + '_' + categoryName
+          const chosenBefore = STATUSES.includes(getCookie(cookieName));
+          setCookie(cookieName, status, expiryDays, domain, path, secure)
+          this.emit("statusChanged", cookieName, status, chosenBefore)
+        }
       } else {
         this.clearStatuses()
       }
     }
     if ( arguments.length === 0 ) {
-      categories.forEach( category => updateCategoryStatus( category, this.userCategories[ category ] ) )
+      CATEGORIES.forEach( category => updateCategoryStatus( category, this.userCategories[ category ] ) )
     } else if (arguments.length === 1){
-      categories.forEach( category => updateCategoryStatus( category, arguments[ 0 ] ) )
+      CATEGORIES.forEach( category => updateCategoryStatus( category, arguments[ 0 ] ) )
     } else if ( arguments.length > 1 ) {
       arguments.forEach( ( categoryStatus, index ) => {
         updateCategoryStatus( this.userCategories[ index ], categoryStatus )
@@ -294,7 +340,15 @@ export default class Popup extends Base {
    * @return { array<string> } - cookie categories status in order of categories
    */
   getStatuses() {
-    return categories.map( categoryName => getCookie(this.options.cookie.name+'_'+categoryName) )
+    return CATEGORIES.map( categoryName => getCookie(this.options.cookie.name+'_'+categoryName) )
+  }
+
+  get consents() {
+    const cookieNamePrefix = this.options.cookie.name + '_';
+
+    return Object.fromEntries(
+      CATEGORIES.map(categoryName => [categoryName, getCookie(cookieNamePrefix + categoryName) || STATUS_DENY])
+    );
   }
 
   /**
@@ -302,7 +356,7 @@ export default class Popup extends Base {
    */
   clearStatuses() {
     const { name, domain, path } = this.options.cookie
-    categories.forEach( categoryName => {
+    CATEGORIES.forEach( categoryName => {
       setCookie(name+'_'+categoryName, '', -1, domain, path)
     })
   }
@@ -313,11 +367,8 @@ export default class Popup extends Base {
     }
 
     const statusesValues = this.getStatuses()
-    const matches = statusesValues.map( ( status, index ) => ( { [categories[index]]: isValidStatus( status ) } ) )
+    const matches = statusesValues.map( ( status, index ) => ( { [CATEGORIES[index]]: isValidStatus( status ) } ) )
     const hasMatches = matches.filter( match => match[Object.keys(match)[0]] ).length > 0
-    statusesValues.forEach( ( status, index ) =>
-      this.userCategories[ categories[ index ] ] === status
-        ? status : this.userCategories[ categories[ index ] ] )
 
     return hasMatches
   }
@@ -417,12 +468,27 @@ export default class Popup extends Base {
       el.classList.add('cc-invisible')
     }
 
+    const { consents } = this;
+
+    const openConsentsElement = document.getElementById(this.options.consentSettingsElementId);
+    if (openConsentsElement) {
+      openConsentsElement.addEventListener('click', () => this.openCustomizeSettings());
+    }
+
     el.addEventListener('click', event => this.handleButtonClick( event ) )
-    el.querySelectorAll( '.cc-btn [type="checkbox"]' ).forEach( checkbox => {
-      checkbox.addEventListener( 'change', () => {
-        this.userCategories[ checkbox.name ] = checkbox.checked ? 'ALLOW' : 'DENY'
-      })
-      checkbox.addEventListener( 'click', event => (event.stopPropagation()) )
+    el.querySelectorAll('.cc-category label [type="checkbox"]').forEach(checkbox => {
+      if (checkbox.name === CATEGORY_ESSENTIAL) {
+        checkbox.checked = true;
+        checkbox.disabled = true;
+      } else {
+        this.userCategories[checkbox.name] = consents[checkbox.name] ? STATUS_ALLOW : STATUS_DENY;
+        checkbox.checked = consents[checkbox.name] === STATUS_ALLOW;
+        checkbox.addEventListener('change', () => {
+          this.userCategories[checkbox.name] = checkbox.checked ? STATUS_ALLOW : STATUS_DENY
+        })
+      }
+
+      checkbox.addEventListener('click', event => { event.stopPropagation(); })
     })
     el.querySelectorAll(".cc-info").forEach( showInfo => {
       showInfo.addEventListener('mousedown', function ( event ) {
@@ -452,29 +518,43 @@ export default class Popup extends Base {
     // returns the parent element with the specified class, or the original element - null if not found
     const btn = traverseDOMPath(event.target, 'cc-btn') || event.target
     
-    if (btn.classList.contains( 'cc-btn' ) && btn.classList.contains( 'cc-save' )){
-      this.setStatuses()
-      this.close(true)
+    if (btn.classList.contains( 'cc-btn' ) && btn.classList.contains( 'cc-customize' )){
+      this.showCustomizeSettingsContent();
+
       return
     }
-    if (btn.classList.contains( 'cc-btn' )) {
+
+    if (btn.classList.contains('cc-btn') && btn.classList.contains('cc-save')) {
+      this.setStatuses()
+      this.close(true)
+
+      return
+    }
+
+    if (btn.classList.contains('cc-btn')) {
       const matches = btn.className.match(
-        new RegExp('\\bcc-(' + statuses.map( str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&') ).join('|') + ')\\b')
+        new RegExp('\\bcc-(' + STATUSES.map(str => str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&')).join('|') + ')\\b')
       )
       const match = (matches && matches[1]) || false
+
       if (match) {
         this.setStatuses(match)
         this.close(true)
       }
+
       return
     }
-    if (btn.classList.contains( 'cc-close' )) {
-      this.setStatuses(statusDismiss)
+
+    if (btn.classList.contains('cc-close')) {
+      this.setStatuses(STATUS_DISMISS)
       this.close(true)
+
       return
     }
-    if (btn.classList.contains( 'cc-revoke' )) {
+
+    if (btn.classList.contains('cc-revoke')) {
       this.revokeChoice()
+
       return
     }
   }
@@ -521,13 +601,13 @@ export default class Popup extends Base {
     if ( enabled ) {
       if (typeof delay == 'number' && delay >= 0) {
         this.dismissTimeout = setTimeout( ()=> {
-          this.setStatuses(statusDismiss)
+          this.setStatuses(STATUS_DISMISS)
           this.close(true)
         }, Math.floor(delay))
       } else if (typeof scrollRange == 'number' && scrollRange >= 0) {
         this.onWindowScroll = () => {
           if (window.pageYOffset > Math.floor(scrollRange)) {
-            this.setStatuses(statusDismiss)
+            this.setStatuses(STATUS_DISMISS)
             this.close(true)
 
             window.removeEventListener('scroll', this.onWindowScroll, { passive: true })
@@ -543,7 +623,7 @@ export default class Popup extends Base {
                   )
                 )
           ) {
-            this.setStatuses(statusDismiss)
+            this.setStatuses(STATUS_DISMISS)
             this.close(true)
             
             window.removeEventListener('click', this.onWindowClick)
@@ -557,7 +637,7 @@ export default class Popup extends Base {
       } else if (dismissOnLinkClick) {
         this.onLinkClick = evt => {
           if ( getEventPath( evt ).some( elem => typeof elem.tagName !== 'undefined' && elem.tagName === 'A' ) ) {
-            this.setStatuses( statusDismiss )
+            this.setStatuses(STATUS_DISMISS)
             this.close( true )
             window.removeEventListener('click', this.onLinkClick)
             this.onLinkClick = null
@@ -568,10 +648,10 @@ export default class Popup extends Base {
           this.onKeyPress = event => {
             const { keyCode } = event
             if ( keyCode === 13 ) {
-              this.setStatuses( statusAllow )
+              this.setStatuses(STATUS_ALLOW)
               this.close( true )
             } else if ( keyCode === 27) {
-              this.setStatuses( statusDismiss )
+              this.setStatuses(STATUS_DISMISS)
               this.close( true )
             }
           }

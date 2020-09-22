@@ -5,8 +5,7 @@ import Legal from "./Legal"
 import Location from "./Location"
 import Popup from "./Popup"
 
-import { statuses, categories } from "../constants"
-import { getCookie, isValidStatus } from "../utils"
+import { CATEGORIES, STATUSES } from "../constants"
 
 // This function initializes the app by combining the use of the Popup, Locator and Law modules
 // You can string together these three modules yourself however you want, by writing a new function.
@@ -15,16 +14,9 @@ export default class CookieConsent extends Base {
   constructor( options = {} ){
     super( options )
 
-    const answers = categories.map( category => {
-      const cookieName = this.options.cookie && this.options.cookie.name ? this.options.cookie.name : 'cookieconsent_status_'
-      const answer = getCookie( cookieName + category )
-      return isValidStatus(answer) ? { [category]: answer } : undefined
-    }).filter(obj => obj ? obj[Object.keys(obj)[0]] : false)
-
     // if they have already answered
-    if (answers.length > 0) {
-      setTimeout( () => this.emit( "initialized", answers ) )
-    } else if ( this.options.legal && this.options.legal.countryCode ) {
+    // MR: we still need to initialize to have possibility to open in case of revoke
+    if (this.options.legal && this.options.legal.countryCode) {
       this.initializationComplete( { code: this.options.legal.countryCode } )
     } else if ( this.options.location ) {
       new Location( this.options.location ).locate( this.initializationComplete.bind( this ), this.initializationError.bind( this ) )
@@ -69,13 +61,27 @@ export default class CookieConsent extends Base {
   destroy(){
     return ( this.popup.destroy(), this )
   }
+  get consents() {
+    return this.popup.consents;
+  }
 }
 
-statuses.reduce( ( obj, status ) =>
-( Object.defineProperty( CookieConsent, status, {
-  get: function () { return status },
-  set: function () {},
-  enumerable: false,
-  writeable: false,
-  configurable: false
-}), obj ), CookieConsent )
+for (const status of STATUSES) {
+  Object.defineProperty(CookieConsent, status, {
+    get: function () { return status },
+    set: function () { },
+    enumerable: false,
+    writeable: false,
+    configurable: false
+  });
+}
+
+for (const category of CATEGORIES) {
+  Object.defineProperty(CookieConsent, category, {
+    get: function () { return category },
+    set: function () { },
+    enumerable: false,
+    writeable: false,
+    configurable: false
+  });
+}

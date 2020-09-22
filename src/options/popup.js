@@ -1,6 +1,26 @@
 "use strict"
 
-import { statusDeny, statusAllow, statusDismiss, categories }  from "../constants/index.js"
+import {
+  STATUS_DENY, STATUS_ALLOW, STATUS_DISMISS, CATEGORIES,
+  CATEGORY_UNCATEGORIZED, CATEGORY_ESSENTIAL, CATEGORY_PERSONALIZATION, CATEGORY_ANALYTICS,
+  CATEGORY_MARKETING
+} from "../constants/index.js"
+
+const categoryVariablesNames = {
+  [CATEGORY_ANALYTICS]: 'categoryAnalytics',
+  [CATEGORY_ESSENTIAL]: 'categoryEssential',
+  [CATEGORY_MARKETING]: 'categoryMarketing',
+  [CATEGORY_PERSONALIZATION]: 'categoryPersonalization',
+  [CATEGORY_UNCATEGORIZED]: 'categoryUncategorized'
+}
+
+export const categoryDisplayNamesVariablesNames = {
+  [CATEGORY_ANALYTICS]: 'categoryAnalyticsDisplayName',
+  [CATEGORY_ESSENTIAL]: 'categoryEssentialDisplayName',
+  [CATEGORY_MARKETING]: 'categoryMarketingDisplayName',
+  [CATEGORY_PERSONALIZATION]: 'categoryPersonalizationDisplayName',
+  [CATEGORY_UNCATEGORIZED]: 'categoryUncategorizedDisplayName'
+}
 
 export default {
   // if false, this prevents the popup from showing (useful for giving to control to another piece of code)
@@ -27,15 +47,33 @@ export default {
   // each item defines the inner text for the element that it references
   content: {
     header : 'Cookies used on the website!',
-    message: 'This website uses cookies to ensure you get the best experience on our website.',
+    message: `We would like to measure how you browse our website to constantly improve it, based on your usage patterns. To accomplish this, we must store cookies on your device. If you're cool with that, hit "Accept all cookies". For more information and to customize your settings, hit "Customise settings".`,
     dismiss: 'Got it!',
-    allow  : 'Allow cookies',
+    allow  : 'Accept all cookies',
     deny   : 'Decline',
     link   : 'Learn more',
     href   : 'https://www.cookiesandyou.com',
     close  : '&#x274c',
     target : '_blank',
-    policy : 'Cookie Policy'
+    policy: 'Cookie Policy',
+    customize: 'Customize settings',
+    customizeHeader: 'Review and manage your consent',
+    customizeMessage: `Here is an overview of the cookies we use on this site. Please select categories that you are OK with. You can always change your choices at any time, by hitting the "Manage your consent options" link on the site's footer.`,
+    acceptSelected: 'Accept selected',
+    categoryAnalytics: 'These cookies collect information to help us understand how our website is being used. They allow us to count unique visits and see from where visitors came from. With this information, we can measure and improve the content of our site. We can also see how users navigate between pages and what actions they take.',
+    categoryEssential: `These cookies are necessary to make this site run properly and securely. For example, with this kind of cookies, we register your cookie preferences so that you won't be seeing this pop-up next time you visit our page and we can keep track which categories you have opted-in.
+To keep this site secure, we use <a class="cc-link" href="https://www.cloudflare.com/privacypolicy/" rel="noopener noreferrer" target="_blank">Cloudflare</a> content delivery network and security solutions. The service may place a unique cookie to identify your browser and device to make sure no automated programs can impose security threats on our site.`,
+    categoryPersonalization: '[Personalization category read more message]',
+    categoryMarketing: '[Marketing category read more message]',
+    categoryUncategorized: '[Uncategorized category read more message]',
+    cookiePolicyLink: '',
+    privacyPolicyLink: '',
+    policiesLinkRel: 'noopener noreferrer nofollow',
+    categoryUncategorizedDisplayName: 'Uncategorized',
+    categoryEssentialDisplayName: 'Necessary (always active)',
+    categoryPersonalizationDisplayName: 'Personalization',
+    categoryAnalyticsDisplayName: 'Analytics',
+    categoryMarketingDisplayName: 'Marketing'
   },
 
   // This is the HTML for the elements above. The string {{header}} will be replaced with the equivalent text below.
@@ -50,17 +88,17 @@ export default {
     messagelink:
       '<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a></span>',
     dismiss:
-      `<a aria-label="dismiss cookie message" role=button tabindex="0" class="cc-btn cc-${statusDismiss}">{{dismiss}}</a>`,
+      `<a aria-label="dismiss cookie message" role=button tabindex="0" class="cc-btn cc-${STATUS_DISMISS}">{{dismiss}}</a>`,
     allow:
-      `<a aria-label="allow cookies" role=button tabindex="0"  class="cc-btn cc-${statusAllow}">{{allow}}</a>`,
+      `<a aria-label="allow cookies" role=button tabindex="0"  class="cc-btn cc-${STATUS_ALLOW}">{{allow}}</a>`,
     deny:
-      `<a aria-label="deny cookies" role=button tabindex="0" class="cc-btn cc-${statusDeny}">{{deny}}</a>`,
+      `<a aria-label="deny cookies" role=button tabindex="0" class="cc-btn cc-${STATUS_DENY}">{{deny}}</a>`,
     link:
       '<a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a>',
     close:
       '<span aria-label="dismiss cookie message" role=button tabindex="0" class="cc-close">{{close}}</span>',
     categories: '<ul class="cc-categories">' +
-      categories.map( ( category, index ) =>
+      CATEGORIES.map( ( category, index ) =>
         `<li class="cc-category">
           <button class="cc-btn" tabindex="0"><input type="checkbox" name="${category}"/><span class="cc-btn-checkbox"></span>${category}</button>
           <button class="cc-btn cc-info" aria-label="${category} Definition Button" tabindex="${index+1}">^</button>
@@ -70,7 +108,31 @@ export default {
         </li>`
       ).join("")
       + '</ul>',
-    save: `<button class="cc-btn cc-save">Save</button>`
+    save: `<button class="cc-btn cc-save">Save</button>`,
+    customize: `<button class="cc-btn cc-customize">{{customize}}</button>`,
+    customizeHeader: `<div class="cc-customize-header">{{customizeHeader}}</div>`,
+    customizeMessage: `<div class="cc-customize-message">{{customizeMessage}}</div>`,
+    acceptSelected: `<div class="cc-compliance">
+        <span class="cc-accept-selected">
+          <button class="cc-btn cc-save">{{acceptSelected}}</button>
+        </span>
+      </div>`,
+    customizeCategories: `<ul class="cc-customize-categories">` +
+      CATEGORIES.map(category =>
+        `<li class="cc-category ${category}">
+           <label>
+             <input type="checkbox" id="${category}" name="${category}"/>
+             <span class="cc-btn-checkbox">{{${categoryDisplayNamesVariablesNames[category]}}}</span>
+           </label>
+           <label class="cc-readmore" for="readmore-${category}">Read more</label>
+           <input id="readmore-${category}" type="checkbox"> 
+           <div class="cc-more-info">{{${categoryVariablesNames[category]}}}</div>
+        </li>`
+      ).join("")
+      + '</ul>',
+    policiesLinks: `<div class="cc-policies-links">For more information, please see our 
+      <a class="cc-link" href="{{cookiePolicyLink}}" rel="{{policiesLinkRel}}" target="_blank">Cookie Policy</a> / 
+      <a class="cc-link" href="{{privacyPolicyLink}}" rel="{{policiesLinkRel}}" target="_blank">Privacy Policy</a>.</div>`
     //compliance: compliance is also an element, but it is generated by the application, depending on `type` below
   },
 
@@ -90,7 +152,7 @@ export default {
   compliance: {
     info: '<div class="cc-compliance">{{dismiss}}</div>',
     'opt-in':
-      '<div class="cc-compliance cc-highlight">{{dismiss}}{{allow}}{{customize}}</div>',
+      '<div class="cc-compliance cc-highlight cc-customize">{{customize}}{{allow}}</div>',
     'opt-out':
       '<div class="cc-compliance cc-highlight">{{dismiss}}{{deny}}</div>',
     categories: '<div class="form">{{categories}}{{save}}</div>'
@@ -104,7 +166,22 @@ export default {
     // the 'block' layout tend to be for square floating popups
     basic         : '{{messagelink}}{{compliance}}',
     'basic-close' : '{{messagelink}}{{compliance}}{{close}}',
-    'basic-header': '{{header}}{{message}}{{link}}{{compliance}}'
+    'basic-header': '{{header}}{{message}}{{link}}{{compliance}}',
+    sanddev: `<div class="cc-main-content">
+        {{message}}
+        <div class="content-footer">
+          {{policiesLinks}}{{compliance}}
+        </div>
+      </div>
+      <div class="cc-customize-content">
+        {{customizeHeader}}
+        {{customizeMessage}}
+        {{customizeCategories}}
+        <div class="content-footer">
+          {{policiesLinks}}
+          {{acceptSelected}}
+        </div>
+      </div>`
     // add a custom layout here, then add some new css with the class '.cc-layout-my-cool-layout'
     //'my-cool-layout': '<div class="my-special-layout">{{message}}{{compliance}}</div>{{close}}',
   },
@@ -196,5 +273,17 @@ export default {
   // If this is defined, then it is used as the inner html instead of layout. This allows for ultimate customisation.
   // Be sure to use the classes `cc-btn` and `cc-ALLOW`, `cc-DENY` or `cc-DISMISS`. They enable the app to register click
   // handlers. You can use other pre-existing classes too. See `src/styles` folder.
-  overrideHTML: null
+  overrideHTML: null,
+
+  // element id that is used to open consent pop-up to review and change user consent
+  consentSettingsElementId: null,
+
+  // categories to be shown and used
+  showCategories: {
+    [CATEGORY_UNCATEGORIZED]: true,
+    [CATEGORY_ESSENTIAL]: true,
+    [CATEGORY_PERSONALIZATION]: true,
+    [CATEGORY_ANALYTICS]: true,
+    [CATEGORY_MARKETING]: true
+  }
 }

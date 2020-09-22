@@ -1,0 +1,79 @@
+<!doctype html>
+<html dir="ltr" lang="en-US">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <link href="style.css" rel="stylesheet">
+    <script src="../src/bundle.js"></script>
+  </head>
+<body>
+  <div id="btn-revokeChoice" style="color: white; padding: 32px">Change my consent</div>
+  
+  <script>
+    const CC = window.CookieConsent;
+      const cc = new CC({
+        // just some default styling
+        "palette": {
+          "popup": {
+            "background": "black",
+            "text": "white"
+          },
+          "button": {
+            "background": "#f5d948"
+          }
+        },
+        type: 'opt-in',
+        consentSettingsElementId: 'btn-revokeChoice',
+        layout: 'sanddev',
+        showCategories: {
+          [CC.UNCATEGORIZED]: false,
+          [CC.ESSENTIAL]: true,
+          [CC.PERSONALIZATION]: false,
+          [CC.ANALYTICS]: true,
+          [CC.MARKETING]: false
+        },
+        content: {
+          privacyPolicyLink: '/privacy-policy',
+          cookiePolicyLink: '/cookie-policy'
+        }
+      });
+
+      cc.on('initialized', function () {
+        const { consents } = cc;
+
+        if (consents[CC.ANALYTICS] === CC.ALLOW) {
+          initializeGTM();
+        }
+      });
+
+      cc.on('popupClosed', function () {
+        const { consents } = cc;
+
+        if (consents[CC.ANALYTICS] === CC.ALLOW) {
+          initializeGTM();
+        } else if (window.gtmInitialized) {
+          // reload page to get rid of GTM script
+          location.reload();
+        }
+      });
+
+      function initializeGTM() {
+        // if (!window.gtmInitialized) {
+        //   window.dataLayer.push({
+        //     'gtm.start': new Date().getTime(),
+        //     event: 'gtm.js'
+        //   });
+        //   var f = document.getElementsByTagName('script')[0];
+        //   var j = document.createElement('script');
+        //   j.async = true;
+        //   j.src =
+        //     'https://www.googletagmanager.com/gtm.js?id={{ site.GTM_CONTAINER_ID }}';
+        //   f.parentNode.insertBefore(j, f);
+        window.gtmInitialized = true;
+        // }
+
+        console.log('gtm initialized');
+      }
+    </script>
+  </body>
+</html>
