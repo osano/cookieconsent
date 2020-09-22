@@ -51,14 +51,17 @@
 
         if (consents[CC.ANALYTICS] === CC.ALLOW) {
           initializeGTM();
-        } else if (window.gtmInitialized) {
-          // reload page to get rid of GTM script
-          location.reload();
+        } else if (isGTMInitialized()) {
+          uninitializeGTM();
         }
       });
 
+      function isGTMInitialized() {
+        return window.gtmInitialized;
+      }
+
       function initializeGTM() {
-        // if (!window.gtmInitialized) {
+        // if (!isGTMInitialized()) {
         //   window.dataLayer.push({
         //     'gtm.start': new Date().getTime(),
         //     event: 'gtm.js'
@@ -71,8 +74,12 @@
         //   f.parentNode.insertBefore(j, f);
         window.gtmInitialized = true;
         // }
+      }
 
-        console.log('gtm initialized');
+      function uninitializeGTM() {
+        cc.deleteCookie('_ga');
+        // reload page to get rid of GTM
+        location.reload();
       }
     </script>
   </body>
