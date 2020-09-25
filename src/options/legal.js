@@ -9,8 +9,11 @@ export default {
   // countries that enforce some version of a cookie law
   hasLaw: [
     'AT',
+    'AU',
     'BE',
     'BG',
+    'BR',
+    'CL',
     'CY',
     'CZ',
     'DE',
@@ -26,19 +29,26 @@ export default {
     'HR',
     'HU',
     'IE',
+    'IN',
     'IT',
+    'JP',
+    'KR',
     'LT',
     'LU',
     'LV',
     'MT',
     'NL',
     'NO',
+    'NZ',
     'PL',
     'PT',
     'RO',
+    'RU',
     'SE',
     'SK',
-    'UK'
+    'TH',
+    'UK',
+    'US'
   ],
 
   // countries that say that all cookie consent choices must be revokable (a user must be able too change their mind)
