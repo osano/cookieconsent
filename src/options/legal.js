@@ -11,53 +11,58 @@ export default {
     'AT',
     'BE',
     'BG',
-    'HR',
-    'CZ',
     'CY',
+    'CZ',
+    'DE',
     'DK',
     'EE',
+    'EL',
+    'ES',
+    'EU',
     'FI',
     'FR',
-    'DE',
-    'EL',
+    'GB',
+    'GR',
+    'HR',
     'HU',
     'IE',
     'IT',
-    'LV',
     'LT',
     'LU',
+    'LV',
     'MT',
     'NL',
     'NO',
     'PL',
     'PT',
-    'SK',
-    'ES',
+    'RO',
     'SE',
-    'GB',
-    'UK',
-    'GR',
-    'EU',
-    'RO'
+    'SK',
+    'UK'
   ],
 
   // countries that say that all cookie consent choices must be revokable (a user must be able too change their mind)
   revokable: [
-    'HR',
     'CY',
+    'DE',
     'DK',
     'EE',
+    'ES',
     'FR',
-    'DE',
-    'LV',
+    'HR',
     'LT',
+    'LV',
     'NL',
     'NO',
-    'PT',
-    'ES'
+    'PT'
   ],
 
   // countries that say that a person can only "consent" if the explicitly click on "I agree".
   // in these countries, consent cannot be implied via a timeout or by scrolling down the page
-  explicitAction: ['HR', 'IT', 'ES', 'NO']
+  explicitAction: [
+    'ES',
+    'HR',
+    'IT',
+    'NO'
+  ]
 }
