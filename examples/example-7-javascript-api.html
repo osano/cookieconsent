@@ -52,7 +52,8 @@
     </div>
 
     <script src="examples/script.js"></script>
-    <script src="build/cookieconsent.min.js"></script>
+    <!--script src="build/cookieconsent.min.js"></script-->
+    <script src="src/bundle.js"></script>
     <script>
 
       const logingElem = document.getElementById('console');
@@ -67,7 +68,8 @@
         palette: {
           popup: { background: "#eaf7f7", text: "#5c7291" },
           button: { background: "#56cbdb",text: "#ffffff" }
-        }
+        },
+        location: true
       })
       cc.on( "popupOpened", function () {
         log('<em>popupOpened</em> event fired');
