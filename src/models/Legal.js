@@ -9,9 +9,9 @@ export default class Legal extends Base {
   }
   get( countryCode ){
     return {
-      hasLaw: this.options.hasLaw.indexOf(countryCode) >= 0,
-      revokable: this.options.revokable.indexOf(countryCode) >= 0,
-      explicitAction: this.options.explicitAction.indexOf(countryCode) >= 0
+      hasLaw: this.options.hasLaw.includes(countryCode),
+      revokable: this.options.revokable.includes(countryCode),
+      explicitAction: this.options.explicitAction.includes(countryCode)
     }
   }
   applyLaw( options, countryCode ){
