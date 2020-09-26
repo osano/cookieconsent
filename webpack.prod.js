@@ -1,7 +1,7 @@
 "use strict"
 
 const join = require( "path" ).join
-const merge = require('webpack-merge')
+const { merge } = require('webpack-merge')
 const common = require( "./webpack.common.js" )
 const MinifyPlugin = require("babel-minify-webpack-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
