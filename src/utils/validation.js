@@ -7,7 +7,7 @@ import { statuses } from "../constants"
  * @param { string } status - Status String to
  * @return { boolean } - if status is valid
  */
-export const isValidStatus = status => statuses.indexOf(status) >= 0
+export const isValidStatus = status => statuses.includes(status)
 
 export const isMobile = () =>
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test( navigator.userAgent )

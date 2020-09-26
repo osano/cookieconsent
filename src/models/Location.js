@@ -37,7 +37,7 @@ export default class Location extends Base {
     // If it's a string, use one of the location services.
     if (typeof serviceOption === 'function') {
       const dynamicOpts = serviceOption()
-      return dynamicOpts.name ? 
+      return dynamicOpts.name ?
         Object.assign(
           {},
           dynamicOpts,
