@@ -13,6 +13,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Events: 'initialized', 'error', 'popupOpened', 'popupClosed', 'revokeChoice', 'statusChanged' `cc.on( 'error', console.error.bind( console ) )`
 - Moved to Webpack 4.0: This move integrates the CSS(SCSS) into the JS so there is only one file needed from the CDN [#558]
 - Added the link click event watcher that will dismiss the pop-up if option `dismissOnLinkClick: (false)` is set to true [#503]
+- Added `cookie` option `sameSite`.
+  Supports value 'Lax', 'Strict' and 'None', default is 'Lax', disable using `cookie.sameSite: ''`
+- Added geolocation service `freegeoip` and set as default. (15,000 queries per hour)
+– Added more countries having cookie laws:
+  - Australia
+  - Brasil
+  - Chile
+  - India
+  - Japan
+  - South Korea
+  - New Zealand
+  - Russia
+  - Thailand
+  - United States
 
 ### Security
 - Updated all dependencies to latest stable releases
