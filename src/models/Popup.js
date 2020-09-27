@@ -41,7 +41,7 @@ export default class Popup extends Base {
         MozT: 'transitionend',
         WebkitT: 'webkitTransitionEnd'
       }
-  
+
       for (let prefix in trans) {
         if (
           trans.hasOwnProperty(prefix) &&
@@ -79,7 +79,7 @@ export default class Popup extends Base {
 
     // if static, we need to grow the element from 0 height so it doesn't jump the page
     // content. we wrap an element around it which will mask the hidden content
-    
+
     if (this.options.static) {
       // `grower` is a wrapper div with a hidden overflow whose height is animated
       const wrapper = this.appendMarkup(`<div class="cc-grower">${cookiePopup}</div>`)
@@ -121,7 +121,7 @@ export default class Popup extends Base {
 
   close( showRevoke ) {
     if (!this.element) return
-    
+
     if (this.isOpen()) {
       if (this.hasTransition) {
         this.fadeOut()
@@ -179,7 +179,7 @@ export default class Popup extends Base {
     this.openingTimeout = null
     element.classList.remove('cc-invisible')
   }
-  
+
   fadeOut() {
     if (!this.hasTransition || !this.element) return
 
@@ -199,7 +199,7 @@ export default class Popup extends Base {
       this.element.classList.add('cc-invisible')
     }
   }
-  
+
   afterFadeOut(el) {
     el.style.display = 'none' // after close and before open, the display should be none
     el.removeEventListener(this.transitionEnd, this.afterTransition)
@@ -255,7 +255,7 @@ export default class Popup extends Base {
     }
   }
 
-  /** 
+  /**
    * Set's cookie statuses
    * @param { string<status> } allOrUndef      - If this is the only param, set ALL if not, set Uncategorized cookies statuses set to value.
    * @param { string<status> } essential       - Essential Cookies status set to value
@@ -265,13 +265,13 @@ export default class Popup extends Base {
    * @return { undefined }
   */
   setStatuses() {
-    const { name, expiryDays, domain, path, secure } = this.options.cookie
+    const { name, expiryDays, domain, path, secure, sameSite } = this.options.cookie
 
     const updateCategoryStatus = ( categoryName, status ) => {
       if (isValidStatus(status)) {
         const cookieName = name+'_'+categoryName
         const chosenBefore = statuses.indexOf( getCookie(cookieName) ) >= 0
-        setCookie(cookieName, status, expiryDays, domain, path, secure)
+        setCookie(cookieName, status, expiryDays, domain, path, secure, sameSite)
         this.emit( "statusChanged", cookieName, status, chosenBefore )
       } else {
         this.clearStatuses()
@@ -300,12 +300,12 @@ export default class Popup extends Base {
    * Clear all cookie categoies statuses
    */
   clearStatuses() {
-    const { name, domain, path } = this.options.cookie
+    const { name, domain, path, secure, sameSite } = this.options.cookie
     categories.forEach( categoryName => {
-      setCookie(name+'_'+categoryName, '', -1, domain, path)
+      setCookie(name+'_'+categoryName, '', -1, domain, path, secure, sameSite)
     })
   }
-  
+
   canUseCookies() {
     if (!window.navigator.cookieEnabled || window.CookiesOK || window.navigator.CookiesOK ) {
       return true
@@ -366,7 +366,7 @@ export default class Popup extends Base {
 
     // removes link if showLink is false
     if (!opts.showLink) {
-      opts.elements.link = '' 
+      opts.elements.link = ''
       opts.elements.messagelink = opts.elements.message
     }
 
@@ -394,7 +394,7 @@ export default class Popup extends Base {
     if (!layout) {
       layout = opts.layouts.basic
     }
-    
+
     return interpolateString(layout, match =>interpolated[match] )
   }
 
@@ -450,7 +450,7 @@ export default class Popup extends Base {
   handleButtonClick(event) {
     // returns the parent element with the specified class, or the original element - null if not found
     const btn = traverseDOMPath(event.target, 'cc-btn') || event.target
-    
+
     if (btn.classList.contains( 'cc-btn' ) && btn.classList.contains( 'cc-save' )){
       this.setStatuses()
       this.close(true)
@@ -544,7 +544,7 @@ export default class Popup extends Base {
           ) {
             this.setStatuses(statusDismiss)
             this.close(true)
-            
+
             window.removeEventListener('click', this.onWindowClick)
             window.removeEventListener('touchend', this.onWindowClick)
             this.onWindowClick = null

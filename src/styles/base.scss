@@ -5,7 +5,8 @@
   overflow: hidden;
   box-sizing: border-box; /* exclude padding when dealing with width */
 
-  font-family: Helvetica, Calibri, Arial, sans-serif;
+  /* System font stack */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;;
   font-size: 16px; /* by setting the base font here, we can size the rest of the popup using CSS `em` */
   line-height: 1.5em;
 
