@@ -1,0 +1,11 @@
+# docs v2 https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/configuration-options-for-dependency-updates
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    commit-message:
+      # for production deps, prefix commit messages with "fix" (trigger a patch release)
+      prefix: "fix"
+      # for development deps, prefix commit messages with "chore" (do NOT trigger an npm release)
+      prefix-development: "chore"
+      include: "scope"
