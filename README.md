@@ -6,7 +6,7 @@
 
 This is a just-enough-working fork of https://github.com/osano/cookieconsent. This fork has the following differences:
 
-1. It works. I had to update some dependencies to get it to even build. It appears that [Osano has decided to abandon](https://github.com/osano/cookieconsent/pull/784#issuecomment-734986300) the open source version of their package instead they just _"recommend just using the free version of our commercial offering"_.
+1. It works. I had to update some dependencies to get it to even build. It appears that [Osano has decided to abandon](https://github.com/osano/cookieconsent/pull/784#issuecomment-734986300) the open source version of their package with a response of _"we recommend just using the free version of our commercial offering"_.
 2. Uses the v4.0 code base which was never published to npm, but was pushed to github.
 3. Is module-only and doesn't attach a global to the window by default.
 4. Includes some minimal typescript types in the package.
@@ -38,7 +38,8 @@ I don't have concrete plans, but if we had a quorum of 2-3 other folks intereste
 
 I just want to keep my use of this package working for now. I am considering the following:
 
-- Setting up automated publishing to NPM with semantic-release
+- [x] Setting up automated publishing to NPM with semantic-release
+- [ ] Export `module` in package.json as ES6 (right?) separate from the `main`. Ensure main is transpiled to CJS.
 
 ## The remainder of this readme (below) is from the original repo that this was forked from at https://github.com/osano/cookieconsent
 
