@@ -7,3 +7,4 @@ vscode.code-workspace
 build-verify/
 coverage/
 coverage/**
+build/cookieconsent.min.js
