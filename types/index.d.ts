@@ -1,4 +1,4 @@
-declare module "cookieconsent" {
+declare module "@activescott/cookieconsent" {
   export type ColorString = string
   export type ConsentOptions = {
     enabled?: boolean,
