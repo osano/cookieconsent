@@ -1,49 +1,3 @@
-# @activescott/cookieconsent
-
-[![npm version](https://badge.fury.io/js/%40activescott%2Fcookieconsent.svg)](https://www.npmjs.com/package/@activescott/cookieconsent)
-[![Build Status](https://github.com/activescott/cookieconsent/workflows/main/badge.svg)](https://github.com/activescott/cookieconsent/actions)
-[![MIT License][li]][ll]
-
-This is a just-enough-working fork of https://github.com/osano/cookieconsent. This fork has the following differences:
-
-1. It works. I had to update some dependencies to get it to even build. It appears that [Osano has decided to abandon](https://github.com/osano/cookieconsent/pull/784#issuecomment-734986300) the open source version of their package instead they just _"recommend just using the free version of our commercial offering"_.
-2. Uses the v4.0 code base which was never published to npm, but was pushed to github.
-3. Is module-only and doesn't attach a global to the window by default.
-4. Includes some minimal typescript types in the package.
-5. Exporting the original source rather than the minified bundle. I presume you'll use your own bundler.
-6. It is automatically deployed according to the release process described below (so send me your PR and as long as it passes CI and is reasonable improvement I will merge it).
-
-## Usage
-
-To use it, install using
-
-```sh
-npm install -P "@activescott/cookieconsent"
-```
-
-## Release Process (Deploying to NPM) 🚀
-
-We use [semantic-release](https://github.com/semantic-release/semantic-release) to consistently release [semver](https://semver.org/)-compatible versions. This project deploys to multiple [npm distribution tags](https://docs.npmjs.com/cli/dist-tag). Each of the below branches correspond to the following npm distribution tags:
-
-| branch | npm distribution tag |
-| ------ | -------------------- |
-| master | latest               |
-| beta   | beta                 |
-
-To trigger a release use a Conventional Commit following [Angular Commit Message Conventions](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines) on one of the above branches.
-
-## What's next?
-
-I don't have concrete plans, but if we had a quorum of 2-3 other folks interested in keeping this fork up to date, I'd be willing to invest some time to automate publishing and start accepting PRs and issues (although now that I've looked through this code base 😬, we should really just rewrite it).
-
-I just want to keep my use of this package working for now. I am considering the following:
-
-- Setting up automated publishing to NPM with semantic-release
-
-## The remainder of this readme (below) is from the original repo that this was forked from at https://github.com/osano/cookieconsent
-
----
-
 [![Build Status][bi]][bl]
 [![MIT License][li]][ll]
 [![Twitter][ti]][tl]
@@ -60,6 +14,7 @@ Cookie Consent is seen over 2 BILLION times every month and is used on millions 
 
 We welcome community contributions and actively review pull requests.
 
+
 ## Hosted Zero Config Consent
 
 Our parent company Osano actively maintains this open source project. Osano is a B-corp and is backed by millions of dollars in venture capital to create data privacy tools for the world. Our mission is to create transparency in data, please consider [joining our team](https://www.osano.com/company/careers).
@@ -70,17 +25,16 @@ Osano offers a completely [free hosted consent management platform][cl], with ad
 
 The hosted version of the cookie consent manager provides additional capabilities such as:
 
-- Multi-lingual, translated into 38 languages and growing. Visitors automatically see the dialog in their browser or OS preferred language.
-- Consents are stored automatically on the blockchain. REST API calls are available to developers to search and browse the consent records.
-- 3rd party script blocking and loading does not require callbacks but is instead configurable from a dashboard providing developers with control over what the marketing team can enable or disable.
-- Hosted on AWS Cloudfront with edges around the globe for
+* Multi-lingual, translated into 38 languages and growing. Visitors automatically see the dialog in their browser or OS preferred language.
+* Consents are stored automatically on the blockchain. REST API calls are available to developers to search and browse the consent records.
+* 3rd party script blocking and loading does not require callbacks but is instead configurable from a dashboard providing developers with control over what the marketing team can enable or disable.
+* Hosted on AWS Cloudfront with edges around the globe for 
 
 ## Basic Use
 
-With version 4.0 you only need to attach the script as we've bundled everything together now. The initialization style has changed as have the callbacks (they're gone). Please see the text below to get started. Then, take a look at updated API via the [docs][dl].
+With version 4.0 you only need to attach the script as we've bundled everything together now. The initialization style has changed as have the callbacks (they're gone). Please see the text below to get started.  Then, take a look at updated API via the [docs][dl].
 
 #### Module
-
 ```
 import CC from "CookieConsent"
 // or
@@ -88,13 +42,11 @@ const CC = require( "CookieConsent" )
 ```
 
 #### Classic
-
 ```
 const CC = window.CookieConsent
 ```
 
 ##### Initialization:
-
 ```
 const cc = new CC({
   //...options,
@@ -102,8 +54,7 @@ const cc = new CC({
 })
 ```
 
-##### Lifecycle hooks, are now events:
-
+##### Lifecycle hooks, are now events: 
 ```
 cc.on( "initialized", ( ...args ) => console.log( args ) )
 cc.on( "error", console.error )
@@ -113,8 +64,8 @@ cc.on( "revokeChoice", () => console.log( "Popup Reset" ) )
 cc.on( "statusChanged", ( ...args ) => console.log( args ) )
 ```
 
-## Version 4.0
 
+## Version 4.0
 Lots of updates & some breaking changes... but they're all for the better, we promise!
 
 ## Version 3.1
@@ -192,7 +143,7 @@ yarn run build
 
 Osano is a registered trademark of Osano, Inc.
 
-Nothing on the Osano website, platform, services, or software, nor any portion thereof constitutes actual legal or regulatory advice, opinion, or recommendation by Osano, Inc. or Osano International Compliance Services LTD.
+Nothing on the Osano website, platform, services, or software, nor any portion thereof constitutes actual legal or regulatory advice, opinion, or recommendation by Osano, Inc. or Osano International Compliance Services LTD. 
 
 **If legal assistance is required, users should seek the services of an attorney.**
 

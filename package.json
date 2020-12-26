@@ -1,18 +1,8 @@
 {
-  "name": "@activescott/cookieconsent",
+  "name": "cookieconsent",
   "version": "4.0.0",
-  "description": "FORK OF Osano cookie consent tool.",
-  "main": "src/index.js",
-  "types": "types/index.d.ts",
-  "files": [
-    "src/**/*",
-    "!src/**/*.spec.js",
-    "!src/__mocks__/",
-    "types/**/*"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
+  "description": "Osano cookie consent tool.",
+  "main": "build/cookieconsent.min.js",
   "devDependencies": {
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
@@ -46,17 +36,19 @@
     "webpack-cli": "^3.3.8",
     "webpack-merge": "^4.2.2"
   },
-  "homepage": "https://github.com/activescott/cookieconsent",
+  "homepage": "http://cookieconsent.osano.com/",
   "scripts": {
-    "build:dev": "./node_modules/.bin/webpack --config webpack.dev.js",
-    "build": "./node_modules/.bin/webpack -p --optimize-minimize --config webpack.prod.js",
+    "clean": "rimraf ./build/**/*",
+    "build:dev": "npx webpack --config webpack.dev.js",
+    "build": "npm run clean && npx webpack -p --optimize-minimize --config webpack.prod.js",
+    "build:release": "npm run build && bump -c -t package.json package-lock.json bower.json",
     "test": "jest ./src --verbose --coverage && rm -rf coverage/"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/activescott/cookieconsent.git"
+    "url": "https://github.com/osano/cookieconsent.git"
   },
-  "author": "Scott Willeke (forked from Osano, Inc., a Public Benefit Corporation)",
+  "author": "Osano, Inc., a Public Benefit Corporation",
   "license": "MIT",
   "jest": {
     "moduleNameMapper": {

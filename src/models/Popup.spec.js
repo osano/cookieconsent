@@ -88,10 +88,12 @@ describe( "Popup Class", () => {
     describe( "updates `content` options `link` and `messagelink`", () => {
       hasCorrectOptions(
         popup,
+        mergeOptions(
           mergeOptions( defaultOptions, options ),
           {
             revokable: true
           }
+        )
       )
     })
   })
