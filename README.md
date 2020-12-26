@@ -8,9 +8,9 @@ This is a just-enough-working fork of https://github.com/osano/cookieconsent. Th
 
 1. It works. I had to update some dependencies to get it to even build. It appears that [Osano has decided to abandon](https://github.com/osano/cookieconsent/pull/784#issuecomment-734986300) the open source version of their package with a response of _"we recommend just using the free version of our commercial offering"_.
 2. Uses the v4.0 code base which was never published to npm, but was pushed to github.
-3. Is module-only and doesn't attach a global to the window by default.
+3. It exports a CommonJS module-only and doesn't attach a global to the window by default.
 4. Includes some minimal typescript types in the package.
-5. Exporting the original source rather than the minified bundle. I presume you'll use your own bundler.
+5. ~~Exporting the original source rather than the minified bundle. I presume you'll use your own bundler.~~ This was a mess w/ node & jest, so it does export a CommonJS bundled module now, but it isn't minified.
 6. It is automatically deployed according to the release process described below (so send me your PR and as long as it passes CI and is reasonable improvement I will merge it).
 
 ## Usage
@@ -39,7 +39,7 @@ I don't have concrete plans, but if we had a quorum of 2-3 other folks intereste
 I just want to keep my use of this package working for now. I am considering the following:
 
 - [x] Setting up automated publishing to NPM with semantic-release
-- [ ] Export `module` in package.json as ES6 (right?) separate from the `main`. Ensure main is transpiled to CJS.
+- [ ] Is it useful to add a `module="dist/esm/index.mjs"` declaration in package.json? Node seems ot have deviated from this approach and wants entirely separate packages for esm vs cjs: https://nodejs.org/api/packages.html#packages_type
 
 ## The remainder of this readme (below) is from the original repo that this was forked from at https://github.com/osano/cookieconsent
 
