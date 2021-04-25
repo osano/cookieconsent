@@ -289,7 +289,7 @@ export default class Popup extends Base {
   }
 
   /**
-   * Get all cookie categoies statuses
+   * Get all cookie categories statuses
    * @return { array<string> } - cookie categories status in order of categories
    */
   getStatuses() {
@@ -297,7 +297,7 @@ export default class Popup extends Base {
   }
 
   /**
-   * Clear all cookie categoies statuses
+   * Clear all cookie categories statuses
    */
   clearStatuses() {
     const { name, domain, path } = this.options.cookie
