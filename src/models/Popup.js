@@ -260,7 +260,7 @@ export default class Popup extends Base {
    * @param { string<status> } allOrUndef      - If this is the only param, set ALL if not, set Uncategorized cookies statuses set to value.
    * @param { string<status> } essential       - Essential Cookies status set to value
    * @param { string<status> } personalization - Preferences / Functionality set to value
-   * @param { string<status> } analytics       - Analytis Cookies status set to value
+   * @param { string<status> } analytics       - Analytics Cookies status set to value
    * @param { string<status> } marketing       - Marketing Cookies status set to value
    * @return { undefined }
   */
