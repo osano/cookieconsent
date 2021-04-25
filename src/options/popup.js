@@ -146,7 +146,7 @@ export default {
   // Most of the time this should be false, but the `cookieconsent.legal` can change this to `true` if it detects that it should
   revokable: false,
 
-  // if true, the revokable button will tranlate in and out
+  // if true, the revokable button will translate in and out
   animateRevokable: true,
 
   // used to disable link on existing layouts
