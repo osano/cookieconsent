@@ -12,8 +12,8 @@ const isLegal = legal => (
   expect( legal ).toHaveProperty( "applyLaw" ),
   expect( legal.options ).toBeInstanceOf( Object )
 )
-const hasCorrectOptions = ( legal, expectedes ) => (
-  Object.entries( expectedes ).forEach( ( [ key, value ] ) => {
+const hasCorrectOptions = ( legal, expected ) => (
+  Object.entries( expected ).forEach( ( [ key, value ] ) => {
     test( "`" + key + "`", () => expect( legal.options[ key ] ).toEqual( value ) )
   })
 )

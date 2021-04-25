@@ -40,8 +40,8 @@ const isPopup = popup => (
   expect( popup.customStyles ).toBeInstanceOf( Object ),
   expect( Object.keys( popup.userCategories ) ).toStrictEqual( categories )
 )
-const hasCorrectOptions = ( popup, expecteds ) => (
-  Object.entries( expecteds ).forEach( ( [ key, value ] ) => {
+const hasCorrectOptions = ( popup, expected ) => (
+  Object.entries( expected ).forEach( ( [ key, value ] ) => {
     test( "`" + key + "`", () => expect( popup.options[ key ] ).toStrictEqual( value ) )
   })
 )

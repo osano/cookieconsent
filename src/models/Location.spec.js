@@ -22,8 +22,8 @@ const isLocation = location => (
   expect( location ).toHaveProperty( "logError" ),
   expect( location.options ).toBeInstanceOf( Object )
 )
-const hasCorrectOptions = ( location, expectedes ) => (
-  Object.entries( expectedes ).forEach( ( [ key, value ] ) => {
+const hasCorrectOptions = ( location, expected ) => (
+  Object.entries( expected ).forEach( ( [ key, value ] ) => {
     test( "`" + key + "`", () => expect( location.options[ key ] ).toStrictEqual( value ) )
   })
 )
