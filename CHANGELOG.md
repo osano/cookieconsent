@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Where can you help?
 - Move storage to localStorage [#455]
-- Multiligual support [#570]
+- Multilingual support [#570]
 - Allow for custom categories
 - More lifecycle events
 
