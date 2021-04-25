@@ -58,7 +58,7 @@ describe( "Popup Class", () => {
       container: document.getElementsByClassName( "className" )[ 0 ],
       cookie   : {
         name  : "test_cookie",
-        comain: "me.selfdomain.com",
+        domain: "me.selfdomain.com",
         secure: true
       },
       content  : {
