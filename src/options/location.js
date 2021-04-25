@@ -55,7 +55,7 @@ export default {
       }
     },
 
-    // This service requires an option to define `key`. Options are proived using objects or functions
+    // This service requires an option to define `key`. Options are provided using objects or functions
     ipinfodb: function() {
       return {
         // This service responds with JSON, so we simply need to parse it and return the country code
