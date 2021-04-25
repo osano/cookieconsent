@@ -156,7 +156,7 @@ export default {
   // set value as scroll range to enable
   dismissOnScroll: false,
 
-  // set value as time in milliseconds to autodismiss after set time
+  // set value as time in milliseconds to auto dismiss after set time
   dismissOnTimeout: false,
 
   // set value as click anything on the page, excluding the `ignoreClicksFrom` below (if we click on the revoke button etc)
