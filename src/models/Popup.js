@@ -161,7 +161,7 @@ export default class Popup extends Base {
 
       // Although most browsers can handle values less than 20ms, it should remain above this value.
       // This is because we are waiting for a "browser redraw" before we remove the 'cc-invisible' class.
-      // If the class is remvoed before a redraw could happen, then the fadeIn effect WILL NOT work, and
+      // If the class is removed before a redraw could happen, then the fadeIn effect WILL NOT work, and
       // the popup will appear from nothing. Therefore we MUST allow enough time for the browser to do
       // its thing. The actually difference between using 0 and 20 in a set timeout is negligible anyway
       this.openingTimeout = setTimeout(
