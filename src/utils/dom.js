@@ -80,7 +80,7 @@ export const addCustomStylesheet = (id, palette, prefix) => {
       }
   }
 
-  // this will be interpretted as CSS. the key is the selector, and each array element is a rule
+  // this will be interpreted as CSS. the key is the selector, and each array element is a rule
   const style = document.createElement('style')
   style.id = id
   document.head.appendChild( style )
