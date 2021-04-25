@@ -106,7 +106,7 @@ describe( "Popup Class", () => {
       showLink : false
     }
     const popup = new Popup( options )
-    describe( "revokable is set to true progmatically", () => {
+    describe( "revokable is set to true programmatically", () => {
 
     })
   })
