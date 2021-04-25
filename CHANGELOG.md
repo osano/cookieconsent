@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Throws appropriate message if there is no container for the popup to attach to [#579]
 - Opt-out changes cookie value appropriately [#560] ( we're not destroying them as they fall under the 'essential' category)
-- 'initialise' callback now 'intialized' event that fires before any user actions are possible [#474]
+- 'initialise' callback now 'initialized' event that fires before any user actions are possible [#474]
 - Removed `event.path` from the code base [#502]
 
 ### Refactor:
@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Where can you help?
 - Move storage to localStorage [#455]
-- Multiligual support [#570]
+- Multilingual support [#570]
 - Allow for custom categories
 - More lifecycle events
 

@@ -55,11 +55,11 @@
     <script src="build/cookieconsent.min.js"></script>
     <script>
 
-      const logingElem = document.getElementById('console');
+      const loggingElem = document.getElementById('console');
 
       const log = function (message) {
-        logingElem.innerHTML += timeStamp() + message + "<br>";
-        logingElem.scrollTop = logingElem.scrollHeight;
+        loggingElem.innerHTML += timeStamp() + message + "<br>";
+        loggingElem.scrollTop = loggingElem.scrollHeight;
       }
 
       const cc = new CookieConsent({

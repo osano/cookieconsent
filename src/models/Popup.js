@@ -161,9 +161,9 @@ export default class Popup extends Base {
 
       // Although most browsers can handle values less than 20ms, it should remain above this value.
       // This is because we are waiting for a "browser redraw" before we remove the 'cc-invisible' class.
-      // If the class is remvoed before a redraw could happen, then the fadeIn effect WILL NOT work, and
+      // If the class is removed before a redraw could happen, then the fadeIn effect WILL NOT work, and
       // the popup will appear from nothing. Therefore we MUST allow enough time for the browser to do
-      // its thing. The actually difference between using 0 and 20 in a set timeout is neglegible anyway
+      // its thing. The actually difference between using 0 and 20 in a set timeout is negligible anyway
       this.openingTimeout = setTimeout(
         () => this.afterFadeIn(el),
         fadeInTimeout
@@ -260,7 +260,7 @@ export default class Popup extends Base {
    * @param { string<status> } allOrUndef      - If this is the only param, set ALL if not, set Uncategorized cookies statuses set to value.
    * @param { string<status> } essential       - Essential Cookies status set to value
    * @param { string<status> } personalization - Preferences / Functionality set to value
-   * @param { string<status> } analytics       - Analytis Cookies status set to value
+   * @param { string<status> } analytics       - Analytics Cookies status set to value
    * @param { string<status> } marketing       - Marketing Cookies status set to value
    * @return { undefined }
   */
@@ -289,7 +289,7 @@ export default class Popup extends Base {
   }
 
   /**
-   * Get all cookie categoies statuses
+   * Get all cookie categories statuses
    * @return { array<string> } - cookie categories status in order of categories
    */
   getStatuses() {
@@ -297,7 +297,7 @@ export default class Popup extends Base {
   }
 
   /**
-   * Clear all cookie categoies statuses
+   * Clear all cookie categories statuses
    */
   clearStatuses() {
     const { name, domain, path } = this.options.cookie

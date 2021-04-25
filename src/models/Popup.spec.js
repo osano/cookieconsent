@@ -40,8 +40,8 @@ const isPopup = popup => (
   expect( popup.customStyles ).toBeInstanceOf( Object ),
   expect( Object.keys( popup.userCategories ) ).toStrictEqual( categories )
 )
-const hasCorrectOptions = ( popup, expecteds ) => (
-  Object.entries( expecteds ).forEach( ( [ key, value ] ) => {
+const hasCorrectOptions = ( popup, expected ) => (
+  Object.entries( expected ).forEach( ( [ key, value ] ) => {
     test( "`" + key + "`", () => expect( popup.options[ key ] ).toStrictEqual( value ) )
   })
 )
@@ -58,7 +58,7 @@ describe( "Popup Class", () => {
       container: document.getElementsByClassName( "className" )[ 0 ],
       cookie   : {
         name  : "test_cookie",
-        comain: "me.selfdomain.com",
+        domain: "me.selfdomain.com",
         secure: true
       },
       content  : {
@@ -106,7 +106,7 @@ describe( "Popup Class", () => {
       showLink : false
     }
     const popup = new Popup( options )
-    describe( "revokable is set to true progmatically", () => {
+    describe( "revokable is set to true programmatically", () => {
 
     })
   })

@@ -146,7 +146,7 @@ export default {
   // Most of the time this should be false, but the `cookieconsent.legal` can change this to `true` if it detects that it should
   revokable: false,
 
-  // if true, the revokable button will tranlate in and out
+  // if true, the revokable button will translate in and out
   animateRevokable: true,
 
   // used to disable link on existing layouts
@@ -156,7 +156,7 @@ export default {
   // set value as scroll range to enable
   dismissOnScroll: false,
 
-  // set value as time in milliseconds to autodismiss after set time
+  // set value as time in milliseconds to auto dismiss after set time
   dismissOnTimeout: false,
 
   // set value as click anything on the page, excluding the `ignoreClicksFrom` below (if we click on the revoke button etc)
