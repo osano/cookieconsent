@@ -28,7 +28,7 @@ The hosted version of the cookie consent manager provides additional capabilitie
 * Multi-lingual, translated into 38 languages and growing. Visitors automatically see the dialog in their browser or OS preferred language.
 * Consents are stored automatically on the blockchain. REST API calls are available to developers to search and browse the consent records.
 * 3rd party script blocking and loading does not require callbacks but is instead configurable from a dashboard providing developers with control over what the marketing team can enable or disable.
-* Hosted on AWS Cloudfront with edges around the globe for 
+* Hosted on AWS CloudFront with edges around the globe for 
 
 ## Basic Use
 
