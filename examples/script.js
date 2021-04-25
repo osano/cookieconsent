@@ -39,14 +39,14 @@ window['cookieconsent_example_util'] = {
       if (targ.isEqualNode(options.selector)) return;
 
       // from this point, only the child elements of opts.selector will get through.
-      // out of these child elements, we want to find the closest direct decendant <li>
+      // out of these child elements, we want to find the closest direct descendant <li>
       while (targ.tagName != 'LI' && targ.parentNode) {
         targ = targ.parentNode;
       }
 
       if (!targ.parentNode.isEqualNode(options.selector)) return;
 
-      // from this point, 'targ' will be a direct decendant of opts.selector
+      // from this point, 'targ' will be a direct descendant of opts.selector
       const index = Array.from(options.selector.children).indexOf(targ);
 
       if (index >= 0 && instances[index]) {
