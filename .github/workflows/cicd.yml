@@ -27,7 +27,7 @@ jobs:
         run: |
           npm run test
 
-  deploy_package:
+  publish_package:
     needs: build_and_test
     runs-on: ubuntu-20.04
     steps:
@@ -43,13 +43,13 @@ jobs:
           npm i
           npm run build
 
-      #- name: debug deploy_package
+      #- name: debug publish_package
       #  uses: actions/bin/debug@master
 
-      - name: deploy via semantic-release
+      - name: publish to npm
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm i semantic-release@17
-          ./node_modules/.bin/semantic-release
+          npx semantic-release@17
+
