@@ -2,7 +2,7 @@
   "name": "@activescott/cookieconsent",
   "version": "4.0.0",
   "description": "FORK OF Osano cookie consent tool.",
-  "main": "dist/cjs/index.js",
+  "main": "dist/umd/index.js",
   "type": "commonjs",
   "types": "types/index.d.ts",
   "files": [

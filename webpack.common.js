@@ -4,10 +4,11 @@ const join = require("path").join;
 module.exports = {
   entry: join(__dirname, "src", "index.js"),
   output: {
-    path: join(__dirname, "dist/cjs"),
+    path: join(__dirname, "dist/umd"),
     filename: "index.js",
     libraryExport: "default",
-    libraryTarget: "commonjs2",
+    libraryTarget: "umd",
+    library: "CookieConsent",
   },
   optimization: {
     // Even in production, export clean output. Expect users to minify as needed with their own bundler

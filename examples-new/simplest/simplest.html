@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Example</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <!-- By loading a UMD module this way, it will expose the libray on window.CookieConsent -->
+    <script src="https://unpkg.com/@activescott/cookieconsent@>=5">
+    </script>
+    <script>
+        function main() {
+            const options = {
+                // all of this is optional:
+                palette: {
+                    popup: {
+                        background: "#4586c6",
+                        text: "#ffffffc0",
+                    },
+                    button: {
+                        background: "transparent",
+                        text: "#ffffffc0",
+                        border: "#ffffffc0",
+                    },
+                },
+                content: {
+                    link: "Learn More",
+                    href: "/policy/privacy",
+                },
+            }
+            new window.CookieConsent(options)
+        }
+        document.addEventListener("DOMContentLoaded", main)
+    </script>
+</head>
+
+<body>
+    You should see the cookie consent prompt in a new browser session (try a private window). Or look in the browser
+    console for errors.
+</body>
+
+</html>

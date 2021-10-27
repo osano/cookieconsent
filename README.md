@@ -8,9 +8,9 @@ This is a just-enough-working fork of https://github.com/osano/cookieconsent. Th
 
 1. It works. I had to update some dependencies to get it to even build. It appears that [Osano has decided to abandon](https://github.com/osano/cookieconsent/pull/784#issuecomment-734986300) the open source version of their package with a response of _"we recommend just using the free version of our commercial offering"_.
 2. Uses the v4.0 code base which was never published to npm, but was pushed to github.
-3. It exports a CommonJS module-only and doesn't attach a global to the window by default.
+3. It exports a [UMD](https://github.com/umdjs/umd) (with webpack configured like [this](https://v4.webpack.js.org/configuration/output/#outputlibrary)) module only. It does attach a global `window.CookieConsent` to the window by default.
 4. Includes some minimal typescript types in the package.
-5. ~~Exporting the original source rather than the minified bundle. I presume you'll use your own bundler.~~ This was a mess w/ node & jest, so it does export a CommonJS bundled module now, but it isn't minified.
+5. ~~Exporting the original source rather than the minified bundle. I presume you'll use your own bundler.~~ This was a mess w/ node & jest, so it does export a UMD bundled module now, but it isn't minified.
 6. It is automatically deployed according to the release process described below (so send me your PR and as long as it passes CI and is reasonable improvement I will merge it).
 
 ## Usage
