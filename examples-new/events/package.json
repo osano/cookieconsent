@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "serve"
+  },
+  "devDependencies": {
+    "serve": "^12.0.1"
+  },
+  "dependencies": {
+    "@activescott/cookieconsent": "file:../.."
+  }
+}

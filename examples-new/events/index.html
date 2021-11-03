@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- By loading a UMD module this way, it will expose the library on window.CookieConsent -->
+    <script src="https://unpkg.com/@activescott/cookieconsent@>=5"></script>
+
+    <!-- For local dev (assumes npm install from package.json installs local package):  -->
+    <!--
+    <script src="node_modules/@activescott/cookieconsent/dist/umd/index.js"></script>
+    -->
+
+    <script>
+      /** This is just a quick & dirty way to allow deleting this page's cookies and refreshing the page to easily trigger cookie consent again */
+      function deleteCookiesAndRefresh() {
+        document.cookie.split(";").forEach(function (c) {
+          document.cookie = c
+            .replace(/^ +/, "")
+            .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/")
+        })
+        window.location = window.location
+      }
+
+      /**
+       * This is the method that will be called when the cookieconsent library's statusChanged event is triggered
+       */
+      function onCookieConsentStatusChanged(cookieName, status, chosenBefore) {
+        const msg =
+          "statusChanged: " +
+          JSON.stringify({ cookieName, status, chosenBefore }, null, "  ") +
+          "\n"
+        document.querySelector("#eventtext").value += msg
+      }
+
+      function onLoaded() {
+        const options = {}
+        const cc = new window.CookieConsent(options)
+
+        // This is the essential part of this example, where we bind the event:
+        cc.on("statusChanged", onCookieConsentStatusChanged)
+
+        // merely binds the button's click event for easy delete cookies & refresh:
+        document
+          .querySelector("#btn-delete-cookies-and-refresh")
+          .addEventListener("click", deleteCookiesAndRefresh)
+      }
+
+      document.addEventListener("DOMContentLoaded", onLoaded)
+    </script>
+  </head>
+
+  <body>
+    <p>
+      This examples shows how to listen for the cookieconsent library's
+      <code>statusChanged</code> event. This event is triggered when the visitor
+      changes the "status" of their consent (they allow cookies or deny them).
+      This same information is also stored as a local cookie by cookieconsent so
+      that when the visitor comes back in the same browser, they aren't prompted
+      again if they explicitly allowed or denied consent for some category of
+      cookies. However, it might be useful to listen for this event to do things
+      like persisting consent on your backend for logged-in users or to trigger
+      some other UI action in your website when a visitor's consent status
+      changes.
+    </p>
+    <p>For this example you should see two things:</p>
+    <ol>
+      <li>The cookie consent prompt at the bottom of the screen.</li>
+      <li>
+        After clicking <b>Got it!</b> on the cookie consent prompt, you'll see a
+        list of outputs from the events in the textbox below.
+      </li>
+    </ol>
+    <p>
+      If you don't see the consent prompt click
+      <button id="btn-delete-cookies-and-refresh">
+        Delete Cookies & Refresh</button
+      >.
+    </p>
+    <div style="width: 90%">
+      <textarea
+        id="eventtext"
+        readonly
+        style="width: 100%; height: 400px"
+      ></textarea>
+    </div>
+  </body>
+</html>
