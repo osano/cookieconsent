@@ -48,17 +48,17 @@ export default {
     message:
       '<span id="cookieconsent:desc" class="cc-message">{{message}}</span>',
     messagelink:
-      '<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a></span>',
+      '<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a></span>',
     dismiss:
-      `<a aria-label="dismiss cookie message" role=button tabindex="0" class="cc-btn cc-${statusDismiss}">{{dismiss}}</a>`,
+      `<button aria-label="dismiss cookie message" class="cc-btn cc-${statusDismiss}">{{dismiss}}</button>`,
     allow:
-      `<a aria-label="allow cookies" role=button tabindex="0"  class="cc-btn cc-${statusAllow}">{{allow}}</a>`,
+      `<button aria-label="allow cookies" class="cc-btn cc-${statusAllow}">{{allow}}</button>`,
     deny:
-      `<a aria-label="deny cookies" role=button tabindex="0" class="cc-btn cc-${statusDeny}">{{deny}}</a>`,
+      `<button aria-label="deny cookies" class="cc-btn cc-${statusDeny}">{{deny}}</button>`,
     link:
-      '<a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a>',
+      '<a aria-label="learn more about cookies" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a>',
     close:
-      '<span aria-label="dismiss cookie message" role=button tabindex="0" class="cc-close">{{close}}</span>',
+      '<button aria-label="dismiss cookie message" class="cc-close">{{close}}</button>',
     categories: '<ul class="cc-categories">' +
       categories.map( ( category, index ) =>
         `<li class="cc-category">
