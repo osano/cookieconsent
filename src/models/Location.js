@@ -14,7 +14,7 @@ import { isPlainObject, getScript, makeAsyncRequest } from "../utils"
 
 export default class Location extends Base {
   constructor( options ) {
-    super( defaultOptions, options )
+    super({...defaultOptions, ...options})
     this.currentServiceIndex = -1 // the index (in options) of the service we're currently using
   }
 
