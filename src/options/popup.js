@@ -28,6 +28,7 @@ export default {
   content: {
     header : 'Cookies used on the website!',
     message: 'This website uses cookies to ensure you get the best experience on our website.',
+    messageEnd: 'This website uses cookies to ensure you get the best experience on our website.',
     dismiss: 'Got it!',
     allow  : 'Allow cookies',
     deny   : 'Decline',
@@ -48,7 +49,7 @@ export default {
     message:
       '<span id="cookieconsent:desc" class="cc-message">{{message}}</span>',
     messagelink:
-      '<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a></span>',
+      '<span id="cookieconsent:desc" class="cc-message">{{message}} <a aria-label="learn more about cookies" role=button tabindex="0" class="cc-link" href="{{href}}" rel="noopener noreferrer nofollow" target="{{target}}">{{link}}</a>{{messageEnd}}</span>',
     dismiss:
       `<a aria-label="dismiss cookie message" role=button tabindex="0" class="cc-btn cc-${statusDismiss}">{{dismiss}}</a>`,
     allow:
