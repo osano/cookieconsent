@@ -77,6 +77,28 @@ export default {
       }
     },
 
+    // This service requires an option to define `key`. Options are proived using objects or functions
+    // User can sign up for the free api key at here: https://www.ip2location.io/sign-up
+    ip2locationio: function () {
+      return {
+        // This service responds with JSON, so we simply need to parse it and return the country code
+        url: 'https://api.ip2location.io/?key={api_key}&format=json',
+        headers: ['Accept: application/json'],
+        callback: function (done, response) {
+          try {
+            const json = JSON.parse(response);
+            return json.error ? toError(json) : {
+              code: json.country_code
+            };
+          } catch (err) {
+            return toError({
+              error: 'Invalid response (' + err + ')'
+            });
+          }
+        }
+      };
+    },
+
     maxmind: function() {
       return {
         // This service responds with a JavaScript file which defines additional functionality. Once loaded, we must
