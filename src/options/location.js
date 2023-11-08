@@ -38,7 +38,7 @@ export default {
     ipinfo: function() {
       return {
         // This service responds with JSON, so we simply need to parse it and return the country code
-        url: '//ipinfo.io',
+        url: '//ipinfo.io/json',
         headers: ['Accept: application/json'],
         callback: function(done, response) {
           try {
@@ -75,6 +75,27 @@ export default {
           }
         }
       }
+    },
+
+    // This service requires an option to define `key`. Options are proived using objects or functions
+    ip2locationio: function () {
+      return {
+        // This service responds with JSON, so we simply need to parse it and return the country code
+        url: 'https://api.ip2location.io/?key={api_key}&format=json',
+        headers: ['Accept: application/json'],
+        callback: function (done, response) {
+          try {
+            const json = JSON.parse(response);
+            return json.error ? toError(json) : {
+              code: json.country_code
+            };
+          } catch (err) {
+            return toError({
+              error: 'Invalid response (' + err + ')'
+            });
+          }
+        }
+      };
     },
 
     maxmind: function() {
