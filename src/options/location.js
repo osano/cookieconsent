@@ -38,7 +38,7 @@ export default {
     ipinfo: function() {
       return {
         // This service responds with JSON, so we simply need to parse it and return the country code
-        url: '//ipinfo.io/json',
+        url: '//ipinfo.io',
         headers: ['Accept: application/json'],
         callback: function(done, response) {
           try {
@@ -78,6 +78,7 @@ export default {
     },
 
     // This service requires an option to define `key`. Options are proived using objects or functions
+    // User can sign up for the free api key at here: https://www.ip2location.io/sign-up
     ip2locationio: function () {
       return {
         // This service responds with JSON, so we simply need to parse it and return the country code
