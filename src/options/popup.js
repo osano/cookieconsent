@@ -196,5 +196,9 @@ export default {
   // If this is defined, then it is used as the inner html instead of layout. This allows for ultimate customisation.
   // Be sure to use the classes `cc-btn` and `cc-ALLOW`, `cc-DENY` or `cc-DISMISS`. They enable the app to register click
   // handlers. You can use other pre-existing classes too. See `src/styles` folder.
-  overrideHTML: null
+  overrideHTML: null,
+  // Make this false if you want to disable all regional overrides for settings.
+  // If true, options can differ by country, depending on their cookie law.
+  // It does not affect hiding the popup for countries that do not have cookie law.
+  regionalLaw: null
 }

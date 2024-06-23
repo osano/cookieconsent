@@ -35,6 +35,7 @@ const isPopup = popup => (
   expect( popup ).toHaveProperty( "getEventPath" ),
   expect( popup ).toHaveProperty( "applyAutoDismiss" ),
   expect( popup ).toHaveProperty( "applyRevokeButton" ),
+  expect( popup ).toHaveProperty( "transitionEnd" ),
   expect( popup.options ).toBeInstanceOf( Object ),
   expect( popup.userCategories ).toBeInstanceOf( Object ),
   expect( popup.customStyles ).toBeInstanceOf( Object ),
@@ -82,7 +83,8 @@ describe( "Popup Class", () => {
   })
   describe( "showLink options set to false", () => {
     const options = {
-      type: "opt-in"
+      type: "opt-in",
+      regionalLaw: true
     }
     const popup = new Popup( options )
     describe( "updates `content` options `link` and `messagelink`", () => {

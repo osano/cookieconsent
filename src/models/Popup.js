@@ -32,7 +32,7 @@ export default class Popup extends Base {
       MARKETING      : 'DISMISS'
     }
     this.customStyles = {}
-    this.hasTransition = !!(function() {
+    this.hasTransition = !!(function(that) {
       const el = document.createElement('div')
       const trans = {
         t: 'transitionend',
@@ -47,11 +47,11 @@ export default class Popup extends Base {
           trans.hasOwnProperty(prefix) &&
           typeof el.style[prefix + 'ransition'] !== 'undefined'
         ) {
-          return trans[prefix]
+          return that.transitionEnd = trans[prefix]
         }
       }
       return ''
-    })()
+    })(this)
 
     // returns true if `onComplete` was called
     if (this.canUseCookies()) {
