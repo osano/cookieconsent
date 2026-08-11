@@ -36,9 +36,9 @@ With version 4.0 you only need to attach the script as we've bundled everything 
 
 #### Module
 ```
-import CC from "CookieConsent"
+import CC from "cookieconsent"
 // or
-const CC = require( "CookieConsent" )
+const CC = require( "cookieconsent" )
 ```
 
 #### Classic
@@ -98,7 +98,7 @@ npm install cookieconsent
 Or through [Yarn](https://yarnpkg.com/en/package/cookieconsent):
 
 ```sh
-yarn add cookieconsent@3
+yarn add cookieconsent@4
 ```
 
 Or through [Bower](https://bower.io/):
@@ -110,7 +110,7 @@ bower install cookieconsent
 Or via a jsDelivr:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cookieconsent@4/build/cookieconsent.min.js"></script>
 ```
 
 ## Documentation
@@ -124,10 +124,10 @@ Feel free to improve the plugin and send us a pull request.
 The easiest way to develop is to host the files with a local webserver. e.g.
 
 ```sh
-python -m SimpleHTTPServer
+python3 -m http.server
 ```
 
-We use Babel, Terser, and PostCSS to compile the SCSS and minify the JavaScript. You can run a build with:
+We use Babel, Sass, Babel Minify, and PostCSS to compile the SCSS and minify the JavaScript. You can run a build with:
 
 ```sh
 npm run build
